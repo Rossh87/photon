@@ -1,0 +1,7 @@
+{
+	"name": "client",
+	"dependencies": {
+		"react": "^17.0.1"
+	},
+	"version": "1.0.0"
+}
