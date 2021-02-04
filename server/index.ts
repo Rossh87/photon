@@ -1,9 +1,17 @@
+// Setup env vars
+import path from 'path';
+const dotenv = require('dotenv');
+const env_path = path.join(__dirname, '.env.local');
+console.log(env_path);
+dotenv.config({ path });
+
 import express from 'express';
 import session from 'express-session';
 import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import bodyParser from 'body-parser';
 
+// initialize needed objects
 const app = express();
 const grantMiddleWare = grant.express();
 
