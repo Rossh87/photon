@@ -1,0 +1,2 @@
+-enable secure session cookies
+-get better solution for env vars
