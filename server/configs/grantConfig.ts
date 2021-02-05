@@ -21,7 +21,7 @@ const grantConfig: GrantConfig = {
         secret: g_client_secret,
         scope: ['openid'],
         nonce: true,
-        callback: 'http://localhost:8000/hello',
+        callback: 'http://localhost:8000/connect/google/auth',
     },
 };
 

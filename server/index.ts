@@ -10,6 +10,7 @@ import session from 'express-session';
 import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import bodyParser from 'body-parser';
+import Result from 'ts-result';
 
 // initialize needed objects
 const app = express();
@@ -30,7 +31,7 @@ function run() {
     let PORT = process.env.PORT ? process.env.PORT : 3000;
 
     if (sessionSecret === undefined) {
-        throw new Error('Missing session secret: unable to initiate server');
+        throw new Error('Missing session secret: unable to initialize server');
     }
 
     app.use(
@@ -49,7 +50,7 @@ function run() {
         res.end('welcome home!');
     });
 
-    app.get('/hello', (req, res) => {
+    app.get('/connect/google/auth', (req, res) => {
         // read auth code from req.session.grant
         // get user data from google People api
         // get user data from local db
