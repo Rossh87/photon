@@ -19,9 +19,12 @@ const grantConfig: GrantConfig = {
         pkce: true,
         client_id: g_client_id,
         secret: g_client_secret,
-        scope: ['openid'],
+        scope: [
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+        ],
         nonce: true,
-        callback: 'http://localhost:8000/connect/google/auth',
+        callback: 'http://localhost:8000/auth/google/callback',
     },
 };
 

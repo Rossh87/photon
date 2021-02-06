@@ -11,7 +11,7 @@ import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import bodyParser from 'body-parser';
 import Result from 'ts-result';
-
+import axios from 'axios';
 // initialize needed objects
 const app = express();
 const grantMiddleWare = grant.express();
@@ -23,6 +23,8 @@ declare module 'express-session' {
         grant: {
             response: GrantResponse;
         };
+
+        views: number;
     }
 }
 
@@ -50,12 +52,25 @@ function run() {
         res.end('welcome home!');
     });
 
-    app.get('/connect/google/auth', (req, res) => {
-        // read auth code from req.session.grant
-        // get user data from google People api
-        // get user data from local db
-        // update data and save changes to db, if any.  If no changes, do not waste the db call
-        // generate new session and populate its user property
+    app.get('/auth/google/callback', async (req, res) => {
+        console.log(req.session.grant);
+
+        const token = req.session.grant?.response.access_token;
+
+        if (!token) {
+            res.end('no token');
+        }
+        const axiosConfig = {
+            headers: {
+                Authorization: 'Bearer ' + token,
+            },
+        };
+
+        const peopleURL =
+            'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses';
+
+        const resp = await axios.get(peopleURL, axiosConfig);
+        res.json(resp.data);
     });
 
     app.listen(process.env.PORT || 3000, () => {
