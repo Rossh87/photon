@@ -10,7 +10,6 @@ import session from 'express-session';
 import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import bodyParser from 'body-parser';
-import Result from 'ts-result';
 import axios from 'axios';
 // initialize needed objects
 const app = express();
