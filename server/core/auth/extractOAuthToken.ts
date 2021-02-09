@@ -3,13 +3,13 @@ import { IAccessTokenExtractor } from './authTypes';
 
 // TODO: clean up these conditionals
 export const extractToken: IAccessTokenExtractor = (r) => {
-    const { grant } = r.session;
+    const token = r.session.grant?.response?.access_token;
 
-    if (grant && grant.response.access_token) {
-        return Result.right(grant.response.access_token);
-    } else {
-        return Result.left(
-            new Error('grant: field "accessToken" unpopulated in auth callback')
-        );
-    }
+    return token
+        ? Result.right(token)
+        : Result.left(
+              new Error(
+                  'grant: field "accessToken" unpopulated in auth callback'
+              )
+          );
 };

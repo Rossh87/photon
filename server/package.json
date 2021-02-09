@@ -11,7 +11,8 @@
         "ts-result": "https://github.com/rossh87/ts-result.git#master"
     },
     "scripts": {
-        "start:dev": "NODE_ENV=dev node -r $PWD/configs/preload index.ts"
+        "start:dev": "NODE_ENV=dev node -r $PWD/configs/preload index.ts",
+        "test": "jest"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",
