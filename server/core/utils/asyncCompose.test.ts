@@ -17,4 +17,17 @@ describe('a composer for async functions', () => {
         const received = await composed();
         expect(received).toEqual(12);
     });
+
+    // Because our functions (async as well as sync) will return Result types,
+    // we can pass rejections through to the next handler and worry about failure
+    // at the call site
+    it('passes rejections through to subsequent handlers', async () => {
+        const failedGetNum = () => Promise.reject(10);
+        const addTwo = (n: number) => n + 2;
+        const composed = asyncCompose(addTwo, failedGetNum);
+
+        const received = await composed();
+
+        expect(received).toEqual(12);
+    });
 });
