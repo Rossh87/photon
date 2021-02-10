@@ -1,21 +1,26 @@
 import { Result, Either } from 'ts-result';
-import { TMapOrChainable } from './utilTypes';
+import { TMapOrChainable, IMappable, IChainable } from './utilTypes';
 
-export const isResult: (v: any) => v is Result = 
+function isEither<T, E>(v: T | Either<E, T>): v is Either<E, T> {
+    return (
+        (v as Either<E, T>).isLeft === true ||
+        (v as Either<E, T>).isRight === true
+    );
+}
 
 export const mapOrChain = <A, B, E extends Error = Error>(
     val: A,
     fn: (a: A) => TMapOrChainable<B, E>
 ) => {
     const result = fn(val);
-    // test result to see if it's a Result wrapper or plain value
-    // if it's a plain value, assume it's valid
-    return typeof result === 'object' && (result.isRight  || result.isLeft)
-        ? result
-        : Result.right(result);
+    // Test result to see if it's a Result wrapper or plain value.
+    // If it's a plain value, assume it's valid
+    return isEither<B, E>(result) ? result : Result.right(result);
 };
 
-// TODO: error type here is not very meaningful
+// TODO: error type here is not very meaningful.  Any errors we would like
+// to pass around MUST extend builtin Error for these types to work correctly
 export const toMappable = <A, B, E extends Error = Error>(
-    fn: (a: A) => Either<E, B>
-) => (res: Either<E, A>) => (Result.ok(res) ? fn(res.fold()) : res);
+    fn: IMappable<A, B> | IChainable<A, B, E>
+) => (res: Either<Error, A>) =>
+    Result.ok(res) ? mapOrChain(res.fold(), fn) : Result.left(res.fold());

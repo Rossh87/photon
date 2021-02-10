@@ -1,4 +1,4 @@
-import { Result, Either } from 'ts-result';
+import { Result, Either, Left } from 'ts-result';
 import { toMappable } from './toMappable';
 
 describe('the utility function toMappable', () => {
@@ -30,5 +30,22 @@ describe('the utility function toMappable', () => {
 
         expect(result1).toEqual(Result.right(true));
         expect(result2).toEqual(Result.left(meaningError));
+    });
+
+    it('correctly re-wraps the return value of passed-in function if that function returns a plain value, not an Either', () => {
+        const meaningError = new Error(
+            'received number that is not the meaning'
+        );
+        const rightArgument = Result.right(42);
+        const leftArgument = Result.left(meaningError);
+
+        const addTwo: (n: number) => number = (n) => n + 2;
+        const wrapped = toMappable(addTwo);
+
+        const rightResult = wrapped(rightArgument);
+        const leftResult = wrapped(leftArgument);
+
+        expect(rightResult).toEqual(Result.right(44));
+        expect(leftResult).toEqual(Result.left(meaningError));
     });
 });
