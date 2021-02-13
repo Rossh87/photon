@@ -15,3 +15,7 @@ export interface IComposition<A, B, E extends Error = Error> {
         a: A | Either<E, A>
     ) => Either<E, B>;
 }
+
+export interface IWrapAndCompose<A, B, E extends Error = Error> {
+    (...fns: any): (a: A | Either<E, A>) => Either<E, B>;
+}
