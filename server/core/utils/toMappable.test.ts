@@ -48,4 +48,12 @@ describe('the utility function toMappable', () => {
         expect(rightResult).toEqual(Result.right(44));
         expect(leftResult).toEqual(Result.left(meaningError));
     });
+    it('correctly applies wrapped function to input params that are not of type Either', () => {
+        const plainInput = 40;
+
+        const addTwo: (n: number) => number = (n) => n + 2;
+        const wrapped = toMappable(addTwo);
+
+        expect(wrapped(plainInput)).toEqual(Result.right(42));
+    });
 });

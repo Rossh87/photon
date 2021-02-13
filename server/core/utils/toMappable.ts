@@ -1,7 +1,7 @@
 import { Result, Either } from 'ts-result';
 import { TMapOrChainable, IMappable, IChainable } from './utilTypes';
 
-function isEither<T, E>(v: T | Either<E, T>): v is Either<E, T> {
+export function isEither<T, E>(v: T | Either<E, T>): v is Either<E, T> {
     return (
         (v as Either<E, T>).isLeft === true ||
         (v as Either<E, T>).isRight === true
@@ -22,5 +22,9 @@ export const mapOrChain = <A, B, E extends Error = Error>(
 // to pass around MUST extend builtin Error for these types to work correctly
 export const toMappable = <A, B, E extends Error = Error>(
     fn: IMappable<A, B> | IChainable<A, B, E>
-) => (res: Either<Error, A>) =>
-    Result.ok(res) ? mapOrChain(res.fold(), fn) : Result.left(res.fold());
+) => (res: Either<Error, A> | A) =>
+    isEither(res)
+        ? Result.ok(res)
+            ? mapOrChain(res.fold(), fn)
+            : Result.left(res.fold())
+        : mapOrChain(res, fn);
