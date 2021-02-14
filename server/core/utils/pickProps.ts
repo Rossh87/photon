@@ -3,6 +3,15 @@ import { BaseError } from '../error';
 
 // TODO: try and improve these types.  What a disgrace.
 export const pickProps = (picker: any) => (a: any) => {
+    if (a === null) {
+        return Result.left(
+            new BaseError({
+                hint:
+                    'Expected pickProps to be called with 1 argument, but received none',
+                raw: null,
+            })
+        );
+    }
     const keys = Object.keys(picker);
     const result = {} as any;
 

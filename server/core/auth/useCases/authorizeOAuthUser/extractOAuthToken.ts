@@ -1,5 +1,5 @@
 import { Result } from 'ts-result';
-import { IAccessTokenExtractor } from './authTypes';
+import { IAccessTokenExtractor } from './../../authTypes';
 
 // TODO: clean up these conditionals
 export const extractToken: IAccessTokenExtractor = (r) => {

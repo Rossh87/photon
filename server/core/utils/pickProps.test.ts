@@ -108,4 +108,19 @@ describe('the util function pickProps', () => {
 
         expect(received).toEqual(Result.left(expectedErr));
     });
+
+    it('errors if it is called without an input argument', () => {
+        const picker = {
+            name: 'name',
+        };
+        // @ts-ignore
+        const received = pickProps(picker)();
+
+        const expectedErr = new BaseError({
+            hint: `pickProps expected to be called with 1 argument, but received 0`,
+            raw: null,
+        });
+
+        expect(received).toEqual(Result.left(expectedErr));
+    });
 });
