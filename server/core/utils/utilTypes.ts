@@ -19,3 +19,9 @@ export interface IComposition<A, B, E extends Error = Error> {
 export interface IWrapAndCompose<A, B, E extends Error = Error> {
     (...fns: any): (a: A | Either<E, A>) => Either<E, B>;
 }
+
+export type TPicker<T> = { [k in keyof T]: string };
+
+export interface IPickProps<A, B, E extends Error = Error> {
+    (a: A): Either<E, B>;
+}
