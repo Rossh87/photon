@@ -3,16 +3,15 @@ import {
     IOAuthDataRequestor,
     IGoogleOAuthResponse,
     IRequestLibrary,
-    IGoogleDataRequestErr,
-} from '../../authTypes';
-import { GOOGLE_PEOPLE_OAUTH_ENDPOINT } from '../../../../CONSTANTS';
-import { BaseError } from '../../../error';
+} from '../authTypes';
+import { GOOGLE_PEOPLE_OAUTH_ENDPOINT } from '../../../CONSTANTS';
+import { GoogleDataRequestErr } from '../errors/GoogleDataRequestErr';
 import axios from 'axios';
 
-export const googleDataRequestor: IOAuthDataRequestor<
+export const _googleDataRequestor: IOAuthDataRequestor<
     IRequestLibrary,
     IGoogleOAuthResponse,
-    IGoogleDataRequestErr
+    GoogleDataRequestErr
 > = (requestLibrary) => async (token) => {
     let res;
     try {
@@ -28,12 +27,4 @@ export const googleDataRequestor: IOAuthDataRequestor<
     }
 };
 
-export class GoogleDataRequestErr
-    extends BaseError
-    implements IGoogleDataRequestErr {
-    constructor(e: any) {
-        super({ hint: 'Request for Google OAuth data failed', raw: e });
-    }
-}
-
-export const _googleDataRequestor = googleDataRequestor(axios);
+export const googleDataRequestor = _googleDataRequestor(axios);

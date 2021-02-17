@@ -1,14 +1,18 @@
-import { IBaseError, IBaseErrorParams } from './errorTypes';
+import { HTTPErrorType } from './errorTypes';
 
-export class BaseError extends Error implements IBaseError {
-    public hint: string;
-    public raw: any;
-    public status?: number;
-
-    constructor({ hint, raw, status }: IBaseErrorParams) {
-        super();
-        this.hint = hint;
-        this.raw = raw;
-        this.status = status;
+export class BaseError extends Error {
+    constructor(
+        message: string,
+        public readonly HTTPErrorType?: HTTPErrorType
+    ) {
+        super(message);
+        this.HTTPErrorType = HTTPErrorType;
     }
 }
+
+export const HTTPErrorTypes: Record<string, HTTPErrorType> = {
+    GATEWAY_TIMEOUT: {
+        status: 504,
+        message: 'Requested upstream resource was not available',
+    },
+};

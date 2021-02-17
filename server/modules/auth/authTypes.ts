@@ -1,24 +1,9 @@
 import { AxiosInstance } from 'axios';
 import { Request } from 'express';
 import { Either } from 'ts-result';
-import { BaseError } from '../error';
 
-// Begin User-related types
-type TOAuthProvider = 'google';
 export type TUserRole = 'uploader' | 'admin' | 'tourist';
 
-export interface IUser {
-    OAuthProviderName: TOAuthProvider;
-    // we specify for possible future need
-    OAuthProviderID: string;
-    localAppID?: string;
-    thumbnailURL: string;
-    displayName: string;
-    familyName: string;
-    givenName: string;
-    primayEmail: string;
-    role: TUserRole;
-}
 // End User-related types
 
 // Begin OAuth flow types
@@ -60,10 +45,6 @@ interface IGoogleMetadataObject {
         id: string;
     };
 }
-
-// Begin Auth Error Types
-export interface IGoogleDataRequestErr extends BaseError {}
-
 // Begin function types
 export interface IRequestLibrary extends AxiosInstance {}
 
