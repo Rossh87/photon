@@ -6,6 +6,12 @@ export type TOAuthAccessToken = string;
 
 export type TOAuthDataResponse = IGoogleOAuthResponse;
 
+export type TGoogleOAuthSubData =
+    | IGoogleEmailsObject
+    | IGoogleMetadataObject
+    | IGoogleNamesObject
+    | IGooglePhotosObject;
+
 export interface IGoogleOAuthResponse {
     resourceName: string;
     etag: string;
@@ -14,7 +20,7 @@ export interface IGoogleOAuthResponse {
     photos: Array<IGooglePhotosObject>;
 }
 
-interface IGoogleNamesObject {
+export interface IGoogleNamesObject {
     metadata: IGoogleMetadataObject;
     displayName: string;
     familyName: string;
@@ -22,17 +28,17 @@ interface IGoogleNamesObject {
     displayNameLastFirst: string;
     unstructuredName: string;
 }
-interface IGoogleEmailsObject {
+export interface IGoogleEmailsObject {
     metadata: IGoogleMetadataObject;
     value: string;
 }
 
-interface IGooglePhotosObject {
+export interface IGooglePhotosObject {
     url: string;
     metadata: IGoogleMetadataObject;
     primary: true;
 }
-interface IGoogleMetadataObject {
+export interface IGoogleMetadataObject {
     primary: boolean;
     verified?: boolean;
     source: {
@@ -43,6 +49,7 @@ interface IGoogleMetadataObject {
 // Begin function types
 export interface IRequestLibrary extends AxiosInstance {}
 
-export interface IOAuthDataNormalizer<T> {
-    (data: T): IUser;
+// TODO: this can pry move to core(?)
+export interface INormalizer<E, A, B> {
+    (data: A): Either<E, B>;
 }

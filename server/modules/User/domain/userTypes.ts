@@ -9,5 +9,9 @@ export interface IUser {
     displayName: string;
     familyName: string;
     givenName: string;
-    primayEmail: string;
+    OAuthEmail: string;
+    OAuthEmailVerified: boolean;
+    // option for user to specify different email
+    preferredEmail?: string;
+    preferredVerified?: boolean;
 }

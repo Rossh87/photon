@@ -17,7 +17,7 @@ export class GoogleDataRequestErr extends BaseError {
     public constructor(e: any) {
         const devErrMessage =
             "HTTP request for user's profile data from Google rejected";
-        super(devErrMessage, HTTPErrorTypes.GATEWAY_TIMEOUT, e);
+        super(devErrMessage, HTTPErrorTypes.BAD_GATEWAY, e);
     }
 }
 

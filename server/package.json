@@ -7,11 +7,12 @@
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "express-session": "^1.17.1",
-        "grant": "^5.4.9",
-        "ts-result": "https://github.com/Rossh87/ts-result.git#master"
+        "fp-ts": "^2.9.5",
+        "grant": "^5.4.9"
     },
     "scripts": {
-        "start:dev": "NODE_ENV=dev node -r $PWD/configs/preload index.ts"
+        "start:dev": "NODE_ENV=dev node -r $PWD/configs/preload index.ts",
+        "test": "jest"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",

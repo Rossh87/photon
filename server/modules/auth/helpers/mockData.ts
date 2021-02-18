@@ -1,7 +1,8 @@
-import { IGoogleOAuthResponse, IUser } from '../../authTypes';
+import { IGoogleOAuthResponse } from '../sharedAuthTypes';
+import { IUser } from '../../User/domain/userTypes';
 
 export const mockGoogleOAuthResponse: IGoogleOAuthResponse = {
-    resourceName: 'resourceName',
+    resourceName: 'resourceName/123456',
     etag: 'abc123',
     names: [
         {
@@ -54,6 +55,6 @@ export const mockUserFromGoogleResponse: IUser = {
     displayName: 'Tim123',
     familyName: 'Roosevelt',
     givenName: 'Tim',
-    primayEmail: 'tim@gmail.com',
-    role: 'tourist',
+    OAuthEmail: 'tim@gmail.com',
+    OAuthEmailVerified: true,
 };
