@@ -7,7 +7,7 @@ import { AxiosInstance } from 'axios';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
-import { expectEqual } from '../../../core/testUtils';
+import { expectEqual } from '../../../core/utils/testUtils';
 
 describe('googleDataRequestor', () => {
     it('calls "get" library method with the correct endpoint and headers', async () => {

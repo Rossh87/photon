@@ -8,7 +8,7 @@ import {
 } from '../sharedAuthTypes';
 
 // TODO: this path sucks
-import { IUser } from '../../User/domain/userTypes';
+import { IUser } from '../../User/userTypes';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
