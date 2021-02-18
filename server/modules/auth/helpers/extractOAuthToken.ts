@@ -1,8 +1,7 @@
 import { Either, left, right } from 'fp-ts/lib/Either';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import { Request } from 'express';
-
-type TOAuthAccessToken = string;
+import { TOAuthAccessToken } from '../sharedAuthTypes';
 
 interface IAccessTokenExtractor {
     (req: Request): Either<MissingOAuthTokenErr, TOAuthAccessToken>;
