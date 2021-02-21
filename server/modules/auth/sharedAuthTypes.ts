@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { Either } from 'fp-ts/lib/Either';
+import { TaskEither } from 'fp-ts/lib/TaskEither';
 
 // Begin OAuth flow types
 export type TOAuthAccessToken = string;
@@ -49,7 +50,10 @@ export interface IGoogleMetadataObject {
 // Begin function types
 export interface IRequestLibrary extends AxiosInstance {}
 
-// TODO: this can pry move to core(?)
+export interface IOAuthRequestor<A, B, E extends Error = Error> {
+    (token: string): (requestLibrary: A) => TaskEither<E, B>;
+}
+
 export interface INormalizer<E, A, B> {
     (data: A): Either<E, B>;
 }

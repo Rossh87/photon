@@ -1,22 +1,26 @@
 import { IGoogleOAuthResponse } from './sharedAuthTypes';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { flow } from 'fp-ts/lib/function';
-import { Request } from 'express';
 import {
     extractOAuthToken,
     googleDataRequestor,
-    GoogleDataRequestErr,
+    TGoogleOAuthRequestor,
+    GoogleNormalizationError,
     normalizeGoogleResponse,
+    TGoogleNormalizerResult,
     TGoogleRequestResult,
+    updateOrAddUser,
+    TUpdateOrAddUserResult,
 } from './helpers';
-import { getUserByID, TGetUserByIDResult } from '../User/repo/getUserByID';
-import * as E from 'fp-ts/lib/Either';
-import * as TE from 'fp-ts/lib/TaskEither';
-import * as T from 'fp-ts/lib/Task';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import * as R from 'fp-ts/lib/Reader';
-import { IAsyncDeps, getFetcher, getRepo } from '../../core/asyncDeps';
-import { IUser } from '../User/userTypes';
+import { IAsyncDeps, getRepo, getFetcher } from '../../core/asyncDeps';
+import { IUser } from '../User';
+
+const normalizeResponse = flow<
+    ReadonlyArray<IGoogleOAuthResponse>,
+    TGoogleNormalizerResult,
+    RTE.ReaderTaskEither<IAsyncDeps, GoogleNormalizationError, IUser>
+>(normalizeGoogleResponse, RTE.fromEither);
 
 export const handleGoogleOAuthCallback = flow(
     extractOAuthToken,
@@ -26,9 +30,10 @@ export const handleGoogleOAuthCallback = flow(
             flow(getFetcher, googleDataRequestor(token))
         )
     ),
-    RTE.map(normalizeGoogleResponse),
-    RTE.chain((responseUser) => R.asks<IAsyncDeps, IUser>(flow()))
+    RTE.chain(normalizeResponse),
+    RTE.chain((responseUser) =>
+        R.asks<IAsyncDeps, TUpdateOrAddUserResult>(
+            flow(getRepo, updateOrAddUser(responseUser))
+        )
+    )
 );
-
-export const getToken = (req: Request) =>
-    pipe(req, (r) => Object.assign({}, req), extractOAuthToken, RTE.fromEither);

@@ -1,5 +1,5 @@
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
-import { IUser } from '../../User/userTypes';
+import { IUser } from '../../User';
 
 export const mockGoogleOAuthResponse: IGoogleOAuthResponse = {
     resourceName: 'resourceName/123456',

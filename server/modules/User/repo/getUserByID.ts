@@ -1,10 +1,11 @@
-import { IUser } from '../userTypes';
+import { IUser } from '..';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import { MongoClient, ObjectQuerySelector, Collection } from 'mongodb';
 import { getCollection, DBReadError } from '../../../core/repo';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as O from 'fp-ts/lib/Option';
+import { reverseTwo } from '../../../core/utils/reverseCurried';
 
 export type TGetUserByIDResult = TE.TaskEither<DBReadError, O.Option<IUser>>;
 
@@ -30,3 +31,6 @@ const findUser: (id: string) => (c: Collection<IUser>) => TGetUserByIDResult = (
                 reason
             )
     );
+
+// export with args reversed for convenience
+export const _getUserByID = reverseTwo(getUserByID);

@@ -1,4 +1,4 @@
-import { IUser } from '../userTypes';
+import { IUser } from '..';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 
 export class MissingCollectionOrDBError extends BaseError {

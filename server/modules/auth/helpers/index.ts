@@ -3,5 +3,11 @@ export {
     googleDataRequestor,
     GoogleDataRequestErr,
     TGoogleRequestResult,
+    TGoogleOAuthRequestor,
 } from './googleDataRequestor';
-export { normalizeGoogleResponse } from './normalizeGoogleResponse';
+export {
+    normalizeGoogleResponse,
+    GoogleNormalizationError,
+    TGoogleNormalizerResult,
+} from './normalizeGoogleResponse';
+export { updateOrAddUser, TUpdateOrAddUserResult } from './updateOrAddUser';

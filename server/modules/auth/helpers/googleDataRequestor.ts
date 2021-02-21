@@ -1,24 +1,24 @@
-import { IGoogleOAuthResponse, TOAuthAccessToken } from '../sharedAuthTypes';
+import { IGoogleOAuthResponse, IOAuthRequestor } from '../sharedAuthTypes';
 import { GOOGLE_PEOPLE_OAUTH_ENDPOINT } from '../../../CONSTANTS';
 import axios, { AxiosInstance } from 'axios';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 
-interface IGoogleDataRequestor<A, B, E extends Error = Error> {
-    (token: TOAuthAccessToken): (requestLibrary: A) => TE.TaskEither<E, B>;
-}
+export type TGoogleOAuthRequestor = IOAuthRequestor<
+    AxiosInstance,
+    IGoogleOAuthResponse,
+    GoogleDataRequestErr
+>;
 
 export type TGoogleRequestResult = TE.TaskEither<
     GoogleDataRequestErr,
     IGoogleOAuthResponse
 >;
 
-export const googleDataRequestor: IGoogleDataRequestor<
-    AxiosInstance,
-    IGoogleOAuthResponse,
-    GoogleDataRequestErr
-> = (token) => (requestLibrary) => {
+export const googleDataRequestor: TGoogleOAuthRequestor = (token) => (
+    requestLibrary
+) => {
     const requestUserData = () =>
         requestLibrary.get<IGoogleOAuthResponse>(GOOGLE_PEOPLE_OAUTH_ENDPOINT, {
             headers: {

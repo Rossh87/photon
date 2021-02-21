@@ -8,18 +8,22 @@ import {
 } from '../sharedAuthTypes';
 
 // TODO: this path sucks
-import { IUser } from '../../User/userTypes';
+import { IUser } from '../../User';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 // TODO: we could allow some of this info to be incomplete and flag it on the user model
 // to be completed by user in our own app
-export const normalizeGoogleResponse: INormalizer<
+export type TNormalizeGoogleResponse = INormalizer<
     GoogleNormalizationError,
     IGoogleOAuthResponse,
     IUser
-> = (a) => {
+>;
+
+export type TGoogleNormalizerResult = E.Either<GoogleNormalizationError, IUser>;
+
+export const normalizeGoogleResponse: TNormalizeGoogleResponse = (a) => {
     const result: any = {
         OAuthProviderName: 'google',
     };
