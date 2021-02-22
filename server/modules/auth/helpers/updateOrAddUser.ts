@@ -7,7 +7,7 @@ import { _getUserByID } from '../../User/repo/getUserByID';
 import { saveNewUser, TSaveNewUserResult } from '../../User/repo/saveNewUser';
 import { _saveUpdatedUser } from '../../User/repo/saveUpdatedUser';
 import { flow } from 'fp-ts/lib/function';
-
+import * as E from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
 
 export type TUpdateOrAddUserResult = TE.TaskEither<DBError, IUser>;
@@ -37,15 +37,15 @@ const handleUserUpdate: IHandleUserUpdate = (incomingUser) => (repoClient) => (
         maybeDBUsr,
         O.fold(
             // if incoming auth request is from user not currently in database, save them as
-            // a new user
+            // a new user and return the saved data
             () => saveNewUser(incomingUser)(repoClient),
             // otherwise, check to see if user info is up-to-date
             flow(
                 _getUpdatedUser(incomingUser),
-                O.fold(
+                E.fold(
                     // if no updates needed, simply return the incoming data to
                     // populate our session user
-                    () => TE.of<never, IUser>(incomingUser),
+                    (dbUsr) => TE.of<never, IUser>(dbUsr),
                     // otherwise, make database updates and return the fresh user
                     _saveUpdatedUser(repoClient)
                 )

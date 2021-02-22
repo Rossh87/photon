@@ -1,7 +1,8 @@
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { reverseTwo } from '../../core/utils/reverseCurried';
 import { isNonEmptyArray } from '../../core/utils/isNonEmptyArray';
-import * as O from 'fp-ts/lib/Option';
+import * as E from 'fp-ts/lib/Either';
+import { ObjectID } from 'mongodb';
 
 type TOAuthProvider = 'google';
 
@@ -19,6 +20,7 @@ export interface IUser {
     // local option for user to specify different email
     preferredEmail?: string;
     preferredVerified?: boolean;
+    _id?: ObjectID;
 }
 
 export type TChangeableUserProps =
@@ -54,6 +56,8 @@ export const getUpdatedUser = (dbUser: IUser) => (resUser: IUser) => {
         []
     );
 
+    // if updates needed, convert updates array into an object to use
+    // as Mongo update query
     const updatesToObject = (updates: NonEmptyArray<TPropTuple>) =>
         updates.reduce<Partial<IUser>>((updated, update) => {
             const [key, val] = update;
@@ -61,13 +65,10 @@ export const getUpdatedUser = (dbUser: IUser) => (resUser: IUser) => {
             return updated;
         }, {});
 
-    // Return a complete IUser wrapped in Option if updates are needed.  Otherwise,
-    // return none and the calling code will skip the database update step
+    // Return an Either<existingUser | updates>
     return isNonEmptyArray<TPropTuple>(updates)
-        ? (O.some(
-              Object.assign(dbUser, updatesToObject(updates))
-          ) as O.Option<IUser>)
-        : O.none;
+        ? E.right(Object.assign(dbUser, updatesToObject(updates)))
+        : E.left(dbUser);
 };
 
 export const _getUpdatedUser = reverseTwo(getUpdatedUser);

@@ -8,18 +8,21 @@ import {
 } from 'mongodb';
 import { BaseError, HTTPErrorTypes, HTTPErrorType } from './error';
 import * as TE from 'fp-ts/lib/TaskEither';
+import * as T from 'fp-ts/lib/Task';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { reverseTwo } from './utils/reverseCurried';
 
-// Notice that we don't specify the database string.  In this case,
-// MongoClient.db will default to the db in the connection string
 export const getCollection = <T>(collection: string) => (client: MongoClient) =>
-    client.db().collection<T>(collection);
+    client.db('photon').collection<T>(collection);
 
 export const _getCollection = reverseTwo(getCollection);
 
 export const trySaveOne = <T>(document: OptionalId<T>) => (c: Collection<T>) =>
     TE.tryCatch(
-        () => c.insertOne(document),
+        pipe(
+            () => c.insertOne(document),
+            T.map((writeResult) => writeResult.ops[0])
+        ),
         (reason) => DBWriteError.create(c.collectionName, document, reason)
     );
 
