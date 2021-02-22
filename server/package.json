@@ -13,8 +13,10 @@
         "mongodb": "^3.6.4"
     },
     "scripts": {
-        "start:dev": "NODE_ENV=dev node -r $PWD/configs/preload index.ts",
-        "test": "jest"
+        "start:dev": "NODE_ENV=dev node -r $PWD/configs/preDevRun index.ts",
+        "test": "jest",
+        "testDB:start": "docker run --name photon-test-db -p 27017:27017 -d -v $PWD/configs/testDB/config:/etc/mongo -v$PWD/configs/testDB/data:/data/db mongo:4.4-bionic",
+        "testDB:stop": "docker stop photon-test-db"
     },
     "devDependencies": {
         "@types/axios": "^0.14.0",
