@@ -169,3 +169,6 @@ sketch
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/react,vscode,yarn,linux,node
+
+### files for test used in database ###
+server/configs/testDB/data/*

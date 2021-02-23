@@ -11,6 +11,7 @@ import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import bodyParser from 'body-parser';
 import axios from 'axios';
+import { IUser } from './modules/User';
 // initialize needed objects
 const app = express();
 const grantMiddleWare = grant.express();
@@ -23,7 +24,7 @@ declare module 'express-session' {
             response: GrantResponse;
         };
 
-        views: number;
+        user?: IUser;
     }
 }
 
