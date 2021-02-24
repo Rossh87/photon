@@ -5,14 +5,12 @@ import { IAsyncDeps } from '../../../core/asyncDeps';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/pipeable';
 
-export const googleOAuthController = (deps: IAsyncDeps): RequestHandler => (
-    req,
-    res,
-    next
-) => {
+export const googleOAuthController = (
+    deps: IAsyncDeps
+): RequestHandler => async (req, res, next) => {
     const runner = runEffects(req, res, next);
 
-    pipe(
+    await pipe(
         handleGoogleOAuthCallback(req)(deps),
         TE.map(runner),
         TE.mapLeft(runner)

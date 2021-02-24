@@ -1,22 +1,27 @@
-import { runEffects } from './expressEffects';
-import { TEffectList } from './expressEffects';
+import { NextFunction, Request, Response } from 'express';
+import { runEffects, TWithExpressEffects } from './expressEffects';
 import { expectEqual } from './utils/testUtils';
 
 describe('runEffects function', () => {
     it('executes its input functions with correct args', () => {
-        const req = {} as any;
+        const req = ({
+            session: {},
+        } as unknown) as Request;
         const res = ({
             send: jest.fn(),
-        } as unknown) as any;
+        } as unknown) as Response;
+        const next = jest.fn() as NextFunction;
 
         const effects = [
-            (a: any) => (a.function1 = 1),
+            (a: any) => (a.session.user = 1),
             (a: any, b: any) => b.send('data'),
         ];
 
-        runEffects(req, res)(effects as TEffectList);
+        const effectList: TWithExpressEffects<string> = ['irrelevant', effects];
 
-        expectEqual(req.function1)(1);
+        runEffects(req, res, next)(effectList);
+
+        expectEqual(req.session.user)(1);
         expect(res.send).toHaveBeenCalledWith('data');
     });
 });

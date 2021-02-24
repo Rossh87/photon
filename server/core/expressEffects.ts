@@ -44,9 +44,11 @@ export const runEffects = <T>(
 export const setSessionEffect = (u: IUser): TExpressEffect => (
     req: Request,
     res: Response
-) => (req.session.user = u);
+) => {
+    req.session.user = u;
+};
 
-export const rootRedirectEffect = (): TExpressEffect => (
+export const rootRedirectEffect: TExpressEffect = (
     req: Request,
     res: Response
 ) => res.redirect('/');
