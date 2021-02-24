@@ -48,6 +48,11 @@ export const setSessionEffect = (u: IUser): TExpressEffect => (
     req.session.user = u;
 };
 
+export const destroySessionEffect: TExpressEffect = (req, res) =>
+    req.session.destroy((e) => {
+        throw new Error(e);
+    });
+
 export const rootRedirectEffect: TExpressEffect = (
     req: Request,
     res: Response

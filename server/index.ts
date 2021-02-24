@@ -12,6 +12,13 @@ import grantConfig from './configs/grantConfig';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import { IUser } from './modules/User';
+import { IAsyncDeps } from './core/asyncDeps';
+import { MongoClient } from 'mongodb';
+import { TEST_DB_URI } from './CONSTANTS';
+
+// routes
+import { authRoutes } from './modules/auth/routes';
+
 // initialize needed objects
 const app = express();
 const grantMiddleWare = grant.express();
@@ -28,14 +35,17 @@ declare module 'express-session' {
     }
 }
 
-function run() {
+//
+
+async function run() {
     const sessionSecret = process.env.SESSION_SECRET;
-    let PORT = process.env.PORT ? process.env.PORT : 3000;
+    const PORT = process.env.PORT ? process.env.PORT : 3000;
 
     if (sessionSecret === undefined) {
         throw new Error('Missing session secret: unable to initialize server');
     }
 
+    // setup middlewares
     app.use(
         session({
             secret: sessionSecret,
@@ -48,30 +58,20 @@ function run() {
 
     app.use(grantMiddleWare(grantConfig));
 
+    const repoClient = await MongoClient.connect(TEST_DB_URI, {
+        useUnifiedTopology: true,
+    });
+
+    const asyncDeps: IAsyncDeps = {
+        fetcher: axios,
+        repoClient,
+    };
+
     app.get('/', (req, res) => {
-        res.end('welcome home!');
+        req.session.user ? res.json(req.session.user) : res.end('no user');
     });
 
-    app.get('/auth/google/callback', async (req, res) => {
-        console.log(req.session.grant);
-
-        const token = req.session.grant?.response.access_token;
-
-        if (!token) {
-            res.end('no token');
-        }
-        const axiosConfig = {
-            headers: {
-                Authorization: 'Bearer ' + token,
-            },
-        };
-
-        const peopleURL =
-            'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses';
-
-        const resp = await axios.get(peopleURL, axiosConfig);
-        res.json(resp.data);
-    });
+    app.use('/auth/', authRoutes(asyncDeps));
 
     app.listen(process.env.PORT || 3000, () => {
         console.log(`listening on ${PORT}`);
