@@ -1,8 +1,4 @@
-import { IUser, IDBUser, IAuthorizedUserResponse } from '../sharedUserTypes';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { isNonEmptyArray } from '../../../core/utils/isNonEmptyArray';
-import { reverseTwo } from '../../../core/utils/reverseCurried';
-import * as E from 'fp-ts/lib/Either';
+import { IDBUser, IAuthorizedUserResponse } from '../sharedUserTypes';
 
 export const formatUserForClient: (u: IDBUser) => IAuthorizedUserResponse = (
     u

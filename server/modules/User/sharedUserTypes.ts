@@ -15,8 +15,10 @@ export interface IUser extends Record<string, any> {
     preferredVerified?: boolean;
 }
 
+// type of User docs retrieved from database
 export interface IDBUser extends WithId<IUser> {}
 
+// type for data shape that will be sent to client on authorization
 export interface IAuthorizedUserResponse extends Record<string, any> {
     OAuthProviderName: TOAuthProvider;
     _id: string;
