@@ -12,6 +12,7 @@ import { googleOAuthController } from './googleOAuthController';
 import { MissingOAuthTokenErr } from '../helpers/extractOAuthToken';
 import { dropCollections } from '../../../core/utils/testUtils';
 import { GoogleDataRequestErr } from '../helpers/googleDataRequestor';
+import { CLIENT_ROOT } from '../../../CONSTANTS';
 
 let repoClient: MongoClient;
 let googleResponse = Object.assign({}, mockGoogleOAuthResponse);
@@ -65,7 +66,7 @@ describe('google OAuth callback controller', () => {
         await googleOAuthController(deps)(req, res, next);
 
         expect(req.session.user).toMatchObject(mockUserFromGoogleResponse);
-        expect(res.redirect).toHaveBeenCalledWith('/');
+        expect(res.redirect).toHaveBeenCalledWith(CLIENT_ROOT);
     });
 
     it('calls "next" with the appropriate error (part 1)', async () => {
