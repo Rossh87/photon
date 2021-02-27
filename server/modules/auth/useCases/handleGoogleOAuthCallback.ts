@@ -3,7 +3,6 @@ import { flow, pipe } from 'fp-ts/lib/function';
 import {
     extractOAuthToken,
     googleDataRequestor,
-    TGoogleOAuthRequestor,
     GoogleNormalizationError,
     normalizeGoogleResponse,
     TGoogleNormalizerResult,
@@ -22,7 +21,7 @@ import {
     addAndApplyEffect,
     toErrHandlerEffect,
 } from '../../../core/expressEffects';
-import { IUser } from '../../User';
+import { IUser } from '../../User/sharedUserTypes';
 
 // extracted from the main function b/c the types are obnoxious
 const normalizeResponse = flow<

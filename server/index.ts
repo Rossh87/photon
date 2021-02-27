@@ -11,7 +11,7 @@ import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import bodyParser from 'body-parser';
 import axios from 'axios';
-import { IUser } from './modules/User';
+import { IUser } from './modules/User/sharedUserTypes';
 import { IAsyncDeps } from './core/asyncDeps';
 import { MongoClient } from 'mongodb';
 import { TEST_DB_URI } from './CONSTANTS';

@@ -1,4 +1,4 @@
-import { IUser } from '..';
+import { IUser } from '../sharedUserTypes';
 import { MongoClient, FilterQuery, UpdateQuery } from 'mongodb';
 import { getCollection, DBError, tryUpdateOne } from '../../../core/repo';
 import * as TE from 'fp-ts/lib/TaskEither';

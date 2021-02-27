@@ -1,6 +1,6 @@
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
-import { DBUser, IUser } from '../../User';
-import { ObjectId, WithId } from 'mongodb';
+import { IDBUser, IUser } from '../../User/sharedUserTypes';
+import { ObjectId } from 'mongodb';
 
 export const mockGoogleOAuthResponse: IGoogleOAuthResponse = {
     resourceName: 'resourceName/123456',
@@ -62,7 +62,7 @@ export const mockUserFromGoogleResponse: IUser = {
 
 const mockId = ObjectId.createFromTime(Date.now());
 
-export const mockUserFromDatabase: DBUser = {
+export const mockUserFromDatabase: IDBUser = {
     _id: mockId,
     OAuthProviderName: 'google',
     OAuthProviderID: '123456',

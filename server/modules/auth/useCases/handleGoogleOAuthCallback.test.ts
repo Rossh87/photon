@@ -8,7 +8,7 @@ import {
     mockUserFromGoogleResponse,
 } from '../helpers/mockData';
 import { IFetcher } from '../../../core/fetcher';
-import { IUser } from '../../User';
+import { IUser } from '../../User/sharedUserTypes';
 import { Request } from 'express';
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
 import { normalizeGoogleResponse } from '../helpers';

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { IUser } from '../modules/User';
+import { IUser } from '../modules/User/sharedUserTypes';
 import { reverseTwo } from './utils/reverseCurried';
 
 export type TExpressEffectList = Array<TExpressEffect>;
