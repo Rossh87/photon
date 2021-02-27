@@ -1,6 +1,10 @@
 import { Router } from 'express';
-import { googleOAuthController } from '../controllers/googleOAuthController';
-import { logoutController } from '../controllers/logoutController';
+import {
+    googleOAuthController,
+    logoutController,
+    authGate,
+    authorizeClientController,
+} from '../controllers';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 
 const router = Router();
@@ -9,6 +13,8 @@ export const authRoutes = (deps: IAsyncDeps): Router => {
     router.get('/google/callback', googleOAuthController(deps));
 
     router.get('/logout', logoutController);
+
+    router.get('/login', authGate, authorizeClientController);
 
     return router;
 };
