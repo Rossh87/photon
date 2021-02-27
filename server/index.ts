@@ -15,6 +15,7 @@ import { IUser } from './modules/User';
 import { IAsyncDeps } from './core/asyncDeps';
 import { MongoClient } from 'mongodb';
 import { TEST_DB_URI } from './CONSTANTS';
+import cors from 'cors';
 
 // routes
 import { authRoutes } from './modules/auth/routes';
@@ -54,6 +55,12 @@ async function run() {
         })
     );
 
+    app.use(
+        cors({
+            origin: 'http://localhost:3000',
+            credentials: true,
+        })
+    );
     app.use(bodyParser.urlencoded({ extended: false }));
 
     app.use(grantMiddleWare(grantConfig));

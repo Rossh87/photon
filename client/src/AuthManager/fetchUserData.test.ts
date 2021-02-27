@@ -1,49 +1,50 @@
 import { _fetchUserData } from './fetchUserData';
-import { AUTH_API_ENDPOINT } from '../../CONSTANTS';
 import { AxiosInstance } from 'axios';
-import * as TE from 'fp-ts/lib/TaskEither';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { AuthError } from './AuthErrors';
+import { IUser, TAuthActions } from './authTypes';
 
 describe('user data fetching functiong', () => {
-    it('invokes fetch library with correct URL', async () => {
-        const mockAxios = ({
-            get: jest.fn(() => Promise.resolve({ data: 'someData' })),
-        } as unknown) as AxiosInstance;
-
-        await _fetchUserData(mockAxios)();
-
-        expect(mockAxios.get).toHaveBeenCalledWith(AUTH_API_ENDPOINT);
-    });
-
-    it('extracts user data from response', async () => {
-        const mockUser = {
+    it('dispatches correct actions for success', async () => {
+        const actions: TAuthActions[] = [];
+        const user = {
             name: 'tim',
-            age: 22,
+            age: 20,
         };
-
+        const dispatch = (action: any) => actions.push(action);
         const mockAxios = ({
-            get: jest.fn(() => Promise.resolve({ data: mockUser })),
+            get: jest.fn(() => Promise.resolve({ data: user })),
         } as unknown) as AxiosInstance;
 
-        await pipe(
-            _fetchUserData(mockAxios),
-            TE.map((usr) => expect(usr).toEqual(mockUser))
-        )();
+        const expected: TAuthActions[] = [
+            { type: 'AUTH_REQUEST_INITIATED', data: null },
+            {
+                type: 'ADD_USER',
+                data: (user as unknown) as IUser,
+            },
+        ];
+
+        await _fetchUserData(mockAxios)(dispatch)();
+
+        expect(actions.length).toBe(2);
+        actions.forEach((action, i) => expect(action).toEqual(expected[i]));
     });
 
-    it('handles request failure with correct error', async () => {
+    it('dispatches correct error on request failure', async () => {
         const failureReason = 'failure';
 
         const mockAxios = ({
             get: jest.fn(() => Promise.reject(failureReason)),
         } as unknown) as AxiosInstance;
 
-        const expectedErr = AuthError.create(failureReason);
+        const expectedAction: TAuthActions = {
+            type: 'ADD_AUTH_ERR',
+            data: AuthError.create(failureReason),
+        };
 
-        await pipe(
-            _fetchUserData(mockAxios),
-            TE.mapLeft((e) => expect(e).toEqual(expectedErr))
-        )();
+        const dispatch = jest.fn();
+
+        await _fetchUserData(mockAxios)(dispatch)();
+
+        expect(dispatch).toHaveBeenNthCalledWith(2, expectedAction);
     });
 });

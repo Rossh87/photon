@@ -10,5 +10,8 @@
   "workspaces": [
     "client",
     "server"
-  ]
+  ],
+  "dependencies": {
+    "create-react-app": "^4.0.3"
+  }
 }
