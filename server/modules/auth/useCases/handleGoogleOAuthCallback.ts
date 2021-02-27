@@ -15,7 +15,7 @@ import * as R from 'fp-ts/lib/Reader';
 import { IAsyncDeps, getRepo, getFetcher } from '../../../core/asyncDeps';
 import {
     setSessionEffect,
-    rootRedirectEffect,
+    clientRootRedirectEffect,
     toEffects,
     addEffect,
     addAndApplyEffect,
@@ -33,7 +33,7 @@ const normalizeResponse = flow<
 const oAuthSuccessEffects = flow(
     toEffects,
     addAndApplyEffect(setSessionEffect),
-    addEffect(rootRedirectEffect)
+    addEffect(clientRootRedirectEffect)
 );
 
 const oAuthFailureEffects = flow(

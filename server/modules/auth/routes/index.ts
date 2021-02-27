@@ -14,7 +14,7 @@ export const authRoutes = (deps: IAsyncDeps): Router => {
 
     router.get('/logout', logoutController);
 
-    router.get('/login', authGate, authorizeClientController);
+    router.get('/user', authGate, authorizeClientController);
 
     return router;
 };

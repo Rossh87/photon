@@ -23,7 +23,7 @@ describe('user data fetching functiong', () => {
             },
         ];
 
-        await _fetchUserData(mockAxios)(dispatch)();
+        await _fetchUserData(mockAxios)(dispatch);
 
         expect(actions.length).toBe(2);
         actions.forEach((action, i) => expect(action).toEqual(expected[i]));
@@ -43,7 +43,7 @@ describe('user data fetching functiong', () => {
 
         const dispatch = jest.fn();
 
-        await _fetchUserData(mockAxios)(dispatch)();
+        await _fetchUserData(mockAxios)(dispatch);
 
         expect(dispatch).toHaveBeenNthCalledWith(2, expectedAction);
     });

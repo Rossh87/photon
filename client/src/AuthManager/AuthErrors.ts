@@ -1,4 +1,3 @@
-import { extend } from 'fp-ts/lib/Option';
 import { BaseError } from '../core/error';
 
 export class AuthError extends BaseError {

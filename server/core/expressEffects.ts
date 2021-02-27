@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { IUser } from '../modules/User/sharedUserTypes';
 import { reverseTwo } from './utils/reverseCurried';
+import { CLIENT_ROOT } from '../CONSTANTS';
 
 export type TExpressEffectList = Array<TExpressEffect>;
 
@@ -53,10 +54,10 @@ export const destroySessionEffect: TExpressEffect = (req, res) =>
         throw new Error(e);
     });
 
-export const rootRedirectEffect: TExpressEffect = (
+export const clientRootRedirectEffect: TExpressEffect = (
     req: Request,
     res: Response
-) => res.redirect('/');
+) => res.redirect(CLIENT_ROOT);
 
 export const toErrHandlerEffect = <T extends Error>(e: T): TExpressEffect => (
     req: Request,

@@ -7,7 +7,7 @@ const AuthManager: React.FunctionComponent = (props) => {
     const [state, dispatch] = useReducer(authReducer, defaultState);
 
     useEffect(() => {
-        fetchUserData(dispatch)();
+        fetchUserData(dispatch);
     }, []);
 
     return (

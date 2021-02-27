@@ -2,12 +2,12 @@ import { AuthError } from './AuthErrors';
 
 export interface IUser {
     OAuthProviderName: string;
-    localAppID: string;
+    _id: string;
     thumbnailURL: string;
     displayName: string;
     familyName: string;
     givenName: string;
-    emailAddress: boolean;
+    emailAddress: string;
 }
 
 export type TUserState = IUser | null;

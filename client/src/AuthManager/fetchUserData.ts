@@ -29,16 +29,17 @@ const onSuccess = (dispatch: Dispatch<TAuthActions>) => (user: IUser) =>
 const onFailure = (dispatch: Dispatch<TAuthActions>) => (e: AuthError) =>
     dispatch({ type: 'ADD_AUTH_ERR', data: e });
 
-export const _fetchUserData = (fetcher: AxiosInstance) => (
+export const _fetchUserData = (fetcher: AxiosInstance) => async (
     dispatch: Dispatch<TAuthActions>
 ) => {
     initRequest(dispatch);
-    return pipe(
+
+    return await pipe(
         attemptToFetchUserData(fetcher),
         extractUserData,
         TE.map(onSuccess(dispatch)),
         TE.mapLeft(onFailure(dispatch))
-    );
+    )();
 };
 
 export const fetchUserData = _fetchUserData(axios);

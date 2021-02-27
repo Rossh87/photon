@@ -9,7 +9,10 @@ interface IProps {
 const Landing: React.FunctionComponent<IProps> = ({user}) => {
     const data = JSON.stringify(user)
     return(
-        <Container maxWidth='md'>'authorized!: '{data}</Container>
+        <Container maxWidth='md'>
+            <h1>here's your fucking data:</h1>
+            <p>{data}</p>
+        </Container>
     )
 };
 
