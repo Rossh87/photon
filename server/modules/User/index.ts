@@ -2,25 +2,33 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { reverseTwo } from '../../core/utils/reverseCurried';
 import { isNonEmptyArray } from '../../core/utils/isNonEmptyArray';
 import * as E from 'fp-ts/lib/Either';
-import { ObjectID } from 'mongodb';
+import { ObjectID, WithId } from 'mongodb';
 
 type TOAuthProvider = 'google';
 
-export interface IUser {
+export interface IUser extends Record<string, any> {
     OAuthProviderName: TOAuthProvider;
-    // we specify for possible future need
     OAuthProviderID: string;
-    localAppID?: string;
     thumbnailURL: string;
     displayName: string;
     familyName: string;
     givenName: string;
     OAuthEmail: string;
     OAuthEmailVerified: boolean;
-    // local option for user to specify different email
     preferredEmail?: string;
     preferredVerified?: boolean;
-    _id?: ObjectID;
+}
+
+export interface DBUser extends WithId<IUser> {}
+
+export interface IAuthorizedUserResponse extends Record<string, any> {
+    OAuthProviderName: TOAuthProvider;
+    _id: string;
+    thumbnailURL: string;
+    displayName: string;
+    familyName: string;
+    givenName: string;
+    emailAddress: string;
 }
 
 export type TChangeableUserProps =
@@ -34,7 +42,7 @@ export type TChangeableUserProps =
 
 type TPropTuple = [keyof IUser, string | boolean];
 
-export const getUpdatedUser = (dbUser: IUser) => (resUser: IUser) => {
+export const getUpdatedUser = (dbUser: DBUser) => (resUser: IUser) => {
     const maybeChanged: Array<TChangeableUserProps> = [
         'thumbnailURL',
         'thumbnailURL',
@@ -73,4 +81,33 @@ export const getUpdatedUser = (dbUser: IUser) => (resUser: IUser) => {
 
 export const _getUpdatedUser = reverseTwo(getUpdatedUser);
 
-export const getUserOAuthID = (u: IUser) => u.OAuthProviderID;
+export const getUserOAuthID = (u: IUser | DBUser) => u.OAuthProviderID;
+
+export const toResponseUser: (u: DBUser) => IAuthorizedUserResponse = (u) => {
+    const chosenKeys: Array<keyof IUser> = [
+        'OAuthProviderName',
+        'thumbnailURL',
+        'displayName',
+        'familyName',
+        'givenName',
+    ];
+
+    const response: IAuthorizedUserResponse = chosenKeys.reduce<IAuthorizedUserResponse>(
+        (res, key) => {
+            res[key] = u[key];
+            return res;
+        },
+        {} as IAuthorizedUserResponse
+    );
+
+    // need to set emailAddress from preferredEmail or OAuthEmail b/c
+    // name of these props changes from client side to server side type
+    const email = u.preferredEmail ? u.preferredEmail : u.OAuthEmail;
+    response.emailAddress = email;
+
+    // stringify user's object ID for client use
+    const _id = u._id.toHexString();
+    response._id = _id;
+
+    return response;
+};

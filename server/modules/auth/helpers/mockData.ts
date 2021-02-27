@@ -1,5 +1,6 @@
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
-import { IUser } from '../../User';
+import { DBUser, IUser } from '../../User';
+import { ObjectId, WithId } from 'mongodb';
 
 export const mockGoogleOAuthResponse: IGoogleOAuthResponse = {
     resourceName: 'resourceName/123456',
@@ -49,6 +50,20 @@ export const mockGoogleOAuthResponse: IGoogleOAuthResponse = {
 };
 
 export const mockUserFromGoogleResponse: IUser = {
+    OAuthProviderName: 'google',
+    OAuthProviderID: '123456',
+    thumbnailURL: 'https://myphotos@myphotos.com',
+    displayName: 'Tim123',
+    familyName: 'Roosevelt',
+    givenName: 'Tim',
+    OAuthEmail: 'tim@gmail.com',
+    OAuthEmailVerified: true,
+};
+
+const mockId = ObjectId.createFromTime(Date.now());
+
+export const mockUserFromDatabase: DBUser = {
+    _id: mockId,
     OAuthProviderName: 'google',
     OAuthProviderID: '123456',
     thumbnailURL: 'https://myphotos@myphotos.com',

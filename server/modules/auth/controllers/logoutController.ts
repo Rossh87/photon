@@ -19,7 +19,6 @@ export class LogoutFailureError extends BaseError {
         return new LogoutFailureError(devMessage, e);
     }
     constructor(devMessage: string, e: any) {
-        console.log(e);
         super(devMessage, HTTPErrorTypes.INTERNAL_SERVER_ERROR, e);
     }
 }
