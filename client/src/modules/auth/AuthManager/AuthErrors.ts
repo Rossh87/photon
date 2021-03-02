@@ -1,4 +1,4 @@
-import { BaseError } from '../core/error';
+import { BaseError } from '../../../core/error';
 
 export class AuthError extends BaseError {
     public static create(e: any) {

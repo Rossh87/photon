@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AuthManager from './AuthManager'
+import AuthManager from './modules/auth/AuthManager'
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(

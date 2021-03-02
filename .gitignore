@@ -172,3 +172,6 @@ sketch
 
 ### files for test used in database ###
 server/configs/testDB/data/*
+
+### saved images for testing ###
+client/src/testImages/

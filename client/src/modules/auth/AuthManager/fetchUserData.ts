@@ -2,9 +2,9 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { IUser, TAuthActions } from './authTypes';
-import { IDispatcher } from '../core/sharedTypes';
+import { IDispatcher } from '../../../core/sharedTypes';
 import { AuthError } from './AuthErrors';
-import { AUTH_API_ENDPOINT } from '../CONSTANTS';
+import { AUTH_API_ENDPOINT } from '../../../CONSTANTS';
 import { Dispatch } from 'react';
 
 const attemptToFetchUserData = (
