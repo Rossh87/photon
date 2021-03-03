@@ -8,23 +8,10 @@ import {
 } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Hidden from '@material-ui/core/Hidden';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import Navigator from './Navigator';
 import Content from './Content';
 import Header from './Header';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}.
-    </Typography>
-  );
-}
+import { constFalse } from 'fp-ts/lib/function';
 
 let theme = createMuiTheme({
   palette: {
@@ -44,11 +31,9 @@ let theme = createMuiTheme({
   shape: {
     borderRadius: 8,
   },
-  components: {
+  props: {
     MuiTab: {
-      defaultProps: {
-        disableRipple: true,
-      },
+        disableRipple: false,
     },
   },
   mixins: {
@@ -60,16 +45,13 @@ let theme = createMuiTheme({
 
 theme = {
   ...theme,
-  components: {
+  overrides: {
     MuiDrawer: {
-      styleOverrides: {
         paper: {
           backgroundColor: '#18202c',
-        },
       },
     },
     MuiButton: {
-      styleOverrides: {
         label: {
           textTransform: 'none',
         },
@@ -79,10 +61,8 @@ theme = {
             boxShadow: 'none',
           },
         },
-      },
     },
     MuiTabs: {
-      styleOverrides: {
         root: {
           marginLeft: theme.spacing(1),
         },
@@ -92,10 +72,8 @@ theme = {
           borderTopRightRadius: 3,
           backgroundColor: theme.palette.common.white,
         },
-      },
     },
     MuiTab: {
-      styleOverrides: {
         root: {
           textTransform: 'none',
           margin: '0 16px',
@@ -106,38 +84,28 @@ theme = {
             minWidth: 0,
           },
         },
-      },
     },
     MuiIconButton: {
-      styleOverrides: {
         root: {
           padding: theme.spacing(1),
         },
-      },
     },
     MuiTooltip: {
-      styleOverrides: {
         tooltip: {
           borderRadius: 4,
         },
-      },
     },
     MuiDivider: {
-      styleOverrides: {
         root: {
           backgroundColor: '#404854',
         },
-      },
     },
     MuiListItemText: {
-      styleOverrides: {
         primary: {
           fontWeight: theme.typography.fontWeightMedium,
         },
-      },
     },
     MuiListItemIcon: {
-      styleOverrides: {
         root: {
           color: 'inherit',
           marginRight: 0,
@@ -145,15 +113,12 @@ theme = {
             fontSize: 20,
           },
         },
-      },
     },
     MuiAvatar: {
-      styleOverrides: {
         root: {
           width: 32,
           height: 32,
         },
-      },
     },
   },
 };
@@ -220,7 +185,6 @@ function Paperbase(props: PaperbaseProps) {
             <Content />
           </main>
           <footer className={classes.footer}>
-            <Copyright />
           </footer>
         </div>
       </div>
