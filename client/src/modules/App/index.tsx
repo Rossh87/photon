@@ -1,22 +1,16 @@
 import React from 'react';
 import {TUserState, TAuthStatus} from '../auth/AuthManager/authTypes'
 import Landing from '../landing/Landing';
-import Login from '../auth/Login'
-import Loading from '../auth/Loading'
+import AuthManager from '../auth/AuthManager'
+import AuthProvider from '../auth/AuthManager/useAuthState'
 
-interface IProps {
-    user: TUserState
-    status: TAuthStatus
-}
-
-const App: React.FunctionComponent<IProps> = ({user, status}) => {
-    const renderChild: (u: TUserState) => React.ReactElement = (u) => u ? <Landing user={u} /> : <Login />
-
+const App: React.FunctionComponent = (props) => {
     return(
-        <React.Fragment>
-            <Loading status={status} />
-            {renderChild(user)}
-        </React.Fragment>
+        <AuthProvider>
+            <AuthManager>
+                <Landing></Landing>
+            </AuthManager>
+        </AuthProvider>
     )
 }
 

@@ -1,17 +1,19 @@
 import React, { useEffect, useReducer } from 'react';
 import App from '../../App';
 import { fetchUserData } from './fetchUserData';
-import { authReducer, defaultState } from './authState';
+import AuthProvider, {useAuthDispatch, useAuthState} from './useAuthState';
 
-const AuthManager: React.FunctionComponent = (props) => {
-    const [state, dispatch] = useReducer(authReducer, defaultState);
+const AuthManager: React.FunctionComponent = ({children}) => {
+    const authDispatch = useAuthDispatch();
 
     useEffect(() => {
-        fetchUserData(dispatch);
+        fetchUserData(authDispatch);
     }, []);
 
     return (
-        <App user={state.user} status={state.status} />
+        <div>
+            {children}
+        </div>
     )
 };
 

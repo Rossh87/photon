@@ -5,7 +5,7 @@ import {
     bytesToHumanReadableSize,
 } from './preprocessFiles';
 import {
-    IPreprocessedFiles,
+    TPreprocessedFiles,
     IUploadReaderDependencies,
     IProcessedFile,
 } from './uploadTypes';
@@ -50,7 +50,7 @@ describe('file preprocessing processing fn', () => {
 
         const result = preprocessFiles(fileList)(deps);
 
-        const expectation = (res: IPreprocessedFiles) =>
+        const expectation = (res: TPreprocessedFiles) =>
             expect(res[0]).toMatchObject(expected);
 
         pipe(result, Emap(expectation));

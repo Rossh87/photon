@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AuthManager from './modules/auth/AuthManager'
+import App from './modules/App'
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <AuthManager />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -20,24 +20,20 @@ export interface IProcessedFile extends File {
     ownerID: string;
 }
 
-export type IPreprocessedFiles = Array<IProcessedFile>;
+export type TPreprocessedFiles = NonEmptyArray<IProcessedFile>;
 
 export type TPreprocessError = NonEmptyArray<string>;
 
 export type TPreprocessErrors = NonEmptyArray<string>;
 
-export type TPreProcessResult = E.Either<TPreprocessErrors, IPreprocessedFiles>;
+export type TPreProcessResult = E.Either<TPreprocessErrors, TPreprocessedFiles>;
 
-export interface IFileWithID extends File {
-    owner: string;
-}
+export type TImageUploadErrorState = NonEmptyArray<string>;
 
 export interface IImageUploadState {
     status: TImageUploadStateStatus;
-    fileSelectionErrors: null | Array<BaseError>;
-    fileUploadErrors: null | Array<BaseError>;
-    rawFiles: FileList | null;
-    processedFiles: IPreprocessedFiles;
+    selectedFiles: TPreprocessedFiles | [];
+    errors: TImageUploadErrorState | [];
 }
 
 export interface IFileAction<T> {
@@ -45,7 +41,7 @@ export interface IFileAction<T> {
     data: T;
 }
 
-export interface IFilesSelectedAction extends IFileAction<FileList> {
+export interface IFilesSelectedAction extends IFileAction<TPreprocessedFiles> {
     type: 'FILES_SELECTED';
 }
 
@@ -53,7 +49,8 @@ export interface IUnselectFileAction extends IFileAction<string> {
     type: 'UNSELECT_FILE';
 }
 
-export interface IInvalidFileSelectionAction extends IFileAction<BaseError> {
+export interface IInvalidFileSelectionAction
+    extends IFileAction<TImageUploadErrorState> {
     type: 'INVALID_FILE_SELECTION';
 }
 
@@ -63,7 +60,5 @@ export type TFileActions =
     | IInvalidFileSelectionAction;
 
 export interface IUploadReaderDependencies {
-    file: File;
     ownerID: string;
-    fetcher: IFetcher;
 }
