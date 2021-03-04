@@ -1,14 +1,14 @@
 import {
-    preprocessFiles,
-    generateFileSizeErr,
-    generateEmptyFileListErr,
-    bytesToHumanReadableSize,
+	preprocessFiles,
+	generateFileSizeErr,
+	generateEmptyFileListErr,
+	bytesToHumanReadableSize,
 } from './preprocessFiles';
 import {
-    TPreprocessedFiles,
-    TPreprocessErrors,
-    IUploadReaderDependencies,
-    IProcessedFile,
+	TPreprocessedFiles,
+	TPreprocessErrors,
+	IUploadReaderDependencies,
+	IProcessedFile,
 } from './uploadTypes';
 import { createMockFileList } from '../../../core/utils/testUtils';
 import { map as Emap, mapLeft as EmapLeft } from 'fp-ts/lib/Either';
@@ -18,122 +18,118 @@ import { BASE_IMAGE_UPLOAD_PATH } from '../../../CONSTANTS';
 import { getOversizeImage } from '../../../testImages/imageUtils';
 import { UploadError } from './UploadError';
 
-// const bits1 = [new ArrayBuffer(10), new ArrayBuffer(5)];
-// const bits2 = [new ArrayBuffer(100), new ArrayBuffer(22)];
-// const file1 = new File(bits1, 'testFile');
-// const file2 = new File(bits2, 'anotherTestFile');
-
 describe('file preprocessing processing fn', () => {
-    it('correctly populates all paths', () => {
-        const deps = { ownerID: '1234' } as IUploadReaderDependencies;
+	it('correctly populates all paths', () => {
+		const deps = { ownerID: '1234' } as IUploadReaderDependencies;
 
-        const mockFile1 = {
-            name: 'someFile.jpg',
-            body: 'datadatadatadata',
-            mimeType: 'image/jpeg',
-        };
+		const mockFile1 = {
+			name: 'someFile.jpg',
+			body: 'datadatadatadata',
+			mimeType: 'image/jpeg',
+		};
 
-        const fileList = createMockFileList(mockFile1);
+		const fileList = createMockFileList(mockFile1);
 
-        const expectedSize = bytesToHumanReadableSize(fileList[0].size);
+		const expectedSize = bytesToHumanReadableSize(fileList[0].size);
 
-        const expectedPaths = [
-            `${BASE_IMAGE_UPLOAD_PATH}/1234/someFile.jpg/tiny`,
-            `${BASE_IMAGE_UPLOAD_PATH}/1234/someFile.jpg/small`,
-            `${BASE_IMAGE_UPLOAD_PATH}/1234/someFile.jpg/medium`,
-            `${BASE_IMAGE_UPLOAD_PATH}/1234/someFile.jpg/large`,
-        ];
+		const expectedPaths = [
+			`${BASE_IMAGE_UPLOAD_PATH}/1234/someFile.jpg/tiny`,
+			`${BASE_IMAGE_UPLOAD_PATH}/1234/someFile.jpg/small`,
+			`${BASE_IMAGE_UPLOAD_PATH}/1234/someFile.jpg/medium`,
+			`${BASE_IMAGE_UPLOAD_PATH}/1234/someFile.jpg/large`,
+		];
 
-        // we'll only assert on the paths that our function sets
-        const expected: Partial<IProcessedFile> = {
-            uploadPaths: expectedPaths,
-            ownerID: deps.ownerID,
-            humanReadableSize: expectedSize,
-        };
+		// we'll only assert on the paths that our function sets
+		const expected: Partial<IProcessedFile> = {
+			uploadPaths: expectedPaths,
+			ownerID: deps.ownerID,
+			humanReadableSize: expectedSize,
+			displayName: mockFile1.name,
+		};
 
-        const result = preprocessFiles(deps)(fileList);
+		const result = preprocessFiles(deps)(fileList);
 
-        const assertOnSuccesses = (processedFiles: TPreprocessedFiles) =>
-            expect(processedFiles[0]).toMatchObject(expected);
+		const assertOnSuccesses = (processedFiles: TPreprocessedFiles) =>
+			expect(processedFiles[0]).toMatchObject(expected);
 
-        const neverCalled = jest.fn();
+		const neverCalled = jest.fn();
 
-        Tfold<TPreprocessErrors, TPreprocessedFiles, void>(
-            neverCalled,
-            assertOnSuccesses,
-            neverCalled
-        )(result);
-        expect(neverCalled).not.toHaveBeenCalled();
-    });
+		Tfold<TPreprocessErrors, TPreprocessedFiles, void>(
+			neverCalled,
+			assertOnSuccesses,
+			neverCalled
+		)(result);
+		expect(neverCalled).not.toHaveBeenCalled();
+	});
 
-    it('generates an error if file exceeds max file size', () => {
-        // grab a local image that exceeds max file size
-        const buff = getOversizeImage();
+	it('generates an error if file exceeds max file size', () => {
+		// grab a local image that exceeds max file size
+		const buff = getOversizeImage();
 
-        const mockFile1 = {
-            name: 'someFile.jpg',
-            body: buff,
-            mimeType: 'image/jpeg',
-        };
+		const mockFile1 = {
+			name: 'someFile.jpg',
+			body: buff,
+			mimeType: 'image/jpeg',
+		};
 
-        const mockFile2 = {
-            name: 'secondFile.jpg',
-            body: 'datadatadatadata',
-            mimeType: 'image/jpeg',
-        };
+		const mockFile2 = {
+			name: 'secondFile.jpg',
+			body: 'datadatadatadata',
+			mimeType: 'image/jpeg',
+		};
 
-        const fileList = createMockFileList(mockFile1, mockFile2);
+		const fileList = createMockFileList(mockFile1, mockFile2);
 
-        const deps = { ownerID: '1234' } as IUploadReaderDependencies;
+		const deps = { ownerID: '1234' } as IUploadReaderDependencies;
 
-        const result = preprocessFiles(deps)(fileList);
+		const result = preprocessFiles(deps)(fileList);
 
-        const neverCalled = jest.fn();
+		const neverCalled = jest.fn();
 
-        const assertOnSuccesses = (processedFiles: TPreprocessedFiles) =>
-            expect(processedFiles.length).toBe(1);
+		const assertOnSuccesses = (processedFiles: TPreprocessedFiles) =>
+			expect(processedFiles.length).toBe(1);
 
-        const assertOnErrs = (errs: TPreprocessErrors) => {
-            expect(errs[0]).toEqual(
-                generateFileSizeErr((mockFile1 as unknown) as File)
-            );
-        };
+		const assertOnErrs = (errs: TPreprocessErrors) => {
+			expect(errs[0]).toEqual(
+				generateFileSizeErr((mockFile1 as unknown) as File)
+			);
+		};
 
-        const assertOnBoth = (e: TPreprocessErrors, a: TPreprocessedFiles) => {
-            assertOnErrs(e);
-            assertOnSuccesses(a);
-        };
+		const assertOnBoth = (e: TPreprocessErrors, a: TPreprocessedFiles) => {
+			assertOnErrs(e);
+			assertOnSuccesses(a);
+		};
 
-        Tfold<TPreprocessErrors, TPreprocessedFiles, void>(
-            neverCalled,
-            neverCalled,
-            assertOnBoth
-        )(result);
+		Tfold<TPreprocessErrors, TPreprocessedFiles, void>(
+			neverCalled,
+			neverCalled,
+			assertOnBoth
+		)(result);
 
-        expect(neverCalled).not.toHaveBeenCalled();
-    });
+		expect(neverCalled).not.toHaveBeenCalled();
+	});
 
-    it('produces correct err if filelist is empty', () => {
-        const fileList = createMockFileList();
+	it('produces correct err if filelist is empty', () => {
+		const fileList = createMockFileList();
 
-        const deps = { ownerID: '1234' } as IUploadReaderDependencies;
+		const deps = { ownerID: '1234' } as IUploadReaderDependencies;
 
-        const result = preprocessFiles(deps)(fileList);
+		const result = preprocessFiles(deps)(fileList);
 
-        const neverCalled = jest.fn();
+		const neverCalled = jest.fn();
 
-        const assertOnErrs = (errs: TPreprocessErrors) => {
-            expect(errs[0]).toEqual(
-                UploadError.create('at least one file must be selected')
-            );
-        };
+		const assertOnErrs = (errs: TPreprocessErrors) => {
+			expect(errs[0]).toEqual(
+				UploadError.create('at least one file must be selected')
+			);
+		};
 
-        Tfold<TPreprocessErrors, TPreprocessedFiles, void>(
-            assertOnErrs,
-            neverCalled,
-            neverCalled
-        )(result);
+		Tfold<TPreprocessErrors, TPreprocessedFiles, void>(
+			assertOnErrs,
+			neverCalled,
+			neverCalled
+		)(result);
 
-        expect(neverCalled).not.toHaveBeenCalled();
-    });
+		expect(neverCalled).not.toHaveBeenCalled();
+	});
 });
