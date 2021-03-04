@@ -6,7 +6,11 @@ import PaperBase from '../../template/paperbase/Paperbase'
 
 const App: React.FunctionComponent = (props) => {
     return(
-        <PaperBase></PaperBase>
+        <AuthProvider>
+            <AuthManager>
+                <Landing></Landing>
+            </AuthManager>
+        </AuthProvider>
     )
 }
 

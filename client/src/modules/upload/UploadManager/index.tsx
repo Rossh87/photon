@@ -1,10 +1,10 @@
 import React from 'react';
 import {uploadReducer} from './uploadState'
-import {IImageUploadState} from './uploadTypes'
+import {IImageUploadState, IProcessedFile} from './uploadTypes'
 import {preprocessFiles} from './preprocessFiles'
 import UploadForm from '../UploadForm';
 import SelectedFilesDisplay from '../SelectedFilesDisplay'
-import {map as Emap, mapLeft as EmapLeft} from 'fp-ts/lib/Either'
+import {fold as Tfold} from 'fp-ts/lib/These'
 import {pipe} from 'fp-ts/lib/function'
 import { TUserState } from '../../auth/AuthManager/authTypes';
 
@@ -25,6 +25,11 @@ const UploadManager: React.FunctionComponent<IProps> = ({user}) => {
         e.preventDefault();
         console.log('submit!')
     }
+
+    const handleInvalidFileRemoval = (fileName: string) => uploadDispatch({type: 'UNSELECT_INVALID_FILE', data: fileName});
+    const handleValidFileRemoval = (fileName: string) => uploadDispatch({type: 'UNSELECT_VALID_FILE', data: fileName});
+
+    const handleUpdate = (previousName: string, updates: Partial<IProcessedFile>) => uploadDispatch({type: 'UPDATE_FILE', previousName, data: updates})
     
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {files} = e.target;
@@ -32,11 +37,15 @@ const UploadManager: React.FunctionComponent<IProps> = ({user}) => {
 
         if(files && ownerID){
             return pipe(
-                preprocessFiles(files)({ownerID}),
-                Emap(files => {
-                    uploadDispatch({type: 'FILES_SELECTED', data: files});
-                }),
-                EmapLeft(errs => uploadDispatch({type: 'INVALID_FILE_SELECTION', data: errs}))
+                preprocessFiles({ownerID})(files),
+                Tfold(
+                    errs => uploadDispatch({type: 'INVALID_FILE_SELECTIONS', data: errs}),
+                    processedFiles => uploadDispatch({type: 'FILES_SELECTED', data: processedFiles}),
+                    (e, f) => {
+                        uploadDispatch({type: 'INVALID_FILE_SELECTIONS', data: e});
+                        uploadDispatch({type: 'FILES_SELECTED', data: f})
+                    }
+                )
             )
         } else {
             return;
@@ -49,8 +58,8 @@ const UploadManager: React.FunctionComponent<IProps> = ({user}) => {
 
     return(
         <div>
+            <SelectedFilesDisplay uploadState={uploadState} handleInvalidFileRemoval={handleInvalidFileRemoval} handleValidFileRemoval={handleValidFileRemoval} handleUpdate={handleUpdate}/>
             <UploadForm handleFileChange={_handleFileChange} handleSubmit={handleSubmit} acceptedExtensions={acceptedExtensions}/>
-            <SelectedFilesDisplay selectedFiles={uploadState.selectedFiles} />
         </div>
     )
 }

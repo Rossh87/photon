@@ -3,6 +3,7 @@ import { IFetcher } from '../../../core/sharedTypes';
 import * as E from 'fp-ts/lib/Either';
 import { UploadError } from './UploadError';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { These } from 'fp-ts/lib/These';
 
 export type TFilesArray = NonEmptyArray<File>;
 
@@ -22,18 +23,14 @@ export interface IProcessedFile extends File {
 
 export type TPreprocessedFiles = NonEmptyArray<IProcessedFile>;
 
-export type TPreprocessError = NonEmptyArray<string>;
+export type TPreprocessErrors = NonEmptyArray<UploadError>;
 
-export type TPreprocessErrors = NonEmptyArray<string>;
-
-export type TPreProcessResult = E.Either<TPreprocessErrors, TPreprocessedFiles>;
-
-export type TImageUploadErrorState = NonEmptyArray<string>;
+export type TPreProcessResult = These<TPreprocessErrors, TPreprocessedFiles>;
 
 export interface IImageUploadState {
     status: TImageUploadStateStatus;
     selectedFiles: TPreprocessedFiles | [];
-    errors: TImageUploadErrorState | [];
+    errors: TPreprocessErrors | [];
 }
 
 export interface IFileAction<T> {
@@ -45,19 +42,31 @@ export interface IFilesSelectedAction extends IFileAction<TPreprocessedFiles> {
     type: 'FILES_SELECTED';
 }
 
-export interface IUnselectFileAction extends IFileAction<string> {
-    type: 'UNSELECT_FILE';
+export interface IUnselectInvalidFileAction extends IFileAction<string> {
+    type: 'UNSELECT_INVALID_FILE';
+}
+
+export interface IUnselectValidFileAction extends IFileAction<string> {
+    type: 'UNSELECT_VALID_FILE';
 }
 
 export interface IInvalidFileSelectionAction
-    extends IFileAction<TImageUploadErrorState> {
-    type: 'INVALID_FILE_SELECTION';
+    extends IFileAction<TPreprocessErrors> {
+    type: 'INVALID_FILE_SELECTIONS';
+}
+
+export interface IUpdateFileAction
+    extends IFileAction<Partial<IProcessedFile>> {
+    type: 'UPDATE_FILE';
+    previousName: string;
 }
 
 export type TFileActions =
     | IFilesSelectedAction
-    | IUnselectFileAction
-    | IInvalidFileSelectionAction;
+    | IUnselectValidFileAction
+    | IUnselectInvalidFileAction
+    | IInvalidFileSelectionAction
+    | IUpdateFileAction;
 
 export interface IUploadReaderDependencies {
     ownerID: string;
