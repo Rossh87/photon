@@ -18,6 +18,7 @@ interface IDisplayProps {
     handleUpdate: (p: string, u: Partial<IProcessedFile>) => void;
 }
 
+// TODO: passing of error message to list item component through a null prop isn't great...
 const SelectedFilesDisplay: React.FunctionComponent<IDisplayProps> = ({uploadState, handleValidFileRemoval,handleInvalidFileRemoval, handleUpdate}) => {
 
     const generateValidFileItems = (files: TPreprocessedFiles) => files.map(f => (
@@ -27,6 +28,7 @@ const SelectedFilesDisplay: React.FunctionComponent<IDisplayProps> = ({uploadSta
             handleRemoval={handleValidFileRemoval.bind(null, f.name)} 
             handleUpdate={handleUpdate} 
             key={f.name}
+            secondaryText={null}
         />
     ));
 
@@ -37,9 +39,10 @@ const SelectedFilesDisplay: React.FunctionComponent<IDisplayProps> = ({uploadSta
             isValid={false}
             file={e.invalidFile} 
             handleRemoval={handleInvalidFileRemoval.bind(null, e.invalidFile.name)} 
-            handleUpdate={handleUpdate}>
+            handleUpdate={handleUpdate}
             key={e.invalidFile.name}
-        </FileListItem>
+            secondaryText={e.message}
+        />
             
     ) : null)
 
@@ -56,13 +59,14 @@ const SelectedFilesDisplay: React.FunctionComponent<IDisplayProps> = ({uploadSta
 }
 
 interface IItemProps {
-    isValid: boolean,
-    file: IProcessedFile,
-    handleRemoval: () => void
-    handleUpdate: (p: string, u: Partial<IProcessedFile>) => void
+    isValid: boolean;
+    file: IProcessedFile;
+    handleRemoval: () => void;
+    handleUpdate: (p: string, u: Partial<IProcessedFile>) => void;
+    secondaryText: string | null
 }
 
-const FileListItem: React.FunctionComponent<IItemProps> = ({isValid, file, handleRemoval}) => {
+const FileListItem: React.FunctionComponent<IItemProps> = ({isValid, file, handleRemoval, secondaryText}) => {
     const textColor = isValid ? 'primary' : 'error';
 
     return (
@@ -77,6 +81,7 @@ const FileListItem: React.FunctionComponent<IItemProps> = ({isValid, file, handl
             primaryTypographyProps={{
                 color: textColor
             }}
+            secondary={secondaryText}
             />
             <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="delete" onClick={() => handleRemoval()}>
