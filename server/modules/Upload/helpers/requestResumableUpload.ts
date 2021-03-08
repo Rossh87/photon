@@ -1,9 +1,16 @@
 import { IUploadRequestMetadata } from '../sharedUploadTypes';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { getEnvElseThrow } from '../../../core/readEnv';
-import { tryCatch } from 'fp-ts/lib/TaskEither';
+import { tryCatch, mapLeft } from 'fp-ts/lib/TaskEither';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
-import { CreateResumableUploadOptions } from '@google-cloud/storage';
+import {
+	CreateResumableUploadOptions,
+	CreateResumableUploadResponse,
+} from '@google-cloud/storage';
+import { reverseTwo } from '../../../core/utils/reverseCurried';
+import { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither';
+import { pipe } from 'fp-ts/lib/function';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 export class ResumableUploadCreationErr extends BaseError {
 	public static create(
@@ -29,7 +36,11 @@ export class ResumableUploadCreationErr extends BaseError {
 
 export const requestResumableUpload = (
 	uploadMetaData: IUploadRequestMetadata
-) => (deps: Required<IAsyncDeps>) => {
+): ReaderTaskEither<
+	Required<IAsyncDeps>,
+	ResumableUploadCreationErr,
+	CreateResumableUploadResponse
+> => (deps) => {
 	const bucketName = getEnvElseThrow(deps.readEnv)(
 		'GOOGLE_STORAGE_BUCKET_NAME'
 	);
@@ -55,3 +66,5 @@ export const requestResumableUpload = (
 		(e) => ResumableUploadCreationErr.create(uploadMetaData, e)
 	);
 };
+
+export const _requestResumableUpload = reverseTwo(requestResumableUpload);

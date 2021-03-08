@@ -11,7 +11,9 @@ export interface IUploadRequestMetadata {
 }
 
 export interface IUploadResponseMetadata extends IUploadRequestMetadata {
-	uploadURI: string;
+	resumableURI: string;
+	uploadSessionIsOpen: boolean;
+	ok: true;
 }
 
 export type TRequestedUploads = NonEmptyArray<IUploadRequestMetadata>;
