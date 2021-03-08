@@ -1,13 +1,12 @@
 export { extractOAuthToken } from './extractOAuthToken';
 export {
-    googleDataRequestor,
-    GoogleDataRequestErr,
-    TGoogleRequestResult,
-    TGoogleOAuthRequestor,
-} from './googleDataRequestor';
+	requestGoogleData,
+	GoogleDataRequestErr,
+	TGoogleRequestResult,
+} from './requestGoogleData';
 export {
-    normalizeGoogleResponse,
-    GoogleNormalizationError,
-    TGoogleNormalizerResult,
+	normalizeGoogleResponse,
+	GoogleNormalizationError,
+	TGoogleNormalizerResult,
 } from './normalizeGoogleResponse';
 export { updateOrAddUser, TUpdateOrAddUserResult } from './updateOrAddUser';
