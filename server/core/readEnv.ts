@@ -1,23 +1,29 @@
-import { fromNullable, fold, Option } from 'fp-ts/lib/Option';
+import { NonEmptyArray, foldMap } from 'fp-ts/lib/NonEmptyArray';
+import { MonoidAny, fold } from 'fp-ts/lib/boolean';
 import { pipe } from 'fp-ts/lib/function';
-import { Lazy } from 'fp-ts/lib/function';
+
+export type TRequiredEnvVars = NonEmptyArray<string>;
 
 export interface IReadEnv {
-	(prop: string): Option<string>;
+	(prop: string): string;
 }
 
-export const makeReadEnv = (context: Record<string, string>): IReadEnv => (
-	prop
-) => fromNullable(context[prop]);
+const isNonNull = (v: unknown) => v !== undefined && v !== null;
 
-// break the program if needed env vars are missing
-export const getEnvElseThrow = (readEnv: IReadEnv) => (prop: string) =>
-	pipe(
-		readEnv(prop),
-		fold(
+export const makeReadEnv = (
+	required: TRequiredEnvVars,
+	context: any
+): IReadEnv | never => {
+	const envReader = (p: TRequiredEnvVars[number]) => context[p];
+
+	return pipe(
+		required,
+		foldMap(MonoidAny)(isNonNull),
+		fold<IReadEnv | never>(
 			() => {
-				throw new Error(`missing variable ${prop} from environment`);
+				throw new Error('required env vars are missing');
 			},
-			(s) => s
+			() => envReader
 		)
 	);
+};

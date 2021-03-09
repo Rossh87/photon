@@ -14,8 +14,8 @@ export const getRepo = (deps: IAsyncDeps) => deps.repoClient;
 export interface IAsyncDeps {
 	repoClient: MongoClient;
 	fetcher: IFetcher;
-	gcs?: Storage;
-	readEnv?: IReadEnv;
+	gcs: Storage;
+	readEnv: IReadEnv;
 }
 
 // TODO: these aren't type safe.

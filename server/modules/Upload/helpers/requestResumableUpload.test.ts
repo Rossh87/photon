@@ -9,20 +9,6 @@ import { map, mapLeft } from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
 
 describe('function to get resumable upload URI from GCS', () => {
-	it('throws if needed env var is missing', () => {
-		// GOOGLE_BUCKET_NAME will be undefined
-		const deps = {
-			readEnv: makeReadEnv({}),
-		} as Required<IAsyncDeps>;
-
-		const underTest = requestResumableUpload(mockUploadRequestObject);
-		const expectedErr = new Error(
-			'missing variable GOOGLE_STORAGE_BUCKET_NAME from environment'
-		);
-
-		expect(() => underTest(deps)).toThrowError(expectedErr);
-	});
-
 	it('returns correct error if upload request to GCS fails', async () => {
 		const expectedErrMsg = 'unable to comply';
 		const expectedErr = ResumableUploadCreationErr.create(
@@ -43,13 +29,13 @@ describe('function to get resumable upload URI from GCS', () => {
 		}));
 
 		const deps = ({
-			readEnv: makeReadEnv({
+			readEnv: makeReadEnv(['GOOGLE_STORAGE_BUCKET_NAME'], {
 				GOOGLE_STORAGE_BUCKET_NAME: 'my-bucket',
 			}),
 			gcs: {
 				bucket,
 			},
-		} as unknown) as Required<IAsyncDeps>;
+		} as unknown) as IAsyncDeps;
 
 		const assertions = (e: unknown) => expect(e).toEqual(expectedErr);
 		const neverCalled = jest.fn();
@@ -81,13 +67,13 @@ describe('function to get resumable upload URI from GCS', () => {
 		}));
 
 		const deps = ({
-			readEnv: makeReadEnv({
+			readEnv: makeReadEnv(['GOOGLE_STORAGE_BUCKET_NAME'], {
 				GOOGLE_STORAGE_BUCKET_NAME: 'my-bucket',
 			}),
 			gcs: {
 				bucket,
 			},
-		} as unknown) as Required<IAsyncDeps>;
+		} as unknown) as IAsyncDeps;
 
 		const assertions = (data: any) =>
 			expect(data[0]).toEqual(mockSessionURI);

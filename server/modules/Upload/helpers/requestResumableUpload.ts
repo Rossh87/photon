@@ -1,6 +1,5 @@
 import { IUploadRequestMetadata } from '../sharedUploadTypes';
 import { IAsyncDeps } from '../../../core/asyncDeps';
-import { getEnvElseThrow } from '../../../core/readEnv';
 import { tryCatch, mapLeft } from 'fp-ts/lib/TaskEither';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import {
@@ -37,13 +36,11 @@ export class ResumableUploadCreationErr extends BaseError {
 export const requestResumableUpload = (
 	uploadMetaData: IUploadRequestMetadata
 ): ReaderTaskEither<
-	Required<IAsyncDeps>,
+	IAsyncDeps,
 	ResumableUploadCreationErr,
 	CreateResumableUploadResponse
 > => (deps) => {
-	const bucketName = getEnvElseThrow(deps.readEnv)(
-		'GOOGLE_STORAGE_BUCKET_NAME'
-	);
+	const bucketName = deps.readEnv('GOOGLE_STORAGE_BUCKET_NAME');
 
 	const opts: CreateResumableUploadOptions = {
 		public: true,
@@ -62,7 +59,7 @@ export const requestResumableUpload = (
 			deps.gcs
 				.bucket(bucketName)
 				.file(uploadMetaData.displayName)
-				.createResumableUpload(),
+				.createResumableUpload(opts),
 		(e) => ResumableUploadCreationErr.create(uploadMetaData, e)
 	);
 };
