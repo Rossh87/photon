@@ -1,62 +1,42 @@
-import { IGoogleOAuthResponse } from '../sharedAuthTypes';
-import { flow, pipe } from 'fp-ts/lib/function';
+import { flow } from 'fp-ts/lib/function';
 import {
-    extractOAuthToken,
-    googleDataRequestor,
-    GoogleNormalizationError,
-    normalizeGoogleResponse,
-    TGoogleNormalizerResult,
-    TGoogleRequestResult,
-    updateOrAddUser,
-    TUpdateOrAddUserResult,
+	extractOAuthToken,
+	requestGoogleData,
+	normalizeGoogleResponse,
+	updateOrAddUser,
 } from '../helpers';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
-import * as R from 'fp-ts/lib/Reader';
-import { IAsyncDeps, getRepo, getFetcher } from '../../../core/asyncDeps';
-import {
-    setSessionEffect,
-    clientRootRedirectEffect,
-    toEffects,
-    addEffect,
-    addAndApplyEffect,
-    toErrHandlerEffect,
-} from '../../../core/expressEffects';
-import { IUser } from '../../User/sharedUserTypes';
+import * as RT from 'fp-ts/lib/ReaderTask';
 
-// extracted from the main function b/c the types are obnoxious
-const normalizeResponse = flow<
-    ReadonlyArray<IGoogleOAuthResponse>,
-    TGoogleNormalizerResult,
-    RTE.ReaderTaskEither<IAsyncDeps, GoogleNormalizationError, IUser>
->(normalizeGoogleResponse, RTE.fromEither);
+import * as E from 'fp-ts/lib/Either';
+import {
+	setSessionEffect,
+	clientRootRedirectEffect,
+	toEffects,
+	addEffect,
+	addAndApplyEffect,
+	toErrHandlerEffect,
+} from '../../../core/expressEffects';
 
 const oAuthSuccessEffects = flow(
-    toEffects,
-    addAndApplyEffect(setSessionEffect),
-    addEffect(clientRootRedirectEffect)
+	toEffects,
+	addAndApplyEffect(setSessionEffect),
+	addEffect(clientRootRedirectEffect)
 );
 
 const oAuthFailureEffects = flow(
-    toEffects,
-    addAndApplyEffect(toErrHandlerEffect)
+	toEffects,
+	addAndApplyEffect(toErrHandlerEffect)
 );
 
 // TODO: at some point we could refactor these 'asks' statements
 // to be prettier
 export const handleGoogleOAuthCallback = flow(
-    extractOAuthToken,
-    RTE.fromEither,
-    RTE.chain((token) =>
-        R.asks<IAsyncDeps, TGoogleRequestResult>(
-            flow(getFetcher, googleDataRequestor(token))
-        )
-    ),
-    RTE.chain(normalizeResponse),
-    RTE.chain((responseUser) =>
-        R.asks<IAsyncDeps, TUpdateOrAddUserResult>(
-            flow(getRepo, updateOrAddUser(responseUser))
-        )
-    ),
-    RTE.map(oAuthSuccessEffects),
-    RTE.mapLeft(oAuthFailureEffects)
+	extractOAuthToken,
+	RTE.fromEither,
+	RTE.chain(requestGoogleData),
+	RT.map(E.chain(normalizeGoogleResponse)),
+	RTE.chain(updateOrAddUser),
+	RTE.map(oAuthSuccessEffects),
+	RTE.mapLeft(oAuthFailureEffects)
 );
