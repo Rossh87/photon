@@ -1,6 +1,6 @@
 import React from 'react';
 import { uploadReducer } from './uploadState';
-import { IImageUploadState, IProcessedFile } from './uploadTypes';
+import { IImageUploadState, IPreprocessedFile } from './uploadTypes';
 import { preprocessFiles } from './preprocessFiles';
 import UploadForm from '../UploadForm';
 import SelectedFilesDisplay from '../SelectedFilesDisplay';
@@ -31,12 +31,13 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 
 	const handleInvalidFileRemoval = (fileName: string) =>
 		uploadDispatch({ type: 'UNSELECT_INVALID_FILE', data: fileName });
+		
 	const handleValidFileRemoval = (fileName: string) =>
 		uploadDispatch({ type: 'UNSELECT_VALID_FILE', data: fileName });
 
 	const handleUpdate = (
 		previousName: string,
-		updates: Partial<IProcessedFile>
+		updates: Partial<IPreprocessedFile>
 	) => uploadDispatch({ type: 'UPDATE_FILE', previousName, data: updates });
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

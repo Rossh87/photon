@@ -1,4 +1,4 @@
-import { IUploadReaderDependencies, IProcessedFile } from './uploadTypes';
+import { IUploadReaderDependencies, IPreprocessedFile } from './uploadTypes';
 import { collatePreprocessResults } from './preprocessFilesConstructs';
 import {
 	Either,
@@ -28,7 +28,7 @@ export const bytesToHumanReadableSize = (byteCount: number): string =>
 		? (byteCount / 1024).toFixed(1) + 'KB'
 		: (byteCount / 1048576).toFixed(1) + 'MB';
 
-export const generateFileSizeErr = (file: IProcessedFile): UploadError => {
+export const generateFileSizeErr = (file: IPreprocessedFile): UploadError => {
 	const message = `file ${file.name} exceeds maximum initial image size of ${
 		MAX_RAW_FILE_SIZE_IN_BYTES / 1000 / 1000
 	}MB`;
@@ -37,31 +37,29 @@ export const generateFileSizeErr = (file: IProcessedFile): UploadError => {
 };
 
 const validateFileSize = (
-	file: IProcessedFile
-): Either<UploadError, IProcessedFile> =>
+	file: IPreprocessedFile
+): Either<UploadError, IPreprocessedFile> =>
 	file.size <= MAX_RAW_FILE_SIZE_IN_BYTES
 		? right(file)
 		: left(generateFileSizeErr(file));
 
-const generateUploadPaths = (
-	name: string,
-	ownerID: string
-): NonEmptyArray<string> =>
-	pipe(
-		UPLOAD_WIDTHS,
-		NEAmap((sizeParam) => {
-			return [BASE_IMAGE_UPLOAD_PATH, ownerID, name, sizeParam].join('/');
-		})
-	);
-
 const appendMetadataToFile = (deps: IUploadReaderDependencies) => (
 	file: File
 ) =>
-	Object.assign(file, {
+	Object.assign<
+		File,
+		Pick<
+			IPreprocessedFile,
+			| 'ownerID'
+			| 'humanReadableSize'
+			| 'displayName'
+			| 'originalSizeInBytes'
+		>
+	>(file, {
 		ownerID: deps.ownerID,
-		uploadPaths: generateUploadPaths(file.name, deps.ownerID),
 		humanReadableSize: bytesToHumanReadableSize(file.size),
 		displayName: file.name,
+		originalSizeInBytes: file.size,
 	});
 
 // We return a strange type here to make this result compatible with collation

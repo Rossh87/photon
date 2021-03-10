@@ -5,6 +5,7 @@ import { UploadError } from './UploadError';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { These } from 'fp-ts/lib/These';
 
+// Begin image preprocessing types
 export type TFilesArray = NonEmptyArray<File>;
 
 export type TImageUploadStateStatus =
@@ -15,19 +16,20 @@ export type TImageUploadStateStatus =
 	| 'success'
 	| 'failed';
 
-export interface IProcessedFile extends File {
+export interface IPreprocessedFile extends File {
 	humanReadableSize: string;
-	uploadPaths: Array<string>;
 	ownerID: string;
 	displayName: string;
+	originalSizeInBytes: number;
 }
 
-export type TPreprocessedFiles = NonEmptyArray<IProcessedFile>;
+export type TPreprocessedFiles = NonEmptyArray<IPreprocessedFile>;
 
 export type TPreprocessErrors = NonEmptyArray<UploadError>;
 
 export type TPreProcessResult = These<TPreprocessErrors, TPreprocessedFiles>;
 
+// Begin upload state types
 export interface IImageUploadState {
 	status: TImageUploadStateStatus;
 	selectedFiles: TPreprocessedFiles | [];
@@ -57,7 +59,7 @@ export interface IInvalidFileSelectionAction
 }
 
 export interface IUpdateFileAction
-	extends IFileAction<Partial<IProcessedFile>> {
+	extends IFileAction<Partial<IPreprocessedFile>> {
 	type: 'UPDATE_FILE';
 	previousName: string;
 }
@@ -72,3 +74,37 @@ export type TFileActions =
 export interface IUploadReaderDependencies {
 	ownerID: string;
 }
+
+// Begin types for requesting upload and processing image files
+export interface IUploadRequestMetadata {
+	ownerID: string;
+	sizeInBytes: number;
+	displayName: string;
+	integrityHash: string;
+	primaryColor: string;
+	mediaType: string;
+}
+
+export interface IUploadURIMetadata extends IUploadRequestMetadata {
+	resumableURI: string;
+	uploadSessionIsOpen: boolean;
+	ok: true;
+}
+
+export interface ResumableUploadCreationErr {
+	rawError: any;
+	requestedUpload: IUploadRequestMetadata;
+	message: string;
+}
+
+export interface IUploadsRequestPayload {
+	uploadRequests: NonEmptyArray<IUploadRequestMetadata>;
+}
+
+export interface IUploadsResponsePayload {
+	successes?: NonEmptyArray<IUploadURIMetadata>;
+	failures?: NonEmptyArray<ResumableUploadCreationErr>;
+}
+
+export type TSizeSelectionResult = [number, HTMLCanvasElement];
+export type TRequestedUploads = NonEmptyArray<IUploadRequestMetadata>;

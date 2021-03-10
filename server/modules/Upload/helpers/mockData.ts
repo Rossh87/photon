@@ -8,7 +8,6 @@ export const mockUploadRequestObject: IUploadRequestMetadata = {
 	integrityHash: 'adbcdefgh',
 	primaryColor: 'red',
 	mediaType: 'image/jpeg',
-	uploadPath: 'abc/123',
 };
 
 export const mockUploadRequestResponse: CreateResumableUploadResponse = [

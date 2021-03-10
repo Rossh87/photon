@@ -1,7 +1,7 @@
 import React from 'react';
 import {
 	TPreprocessedFiles,
-	IProcessedFile,
+	IPreprocessedFile,
 	TPreprocessErrors,
 	IImageUploadState,
 } from '../UploadManager/uploadTypes';
@@ -24,7 +24,7 @@ interface IDisplayProps {
 	uploadState: IImageUploadState;
 	handleInvalidFileRemoval: (f: string) => void;
 	handleValidFileRemoval: (f: string) => void;
-	handleUpdate: (p: string, u: Partial<IProcessedFile>) => void;
+	handleUpdate: (p: string, u: Partial<IPreprocessedFile>) => void;
 }
 
 // TODO: passing of error message to list item component through a null prop isn't great...
@@ -73,7 +73,7 @@ const SelectedFilesDisplay: React.FunctionComponent<IDisplayProps> = ({
 interface IFileUpdateFormProps {
 	handleUpdate: (
 		previousName: string,
-		updates: Partial<IProcessedFile>
+		updates: Partial<IPreprocessedFile>
 	) => void;
 	fileName: string;
 	closeAccordion: () => void;
@@ -116,9 +116,9 @@ const useValidFileListItemStyles = makeStyles({
 });
 
 interface IValidItemProps {
-	file: IProcessedFile;
+	file: IPreprocessedFile;
 	handleRemoval: (fileForRemoval: string) => void;
-	handleUpdate: (p: string, u: Partial<IProcessedFile>) => void;
+	handleUpdate: (p: string, u: Partial<IPreprocessedFile>) => void;
 }
 
 const ValidFileListItem: React.FunctionComponent<IValidItemProps> = ({
@@ -180,7 +180,7 @@ const ValidFileListItem: React.FunctionComponent<IValidItemProps> = ({
 };
 
 interface IInvalidItemProps {
-	file: IProcessedFile;
+	file: IPreprocessedFile;
 	handleRemoval: (fileForRemoval: string) => void;
 	secondaryText: string;
 }

@@ -1,18 +1,18 @@
 import { BaseError } from '../../../core/error';
-import { IProcessedFile } from './uploadTypes';
+import { IPreprocessedFile } from './uploadTypes';
 
 export class UploadError extends BaseError {
-    public readonly invalidFile?: IProcessedFile;
+	public readonly invalidFile?: IPreprocessedFile;
 
-    public static create(message: string, file?: IProcessedFile) {
-        return new UploadError(message, file);
-    }
+	public static create(message: string, file?: IPreprocessedFile) {
+		return new UploadError(message, file);
+	}
 
-    private constructor(message: string, file?: IProcessedFile) {
-        super(message, null);
+	private constructor(message: string, file?: IPreprocessedFile) {
+		super(message, null);
 
-        if (file) {
-            this.invalidFile = file;
-        }
-    }
+		if (file) {
+			this.invalidFile = file;
+		}
+	}
 }

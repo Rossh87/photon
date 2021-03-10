@@ -5,10 +5,10 @@ export interface IUploadRequestMetadata {
 	ownerID: string;
 	sizeInBytes: number;
 	displayName: string;
-	uploadPath: string;
 	integrityHash: string;
 	primaryColor: string;
 	mediaType: string;
+	sizeParam: string;
 }
 
 export interface IUploadsRequestPayload {
@@ -16,11 +16,11 @@ export interface IUploadsRequestPayload {
 }
 
 export interface IUploadsResponsePayload {
-	successes?: NonEmptyArray<IUploadResponseMetadata>;
+	successes?: NonEmptyArray<IUploadURIMetadata>;
 	failures?: NonEmptyArray<ResumableUploadCreationErr>;
 }
 
-export interface IUploadResponseMetadata extends IUploadRequestMetadata {
+export interface IUploadURIMetadata extends IUploadRequestMetadata {
 	resumableURI: string;
 	uploadSessionIsOpen: boolean;
 	ok: true;

@@ -7,11 +7,11 @@ import {
 	IImageUploadState,
 	TPreprocessedFiles,
 	TPreprocessErrors,
-	IProcessedFile,
+	IPreprocessedFile,
 } from './uploadTypes';
 
 export const makeFileNameFilter = (nameForRemoval: string) =>
-	filter((file: IProcessedFile) => file.displayName !== nameForRemoval);
+	filter((file: IPreprocessedFile) => file.displayName !== nameForRemoval);
 
 export const makeErrorNameFilter = (nameForRemoval: string) =>
 	filter(

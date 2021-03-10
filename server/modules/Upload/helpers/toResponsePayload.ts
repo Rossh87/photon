@@ -16,13 +16,13 @@ import {
 	ResumableUploadCreationErr,
 } from './requestResumableUpload';
 import {
-	IUploadResponseMetadata,
+	IUploadURIMetadata,
 	IUploadsResponsePayload,
 } from '../sharedUploadTypes';
 import { flow } from 'fp-ts/lib/function';
 
 const failedUploadInitSG = getNEASemigroup<ResumableUploadCreationErr>();
-const uploadInitSuccessSG = getNEASemigroup<IUploadResponseMetadata>();
+const uploadInitSuccessSG = getNEASemigroup<IUploadURIMetadata>();
 
 const uploadResultSG = getTheseSemigroup(
 	failedUploadInitSG,
@@ -30,11 +30,11 @@ const uploadResultSG = getTheseSemigroup(
 );
 
 const eitherToThese = (
-	e: Either<ResumableUploadCreationErr, IUploadResponseMetadata>
+	e: Either<ResumableUploadCreationErr, IUploadURIMetadata>
 ) =>
 	isLeft(e)
 		? Tleft([e.left] as NonEmptyArray<ResumableUploadCreationErr>)
-		: Tright([e.right] as NonEmptyArray<IUploadResponseMetadata>);
+		: Tright([e.right] as NonEmptyArray<IUploadURIMetadata>);
 
 const eithersToThese = foldMap(uploadResultSG)(eitherToThese);
 
@@ -43,12 +43,12 @@ const onErrsOnly = (
 ): IUploadsResponsePayload => ({ failures: es });
 
 const onSuccessOnly = (
-	as: NonEmptyArray<IUploadResponseMetadata>
+	as: NonEmptyArray<IUploadURIMetadata>
 ): IUploadsResponsePayload => ({ successes: as });
 
 const onMixed = (
 	es: NonEmptyArray<ResumableUploadCreationErr>,
-	as: NonEmptyArray<IUploadResponseMetadata>
+	as: NonEmptyArray<IUploadURIMetadata>
 ): IUploadsResponsePayload => ({ successes: as, failures: es });
 
 export const toResponsePayload = flow(

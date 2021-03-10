@@ -42,11 +42,13 @@ export const requestResumableUpload = (
 > => (deps) => {
 	const bucketName = deps.readEnv('GOOGLE_STORAGE_BUCKET_NAME');
 
+	const { ownerID, displayName, sizeParam } = uploadMetaData;
+
 	const opts: CreateResumableUploadOptions = {
 		public: true,
 		predefinedAcl: 'publicRead',
 		metadata: {
-			name: uploadMetaData.uploadPath,
+			name: `${ownerID}/${displayName}/sizeParam`,
 			cacheControl: 'public, max-age=604800000',
 			contentType: uploadMetaData.mediaType,
 			contentEncoding: 'gzip',
