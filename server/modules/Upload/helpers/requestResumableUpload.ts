@@ -1,6 +1,6 @@
 import { IUploadRequestMetadata } from '../sharedUploadTypes';
 import { IAsyncDeps } from '../../../core/asyncDeps';
-import { tryCatch, mapLeft } from 'fp-ts/lib/TaskEither';
+import { tryCatch } from 'fp-ts/lib/TaskEither';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import {
 	CreateResumableUploadOptions,
@@ -8,8 +8,7 @@ import {
 } from '@google-cloud/storage';
 import { reverseTwo } from '../../../core/utils/reverseCurried';
 import { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither';
-import { pipe } from 'fp-ts/lib/function';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { UPLOAD_ORIGIN } from '../../../CONSTANTS';
 
 export class ResumableUploadCreationErr extends BaseError {
 	public static create(
@@ -41,18 +40,20 @@ export const requestResumableUpload = (
 	CreateResumableUploadResponse
 > => (deps) => {
 	const bucketName = deps.readEnv('GOOGLE_STORAGE_BUCKET_NAME');
-
 	const { ownerID, displayName, sizeParam } = uploadMetaData;
+
+	const fileName = `${ownerID}/${displayName}/${sizeParam}`;
 
 	const opts: CreateResumableUploadOptions = {
 		public: true,
 		predefinedAcl: 'publicRead',
+		origin: UPLOAD_ORIGIN,
 		metadata: {
-			name: `${ownerID}/${displayName}/sizeParam`,
+			name: fileName,
 			cacheControl: 'public, max-age=604800000',
 			contentType: uploadMetaData.mediaType,
-			contentEncoding: 'gzip',
-			crc32: uploadMetaData.integrityHash,
+			// contentEncoding: 'gzip',
+			// md5Hash: uploadMetaData.integrityHash,
 		},
 	};
 
@@ -60,9 +61,12 @@ export const requestResumableUpload = (
 		() =>
 			deps.gcs
 				.bucket(bucketName)
-				.file(uploadMetaData.displayName)
+				.file(fileName)
 				.createResumableUpload(opts),
-		(e) => ResumableUploadCreationErr.create(uploadMetaData, e)
+		(e) => {
+			console.log('err hit in resumable upload request');
+			return ResumableUploadCreationErr.create(uploadMetaData, e);
+		}
 	);
 };
 

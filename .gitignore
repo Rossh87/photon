@@ -175,3 +175,6 @@ server/configs/testDB/data/*
 
 ### saved images for testing ###
 client/src/testImages/
+
+### secrets ###
+secrets/

@@ -1,18 +1,26 @@
 import {
-	TFileActions,
-	IImageUploadState,
+	TPreprocessActions,
 	TPreprocessedFiles,
 	TPreprocessErrors,
-} from './uploadTypes';
+} from '../uploadPreprocessing/uploadPreprocessingTypes';
+import { IImageUploadState } from './stateTypes';
 import { copy } from 'fp-ts/lib/NonEmptyArray';
 import React from 'react';
 import { filterOneError, filterOneFile } from './filterFiles';
 import { updateOneFile } from './updateSelectedFile';
+import {
+	TUploadActions,
+	TUploadProcessingErrors,
+} from '../uploadProcessing/uploadProcessingTypes';
+import { UploadError } from '../uploadProcessing/UploadError';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
-export const uploadReducer: React.Reducer<IImageUploadState, TFileActions> = (
-	s,
-	a
-) => {
+// NEEDED: upload_failed, upload_init_failed, upload_success
+
+export const uploadReducer: React.Reducer<
+	IImageUploadState,
+	TPreprocessActions | TUploadActions
+> = (s, a) => {
 	switch (a.type) {
 		case 'FILES_SELECTED':
 			return { ...s, selectedFiles: a.data };
@@ -41,6 +49,19 @@ export const uploadReducer: React.Reducer<IImageUploadState, TFileActions> = (
 					a.data
 				)(s.selectedFiles as TPreprocessedFiles),
 			};
+		case 'UPLOAD_FAILED':
+			return {
+				...s,
+				errors: [...s.errors, a.data] as TUploadProcessingErrors,
+			};
+		case 'UPLOAD_SUCCESS':
+			return {
+				...s,
+				selectedFiles: filterOneFile(a.data)(
+					s.selectedFiles as TPreprocessedFiles
+				),
+			};
+
 		default:
 			return s;
 	}

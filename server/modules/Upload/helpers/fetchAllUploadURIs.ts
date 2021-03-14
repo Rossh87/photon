@@ -13,13 +13,13 @@ import * as RT from 'fp-ts/lib/ReaderTask';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { toResponsePayload } from './toResponsePayload';
 
-export const handleOneUpload = (uploadRequest: IUploadRequestMetadata) =>
-	pipe(
+export const handleOneUpload = (uploadRequest: IUploadRequestMetadata) => {
+	return pipe(
 		uploadRequest,
 		requestResumableUpload,
 		RTE.map(_processUploadInitSuccess(uploadRequest))
 	);
-
+};
 // sequence array of readers to be able to run them all as a single reader
 const sequenceReaderTasks = NEASequence(RT.readerTask);
 

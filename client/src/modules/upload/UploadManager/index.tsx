@@ -1,12 +1,17 @@
 import React from 'react';
-import { uploadReducer } from './uploadState';
-import { IImageUploadState, IPreprocessedFile } from './uploadTypes';
-import { preprocessFiles } from './preprocessFiles';
+import { uploadReducer } from './uploadState/uploadState';
+import { IPreprocessedFile } from './uploadPreprocessing/uploadPreprocessingTypes';
+import {IImageUploadState} from './uploadState/stateTypes'
+import {processAllUploads} from './uploadProcessing/processAllUploads'
+import { preprocessFiles } from './uploadPreprocessing/preprocessFiles';
 import UploadForm from '../UploadForm';
 import SelectedFilesDisplay from '../SelectedFilesDisplay';
 import { fold as Tfold } from 'fp-ts/lib/These';
 import { pipe } from 'fp-ts/lib/function';
 import { TUserState } from '../../auth/AuthManager/authTypes';
+import {fromArray} from 'fp-ts/lib/NonEmptyArray';
+import {map} from 'fp-ts/lib/Option'
+import axios from 'axios';
 
 interface IProps {
 	user: TUserState;
@@ -26,7 +31,11 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log('submit!');
+		pipe(
+			uploadState.selectedFiles,
+			fromArray,
+			map(files => processAllUploads(files)({fetcher: axios, dispatch: uploadDispatch}))
+		)
 	};
 
 	const handleInvalidFileRemoval = (fileName: string) =>
@@ -59,6 +68,7 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 							data: processedFiles,
 						}),
 					(e, f) => {
+						console.log('both')
 						uploadDispatch({
 							type: 'INVALID_FILE_SELECTIONS',
 							data: e,
@@ -76,6 +86,8 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 
 	const acceptedExtensions = ['image/jpg', 'image/jpeg', 'image/png'];
 
+	const submitIsDisabled = (uploadState.selectedFiles.length === 0 || uploadState.errors.length > 0);
+
 	return (
 		<div>
 			<SelectedFilesDisplay
@@ -85,6 +97,7 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 				handleUpdate={handleUpdate}
 			/>
 			<UploadForm
+				submitIsDisabled={submitIsDisabled}
 				handleFileChange={_handleFileChange}
 				handleSubmit={handleSubmit}
 				acceptedExtensions={acceptedExtensions}

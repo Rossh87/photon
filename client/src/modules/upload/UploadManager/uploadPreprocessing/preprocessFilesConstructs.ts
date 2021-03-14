@@ -10,10 +10,10 @@ import {
 	foldMap,
 } from 'fp-ts/lib/NonEmptyArray';
 import { Either, isLeft } from 'fp-ts/lib/Either';
-import { UploadError } from './UploadError';
-import { IPreprocessedFile } from './uploadTypes';
+import { UploadPreprocessError } from './UploadPreprocessError';
+import { IPreprocessedFile } from './uploadPreprocessingTypes';
 
-const preprocessErrSG = getNEASemigroup<UploadError>();
+const preprocessErrSG = getNEASemigroup<UploadPreprocessError>();
 const preprocessSuccessSG = getNEASemigroup<IPreprocessedFile>();
 
 export const preprocessResultSG = getTheseSemigroup(
@@ -21,9 +21,9 @@ export const preprocessResultSG = getTheseSemigroup(
 	preprocessSuccessSG
 );
 
-const eitherToThese = (e: Either<UploadError, IPreprocessedFile>) =>
+const eitherToThese = (e: Either<UploadPreprocessError, IPreprocessedFile>) =>
 	isLeft(e)
-		? Tleft([e.left] as NonEmptyArray<UploadError>)
+		? Tleft([e.left] as NonEmptyArray<UploadPreprocessError>)
 		: Tright([e.right] as NonEmptyArray<IPreprocessedFile>);
 
 export const collatePreprocessResults = foldMap(preprocessResultSG)(

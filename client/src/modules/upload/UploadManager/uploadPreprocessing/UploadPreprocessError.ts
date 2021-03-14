@@ -1,11 +1,11 @@
-import { BaseError } from '../../../core/error';
-import { IPreprocessedFile } from './uploadTypes';
+import { BaseError } from '../../../../core/error';
+import { IPreprocessedFile } from './uploadPreprocessingTypes';
 
-export class UploadError extends BaseError {
+export class UploadPreprocessError extends BaseError {
 	public readonly invalidFile?: IPreprocessedFile;
 
 	public static create(message: string, file?: IPreprocessedFile) {
-		return new UploadError(message, file);
+		return new UploadPreprocessError(message, file);
 	}
 
 	private constructor(message: string, file?: IPreprocessedFile) {

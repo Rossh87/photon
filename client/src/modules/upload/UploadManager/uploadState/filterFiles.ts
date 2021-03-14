@@ -1,21 +1,22 @@
 import { filter, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { UploadError } from './UploadError';
+import { UploadPreprocessError } from '../uploadPreprocessing/UploadPreprocessError';
 import { flow } from 'fp-ts/lib/function';
 import { getOrElse } from 'fp-ts/lib/Option';
 import {
-	TFileActions,
-	IImageUploadState,
+	TPreprocessActions,
 	TPreprocessedFiles,
 	TPreprocessErrors,
 	IPreprocessedFile,
-} from './uploadTypes';
+} from '../uploadPreprocessing/uploadPreprocessingTypes';
+import { IImageUploadState } from './stateTypes';
 
 export const makeFileNameFilter = (nameForRemoval: string) =>
 	filter((file: IPreprocessedFile) => file.displayName !== nameForRemoval);
 
 export const makeErrorNameFilter = (nameForRemoval: string) =>
 	filter(
-		(err: UploadError) => err.invalidFile?.displayName !== nameForRemoval
+		(err: UploadPreprocessError) =>
+			err.invalidFile?.displayName !== nameForRemoval
 	);
 
 export const filterOneError = (nameForRemoval: string) =>

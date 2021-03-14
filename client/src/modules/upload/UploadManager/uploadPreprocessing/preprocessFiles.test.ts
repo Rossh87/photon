@@ -7,16 +7,16 @@ import {
 import {
 	TPreprocessedFiles,
 	TPreprocessErrors,
-	IUploadReaderDependencies,
+	IPreprocessDependencies,
 	IPreprocessedFile,
-} from './uploadTypes';
-import { createMockFileList } from '../../../core/utils/testUtils';
+} from './uploadPreprocessingTypes';
+import { createMockFileList } from '../../../../core/utils/testUtils';
 import { map as Emap, mapLeft as EmapLeft } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/function';
 import { fold as Tfold } from 'fp-ts/lib/These';
-import { BASE_IMAGE_UPLOAD_PATH } from '../../../CONSTANTS';
-import { getOversizeImage } from '../../../testImages/imageUtils';
-import { UploadError } from './UploadError';
+import { BASE_IMAGE_UPLOAD_PATH } from '../../../../CONSTANTS';
+import { getOversizeImage } from '../../../../testImages/imageUtils';
+import { UploadPreprocessError } from './UploadPreprocessError';
 
 describe('file preprocessing processing fn', () => {
 	it('generates an error if file exceeds max file size', () => {
@@ -37,7 +37,7 @@ describe('file preprocessing processing fn', () => {
 
 		const fileList = createMockFileList(mockFile1, mockFile2);
 
-		const deps = { ownerID: '1234' } as IUploadReaderDependencies;
+		const deps = { ownerID: '1234' } as IPreprocessDependencies;
 
 		const result = preprocessFiles(deps)(fileList);
 
@@ -69,7 +69,7 @@ describe('file preprocessing processing fn', () => {
 	it('produces correct err if filelist is empty', () => {
 		const fileList = createMockFileList();
 
-		const deps = { ownerID: '1234' } as IUploadReaderDependencies;
+		const deps = { ownerID: '1234' } as IPreprocessDependencies;
 
 		const result = preprocessFiles(deps)(fileList);
 
@@ -77,7 +77,9 @@ describe('file preprocessing processing fn', () => {
 
 		const assertOnErrs = (errs: TPreprocessErrors) => {
 			expect(errs[0]).toEqual(
-				UploadError.create('at least one file must be selected')
+				UploadPreprocessError.create(
+					'at least one file must be selected'
+				)
 			);
 		};
 

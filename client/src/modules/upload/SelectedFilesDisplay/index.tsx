@@ -3,8 +3,8 @@ import {
 	TPreprocessedFiles,
 	IPreprocessedFile,
 	TPreprocessErrors,
-	IImageUploadState,
-} from '../UploadManager/uploadTypes';
+} from '../UploadManager/uploadPreprocessing/uploadPreprocessingTypes';
+import { IImageUploadState } from '../UploadManager/uploadState/stateTypes'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -44,7 +44,7 @@ const SelectedFilesDisplay: React.FunctionComponent<IDisplayProps> = ({
 			/>
 		));
 
-	// TODO: we have to have a null check here because we recycle the UploadError structure
+	// TODO: we have to have a null check here because we recycle the UploadPreprocessError structure
 	// a lot.  Could be improved.
 	const generateInvalidFileItems = (errs: TPreprocessErrors) =>
 		errs.map((e) =>

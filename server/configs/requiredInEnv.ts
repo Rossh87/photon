@@ -8,6 +8,7 @@ const requiredInEnv: TRequiredEnvVars = [
 	'GOOGLE_STORAGE_ACCESS_SECRET',
 	'GOOGLE_STORAGE_ACCESS_KEY',
 	'GOOGLE_STORAGE_BUCKET_NAME',
+	'GOOGLE_APPLICATION_CREDENTIALS',
 ];
 
 export default requiredInEnv;

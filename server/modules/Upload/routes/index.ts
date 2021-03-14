@@ -6,7 +6,7 @@ import { IAsyncDeps } from '../../../core/asyncDeps';
 const router = Router();
 
 export const uploadRoutes = (deps: IAsyncDeps): Router => {
-	router.get('/request', authGate, requestImageUploadsController(deps));
+	router.post('/request', authGate, requestImageUploadsController(deps));
 
 	return router;
 };

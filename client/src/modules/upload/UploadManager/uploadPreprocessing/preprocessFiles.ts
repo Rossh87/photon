@@ -1,4 +1,7 @@
-import { IUploadReaderDependencies, IPreprocessedFile } from './uploadTypes';
+import {
+	IPreprocessDependencies,
+	IPreprocessedFile,
+} from './uploadPreprocessingTypes';
 import { collatePreprocessResults } from './preprocessFilesConstructs';
 import {
 	Either,
@@ -13,13 +16,13 @@ import {
 	MAX_RAW_FILE_SIZE_IN_BYTES,
 	BASE_IMAGE_UPLOAD_PATH,
 	UPLOAD_WIDTHS,
-} from '../../../CONSTANTS';
+} from '../../../../CONSTANTS';
 import {
 	NonEmptyArray,
 	map as NEAmap,
 	fromArray,
 } from 'fp-ts/lib/NonEmptyArray';
-import { UploadError } from './UploadError';
+import { UploadPreprocessError } from './UploadPreprocessError';
 
 export const bytesToHumanReadableSize = (byteCount: number): string =>
 	byteCount < 1024
@@ -28,24 +31,24 @@ export const bytesToHumanReadableSize = (byteCount: number): string =>
 		? (byteCount / 1024).toFixed(1) + 'KB'
 		: (byteCount / 1048576).toFixed(1) + 'MB';
 
-export const generateFileSizeErr = (file: IPreprocessedFile): UploadError => {
+export const generateFileSizeErr = (
+	file: IPreprocessedFile
+): UploadPreprocessError => {
 	const message = `file ${file.name} exceeds maximum initial image size of ${
 		MAX_RAW_FILE_SIZE_IN_BYTES / 1000 / 1000
 	}MB`;
 
-	return UploadError.create(message, file);
+	return UploadPreprocessError.create(message, file);
 };
 
 const validateFileSize = (
 	file: IPreprocessedFile
-): Either<UploadError, IPreprocessedFile> =>
+): Either<UploadPreprocessError, IPreprocessedFile> =>
 	file.size <= MAX_RAW_FILE_SIZE_IN_BYTES
 		? right(file)
 		: left(generateFileSizeErr(file));
 
-const appendMetadataToFile = (deps: IUploadReaderDependencies) => (
-	file: File
-) =>
+const appendMetadataToFile = (deps: IPreprocessDependencies) => (file: File) =>
 	Object.assign<
 		File,
 		Pick<
@@ -65,22 +68,25 @@ const appendMetadataToFile = (deps: IUploadReaderDependencies) => (
 // We return a strange type here to make this result compatible with collation
 // function
 export const generateEmptyFileListErr = (): NonEmptyArray<
-	Either<UploadError, never>
-> => [left(UploadError.create('at least one file must be selected'))];
+	Either<UploadPreprocessError, never>
+> => [left(UploadPreprocessError.create('at least one file must be selected'))];
 
 export const fileListToNonEmptyArray = (
 	f: FileList
-): Either<NonEmptyArray<Either<UploadError, never>>, NonEmptyArray<File>> =>
+): Either<
+	NonEmptyArray<Either<UploadPreprocessError, never>>,
+	NonEmptyArray<File>
+> =>
 	pipe(
 		Array.from(f),
 		fromArray,
 		fromOption(() => generateEmptyFileListErr())
 	);
 
-export const processAndValidateFiles = (deps: IUploadReaderDependencies) =>
+export const processAndValidateFiles = (deps: IPreprocessDependencies) =>
 	pipe(flow(appendMetadataToFile(deps), validateFileSize), NEAmap);
 
-export const preprocessFiles = (deps: IUploadReaderDependencies) =>
+export const preprocessFiles = (deps: IPreprocessDependencies) =>
 	flow(
 		fileListToNonEmptyArray,
 		// if array is empty we'll have a result to collate at this point, so go ahead
