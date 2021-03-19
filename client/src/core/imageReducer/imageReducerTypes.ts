@@ -1,8 +1,22 @@
-import { IFetcher } from '../../../../core/sharedTypes';
-import { IPreprocessedFile } from '../uploadPreprocessing/uploadPreprocessingTypes';
+// lifted from imageCompression type defs, which don't export this.
+export interface ICompressionOptions {
+	maxSizeMB?: number;
+	maxWidthOrHeight?: number;
+	useWebWorker?: boolean;
+	maxIteration?: number;
+	exifOrientation?: number;
+	onProgress?: (progress: number) => void;
+	fileType?: string;
+	initialQuality?: number;
+}
+
+export type TImageDimensions = [number, number];
+
+import { IFetcher } from '../../core/sharedTypes';
+import { IPreprocessedFile } from '../../modules/upload/UploadManager/uploadPreprocessing/uploadPreprocessingTypes';
 import { Dispatch } from 'react';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { UploadError } from './UploadError';
+import { UploadError } from '../../modules/upload/UploadManager/uploadProcessing/UploadError';
 
 export type TUploadActions =
 	| IUploadInitFailedAction
@@ -30,11 +44,11 @@ export interface IUploadFailedAction extends IUploadAction<UploadError> {
 
 export interface IUploadRequestMetadata {
 	ownerID: string;
-	sizeInBytes: number;
 	displayName: string;
+	mediaType: string;
+	sizeInBytes: number;
 	integrityHash: string;
 	primaryColor?: string;
-	mediaType: string;
 	width: number;
 }
 
@@ -45,8 +59,8 @@ export interface IUploadableBlob {
 
 export interface IResizingData extends IPreprocessedFile {
 	originalCanvas: HTMLCanvasElement;
-	maxNeededSizeIdx: number;
-	resizedBlobs: NonEmptyArray<IUploadableBlob>;
+	neededWidths: Array<number>;
+	resizedBlobs: ReadonlyArray<IUploadableBlob>;
 }
 
 export interface IAsyncUploadDependencies {

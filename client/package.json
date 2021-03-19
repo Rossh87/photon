@@ -15,6 +15,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "axios": "^0.21.1",
+    "browser-image-compression": "^1.0.14",
     "crypto-js": "^4.0.0",
     "fp-ts": "^2.9.5",
     "react": "^17.0.1",

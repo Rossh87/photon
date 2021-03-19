@@ -1,5 +1,5 @@
 import { BaseError } from '../../../../core/error';
-import { IResizingMetadata } from './uploadProcessingTypes';
+import { IResizingData } from './uploadProcessingTypes';
 
 // If upload fails due to server error/network failure, we attach
 // the resized images to the emitted error, so we can re-use them on retry,
@@ -8,7 +8,7 @@ export class UploadError extends BaseError {
 	public static create(
 		message: string,
 		e: any,
-		resizingData?: IResizingMetadata
+		resizingData?: IResizingData
 	) {
 		return new UploadError(message, e, resizingData);
 	}
@@ -16,7 +16,7 @@ export class UploadError extends BaseError {
 	private constructor(
 		m: string,
 		raw: any,
-		public readonly resizingData?: IResizingMetadata
+		public readonly resizingData?: IResizingData
 	) {
 		super(m, raw);
 	}
