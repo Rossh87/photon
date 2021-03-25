@@ -44,7 +44,7 @@ const SelectedFilesDisplay: React.FunctionComponent<IDisplayProps> = ({
 			/>
 		));
 
-	// TODO: we have to have a null check here because we recycle the UploadPreprocessError structure
+	// TODO: we have to have a null check here because we recycle the ImagePreprocessError structure
 	// a lot.  Could be improved.
 	const generateInvalidFileItems = (errs: TPreprocessErrors) =>
 		errs.map((e) =>

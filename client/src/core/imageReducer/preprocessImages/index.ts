@@ -12,17 +12,13 @@ import {
 	fold as Efold,
 } from 'fp-ts/lib/Either';
 import { pipe, flow } from 'fp-ts/lib/function';
-import {
-	MAX_RAW_FILE_SIZE_IN_BYTES,
-	BASE_IMAGE_UPLOAD_PATH,
-	UPLOAD_WIDTHS,
-} from '../../../../CONSTANTS';
+import { MAX_RAW_FILE_SIZE_IN_BYTES } from '../../../CONSTANTS';
 import {
 	NonEmptyArray,
 	map as NEAmap,
 	fromArray,
 } from 'fp-ts/lib/NonEmptyArray';
-import { UploadPreprocessError } from './UploadPreprocessError';
+import { ImagePreprocessError } from './ImagePreprocessError';
 
 export const bytesToHumanReadableSize = (byteCount: number): string =>
 	byteCount < 1024
@@ -33,17 +29,17 @@ export const bytesToHumanReadableSize = (byteCount: number): string =>
 
 export const generateFileSizeErr = (
 	file: IPreprocessedFile
-): UploadPreprocessError => {
+): ImagePreprocessError => {
 	const message = `file ${file.name} exceeds maximum initial image size of ${
 		MAX_RAW_FILE_SIZE_IN_BYTES / 1000 / 1000
 	}MB`;
 
-	return UploadPreprocessError.create(message, file);
+	return ImagePreprocessError.create(message, file);
 };
 
 const validateFileSize = (
 	file: IPreprocessedFile
-): Either<UploadPreprocessError, IPreprocessedFile> =>
+): Either<ImagePreprocessError, IPreprocessedFile> =>
 	file.size <= MAX_RAW_FILE_SIZE_IN_BYTES
 		? right(file)
 		: left(generateFileSizeErr(file));
@@ -68,13 +64,13 @@ const appendMetadataToFile = (deps: IPreprocessDependencies) => (file: File) =>
 // We return a strange type here to make this result compatible with collation
 // function
 export const generateEmptyFileListErr = (): NonEmptyArray<
-	Either<UploadPreprocessError, never>
-> => [left(UploadPreprocessError.create('at least one file must be selected'))];
+	Either<ImagePreprocessError, never>
+> => [left(ImagePreprocessError.create('at least one file must be selected'))];
 
 export const fileListToNonEmptyArray = (
 	f: FileList
 ): Either<
-	NonEmptyArray<Either<UploadPreprocessError, never>>,
+	NonEmptyArray<Either<ImagePreprocessError, never>>,
 	NonEmptyArray<File>
 > =>
 	pipe(
@@ -86,7 +82,7 @@ export const fileListToNonEmptyArray = (
 export const processAndValidateFiles = (deps: IPreprocessDependencies) =>
 	pipe(flow(appendMetadataToFile(deps), validateFileSize), NEAmap);
 
-export const preprocessFiles = (deps: IPreprocessDependencies) =>
+export const preprocessImages = (deps: IPreprocessDependencies) =>
 	flow(
 		fileListToNonEmptyArray,
 		// if array is empty we'll have a result to collate at this point, so go ahead

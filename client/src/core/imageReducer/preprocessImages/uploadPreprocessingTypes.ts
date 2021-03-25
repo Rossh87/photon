@@ -1,7 +1,7 @@
 import { BaseError } from '../../../../core/error';
 import { IFetcher } from '../../../../core/sharedTypes';
 import * as E from 'fp-ts/lib/Either';
-import { UploadPreprocessError } from './UploadPreprocessError';
+import { ImagePreprocessError } from './ImagePreprocessError';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { These } from 'fp-ts/lib/These';
 import { Dispatch } from 'react';
@@ -15,7 +15,7 @@ export interface IPreprocessedFile extends File {
 
 export type TPreprocessedFiles = NonEmptyArray<IPreprocessedFile>;
 
-export type TPreprocessErrors = NonEmptyArray<UploadPreprocessError>;
+export type TPreprocessErrors = NonEmptyArray<ImagePreprocessError>;
 
 export type TPreProcessResult = These<TPreprocessErrors, TPreprocessedFiles>;
 

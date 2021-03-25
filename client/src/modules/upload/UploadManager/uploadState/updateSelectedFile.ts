@@ -1,5 +1,5 @@
 import { map, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { UploadPreprocessError } from '../uploadPreprocessing/UploadPreprocessError';
+import { ImagePreprocessError } from '../uploadPreprocessing/ImagePreprocessError';
 import { pipe } from 'fp-ts/lib/function';
 import { getOrElse } from 'fp-ts/lib/Option';
 import { IPreprocessedFile } from '../uploadPreprocessing/uploadPreprocessingTypes';

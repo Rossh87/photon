@@ -3,20 +3,20 @@ import {
 	generateFileSizeErr,
 	generateEmptyFileListErr,
 	bytesToHumanReadableSize,
-} from './preprocessFiles';
+} from '.';
 import {
 	TPreprocessedFiles,
 	TPreprocessErrors,
 	IPreprocessDependencies,
 	IPreprocessedFile,
 } from './uploadPreprocessingTypes';
-import { createMockFileList } from '../../../../core/utils/testUtils';
+import { createMockFileList } from '../../utils/testUtils';
 import { map as Emap, mapLeft as EmapLeft } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/function';
 import { fold as Tfold } from 'fp-ts/lib/These';
-import { BASE_IMAGE_UPLOAD_PATH } from '../../../../CONSTANTS';
-import { getOversizeImage } from '../../../../testImages/imageUtils';
-import { UploadPreprocessError } from './UploadPreprocessError';
+import { BASE_IMAGE_UPLOAD_PATH } from '../../../CONSTANTS';
+import { getOversizeImage } from '../../../testImages/imageUtils';
+import { ImagePreprocessError } from './ImagePreprocessError';
 
 describe('file preprocessing processing fn', () => {
 	it('generates an error if file exceeds max file size', () => {
@@ -77,7 +77,7 @@ describe('file preprocessing processing fn', () => {
 
 		const assertOnErrs = (errs: TPreprocessErrors) => {
 			expect(errs[0]).toEqual(
-				UploadPreprocessError.create(
+				ImagePreprocessError.create(
 					'at least one file must be selected'
 				)
 			);
