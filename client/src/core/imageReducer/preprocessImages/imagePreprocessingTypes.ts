@@ -9,13 +9,15 @@ export interface IPreprocessedFile extends File {
 }
 
 export interface IPreprocessingResult {
-	imageData?: IPreprocessedFile;
+	imageFile: IPreprocessedFile;
 	error?: ImagePreprocessError;
 }
 
 export type TPreprocessedFiles = NonEmptyArray<IPreprocessedFile>;
 
 export type TPreprocessErrors = NonEmptyArray<ImagePreprocessError>;
+
+export type TPreprocessingResults = NonEmptyArray<IPreprocessingResult>;
 
 export interface IPreprocessDependencies {
 	ownerID: string;

@@ -2,17 +2,15 @@ import { BaseError } from '../../error';
 import { IPreprocessedFile } from './imagePreprocessingTypes';
 
 export class ImagePreprocessError extends BaseError {
-	public readonly invalidFile?: IPreprocessedFile;
+	public readonly invalidFile: IPreprocessedFile;
 
-	public static create(message: string, file?: IPreprocessedFile) {
+	public static create(message: string, file: IPreprocessedFile) {
 		return new ImagePreprocessError(message, file);
 	}
 
-	private constructor(message: string, file?: IPreprocessedFile) {
+	private constructor(message: string, file: IPreprocessedFile) {
 		super(message, null);
 
-		if (file) {
-			this.invalidFile = file;
-		}
+		this.invalidFile = file;
 	}
 }

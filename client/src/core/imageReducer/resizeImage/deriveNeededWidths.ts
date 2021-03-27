@@ -1,9 +1,12 @@
 import { IResizingData } from './imageReducerTypes';
 import { ImageReducerError } from './ImageReducerError';
-import { UPLOAD_WIDTH_VALUES, UPLOAD_WIDTHS } from '../../CONSTANTS';
-import { left, right } from 'fp-ts/lib/Either';
+import { UPLOAD_WIDTH_VALUES, UPLOAD_WIDTHS } from '../../../CONSTANTS';
+import { left, right, Either } from 'fp-ts/lib/Either';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
-export const deriveNeededWidths = (canvasOfOriginal: HTMLCanvasElement) => {
+export const deriveNeededWidths = (
+	canvasOfOriginal: HTMLCanvasElement
+): Either<ImageReducerError, NonEmptyArray<number>> => {
 	const originalWidth = canvasOfOriginal.width;
 
 	if (originalWidth < UPLOAD_WIDTH_VALUES[0]) {
@@ -27,10 +30,10 @@ export const deriveNeededWidths = (canvasOfOriginal: HTMLCanvasElement) => {
 	const originalExceedsMaxWidth = maxSizePosition >= UPLOAD_WIDTHS.length;
 
 	return originalExceedsMaxWidth
-		? right(UPLOAD_WIDTH_VALUES.slice())
+		? right(UPLOAD_WIDTH_VALUES.slice() as NonEmptyArray<number>)
 		: right(
 				UPLOAD_WIDTH_VALUES.slice(0, maxSizePosition).concat([
 					originalWidth,
-				])
+				]) as NonEmptyArray<number>
 		  );
 };

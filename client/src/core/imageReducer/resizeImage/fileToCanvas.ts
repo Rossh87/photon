@@ -2,7 +2,7 @@ import { tryCatch, map as TEMap } from 'fp-ts/lib/TaskEither';
 import { left, right, chain as EChain } from 'fp-ts/lib/Either';
 import { map as TMap } from 'fp-ts/lib/Task';
 import { flow } from 'fp-ts/lib/function';
-import { IPreprocessedFile } from '../../modules/upload/UploadManager/uploadPreprocessing/uploadPreprocessingTypes';
+import { IPreprocessedFile } from '../preprocessImages/imagePreprocessingTypes';
 import { ImageReducerError } from './ImageReducerError';
 
 const loadImg = (f: IPreprocessedFile) =>

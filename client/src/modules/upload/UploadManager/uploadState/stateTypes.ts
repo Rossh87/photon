@@ -1,10 +1,9 @@
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import {
-	TPreprocessedFiles,
 	TPreprocessErrors,
 	IPreprocessedFile,
+	TPreprocessingResults,
 } from '../../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
-import { TImageReducerErrors } from '../../../../core/imageReducer/resizeImage/imageReducerTypes';
 
 // Begin image preprocessing types
 export type TFilesArray = NonEmptyArray<File>;
@@ -19,8 +18,8 @@ export type TImageUploadStateStatus =
 
 export interface IImageUploadState {
 	status: TImageUploadStateStatus;
-	selectedFiles: TPreprocessedFiles | [];
-	errors: TPreprocessErrors | TImageReducerErrors | [];
+	selectedFiles: TPreprocessingResults | [];
+	errors: any;
 }
 
 export interface IFileAction<T> {
@@ -28,16 +27,13 @@ export interface IFileAction<T> {
 	data: T;
 }
 
-export interface IFilesSelectedAction extends IFileAction<TPreprocessedFiles> {
+export interface IFilesSelectedAction
+	extends IFileAction<TPreprocessingResults> {
 	type: 'FILES_SELECTED';
 }
 
-export interface IUnselectInvalidFileAction extends IFileAction<string> {
-	type: 'UNSELECT_INVALID_FILE';
-}
-
-export interface IUnselectValidFileAction extends IFileAction<string> {
-	type: 'UNSELECT_VALID_FILE';
+export interface IUnselectFileAction extends IFileAction<string> {
+	type: 'UNSELECT_FILE';
 }
 
 export interface IInvalidFileSelectionAction
@@ -51,9 +47,13 @@ export interface IUpdateFileAction
 	previousName: string;
 }
 
+export interface IUnselectAllAction extends IFileAction<null> {
+	type: 'UNSELECT_ALL';
+}
+
 export type TPreprocessActions =
 	| IFilesSelectedAction
-	| IUnselectValidFileAction
-	| IUnselectInvalidFileAction
 	| IInvalidFileSelectionAction
-	| IUpdateFileAction;
+	| IUpdateFileAction
+	| IUnselectAllAction
+	| IUnselectFileAction;

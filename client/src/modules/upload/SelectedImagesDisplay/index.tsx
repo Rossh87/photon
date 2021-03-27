@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-	TPreprocessedFiles,
-	IPreprocessedFile,
 	TPreprocessErrors,
+	TPreprocessingResults,
+	IPreprocessingResult,
+	IPreprocessedFile
 } from '../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import { IImageUploadState } from '../UploadManager/uploadState/stateTypes'
 import List from '@material-ui/core/List';
@@ -22,56 +23,33 @@ import { makeStyles } from '@material-ui/core/styles';
 
 interface IDisplayProps {
 	uploadState: IImageUploadState;
-	handleInvalidFileRemoval: (f: string) => void;
-	handleValidFileRemoval: (f: string) => void;
-	handleUpdate: (p: string, u: Partial<IPreprocessedFile>) => void;
+	handleFileRemoval: (f: string) => void;
+	handleFileUpdate: (p: string, u: Partial<IPreprocessedFile>) => void;
 }
 
 // TODO: passing of error message to list item component through a null prop isn't great...
 const SelectedImagesDisplay: React.FunctionComponent<IDisplayProps> = ({
 	uploadState,
-	handleValidFileRemoval,
-	handleInvalidFileRemoval,
-	handleUpdate,
+	handleFileRemoval,
+	handleFileUpdate,
 }) => {
-	const generateValidFileItems = (files: TPreprocessedFiles) =>
-		files.map((f) => (
-			<ValidFileListItem
-				file={f}
-				handleRemoval={handleValidFileRemoval}
-				handleUpdate={handleUpdate}
-				key={f.displayName}
+	const {selectedFiles} = uploadState;
+
+	const generateSelectedImageItems = (imageFiles: TPreprocessingResults) =>
+		imageFiles.map((f) => (
+			<SelectedImage
+				image={f}
+				handleRemoval={handleFileRemoval}
+				handleFileUpdate={handleFileUpdate}
+				key={f.imageFile.displayName}
 			/>
 		));
 
-	// TODO: we have to have a null check here because we recycle the ImagePreprocessError structure
-	// a lot.  Could be improved.
-	const generateInvalidFileItems = (errs: TPreprocessErrors) =>
-		errs.map((e) =>
-			e.invalidFile ? (
-				<InvalidFileListItem
-					file={e.invalidFile}
-					handleRemoval={handleInvalidFileRemoval}
-					key={e.invalidFile.displayName}
-					secondaryText={e.message}
-				/>
-			) : null
-		);
-
-	const renderListItems = () => (
-		<React.Fragment>
-			{generateValidFileItems(
-				uploadState.selectedFiles as TPreprocessedFiles
-			)}
-			{generateInvalidFileItems(uploadState.errors as TPreprocessErrors)}
-		</React.Fragment>
-	);
-
-	return <List>{renderListItems()}</List>;
+	return selectedFiles.length? <List>{generateSelectedImageItems(selectedFiles as TPreprocessingResults)}</List> : null;
 };
 
 interface IFileUpdateFormProps {
-	handleUpdate: (
+	handleFileUpdate: (
 		previousName: string,
 		updates: Partial<IPreprocessedFile>
 	) => void;
@@ -80,7 +58,7 @@ interface IFileUpdateFormProps {
 }
 
 const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
-	handleUpdate,
+	handleFileUpdate,
 	fileName,
 	closeAccordion,
 }) => {
@@ -90,7 +68,7 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		handleUpdate(fileName, { displayName: inputState });
+		handleFileUpdate(fileName, { displayName: inputState });
 		setInputState('');
 		closeAccordion();
 	};
@@ -108,28 +86,35 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 	);
 };
 
-// TODO: TONS of duplication between the valid/invalid variant here--good place for an abstraction
-const useValidFileListItemStyles = makeStyles({
+const useSelectedImageStyles = makeStyles({
 	root: {
 		width: '100%',
 	},
 });
 
-interface IValidItemProps {
-	file: IPreprocessedFile;
+interface ISelectedImageProps {
+	image: IPreprocessingResult;
 	handleRemoval: (fileForRemoval: string) => void;
-	handleUpdate: (p: string, u: Partial<IPreprocessedFile>) => void;
+	handleFileUpdate: (p: string, u: Partial<IPreprocessedFile>) => void;
 }
 
-const ValidFileListItem: React.FunctionComponent<IValidItemProps> = ({
-	file,
+const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
+	image,
 	handleRemoval,
-	handleUpdate,
+	handleFileUpdate,
 }) => {
-	const classes = useValidFileListItemStyles();
-
+	// state stuff
 	const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
+	const classes = useSelectedImageStyles();
+
+	const hasError = !!(image.error);
+
+	const displayName = image.error ? image.error.invalidFile.displayName : image.imageFile.displayName;
+
+	const textColor = hasError ? 'error' : 'primary';
+
+	// handlers
 	const closeAccordion = () => setExpanded(false);
 
 	const toggleAccordion = (e: React.MouseEvent) => {
@@ -139,7 +124,7 @@ const ValidFileListItem: React.FunctionComponent<IValidItemProps> = ({
 
 	const removeFileListItem = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		handleRemoval(file.displayName);
+		handleRemoval(displayName);
 	};
 
 	return (
@@ -152,9 +137,9 @@ const ValidFileListItem: React.FunctionComponent<IValidItemProps> = ({
 						</Avatar>
 					</ListItemAvatar>
 					<ListItemText
-						primary={file.displayName}
+						primary={displayName}
 						primaryTypographyProps={{
-							color: 'primary',
+							color: textColor,
 						}}
 					/>
 					<ListItemSecondaryAction>
@@ -170,53 +155,11 @@ const ValidFileListItem: React.FunctionComponent<IValidItemProps> = ({
 				<AccordionDetails>
 					<FileUpdateForm
 						closeAccordion={closeAccordion}
-						handleUpdate={handleUpdate}
-						fileName={file.displayName}
+						handleFileUpdate={handleFileUpdate}
+						fileName={displayName}
 					/>
 				</AccordionDetails>
 			</Accordion>
-		</ListItem>
-	);
-};
-
-interface IInvalidItemProps {
-	file: IPreprocessedFile;
-	handleRemoval: (fileForRemoval: string) => void;
-	secondaryText: string;
-}
-const InvalidFileListItem: React.FunctionComponent<IInvalidItemProps> = ({
-	file,
-	handleRemoval,
-	secondaryText,
-}) => {
-	const removeFileListItem = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		handleRemoval(file.displayName);
-	};
-
-	return (
-		<ListItem>
-			<ListItemAvatar>
-				<Avatar>
-					<PhotoOutlinedIcon />
-				</Avatar>
-			</ListItemAvatar>
-			<ListItemText
-				primary={file.displayName}
-				primaryTypographyProps={{
-					color: 'error',
-				}}
-				secondary={secondaryText}
-			/>
-			<ListItemSecondaryAction>
-				<IconButton
-					edge="end"
-					aria-label="remove file"
-					onClick={removeFileListItem}
-				>
-					<DeleteIcon />
-				</IconButton>
-			</ListItemSecondaryAction>
 		</ListItem>
 	);
 };

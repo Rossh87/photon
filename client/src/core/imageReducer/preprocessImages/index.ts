@@ -72,8 +72,8 @@ export const foldToResult = NEAmap<
 	pipe(
 		r,
 		Efold<ImagePreprocessError, IPreprocessedFile, IPreprocessingResult>(
-			(e) => ({ error: e }),
-			(image) => ({ imageData: image })
+			(e) => ({ imageFile: e.invalidFile, error: e }),
+			(image) => ({ imageFile: image })
 		)
 	)
 );

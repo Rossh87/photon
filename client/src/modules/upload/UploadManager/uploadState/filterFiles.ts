@@ -1,30 +1,21 @@
 import { filter } from 'fp-ts/lib/NonEmptyArray';
-import { ImagePreprocessError } from '../../../../core/imageReducer/preprocessImages/ImagePreprocessError';
 import { flow } from 'fp-ts/lib/function';
 import { getOrElse } from 'fp-ts/lib/Option';
 import {
-	TPreprocessedFiles,
-	TPreprocessErrors,
-	IPreprocessedFile,
+	IPreprocessingResult,
+	TPreprocessingResults,
 } from '../../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 
-export const makeFileNameFilter = (nameForRemoval: string) =>
-	filter((file: IPreprocessedFile) => file.displayName !== nameForRemoval);
+const getDisplayName = (f: IPreprocessingResult) =>
+	f.error ? f.error.invalidFile.displayName : f.imageFile.displayName;
 
-export const makeErrorNameFilter = (nameForRemoval: string) =>
+export const makeImageNameFilter = (nameForRemoval: string) =>
 	filter(
-		(err: ImagePreprocessError) =>
-			err.invalidFile?.displayName !== nameForRemoval
+		(file: IPreprocessingResult) => getDisplayName(file) !== nameForRemoval
 	);
 
-export const filterOneError = (nameForRemoval: string) =>
+export const filterOneImageFile = (nameForRemoval: string) =>
 	flow(
-		makeErrorNameFilter(nameForRemoval),
-		getOrElse<TPreprocessErrors | []>(() => [])
-	);
-
-export const filterOneFile = (nameForRemoval: string) =>
-	flow(
-		makeFileNameFilter(nameForRemoval),
-		getOrElse<TPreprocessedFiles | []>(() => [])
+		makeImageNameFilter(nameForRemoval),
+		getOrElse<TPreprocessingResults | []>(() => [])
 	);
