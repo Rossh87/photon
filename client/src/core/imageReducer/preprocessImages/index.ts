@@ -1,16 +1,17 @@
 import {
 	IPreprocessDependencies,
 	IPreprocessedFile,
+	IPreprocessingResult,
 } from './imagePreprocessingTypes';
-import { collatePreprocessResults } from './preprocessFilesConstructs';
 import {
 	Either,
 	map as Emap,
-	fromOption,
+	mapLeft as EMapLeft,
 	right,
 	left,
 	fold as Efold,
 } from 'fp-ts/lib/Either';
+import { map as OMap } from 'fp-ts/lib/Option';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { MAX_RAW_FILE_SIZE_IN_BYTES } from '../../../CONSTANTS';
 import {
@@ -61,23 +62,21 @@ const appendMetadataToFile = (deps: IPreprocessDependencies) => (file: File) =>
 		originalSizeInBytes: file.size,
 	});
 
-// We return a strange type here to make this result compatible with collation
-// function
-export const generateEmptyFileListErr = (): NonEmptyArray<
-	Either<ImagePreprocessError, never>
-> => [left(ImagePreprocessError.create('at least one file must be selected'))];
+export const fileListToNonEmptyArray = (f: FileList) =>
+	pipe(Array.from(f), fromArray);
 
-export const fileListToNonEmptyArray = (
-	f: FileList
-): Either<
-	NonEmptyArray<Either<ImagePreprocessError, never>>,
-	NonEmptyArray<File>
-> =>
+export const foldToResult = NEAmap<
+	Either<ImagePreprocessError, IPreprocessedFile>,
+	IPreprocessingResult
+>((r) =>
 	pipe(
-		Array.from(f),
-		fromArray,
-		fromOption(() => generateEmptyFileListErr())
-	);
+		r,
+		Efold<ImagePreprocessError, IPreprocessedFile, IPreprocessingResult>(
+			(e) => ({ error: e }),
+			(image) => ({ imageData: image })
+		)
+	)
+);
 
 export const processAndValidateFiles = (deps: IPreprocessDependencies) =>
 	pipe(flow(appendMetadataToFile(deps), validateFileSize), NEAmap);
@@ -85,9 +84,6 @@ export const processAndValidateFiles = (deps: IPreprocessDependencies) =>
 export const preprocessImages = (deps: IPreprocessDependencies) =>
 	flow(
 		fileListToNonEmptyArray,
-		// if array is empty we'll have a result to collate at this point, so go ahead
-		// and fold our Either type.
-		Efold(collatePreprocessResults, (files) =>
-			pipe(files, processAndValidateFiles(deps), collatePreprocessResults)
-		)
+		OMap(processAndValidateFiles(deps)),
+		OMap(foldToResult)
 	);

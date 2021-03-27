@@ -1,6 +1,5 @@
 import { ImagePreprocessError } from './ImagePreprocessError';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { These } from 'fp-ts/lib/These';
 
 export interface IPreprocessedFile extends File {
 	humanReadableSize: string;
@@ -9,11 +8,14 @@ export interface IPreprocessedFile extends File {
 	originalSizeInBytes: number;
 }
 
+export interface IPreprocessingResult {
+	imageData?: IPreprocessedFile;
+	error?: ImagePreprocessError;
+}
+
 export type TPreprocessedFiles = NonEmptyArray<IPreprocessedFile>;
 
 export type TPreprocessErrors = NonEmptyArray<ImagePreprocessError>;
-
-export type TPreProcessResult = These<TPreprocessErrors, TPreprocessedFiles>;
 
 export interface IPreprocessDependencies {
 	ownerID: string;

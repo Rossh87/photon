@@ -67,7 +67,6 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 							data: processedFiles,
 						}),
 					(e, f) => {
-						console.log('both')
 						uploadDispatch({
 							type: 'INVALID_FILE_SELECTIONS',
 							data: e,
