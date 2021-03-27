@@ -1,5 +1,5 @@
 import { BaseError } from '../../error';
-import { IPreprocessedFile } from './uploadPreprocessingTypes';
+import { IPreprocessedFile } from './imagePreprocessingTypes';
 
 export class ImagePreprocessError extends BaseError {
 	public readonly invalidFile?: IPreprocessedFile;

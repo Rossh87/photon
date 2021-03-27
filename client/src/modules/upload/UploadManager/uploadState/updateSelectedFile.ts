@@ -1,8 +1,6 @@
-import { map, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { ImagePreprocessError } from '../uploadPreprocessing/ImagePreprocessError';
+import { map } from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/function';
-import { getOrElse } from 'fp-ts/lib/Option';
-import { IPreprocessedFile } from '../uploadPreprocessing/uploadPreprocessingTypes';
+import { IPreprocessedFile } from '../../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 
 // TODO: this is *potentially* fragile if we ever want to make updates to any native
 // properties of the File object that our IPreprocessedFile extends, since some of

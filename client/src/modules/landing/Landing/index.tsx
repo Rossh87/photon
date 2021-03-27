@@ -2,7 +2,7 @@ import React from 'react';
 import Container from '@material-ui/core/Container';
 import UploadForm from '../../upload/UploadForm';
 import UploadManager from '../../upload/UploadManager'
-import SelectedFilesDisplay from '../../upload/SelectedFilesDisplay'
+import SelectedImagesDisplay from '../../upload/SelectedImagesDisplay'
 import {TUserState} from '../../auth/AuthManager/authTypes'
 import Login from '../../auth/Login'
 import Loading from '../../auth/Loading'

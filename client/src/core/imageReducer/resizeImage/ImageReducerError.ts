@@ -1,5 +1,4 @@
-import { BaseError } from '../error';
-import { IPreprocessedFile } from '../../modules/upload/UploadManager/uploadPreprocessing/uploadPreprocessingTypes';
+import { BaseError } from '../../error';
 
 // TODO: this needs work to be able to accept all the different ways image reducer can fail
 // and still consistently produce intelligible error content

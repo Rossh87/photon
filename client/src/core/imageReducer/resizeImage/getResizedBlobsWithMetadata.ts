@@ -2,28 +2,31 @@ import { resizeCanvasToTargetWidth } from './resizeCanvasToTargetWidth';
 import { canvasToBlob } from './canvasToBlob';
 import { calculateBlobMD5Hash } from './calculateBlobMD5Hash';
 import { pipe, flow } from 'fp-ts/lib/function';
-import { map } from 'fp-ts/lib/ReadonlyArray';
-import * as E from 'fp-ts/lib/Either';
+import { fromReadonlyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray';
 import * as TE from 'fp-ts/lib/TaskEither';
-import { IMAGE_UPLOAD_QUALITY } from '../../CONSTANTS';
+import {
+	NonEmptyArray,
+	map as NEAMap,
+	sequence,
+} from 'fp-ts/lib/NonEmptyArray';
+import { IMAGE_UPLOAD_QUALITY } from '../../../CONSTANTS';
 import { IUploadRequestMetadata } from './imageReducerTypes';
 import { ImageReducerError } from './ImageReducerError';
-import { IUploadableBlob } from '../../modules/upload/UploadManager/uploadProcessing/uploadProcessingTypes';
+import { IUploadableBlob } from './imageReducerTypes';
 
 type TWrapperData = Pick<
 	IUploadRequestMetadata,
 	'ownerID' | 'displayName' | 'mediaType'
 >;
 
-// Where the magic happens bb.
 export const getResizedBlobsWithMetadata = (wrapperData: TWrapperData) => (
 	canvas: HTMLCanvasElement
 ) => (
-	widths: Array<number>
-): TE.TaskEither<ImageReducerError, ReadonlyArray<IUploadableBlob>> =>
+	widths: NonEmptyArray<number>
+): TE.TaskEither<ImageReducerError, NonEmptyArray<IUploadableBlob>> =>
 	pipe(
 		widths,
-		map((width) =>
+		NEAMap((width) =>
 			pipe(
 				TE.of<ImageReducerError, HTMLCanvasElement>(
 					resizeCanvasToTargetWidth(canvas)(width)
@@ -51,5 +54,5 @@ export const getResizedBlobsWithMetadata = (wrapperData: TWrapperData) => (
 				)
 			)
 		),
-		TE.sequenceArray
+		sequence(TE.taskEither)
 	);

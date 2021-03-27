@@ -1,7 +1,7 @@
 import {
 	IPreprocessDependencies,
 	IPreprocessedFile,
-} from './uploadPreprocessingTypes';
+} from './imagePreprocessingTypes';
 import { collatePreprocessResults } from './preprocessFilesConstructs';
 import {
 	Either,

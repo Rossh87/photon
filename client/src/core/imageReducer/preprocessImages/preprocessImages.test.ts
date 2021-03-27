@@ -9,7 +9,7 @@ import {
 	TPreprocessErrors,
 	IPreprocessDependencies,
 	IPreprocessedFile,
-} from './uploadPreprocessingTypes';
+} from './imagePreprocessingTypes';
 import { createMockFileList } from '../../utils/testUtils';
 import { map as Emap, mapLeft as EmapLeft } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/function';

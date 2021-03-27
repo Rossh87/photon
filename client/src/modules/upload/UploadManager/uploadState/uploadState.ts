@@ -1,19 +1,12 @@
 import {
-	TPreprocessActions,
 	TPreprocessedFiles,
 	TPreprocessErrors,
-} from '../uploadPreprocessing/uploadPreprocessingTypes';
+} from '../../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import { IImageUploadState } from './stateTypes';
 import { copy } from 'fp-ts/lib/NonEmptyArray';
 import React from 'react';
 import { filterOneError, filterOneFile } from './filterFiles';
 import { updateOneFile } from './updateSelectedFile';
-import {
-	TUploadActions,
-	TUploadProcessingErrors,
-} from '../uploadProcessing/uploadProcessingTypes';
-import { UploadError } from '../uploadProcessing/UploadError';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 // NEEDED: upload_failed, upload_init_failed, upload_success
 

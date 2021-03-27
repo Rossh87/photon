@@ -1,11 +1,10 @@
 import React from 'react';
 import { uploadReducer } from './uploadState/uploadState';
-import { IPreprocessedFile } from './uploadPreprocessing/uploadPreprocessingTypes';
+import { IPreprocessedFile } from '../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import {IImageUploadState} from './uploadState/stateTypes'
-import {processAllUploads} from './uploadProcessing/processAllUploads'
-import { preprocessFiles } from './uploadPreprocessing/preprocessFiles';
+import {preprocessImages} from '../../../core/imageReducer/preprocessImages'
 import UploadForm from '../UploadForm';
-import SelectedFilesDisplay from '../SelectedFilesDisplay';
+import SelectedImagesDisplay from '../SelectedImagesDisplay';
 import { fold as Tfold } from 'fp-ts/lib/These';
 import { pipe } from 'fp-ts/lib/function';
 import { TUserState } from '../../auth/AuthManager/authTypes';
@@ -34,7 +33,7 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 		pipe(
 			uploadState.selectedFiles,
 			fromArray,
-			map(files => processAllUploads(files)({fetcher: axios, dispatch: uploadDispatch}))
+			// map(files => processAllUploads(files)({fetcher: axios, dispatch: uploadDispatch}))
 		)
 	};
 
@@ -55,7 +54,7 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 
 		if (files && ownerID) {
 			return pipe(
-				preprocessFiles({ ownerID })(files),
+				preprocessImages({ ownerID })(files),
 				Tfold(
 					(errs) =>
 						uploadDispatch({
@@ -90,7 +89,7 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 
 	return (
 		<div>
-			<SelectedFilesDisplay
+			<SelectedImagesDisplay
 				uploadState={uploadState}
 				handleInvalidFileRemoval={handleInvalidFileRemoval}
 				handleValidFileRemoval={handleValidFileRemoval}

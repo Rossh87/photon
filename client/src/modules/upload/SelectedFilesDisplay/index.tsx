@@ -3,7 +3,7 @@ import {
 	TPreprocessedFiles,
 	IPreprocessedFile,
 	TPreprocessErrors,
-} from '../UploadManager/uploadPreprocessing/uploadPreprocessingTypes';
+} from '../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import { IImageUploadState } from '../UploadManager/uploadState/stateTypes'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -28,7 +28,7 @@ interface IDisplayProps {
 }
 
 // TODO: passing of error message to list item component through a null prop isn't great...
-const SelectedFilesDisplay: React.FunctionComponent<IDisplayProps> = ({
+const SelectedImagesDisplay: React.FunctionComponent<IDisplayProps> = ({
 	uploadState,
 	handleValidFileRemoval,
 	handleInvalidFileRemoval,
@@ -221,4 +221,4 @@ const InvalidFileListItem: React.FunctionComponent<IInvalidItemProps> = ({
 	);
 };
 
-export default SelectedFilesDisplay;
+export default SelectedImagesDisplay;

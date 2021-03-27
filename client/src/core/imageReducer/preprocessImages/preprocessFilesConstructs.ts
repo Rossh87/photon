@@ -11,7 +11,7 @@ import {
 } from 'fp-ts/lib/NonEmptyArray';
 import { Either, isLeft } from 'fp-ts/lib/Either';
 import { ImagePreprocessError } from './ImagePreprocessError';
-import { IPreprocessedFile } from './uploadPreprocessingTypes';
+import { IPreprocessedFile } from './imagePreprocessingTypes';
 
 const preprocessErrSG = getNEASemigroup<ImagePreprocessError>();
 const preprocessSuccessSG = getNEASemigroup<IPreprocessedFile>();

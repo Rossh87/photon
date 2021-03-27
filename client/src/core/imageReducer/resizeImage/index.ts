@@ -6,7 +6,7 @@ import { fileToCanvas } from './fileToCanvas';
 import { pipe } from 'fp-ts/lib/function';
 import { of, map, bind, bindTo, TaskEither } from 'fp-ts/lib/TaskEither';
 import { of as TOf } from 'fp-ts/lib/Task';
-import { IPreprocessedFile } from '../../modules/upload/UploadManager/uploadPreprocessing/uploadPreprocessingTypes';
+import { IPreprocessedFile } from '../preprocessImages/imagePreprocessingTypes';
 import { ImageReducerError } from './ImageReducerError';
 import { IResizingData } from './imageReducerTypes';
 
