@@ -20,6 +20,8 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles } from '@material-ui/core/styles';
+import {fromPredicate, map} from 'fp-ts/lib/Option';
+import {pipe} from 'fp-ts/lib/function'
 
 interface IDisplayProps {
 	uploadState: IImageUploadState;
@@ -68,8 +70,20 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		handleFileUpdate(fileName, { displayName: inputState });
-		setInputState('');
+
+		pipe(
+			inputState,
+			fromPredicate<string>((s) => s.length > 0),
+			map(x => {
+				handleFileUpdate(fileName, { displayName: inputState });
+				return x;
+			}),
+			map(x => {
+				setInputState('');
+				return x
+			})
+		)
+		
 		closeAccordion();
 	};
 

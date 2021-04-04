@@ -26,14 +26,14 @@ export const uploadReducer: React.Reducer<
 					s.selectedFiles as TPreprocessingResults
 				),
 			};
-		// case 'UPDATE_FILE':
-		// 	return {
-		// 		...s,
-		// 		selectedFiles: updateOneFile(
-		// 			a.previousName,
-		// 			a.data
-		// 		)(s.selectedFiles as TPreprocessedFiles),
-		// 	};
+		case 'UPDATE_FILE':
+			return {
+				...s,
+				selectedFiles: updateOneFile(
+					a.previousName,
+					a.data
+				)(s.selectedFiles as TPreprocessingResults),
+			};
 		default:
 			return s;
 	}
