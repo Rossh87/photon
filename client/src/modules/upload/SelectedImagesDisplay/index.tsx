@@ -2,7 +2,6 @@ import React from 'react';
 import {
 	TPreprocessErrors,
 	TPreprocessingResults,
-	IPreprocessingResult,
 	IPreprocessedFile
 } from '../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import { IImageUploadState } from '../UploadManager/uploadState/stateTypes'
@@ -40,10 +39,10 @@ const SelectedImagesDisplay: React.FunctionComponent<IDisplayProps> = ({
 	const generateSelectedImageItems = (imageFiles: TPreprocessingResults) =>
 		imageFiles.map((f) => (
 			<SelectedImage
-				image={f}
+				imageFile={f}
 				handleRemoval={handleFileRemoval}
 				handleFileUpdate={handleFileUpdate}
-				key={f.imageFile.displayName}
+				key={f.displayName}
 			/>
 		));
 
@@ -107,13 +106,13 @@ const useSelectedImageStyles = makeStyles({
 });
 
 interface ISelectedImageProps {
-	image: IPreprocessingResult;
+	imageFile: IPreprocessedFile;
 	handleRemoval: (fileForRemoval: string) => void;
 	handleFileUpdate: (p: string, u: Partial<IPreprocessedFile>) => void;
 }
 
 const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
-	image,
+	imageFile,
 	handleRemoval,
 	handleFileUpdate,
 }) => {
@@ -122,9 +121,9 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 
 	const classes = useSelectedImageStyles();
 
-	const hasError = !!(image.error);
+	const hasError = !!(imageFile.error);
 
-	const displayName = image.error ? image.error.invalidFile.displayName : image.imageFile.displayName;
+	const {status, displayName} = imageFile;
 
 	const textColor = hasError ? 'error' : 'primary';
 

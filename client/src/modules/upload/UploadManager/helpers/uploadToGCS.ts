@@ -3,9 +3,15 @@ import {
 	IResizingData,
 	IUploadURIMetadata,
 } from '../../../../core/imageReducer/resizeImage/imageReducerTypes';
-import { pipe } from 'fp-ts/lib/function';
+import { pipe, flow } from 'fp-ts/lib/function';
 import { map as EMap, Either, left, right } from 'fp-ts/lib/Either';
-import { map as TEMap, chain as TEChain, tryCatch } from 'fp-ts/lib/TaskEither';
+import {
+	map as TEMap,
+	chain as TEChain,
+	tryCatch,
+	sequenceArray,
+} from 'fp-ts/lib/TaskEither';
+import { of as TOf } from 'fp-ts/lib/Task';
 import { IAsyncDependencies } from '../../../../core/sharedTypes';
 import { BaseError } from '../../../../core/error';
 import {
@@ -24,15 +30,16 @@ const leftIfHasErrors = (res: IUploadsResponsePayload) =>
 		  )
 		: right(res.successes as NonEmptyArray<IUploadURIMetadata>);
 
-export const doUpload = (images: IResizingData) => (
+export const uploadToGCS = (images: IResizingData) => (
 	response: IUploadsResponsePayload
 ) => (deps: IAsyncDependencies) =>
 	pipe(
 		response,
 		leftIfHasErrors,
-		EMap((uris) =>
-			pipe(
-				uris,
+		// lift to Task to avoid a weird return type
+		TOf,
+		TEChain(
+			flow(
 				NEAMapWithIdx((i, uri) =>
 					tryCatch(
 						() =>
@@ -46,7 +53,8 @@ export const doUpload = (images: IResizingData) => (
 								e
 							)
 					)
-				)
+				),
+				sequenceArray
 			)
 		)
 	);

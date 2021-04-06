@@ -4,9 +4,10 @@ import { copy } from 'fp-ts/lib/NonEmptyArray';
 import React from 'react';
 import { filterOneImageFile } from './filterFiles';
 import { updateOneFile } from './updateSelectedFile';
+import { attachResizeData } from './attachResizeData';
+import { attachErrorMessage } from './attachErrorMessage';
+import { setSuccessful } from './setSuccessful';
 import { TPreprocessActions } from './stateTypes';
-
-// NEEDED: upload_failed, upload_init_failed, upload_success
 
 export const uploadReducer: React.Reducer<
 	IImageUploadState,
@@ -33,6 +34,27 @@ export const uploadReducer: React.Reducer<
 					a.previousName,
 					a.data
 				)(s.selectedFiles as TPreprocessingResults),
+			};
+		case 'IMAGES_EMITTED':
+			return {
+				...s,
+				selectedFiles: attachResizeData(a.data)(
+					s.selectedFiles as TPreprocessingResults
+				),
+			};
+		case 'UPLOAD_SUCCESS':
+			return {
+				...s,
+				selectedFiles: setSuccessful(a.data)(
+					s.selectedFiles as TPreprocessingResults
+				),
+			};
+		case 'UPLOAD_FAILED':
+			return {
+				...s,
+				selectedFiles: attachErrorMessage(a.data)(
+					s.selectedFiles as TPreprocessingResults
+				),
 			};
 		default:
 			return s;

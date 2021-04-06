@@ -1,9 +1,11 @@
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { BaseError } from '../../../../core/error';
 import {
 	TPreprocessErrors,
 	IPreprocessedFile,
 	TPreprocessingResults,
 } from '../../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
+import { IResizingData } from '../../../../core/imageReducer/resizeImage/imageReducerTypes';
 
 // Begin image preprocessing types
 export type TFilesArray = NonEmptyArray<File>;
@@ -51,9 +53,29 @@ export interface IUnselectAllAction extends IFileAction<null> {
 	type: 'UNSELECT_ALL';
 }
 
+export interface IImagesEmittedAction extends IFileAction<IResizingData> {
+	type: 'IMAGES_EMITTED';
+}
+
+export interface IUploadSuccessAction extends IFileAction<string> {
+	type: 'UPLOAD_SUCCESS';
+}
+
+export interface IUploadFailedAction extends IFileAction<IUploadFailureData> {
+	type: 'UPLOAD_FAILED';
+}
+
 export type TPreprocessActions =
 	| IFilesSelectedAction
 	| IInvalidFileSelectionAction
 	| IUpdateFileAction
 	| IUnselectAllAction
-	| IUnselectFileAction;
+	| IUnselectFileAction
+	| IUploadFailedAction
+	| IUploadSuccessAction
+	| IImagesEmittedAction;
+
+export interface IUploadFailureData {
+	err: BaseError;
+	failedFileDisplayName: string;
+}

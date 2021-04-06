@@ -1,7 +1,6 @@
 import {
 	IPreprocessDependencies,
 	IPreprocessedFile,
-	IPreprocessingResult,
 } from './imagePreprocessingTypes';
 import {
 	Either,
@@ -54,27 +53,30 @@ const appendMetadataToFile = (deps: IPreprocessDependencies) => (file: File) =>
 			| 'humanReadableSize'
 			| 'displayName'
 			| 'originalSizeInBytes'
+			| 'status'
 		>
 	>(file, {
 		ownerID: deps.ownerID,
 		humanReadableSize: bytesToHumanReadableSize(file.size),
 		displayName: file.name,
 		originalSizeInBytes: file.size,
+		status: 'preprocessed',
 	});
 
 export const fileListToNonEmptyArray = (f: FileList) =>
 	pipe(Array.from(f), fromArray);
 
+// TODO: this is MEGA hacky to get the error type and success type to
+// converge to the same type.  This is to allow for changes in the IPreprocessedFile
+// model that happened after this file was written.  This hack avoids a rewrite
+// of all the preceding code.  But it's pretty confusing...
 export const foldToResult = NEAmap<
 	Either<ImagePreprocessError, IPreprocessedFile>,
-	IPreprocessingResult
->((r) =>
-	pipe(
-		r,
-		Efold<ImagePreprocessError, IPreprocessedFile, IPreprocessingResult>(
-			(e) => ({ imageFile: e.invalidFile, error: e }),
-			(image) => ({ imageFile: image })
-		)
+	IPreprocessedFile
+>(
+	Efold(
+		(e) => Object.assign(e.invalidFile, { status: 'error', error: e }),
+		(image) => Object.assign(image, { status: 'preprocessed' })
 	)
 );
 
