@@ -6,6 +6,7 @@ export type TImageDimensions = [number, number];
 
 export type TImageReducerErrors = NonEmptyArray<ImageReducerError>;
 
+// upload tail path is ownerID/displayName/width
 export interface IUploadRequestMetadata {
 	ownerID: string;
 	displayName: string;
@@ -14,6 +15,17 @@ export interface IUploadRequestMetadata {
 	integrityHash: string;
 	primaryColor?: string;
 	width: number;
+}
+
+export interface ICombinedUploadRequestMetadata {
+	ownerID: string;
+	displayName: string;
+	mediaType: string;
+	sizeInBytes: number;
+	integrityHash: NonEmptyArray<string>;
+	primaryColor?: string;
+	availableWidths: NonEmptyArray<number>;
+	publicPathPrefix: string;
 }
 
 export interface IUploadableBlob {

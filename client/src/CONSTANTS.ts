@@ -1,5 +1,9 @@
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
+/**NOTE: these partial URLs should NEVER end with a trailing slash.
+ * It is the caller's responsibility to use the correct path separator
+ * when appending a suffix.
+ */
 export const AUTH_API_ENDPOINT = 'http://localhost:8000/auth/user';
 export const GOOGLE_OAUTH_ENDPOINT = 'http://localhost:8000/connect/google';
 export const REQUEST_UPLOAD_URI_ENDPOINT =
@@ -11,3 +15,7 @@ export const UPLOAD_WIDTHS: NonEmptyArray<
 	'tiny' | 'small' | 'medium' | 'large'
 > = ['tiny', 'small', 'medium', 'large'];
 export const IMAGE_UPLOAD_QUALITY = 0.75;
+export const BASE_PUBLIC_IMAGE_PATH =
+	'https://storage.googleapis.com/photon_user_images';
+export const SAVE_SUCCESSFUL_UPLOAD_DATA_ENDPOINT =
+	'http://localhost:8000/upload/save';

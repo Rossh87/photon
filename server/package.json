@@ -10,13 +10,13 @@
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "express-session": "^1.17.1",
-        "fp-ts": "^2.10.0-rc.4",
+        "fp-ts": "^2.9.5",
         "grant": "^5.4.9",
         "mongodb": "^3.6.4"
     },
     "scripts": {
         "start:dev": "NODE_ENV=dev node -r $PWD/configs/preDevRun index.ts",
-		"start:inspect": "NODE_ENV=dev node --inspect -r $PWD/configs/preDevRun index.ts",
+        "start:inspect": "NODE_ENV=dev node --inspect -r $PWD/configs/preDevRun index.ts",
         "test": "jest",
         "testDB:start": "docker run --name photon-test-db -p 27017:27017 -d -v $PWD/configs/testDB/config:/etc/mongo -v$PWD/configs/testDB/data:/data/db mongo:4.4-bionic",
         "testDB:stop": "docker stop photon-test-db"

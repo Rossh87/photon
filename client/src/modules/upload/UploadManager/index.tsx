@@ -1,13 +1,19 @@
 import React from 'react';
 import { uploadReducer } from './uploadState/uploadState';
-import { IPreprocessedFile } from '../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
+import { IPreprocessedFile, TPreprocessingResults } from '../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import {IImageUploadState} from './uploadState/stateTypes'
 import {preprocessImages} from '../../../core/imageReducer/preprocessImages'
+import {processAllImages} from './helpers/processAllImages'
 import UploadForm from '../UploadForm';
 import SelectedImagesDisplay from '../SelectedImagesDisplay';
 import { pipe } from 'fp-ts/lib/function';
 import { TUserState } from '../../auth/AuthManager/authTypes';
-import { fold} from 'fp-ts/lib/Option'
+import { fold, map} from 'fp-ts/lib/Option'
+import axios from 'axios';
+import {fromArray} from 'fp-ts/lib/NonEmptyArray';
+import * as imageReducer from '../../../core/imageReducer'
+import { IAsyncDependencies } from '../../../core/sharedTypes';
+import {ReaderTaskEither} from 'fp-ts/lib/ReaderTaskEither';
 
 interface IProps {
 	user: TUserState;
@@ -27,11 +33,18 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+		
+		const callWithDeps = (deps: IAsyncDependencies) => (a: Function) => a(deps);
+
+		const run = callWithDeps({fetcher: axios, dispatch: uploadDispatch, imageReducer: imageReducer.resizeImage})
+
+		// does nothing if uploadState.selectedFiles is unpopulated
 		pipe(
-			uploadState.selectedFiles,
-			// fromArray,
-			// map(files => processAllUploads(files)({fetcher: axios, dispatch: uploadDispatch}))
-		)
+			uploadState.selectedFiles, 
+			fromArray,
+			map(processAllImages),
+			map(run)
+		);
 	};
 
 	const handleFileRemoval = (fileName: string) =>

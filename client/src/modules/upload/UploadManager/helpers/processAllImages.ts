@@ -5,4 +5,8 @@ import { map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { sequenceArray } from 'fp-ts/lib/ReaderTaskEither';
 
-export const processAll = flow(NEAMap(processOneImage));
+// bite off one file at a time and fully process it to avoid
+// pummelling the user's RAM
+export const processAllImages = (files: TPreprocessingResults) => (
+	deps: IAsyncDependencies
+) => files.forEach(async (file) => await pipe(file, processOneImage)(deps)());
