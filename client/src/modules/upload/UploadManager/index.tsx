@@ -9,10 +9,11 @@ import SelectedImagesDisplay from '../SelectedImagesDisplay';
 import { pipe } from 'fp-ts/lib/function';
 import { TUserState } from '../../auth/AuthManager/authTypes';
 import { fold, map} from 'fp-ts/lib/Option'
-import axios from 'axios';
+import {axiosInstance} from '../../../core/axiosInstance';
 import {fromArray} from 'fp-ts/lib/NonEmptyArray';
 import * as imageReducer from '../../../core/imageReducer'
 import { IAsyncDependencies } from '../../../core/sharedTypes';
+import {hasFileErrors} from './uploadState/hasFileErrors'
 import {ReaderTaskEither} from 'fp-ts/lib/ReaderTaskEither';
 
 interface IProps {
@@ -23,7 +24,6 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 	const defaultState: IImageUploadState = {
 		status: 'awaitingFileSelection',
 		selectedFiles: [],
-		errors: [],
 	};
 
 	const [uploadState, uploadDispatch] = React.useReducer(
@@ -36,7 +36,7 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 		
 		const callWithDeps = (deps: IAsyncDependencies) => (a: Function) => a(deps);
 
-		const run = callWithDeps({fetcher: axios, dispatch: uploadDispatch, imageReducer: imageReducer.resizeImage})
+		const run = callWithDeps({fetcher: axiosInstance, dispatch: uploadDispatch, imageReducer: imageReducer.resizeImage})
 
 		// does nothing if uploadState.selectedFiles is unpopulated
 		pipe(
@@ -76,7 +76,7 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 
 	const acceptedExtensions = ['image/jpg', 'image/jpeg', 'image/png'];
 
-	const submitIsDisabled = (uploadState.selectedFiles.length === 0 || uploadState.errors.length > 0);
+	const submitIsDisabled = (hasFileErrors(uploadState.selectedFiles));
 
 	return (
 		<div>

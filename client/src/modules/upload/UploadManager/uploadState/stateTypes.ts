@@ -19,9 +19,10 @@ export type TImageUploadStateStatus =
 	| 'failed';
 
 export interface IImageUploadState {
+	// TODO: status is currently unused, and never changes.  Consider
+	// removing.
 	status: TImageUploadStateStatus;
 	selectedFiles: TPreprocessingResults | [];
-	errors: any;
 }
 
 export interface IFileAction<T> {

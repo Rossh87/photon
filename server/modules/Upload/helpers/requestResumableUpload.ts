@@ -32,6 +32,7 @@ export class ResumableUploadCreationErr extends BaseError {
 	}
 }
 
+// TODO: hash comparison always fails--need to know why
 export const requestResumableUpload = (
 	uploadMetaData: IUploadRequestMetadata
 ): ReaderTaskEither<

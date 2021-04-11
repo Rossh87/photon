@@ -29,8 +29,6 @@ const oAuthFailureEffects = flow(
 	addAndApplyEffect(toErrHandlerEffect)
 );
 
-// TODO: at some point we could refactor these 'asks' statements
-// to be prettier
 export const handleGoogleOAuthCallback = flow(
 	extractOAuthToken,
 	RTE.fromEither,

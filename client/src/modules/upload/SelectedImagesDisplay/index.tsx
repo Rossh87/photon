@@ -151,6 +151,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 					</ListItemAvatar>
 					<ListItemText
 						primary={displayName}
+						secondary={imageFile.error?.message}
 						primaryTypographyProps={{
 							color: textColor,
 						}}

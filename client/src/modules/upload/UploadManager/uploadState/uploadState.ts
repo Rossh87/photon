@@ -7,6 +7,7 @@ import { updateOneFile } from './updateSelectedFile';
 import { attachResizeData } from './attachResizeData';
 import { attachErrorMessage } from './attachErrorMessage';
 import { setSuccessful } from './setSuccessful';
+import { hasFileErrors } from './hasFileErrors';
 import { TPreprocessActions } from './stateTypes';
 
 export const uploadReducer: React.Reducer<

@@ -6,7 +6,7 @@ import { pipe, flow } from 'fp-ts/lib/function';
 import { sequenceArray } from 'fp-ts/lib/ReaderTaskEither';
 
 // bite off one file at a time and fully process it to avoid
-// pummelling the user's RAM
+// pummelling the user's system
 export const processAllImages = (files: TPreprocessingResults) => (
 	deps: IAsyncDependencies
 ) => files.forEach(async (file) => await pipe(file, processOneImage)(deps)());

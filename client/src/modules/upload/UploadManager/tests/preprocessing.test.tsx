@@ -47,13 +47,25 @@ describe('UploadManager component', () => {
 
 		const UIForValid = screen.getByText('testImage', {exact: false});
 
-		const UIForInvalid =  screen.getByText('invalidSelection', {exact: false});
+		const UIForInvalid =  screen.getByText('invalidSelection');
 
 		const validColor = window.getComputedStyle(UIForValid).getPropertyValue('color')
 		const invalidColor = window.getComputedStyle(UIForInvalid).getPropertyValue('color')
 
 		expect(validColor).not.toEqual(invalidColor)
 	});
+
+	it('displays error message for files with errors', () => {
+		render(<UploadManager user={mockUser}/>);
+
+		const input = screen.getByLabelText('Choose Files');
+		
+		simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(input);
+
+		const received = screen.getByText('exceeds maximum initial image size', {exact: false});
+
+		expect(received).not.toBeNull();
+	})
 
 	describe('updating the display name of a selected file', () => {
 		it('updates file display name with user input', () => {
@@ -71,7 +83,7 @@ describe('UploadManager component', () => {
 	
 			userEvent.type(newDisplayNameInput, 'newDisplayName')
 	
-			userEvent.keyboard('{Enter}');
+			userEvent.keyboard('{Enter}')
 	
 			const updated = screen.getAllByText('newDisplayName');
 	

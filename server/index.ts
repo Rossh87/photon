@@ -54,7 +54,7 @@ async function run() {
 	app.use(
 		session({
 			secret: sessionSecret,
-			saveUninitialized: false,
+			saveUninitialized: true,
 			resave: false,
 		})
 	);
