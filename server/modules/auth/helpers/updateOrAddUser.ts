@@ -15,12 +15,6 @@ import { IAsyncDeps } from '../../../core/asyncDeps';
 
 export type TUpdateOrAddUserResult = TE.TaskEither<DBError, IUser | IDBUser>;
 
-// interface IHandleUserUpdate {
-// 	(incomingUser: IUser): (
-// 		repoClient: MongoClient
-// 	) => (maybeDBUsr: O.Option<IDBUser>) => TUpdateOrAddUserResult;
-}
-
 export const updateOrAddUser = (
 	resUser: IUser
 ): ReaderTaskEither<IAsyncDeps, DBError, IUser | IDBUser> => (asyncDeps) =>

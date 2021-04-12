@@ -5,13 +5,13 @@ import {
 	addAndApplyEffect,
 	addEffect,
 	setStatusEffect,
-	toJSONEffect,
 	toErrHandlerEffect,
 	TExpressEffect,
+	resEndEffect,
 } from '../../../core/expressEffects';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { pipe } from 'fp-ts/lib/function';
-import { saveUploadMetadata } from '../helpers/saveUploadMetadata';
+import { saveUploadMetadata } from '../repo/saveUploadMetadata';
 import { ICombinedUploadRequestMetadata } from '../sharedUploadTypes';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import { flow } from 'fp-ts/lib/function';
@@ -24,33 +24,34 @@ const updateUsageMetricsEffect = (
 	// that explicitly checks this property
 	const { uploadUsage, imageCount } = req.session.user as IDBUser;
 
-	req.session.user = Object.assign(req.session.user, {
+	req.session.user = Object.assign({}, req.session.user, {
 		uploadUsage: uploadUsage + uploadData.sizeInBytes,
 		imageCount: imageCount + 1,
 	});
 };
 
-const responseEffects = flow(
+const successEffects = flow(
 	toEffects,
+	addAndApplyEffect(updateUsageMetricsEffect),
 	addEffect(setStatusEffect(200)),
-	addAndApplyEffect(updateUsageMetricsEffect)
+	addEffect(resEndEffect)
 );
 
-const handleErr = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
+const failureEffects = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
 
 export const saveUploadMetadataController = (
 	deps: IAsyncDeps
-): RequestHandler<any, any, ICombinedUploadRequestMetadata> => (
+): RequestHandler<any, any, ICombinedUploadRequestMetadata> => async (
 	req,
 	res,
 	next
 ) => {
 	const runner = runEffects(req, res, next);
 
-	pipe(
+	await pipe(
 		saveUploadMetadata(req.body),
-		RTE.map(responseEffects),
-		RTE.map(runner),
-		RTE.mapLeft(handleErr)
+		RTE.map(successEffects),
+		RTE.mapLeft(failureEffects),
+		RTE.bimap(runner, runner)
 	)(deps)();
 };

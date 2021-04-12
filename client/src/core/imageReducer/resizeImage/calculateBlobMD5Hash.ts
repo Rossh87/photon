@@ -1,5 +1,4 @@
 import { MD5, enc } from 'crypto-js';
-import crc32 from 'crc-32';
 import { tryCatch } from 'fp-ts/lib/TaskEither';
 import { ImageReducerError } from './ImageReducerError';
 import { pipe } from 'fp-ts/lib/function';

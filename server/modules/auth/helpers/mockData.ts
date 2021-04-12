@@ -73,6 +73,6 @@ export const mockUserFromDatabase: WithId<IDBUser> = {
 	OAuthEmail: 'tim@gmail.com',
 	OAuthEmailVerified: true,
 	registeredDomains: ['mySite.com'],
-	uploadUsage: '100MB',
+	uploadUsage: 100,
 	imageCount: 223,
 };

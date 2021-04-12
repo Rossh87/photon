@@ -29,7 +29,7 @@ const prepNewUserForSave = (u: IUser): OptionalId<IDBUser> =>
 	>(u, {
 		registeredDomains: [],
 		imageCount: 0,
-		uploadUsage: '0',
+		uploadUsage: 0,
 	});
 
 export const _saveNewUser = reverseTwo(saveNewUser);

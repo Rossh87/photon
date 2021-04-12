@@ -74,3 +74,6 @@ export const toJSONEffect = (data: any): TExpressEffect => (
 	req: Request,
 	res: Response
 ) => res.json(data);
+
+export const resEndEffect: TExpressEffect = (req: Request, res: Response) =>
+	res.end();
