@@ -10,7 +10,7 @@ import * as RT from 'fp-ts/lib/ReaderTask';
 
 import * as E from 'fp-ts/lib/Either';
 import {
-	setSessionEffect,
+	setSessionUserEffect,
 	clientRootRedirectEffect,
 	toEffects,
 	addEffect,
@@ -20,7 +20,7 @@ import {
 
 const oAuthSuccessEffects = flow(
 	toEffects,
-	addAndApplyEffect(setSessionEffect),
+	addAndApplyEffect(setSessionUserEffect),
 	addEffect(clientRootRedirectEffect)
 );
 

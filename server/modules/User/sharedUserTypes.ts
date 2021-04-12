@@ -20,7 +20,7 @@ export interface IDBUser extends IUser {
 	_id?: ObjectId;
 	registeredDomains: Array<string>;
 	imageCount: number;
-	uploadUsage: string;
+	uploadUsage: number;
 }
 
 // type for data shape that will be sent to client on authorization

@@ -15,10 +15,10 @@ import { IAsyncDeps } from '../../../core/asyncDeps';
 
 export type TUpdateOrAddUserResult = TE.TaskEither<DBError, IUser | IDBUser>;
 
-interface IHandleUserUpdate {
-	(incomingUser: IUser): (
-		repoClient: MongoClient
-	) => (maybeDBUsr: O.Option<IDBUser>) => TUpdateOrAddUserResult;
+// interface IHandleUserUpdate {
+// 	(incomingUser: IUser): (
+// 		repoClient: MongoClient
+// 	) => (maybeDBUsr: O.Option<IDBUser>) => TUpdateOrAddUserResult;
 }
 
 export const updateOrAddUser = (
@@ -31,8 +31,8 @@ export const updateOrAddUser = (
 		TE.chain(handleUserUpdate(resUser)(asyncDeps.repoClient))
 	);
 
-const handleUserUpdate: IHandleUserUpdate = (incomingUser) => (repoClient) => (
-	maybeDBUsr
+const handleUserUpdate = (incomingUser: IUser) => (repoClient: MongoClient) => (
+	maybeDBUsr: O.Option<IDBUser>
 ) =>
 	pipe(
 		maybeDBUsr,

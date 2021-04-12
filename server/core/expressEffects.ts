@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { IUser } from '../modules/User/sharedUserTypes';
+import { IDBUser, IUser } from '../modules/User/sharedUserTypes';
 import { reverseTwo } from './utils/reverseCurried';
 import { CLIENT_ROOT } from '../CONSTANTS';
 
@@ -42,7 +42,7 @@ export const runEffects = <T>(
 ) => (a: TWithExpressEffects<T>): void =>
 	a[1].forEach((effect) => effect(req, res, next));
 
-export const setSessionEffect = (u: IUser): TExpressEffect => (
+export const setSessionUserEffect = (u: IDBUser): TExpressEffect => (
 	req: Request,
 	res: Response
 ) => {

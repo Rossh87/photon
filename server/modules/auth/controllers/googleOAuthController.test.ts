@@ -58,10 +58,10 @@ describe('google OAuth callback controller', () => {
 
 		const next = jest.fn();
 
-		const deps: IAsyncDeps = {
+		const deps = {
 			repoClient: repoClient,
 			fetcher: (mockAxios as unknown) as IFetcher,
-		};
+		} as IAsyncDeps;
 
 		await googleOAuthController(deps)(req, res, next);
 
@@ -82,10 +82,10 @@ describe('google OAuth callback controller', () => {
 
 		const next = jest.fn() as NextFunction;
 
-		const deps: IAsyncDeps = {
+		const deps = {
 			repoClient: repoClient,
 			fetcher: (mockAxios as unknown) as IFetcher,
-		};
+		} as IAsyncDeps;
 
 		const missingTokenErr = new MissingOAuthTokenErr(
 			'OAuth authorization callback reached, but no access token was present in the response'
@@ -116,10 +116,10 @@ describe('google OAuth callback controller', () => {
 
 		const next = jest.fn() as NextFunction;
 
-		const deps: IAsyncDeps = {
+		const deps = {
 			repoClient: repoClient,
 			fetcher: (brokenFetcher as unknown) as IFetcher,
-		};
+		} as IAsyncDeps;
 
 		const failedExternalRequestErr = new GoogleDataRequestErr(
 			'this fetcher is broken'

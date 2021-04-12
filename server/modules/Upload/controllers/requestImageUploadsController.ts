@@ -26,10 +26,6 @@ export const requestImageUploadsController = (
 	const runner = runEffects(req, res, next);
 	pipe(
 		fetchAllUploadURIs(req.body.uploadRequests),
-		RT.map((x) => {
-			console.log(x);
-			return x;
-		}),
 		RT.map(respond),
 		RT.map(runner)
 	)(deps)();

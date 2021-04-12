@@ -16,6 +16,7 @@ describe('function to get resumable upload URI from GCS', () => {
 			expectedErrMsg
 		);
 
+		const expectedFilePath = `${mockUploadRequestObject.ownerID}/${mockUploadRequestObject.displayName}/${mockUploadRequestObject.width}`;
 		const createResumableUpload = jest.fn(() =>
 			Promise.reject(expectedErrMsg)
 		);
@@ -48,7 +49,7 @@ describe('function to get resumable upload URI from GCS', () => {
 
 		expect(neverCalled).not.toHaveBeenCalled();
 		expect(bucket).toHaveBeenCalledWith('my-bucket');
-		expect(file).toHaveBeenCalledWith(mockUploadRequestObject.displayName);
+		expect(file).toHaveBeenCalledWith(expectedFilePath);
 	});
 
 	it('returns correct data when successful', async () => {

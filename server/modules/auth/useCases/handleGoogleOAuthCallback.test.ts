@@ -45,10 +45,10 @@ afterAll(async () => await repoClient.close());
 describe('callback fn to handle Google OAuth access token', () => {
 	describe('success cases', () => {
 		it('saves a new user to the database on their first authorization', async () => {
-			const deps: IAsyncDeps = {
+			const deps = {
 				repoClient: repoClient,
 				fetcher: (mockAxios as unknown) as IFetcher,
-			};
+			} as IAsyncDeps;
 
 			const mockRequest: Request = {
 				session: {
@@ -72,10 +72,10 @@ describe('callback fn to handle Google OAuth access token', () => {
 		});
 
 		it('adds correct additional properties to a new user before first save', async () => {
-			const deps: IAsyncDeps = {
+			const deps = {
 				repoClient: repoClient,
 				fetcher: (mockAxios as unknown) as IFetcher,
-			};
+			} as IAsyncDeps;
 
 			const mockRequest: Request = {
 				session: {
@@ -119,10 +119,10 @@ describe('callback fn to handle Google OAuth access token', () => {
 			googleResponse.emailAddresses[0].value =
 				'anotherDifferentEmail@google.com';
 
-			const deps: IAsyncDeps = {
+			const deps = {
 				repoClient: repoClient,
 				fetcher: (mockAxios as unknown) as IFetcher,
-			};
+			} as IAsyncDeps;
 
 			const mockRequest: Request = {
 				session: {
@@ -154,10 +154,10 @@ describe('callback fn to handle Google OAuth access token', () => {
 				session: {},
 			} as Request;
 
-			const deps: IAsyncDeps = {
+			const deps = {
 				repoClient: repoClient,
 				fetcher: (mockAxios as unknown) as IFetcher,
-			};
+			} as IAsyncDeps;
 
 			const mockRequest: Request = {
 				session: {
