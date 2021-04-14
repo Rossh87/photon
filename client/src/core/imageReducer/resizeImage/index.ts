@@ -1,5 +1,10 @@
-// Significant pieces of this adapted from https://dev.to/taylorbeeston/resizing-images-client-side-with-vanilla-js-4ng2
-// Thanks buddy.
+/**Significant pieces of this adapted from https://dev.to/taylorbeeston/resizing-images-client-side-with-vanilla-js-4ng2
+Thanks buddy. 
+
+We've extracted this into it's own folder and inject it into out business
+functions as a dependency for ease of testing the business functions--some of the below won't work
+in JSDOM.
+**/
 import { getResizedBlobsWithMetadata } from './getResizedBlobsWithMetadata';
 import { deriveNeededWidths } from './deriveNeededWidths';
 import { fileToCanvas } from './fileToCanvas';

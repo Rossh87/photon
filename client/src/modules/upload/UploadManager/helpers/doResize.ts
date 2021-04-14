@@ -1,11 +1,9 @@
-import { IAsyncDependencies } from '../../../../core/sharedTypes';
+import { IDependencies } from '../../../../core/sharedTypes';
 import { IPreprocessedFile } from '../../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import { pipe } from 'fp-ts/lib/function';
 import { map } from 'fp-ts/lib/TaskEither';
 
-export const doResize = (file: IPreprocessedFile) => (
-	deps: IAsyncDependencies
-) =>
+export const doResize = (file: IPreprocessedFile) => (deps: IDependencies) =>
 	pipe(
 		file,
 		deps.imageReducer,

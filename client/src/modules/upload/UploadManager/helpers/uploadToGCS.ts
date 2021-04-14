@@ -12,7 +12,7 @@ import {
 	sequenceArray,
 } from 'fp-ts/lib/TaskEither';
 import { of as TOf } from 'fp-ts/lib/Task';
-import { IAsyncDependencies } from '../../../../core/sharedTypes';
+import { IDependencies } from '../../../../core/sharedTypes';
 import { BaseError } from '../../../../core/error';
 import {
 	NonEmptyArray,
@@ -32,7 +32,7 @@ const leftIfHasErrors = (res: IUploadsResponsePayload) =>
 
 export const uploadToGCS = (images: IResizingData) => (
 	response: IUploadsResponsePayload
-) => (deps: IAsyncDependencies) =>
+) => (deps: IDependencies) =>
 	pipe(
 		response,
 		leftIfHasErrors,

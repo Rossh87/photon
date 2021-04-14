@@ -2,7 +2,7 @@ import { requestUploadURIs } from './requestUploadURIs';
 import { saveSuccessfulUpload } from './saveSuccessfulUpload';
 import { dispatchSuccesses } from './dispatchSuccesses';
 import { uploadToGCS } from './uploadToGCS';
-import { IAsyncDependencies } from '../../../../core/sharedTypes';
+import { IDependencies } from '../../../../core/sharedTypes';
 import { IPreprocessedFile } from '../../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { doResize } from './doResize';

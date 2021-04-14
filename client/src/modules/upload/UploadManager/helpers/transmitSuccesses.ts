@@ -1,6 +1,6 @@
 import { requestUploadURIs } from './requestUploadURIs';
 import { uploadToGCS } from './uploadToGCS';
-import { IAsyncDependencies } from '../../../../core/sharedTypes';
+import { IDependencies } from '../../../../core/sharedTypes';
 import { IPreprocessedFile } from '../../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
 import { pipe } from 'fp-ts/lib/function';
 import { of as ROf } from 'fp-ts/lib/Reader';
@@ -11,7 +11,7 @@ import {
 } from 'fp-ts/lib/TaskEither';
 
 export const processOneImage = (file: IPreprocessedFile) => (
-	deps: IAsyncDependencies
+	deps: IDependencies
 ) =>
 	pipe(
 		file,

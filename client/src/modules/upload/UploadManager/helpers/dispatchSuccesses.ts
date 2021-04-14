@@ -1,5 +1,4 @@
-import { IAsyncDependencies } from '../../../../core/sharedTypes';
+import { IDependencies } from '../../../../core/sharedTypes';
 
-export const dispatchSuccesses = (fileName: string) => (
-	deps: IAsyncDependencies
-) => deps.dispatch({ type: 'UPLOAD_SUCCESS', data: fileName });
+export const dispatchSuccesses = (fileName: string) => (deps: IDependencies) =>
+	deps.dispatch({ type: 'UPLOAD_SUCCESS', data: fileName });

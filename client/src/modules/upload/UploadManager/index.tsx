@@ -12,7 +12,7 @@ import { fold, map} from 'fp-ts/lib/Option'
 import {axiosInstance} from '../../../core/axiosInstance';
 import {fromArray} from 'fp-ts/lib/NonEmptyArray';
 import * as imageReducer from '../../../core/imageReducer'
-import { IAsyncDependencies } from '../../../core/sharedTypes';
+import { IDependencies } from '../../../core/sharedTypes';
 import {hasFileErrors} from './uploadState/hasFileErrors'
 import {ReaderTaskEither} from 'fp-ts/lib/ReaderTaskEither';
 
@@ -34,7 +34,7 @@ const UploadManager: React.FunctionComponent<IProps> = ({ user }) => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		
-		const callWithDeps = (deps: IAsyncDependencies) => (a: Function) => a(deps);
+		const callWithDeps = (deps: IDependencies) => (a: Function) => a(deps);
 
 		const run = callWithDeps({fetcher: axiosInstance, dispatch: uploadDispatch, imageReducer: imageReducer.resizeImage})
 

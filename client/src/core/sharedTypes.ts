@@ -12,10 +12,3 @@ export interface ITEDispatcher<E, A, B, C = void> {
 }
 
 export interface IFetcher extends AxiosInstance {}
-
-// TODO: any type for dispatch isn't great
-export interface IAsyncDependencies {
-	fetcher: IFetcher;
-	dispatch: Dispatch<any>;
-	imageReducer: typeof resizeImage;
-}

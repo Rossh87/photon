@@ -1,4 +1,4 @@
-import { IAsyncDependencies } from '../../../../core/sharedTypes';
+import { IDependencies } from '../../../../core/sharedTypes';
 import {
 	IResizingData,
 	IUploadRequestMetadata,
@@ -19,7 +19,7 @@ const toMetadata: (x: IResizingData) => IUploadsRequestPayload = (x) =>
 	);
 
 export const requestUploadURIs = (image: IResizingData) => (
-	deps: IAsyncDependencies
+	deps: IDependencies
 ) =>
 	tryCatch(
 		() =>
