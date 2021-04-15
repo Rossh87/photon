@@ -1,8 +1,8 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import UploadForm from '../../upload/UploadForm';
-import UploadManager from '../../upload/UploadManager'
-import SelectedImagesDisplay from '../../upload/SelectedImagesDisplay'
+import UploadForm from '../../Uploader/ui/UploadForm';
+import Uploader from '../../Uploader'
+import SelectedImagesDisplay from '../../Uploader/ui/SelectedImagesDisplay'
 import {TUserState} from '../../auth/AuthManager/authTypes'
 import Login from '../../auth/Login'
 import Loading from '../../auth/Loading'
@@ -16,7 +16,7 @@ interface IHomeProps {
 const Landing: React.FunctionComponent = () => {
     const authState = useAuthState();
 
-    const renderChild: (u: TUserState) => React.ReactElement = (u) => u ? <UploadManager user={authState.user}/> : <Login />
+    const renderChild: (u: TUserState) => React.ReactElement = (u) => u ? <Uploader user={authState.user}/> : <Login />
 
     return(
         <Container maxWidth='md'>

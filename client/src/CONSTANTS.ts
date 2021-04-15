@@ -15,7 +15,3 @@ export const UPLOAD_WIDTHS: NonEmptyArray<
 	'tiny' | 'small' | 'medium' | 'large'
 > = ['tiny', 'small', 'medium', 'large'];
 export const IMAGE_UPLOAD_QUALITY = 0.75;
-export const BASE_PUBLIC_IMAGE_PATH =
-	'https://storage.googleapis.com/photon_user_images';
-export const SAVE_SUCCESSFUL_UPLOAD_DATA_ENDPOINT =
-	'http://localhost:8000/upload/save';
