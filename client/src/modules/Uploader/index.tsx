@@ -1,20 +1,16 @@
 import React from 'react';
-import { uploadReducer } from './uploadState/uploadState';
-import { IImage, TPreprocessingResults } from '../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
-import {IImageUploadState} from './uploadState/stateTypes'
-import {preprocessImages} from '../../../core/imageReducer/preprocessImages'
-import {processSelectedFiles} from '../useCases/processSelectedFiles'
+import { uploadReducer } from './state/uploadReducer';
+import { IImage } from './domain/domainTypes';
+import {IImageUploadState, TUploaderActions} from './state/uploadStateTypes'
+import {preprocessImages} from './useCases/preProcessSelectedFiles'
+import {processSelectedFiles} from './useCases/processSelectedFiles'
 import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
 import { pipe } from 'fp-ts/lib/function';
 import { TUserState } from '../auth/AuthManager/authTypes';
 import { fold, map} from 'fp-ts/lib/Option'
-import {axiosInstance} from '../../../core/axiosInstance';
-import {fromArray} from 'fp-ts/lib/NonEmptyArray';
-import * as imageReducer from '../../../core/imageReducer'
-import { IDependencies } from '../../core/sharedTypes';
-import {hasFileErrors} from './state/reducerUtils/hasFileErrors'
-import {ReaderTaskEither} from 'fp-ts/lib/ReaderTaskEither';
+import {hasFileErrors} from './state/reducerUtils/hasFileErrors';
+import DependencyContext, {IDispatchInjector} from '../../core/dependencyContext';
 
 interface IProps {
 	user: TUserState;
@@ -31,20 +27,12 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 		defaultState
 	);
 
+	const depsWithoutDispatch = React.useContext<IDispatchInjector<TUploaderActions>>(DependencyContext);
+
+	const deps = 
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		
-		const callWithDeps = (deps: IDependencies) => (a: Function) => a(deps);
-
-		const run = callWithDeps({fetcher: axiosInstance, dispatch: uploadDispatch, imageReducer: imageReducer.resizeImage})
-
-		// does nothing if uploadState.selectedFiles is unpopulated
-		pipe(
-			uploadState.selectedFiles, 
-			fromArray,
-			map(processSelectedFiles),
-			map(run)
-		);
 	};
 
 	const handleFileRemoval = (fileName: string) =>
@@ -95,4 +83,4 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 	);
 };
 
-export default Uploader;
+export default Uploader
