@@ -1,41 +1,47 @@
-import { requestUploadURIs } from './requestUploadURIs';
-import { saveSuccessfulUpload } from './saveSuccessfulUpload';
-import { dispatchSuccesses } from '../dispatchSuccesses';
-import { dispatchFailure } from '../dispatchFailure';
-import { uploadToGCS } from './uploadToGCS';
+import { pipe, flow } from 'fp-ts/lib/function';
 import { IImage } from '../../domain/domainTypes';
-import { pipe } from 'fp-ts/lib/function';
-import { doResize } from './doResize';
+import { requestUploadURIs } from '../../http/requestUploadURIs';
+import { saveSuccessfulUpload } from '../../http/saveSuccessfulUpload';
+import { uploadToGCS } from './uploadToGCS';
 import {
-	bindTo as RTEBindTo,
 	bind as RTEBind,
+	bindTo as RTEBindTo,
+	fold as RTEFold,
+	chain as RTEChain,
+	chainFirst as RTEChainFirst,
 } from 'fp-ts/lib/ReaderTaskEither';
-import { chain as RTChain, asks as RTAsks } from 'fp-ts/lib/ReaderTask';
-import { fold as EFold } from 'fp-ts/lib/Either';
+import { doResize } from './doResize';
+import { foldImageDataForRecall } from './foldImageDataForRecall';
+import { dispatchUploadSuccesses } from './dispatchUploadSuccesses';
+import { dispatchUploadFailure } from './dispatchUploadFailure';
+
+const fromBoundContext = <T extends Record<string, any>, K extends string>(
+	x: K
+) => (y: T) => y[x];
 
 export const processOneImage = (file: IImage) =>
 	pipe(
 		file,
 		doResize,
 		RTEBindTo('resizeData'),
-		RTEBind('uris', (x) => requestUploadURIs(x.resizeData)),
-		RTEBind('GCSResponses', (x) => uploadToGCS(x.resizeData)(x.uris)),
-		RTEBind('appServerResponses', (x) =>
-			saveSuccessfulUpload(x.resizeData)
+		RTEBind(
+			'uris',
+			flow(fromBoundContext('resizeData'), requestUploadURIs)
 		),
-		RTChain((either) =>
-			RTAsks((deps) =>
-				pipe(
-					either,
-					EFold(
-						(e) =>
-							dispatchFailure({
-								err: e,
-								failedFileDisplayName: file.displayName,
-							})(deps),
-						() => dispatchSuccesses(file.displayName)(deps)
-					)
-				)
+		RTEChainFirst((x) => uploadToGCS(x.resizeData)(x.uris)),
+		RTEChain(
+			flow(
+				fromBoundContext('resizeData'),
+				foldImageDataForRecall,
+				saveSuccessfulUpload
 			)
+		),
+		RTEFold(
+			(e) =>
+				dispatchUploadFailure({
+					err: e,
+					failedFileDisplayName: file.displayName,
+				}),
+			() => dispatchUploadSuccesses(file.displayName)
 		)
 	);

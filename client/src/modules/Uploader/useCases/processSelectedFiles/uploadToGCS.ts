@@ -5,11 +5,7 @@ import {
 import { IResizingData } from '../../domain/domainTypes';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { left, right } from 'fp-ts/lib/Either';
-import {
-	chain as TEChain,
-	tryCatch,
-	sequenceArray,
-} from 'fp-ts/lib/TaskEither';
+import { chain as TEChain, sequenceArray } from 'fp-ts/lib/TaskEither';
 import { of as TOf } from 'fp-ts/lib/Task';
 import { IDependencies } from '../../../../core/dependencyContext';
 import { BaseError } from '../../../../core/error';
@@ -17,7 +13,8 @@ import {
 	NonEmptyArray,
 	mapWithIndex as NEAMapWithIdx,
 } from 'fp-ts/lib/NonEmptyArray';
-import {TUploaderActions} from '../../state/uploadStateTypes'
+import { TUploaderActions } from '../../state/uploadStateTypes';
+import { uploadOneImageToGCS } from '../../http/uploadOneImageToGCS';
 
 const leftIfHasErrors = (res: IUploadsResponsePayload) =>
 	(res.failures && res.failures.length) ||
@@ -32,7 +29,7 @@ const leftIfHasErrors = (res: IUploadsResponsePayload) =>
 
 export const uploadToGCS = (images: IResizingData) => (
 	response: IUploadsResponsePayload
-) => (deps: IDependencies<TUploaderActions) =>
+) => (deps: IDependencies<TUploaderActions>) =>
 	pipe(
 		response,
 		leftIfHasErrors,
@@ -41,18 +38,9 @@ export const uploadToGCS = (images: IResizingData) => (
 		TEChain(
 			flow(
 				NEAMapWithIdx((i, uri) =>
-					tryCatch(
-						() =>
-							deps.fetcher.put(
-								uri.resumableURI,
-								images.resizedBlobs[i].blob
-							),
-						(e) =>
-							new BaseError(
-								`Attempt to upload ${images.resizedBlobs[i].metaData.displayName} at width ${images.resizedBlobs[i].metaData.width} failed.`,
-								e
-							)
-					)
+					uploadOneImageToGCS(uri.resumableURI)(
+						images.resizedBlobs[i]
+					)(deps.http)
 				),
 				sequenceArray
 			)

@@ -11,4 +11,4 @@ export interface ITEDispatcher<E, A, B, C = void> {
 	(d: Dispatch<A>): (t: TE.TaskEither<E, B>) => C;
 }
 
-export interface IFetcher extends AxiosInstance {}
+export interface IHTTPLib extends AxiosInstance {}

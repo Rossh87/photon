@@ -6,11 +6,15 @@ export interface IHttpCall<T> {
 	(httpLib: AxiosInstance): Promise<AxiosResponse<T>>;
 }
 
+export type THTTPRunner = <T>(fn: IHttpCall<T>) => Promise<AxiosResponse<T>>;
+
 export interface IDependencies<A> {
-	http: <T>(fn: IHttpCall<T>) => Promise<AxiosResponse<T>>;
+	http: IHTTPRunner;
 	dispatch: Dispatch<A>;
 	imageReducer: typeof resizeImage;
 }
+
+export interface IHTTPLib extends AxiosInstance {}
 
 export type TResizer = typeof resizeImage;
 
@@ -28,5 +32,8 @@ export const createDependenciesObject = (a: AxiosInstance) => (b: TResizer) => <
 });
 
 export const liveValues = createDependenciesObject(axios)(resizeImage);
+
+export const extractResponseData = <T>(res: Promise<AxiosResponse<T>>) =>
+	res.then((res) => res.data);
 
 const DependencyContext = React.createContext({});
