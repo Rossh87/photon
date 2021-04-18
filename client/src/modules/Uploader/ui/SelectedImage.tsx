@@ -14,12 +14,17 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles } from '@material-ui/core/styles';
-import FileUpdateForm from './FileUpdateForm'
+import FileUpdateForm from './FileUpdateForm';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import { setTimeout } from 'node:timers';
 
 const useSelectedImageStyles = makeStyles({
 	root: {
 		width: '100%',
 	},
+	successIcon: {
+		fill: '#02b033'
+	}
 });
 
 interface ISelectedImageProps {
@@ -57,6 +62,24 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 		handleRemoval(displayName);
 	};
 
+	const removeIfSuccess = () => {
+		let cancel = () => clearTimeout();
+
+		if(status === 'success'){
+			const timerID = setTimeout(() => handleRemoval(displayName), 3000);
+			cancel = () => clearTimeout(timerID);
+		} 
+
+		return cancel;
+	}
+
+	React.useEffect(removeIfSuccess, [status, displayName, handleRemoval]);
+
+	const renderIcon = () => status === 'success' ? 
+		<CheckCircleOutlineIcon /> :
+		<DeleteIcon className={classes.successIcon}/>
+
+
 	return (
 		<ListItem>
 			<Accordion expanded={isExpanded} className={classes.root}>
@@ -79,7 +102,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 							aria-label="remove file"
 							onClick={removeFileListItem}
 						>
-							<DeleteIcon />
+							{renderIcon()}
 						</IconButton>
 					</ListItemSecondaryAction>
 				</AccordionSummary>
