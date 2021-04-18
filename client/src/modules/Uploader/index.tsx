@@ -8,9 +8,10 @@ import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
 import { pipe } from 'fp-ts/lib/function';
 import { TUserState } from '../auth/AuthManager/authTypes';
-import { fold, map} from 'fp-ts/lib/Option'
+import { fold, map, ap, some} from 'fp-ts/lib/Option'
 import {hasFileErrors} from './state/reducerUtils/hasFileErrors';
-import DependencyContext, {IDispatchInjector} from '../../core/dependencyContext';
+import DependencyContext, {IDependencies} from '../../core/dependencyContext';
+import {fromArray} from 'fp-ts/lib/NonEmptyArray'
 
 interface IProps {
 	user: TUserState;
@@ -27,12 +28,18 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 		defaultState
 	);
 
-	const depsWithoutDispatch = React.useContext<IDispatchInjector<TUploaderActions>>(DependencyContext);
-
-	const deps = 
+	const dependencies: IDependencies<TUploaderActions> = React.useContext(DependencyContext)(uploadDispatch);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+
+		// does nothing if uploadState.selectedFiles is unpopulated
+		pipe(
+			uploadState.selectedFiles,
+			fromArray,
+			map(processSelectedFiles),
+			ap(some(dependencies))
+		)
 	};
 
 	const handleFileRemoval = (fileName: string) =>
@@ -60,7 +67,7 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 		}
 	};
 
-	const _handleFileChange = React.useCallback(handleFileChange, []);
+	const _handleFileChange = React.useCallback(handleFileChange, [user?._id]);
 
 	const acceptedExtensions = ['image/jpg', 'image/jpeg', 'image/png'];
 
