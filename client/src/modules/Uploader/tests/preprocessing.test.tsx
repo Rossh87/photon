@@ -11,14 +11,14 @@ let user: IUser;
 
 beforeEach(() => user = Object.assign({}, mockUser));
 
-const simulateFileInput = (targetElement: HTMLElement) => {
+export const simulateFileInput = (targetElement: HTMLElement) => {
 	const files = [getTestJPEGFile('testImage1', 'small'), getTestJPEGFile('testImage2', 'med')]
 	const mockFileList = createMockFileList(...files);
 
 	return fireEvent.change(targetElement, {target: {files: mockFileList}});
 }
 
-const simulateInvalidFileInput = (getInvalidFile: (...args: any[]) => File) => (...extraArgs: any[])=> (targetElement: HTMLElement) => {
+export const simulateInvalidFileInput = (getInvalidFile: (...args: any[]) => File) => (...extraArgs: any[])=> (targetElement: HTMLElement) => {
 	const files = [getInvalidFile(...extraArgs), getTestJPEGFile('testImage1', 'small')];
 	const mockFileList = createMockFileList(...files);
 

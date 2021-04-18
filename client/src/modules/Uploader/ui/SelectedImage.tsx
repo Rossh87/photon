@@ -16,7 +16,6 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles } from '@material-ui/core/styles';
 import FileUpdateForm from './FileUpdateForm';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import { setTimeout } from 'node:timers';
 
 const useSelectedImageStyles = makeStyles({
 	root: {
