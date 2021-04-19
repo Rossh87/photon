@@ -14,6 +14,13 @@ import { doResize } from './doResize';
 import { foldImageDataForRecall } from './foldImageDataForRecall';
 import { dispatchUploadSuccesses } from './dispatchUploadSuccesses';
 import { dispatchUploadFailure } from './dispatchUploadFailure';
+import { dispatchInitUpload } from './dispatchInitUpload';
+import {
+	map as RMap,
+	chain as RChain,
+	chainFirst as RChainFirst,
+	of as ROf,
+} from 'fp-ts/lib/Reader';
 
 const fromBoundContext = <T extends Record<string, any>, K extends string>(
 	x: K
@@ -22,7 +29,9 @@ const fromBoundContext = <T extends Record<string, any>, K extends string>(
 export const processOneImage = (file: IImage) =>
 	pipe(
 		file,
-		doResize,
+		ROf,
+		RChainFirst(dispatchInitUpload),
+		RChain(doResize),
 		RTEBindTo('resizeData'),
 		RTEBind(
 			'uris',

@@ -10,7 +10,7 @@ export interface IImage extends File {
 	originalSizeInBytes: number;
 	resizedImages?: IResizingData;
 	error?: BaseError;
-	status: 'preprocessed' | 'populated' | 'uploading' | 'success' | 'error';
+	status: 'preprocessed' | 'populated' | 'processing' | 'success' | 'error';
 }
 
 export interface IPreprocessDependencies {

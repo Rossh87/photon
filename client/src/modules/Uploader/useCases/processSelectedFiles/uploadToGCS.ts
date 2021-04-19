@@ -40,7 +40,7 @@ export const uploadToGCS = (images: IResizingData) => (
 				NEAMapWithIdx((i, uri) =>
 					uploadOneImageToGCS(uri.resumableURI)(
 						images.resizedBlobs[i]
-					)(deps.http)
+					)(deps)
 				),
 				sequenceArray
 			)

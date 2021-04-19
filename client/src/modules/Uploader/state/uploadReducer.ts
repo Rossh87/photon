@@ -1,4 +1,4 @@
-import { TPreprocessingResults } from '../../../core/imageReducer/preprocessImages/imagePreprocessingTypes';
+import { TPreprocessingResults } from '../domain/domainTypes';
 import { IImageUploadState } from './uploadStateTypes';
 import React from 'react';
 import { filterOneImageFile } from './reducerUtils/filterFiles';
@@ -7,6 +7,7 @@ import { attachResizeData } from './reducerUtils/attachResizeData';
 import { attachErrorMessage } from './reducerUtils/attachErrorMessage';
 import { setSuccessful } from './reducerUtils/setSuccessful';
 import { TUploaderActions } from './uploadStateTypes';
+import { setInitiated } from './reducerUtils/setInitiated';
 
 export const uploadReducer: React.Reducer<
 	IImageUploadState,
@@ -33,6 +34,13 @@ export const uploadReducer: React.Reducer<
 					a.previousName,
 					a.data
 				)(s.selectedFiles as TPreprocessingResults),
+			};
+		case 'INIT_UPLOAD':
+			return {
+				...s,
+				selectedFiles: setInitiated(a.data)(
+					s.selectedFiles as TPreprocessingResults
+				),
 			};
 		case 'IMAGES_EMITTED':
 			return {

@@ -1,5 +1,5 @@
-import { IUploadableBlob } from './resizeImage/imageReducerTypes';
-import { BASE_PUBLIC_IMAGE_PATH } from '../CONSTANTS';
+import { IUploadableBlob } from '../modules/Uploader/domain/domainTypes';
+import { BASE_PUBLIC_IMAGE_PATH } from '../modules/Uploader/http/endpoints';
 
 export const constructPublicBasePath = (data: IUploadableBlob) =>
 	`${BASE_PUBLIC_IMAGE_PATH}/${data.metaData.ownerID}/${data.metaData.displayName}`;

@@ -10,7 +10,10 @@ import { local } from 'fp-ts/lib/ReaderTaskEither';
 
 const saveUploadData = (imgData: ICombinedUploadRequestMetadata) => (
 	httpLib: IHTTPLib
-) => httpLib.post(SAVE_SUCCESSFUL_UPLOAD_DATA_ENDPOINT, imgData);
+) =>
+	httpLib.post(SAVE_SUCCESSFUL_UPLOAD_DATA_ENDPOINT, imgData, {
+		withCredentials: true,
+	});
 
 export const _saveSuccessfulUpload = (
 	imgData: ICombinedUploadRequestMetadata

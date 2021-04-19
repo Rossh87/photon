@@ -55,6 +55,10 @@ export interface IUnselectAllAction extends IFileAction<null> {
 	type: 'UNSELECT_ALL';
 }
 
+export interface IInitUploadAction extends IFileAction<string> {
+	type: 'INIT_UPLOAD';
+}
+
 export interface IImagesEmittedAction extends IFileAction<IResizingData> {
 	type: 'IMAGES_EMITTED';
 }
@@ -75,4 +79,5 @@ export type TUploaderActions =
 	| IUnselectFileAction
 	| IUploadFailedAction
 	| IUploadSuccessAction
-	| IImagesEmittedAction;
+	| IImagesEmittedAction
+	| IInitUploadAction;

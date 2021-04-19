@@ -24,7 +24,9 @@ const toMetadata: (x: IResizingData) => IUploadsRequestPayload = (x) =>
 const requestURIs = (
 	imageData: IResizingData
 ): IHttpCall<IUploadsResponsePayload> => (httpLib) =>
-	httpLib.post(REQUEST_UPLOAD_URI_ENDPOINT, toMetadata(imageData));
+	httpLib.post(REQUEST_UPLOAD_URI_ENDPOINT, toMetadata(imageData), {
+		withCredentials: true,
+	});
 
 export const _requestUploadURIs = (imageData: IResizingData) => (
 	httpRunner: THTTPRunner

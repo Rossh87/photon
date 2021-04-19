@@ -7,7 +7,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Avatar from '@material-ui/core/Avatar';
 import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
 import Accordion from '@material-ui/core/Accordion';
@@ -15,14 +14,11 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles } from '@material-ui/core/styles';
 import FileUpdateForm from './FileUpdateForm';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import SelectedImageStatusIcon from './SelectedImageStatusIcon'
 
 const useSelectedImageStyles = makeStyles({
 	root: {
 		width: '100%',
-	},
-	successIcon: {
-		fill: '#02b033'
 	}
 });
 
@@ -65,7 +61,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 		let cancel = () => clearTimeout();
 
 		if(status === 'success'){
-			const timerID = setTimeout(() => handleRemoval(displayName), 3000);
+			const timerID = setTimeout(() => handleRemoval(displayName), 1000);
 			cancel = () => clearTimeout(timerID);
 		} 
 
@@ -73,11 +69,6 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 	}
 
 	React.useEffect(removeIfSuccess, [status, displayName, handleRemoval]);
-
-	const renderIcon = () => status === 'success' ? 
-		<CheckCircleOutlineIcon /> :
-		<DeleteIcon className={classes.successIcon}/>
-
 
 	return (
 		<ListItem>
@@ -101,7 +92,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 							aria-label="remove file"
 							onClick={removeFileListItem}
 						>
-							{renderIcon()}
+							<SelectedImageStatusIcon status={status} />
 						</IconButton>
 					</ListItemSecondaryAction>
 				</AccordionSummary>

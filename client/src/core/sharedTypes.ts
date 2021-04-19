@@ -1,7 +1,6 @@
 import { Dispatch } from 'react';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { AxiosInstance } from 'axios';
-import { resizeImage as imageReducer, resizeImage } from '../core/imageReducer';
 
 export interface IDispatcher<A, B = void> {
 	(d: Dispatch<A>): B;

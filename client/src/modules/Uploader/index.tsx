@@ -55,13 +55,16 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 		const ownerID = user?._id;
 
 		if (files && ownerID) {
-			return pipe(
+			pipe(
 				preprocessImages({ ownerID })(files),
 				fold(
 					() => uploadDispatch({type: 'UNSELECT_ALL', data:null}),
 					(images) => uploadDispatch({type: 'FILES_SELECTED', data: images})
 				)
 			)
+
+			// reset file input
+			e.target.value = '';
 		} else {
 			return;
 		}
