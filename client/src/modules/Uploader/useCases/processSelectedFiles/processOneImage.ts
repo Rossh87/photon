@@ -16,7 +16,6 @@ import { dispatchUploadSuccesses } from './dispatchUploadSuccesses';
 import { dispatchUploadFailure } from './dispatchUploadFailure';
 import { dispatchInitUpload } from './dispatchInitUpload';
 import {
-	map as RMap,
 	chain as RChain,
 	chainFirst as RChainFirst,
 	of as ROf,

@@ -1,18 +1,19 @@
 import React from 'react';
-import {simulateInvalidFileInput, simulateFileInput} from './preprocessing.test'
+import {simulateInvalidFileInput} from './preprocessing.test'
 import Uploader from '../index';
 import { render, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {mockUser} from './mockData'
-import { IUser } from '../../auth/AuthManager/authTypes';
-import {getTestJPEGFile, getOversizeImageFile} from '../../../testUtils/imageUtils'
+import {mockUser, mockImageData, mockResizingData} from './mockData'
+import {getOversizeImageFile} from '../../../testUtils/imageUtils'
 import {createMockFileList} from '../../../testUtils/fileMocks'
 import DependencyContext, {IDependencies, createDependenciesObject, TImageResizer} from '../../../core/dependencyContext'
-import {REQUEST_UPLOAD_URI_ENDPOINT, BASE_PUBLIC_IMAGE_PATH, SAVE_SUCCESSFUL_UPLOAD_DATA_ENDPOINT} from '../http/endpoints'
-import {ResumableUploadCreationErr, IUploadsRequestPayload, IUploadRequestMetadata, IUploadsResponsePayload} from '../http/httpTypes'
-import { IResizingData, IImage } from '../domain/domainTypes';
 import {AxiosInstance} from 'axios';
 
+export const simulateFileInput = (targetElement: HTMLElement) => {
+	const files = [mockImageData]
+	const mockFileList = createMockFileList(...files);
+	return fireEvent.change(targetElement, {target: {files: mockFileList}});
+}
 
 describe('Uploader component when files are submitted', () => {
     it('does nothing if selected files have errors', () => {
@@ -33,47 +34,13 @@ describe('Uploader component when files are submitted', () => {
         expect(mockDeps.imageReducer).not.toHaveBeenCalled();
     }),
 
-	it.only('displays correct error message on files that fail to upload', async () => {
-		const mockUploadReqData: IUploadRequestMetadata = {
-			ownerID: '1234',
-			displayName: 'mockImg',
-			mediaType: 'img/jpg',
-			sizeInBytes: 1024,
-			integrityHash: '1234',
-			width: 250
-		}
-
-		const mockFailureData: ResumableUploadCreationErr = {
-			rawError: 'some failure',
-			requestedUpload: mockUploadReqData,
-			message: 'request for upload failed'
-		}
-
-		const mockURIData: IUploadsResponsePayload = {
-			failures: [mockFailureData]
-		}
+	it('displays correct error message on files that fail to upload', async () => {
 		const mockAxios = {
-			post: jest.fn(() => Promise.resolve(mockURIData))
+			post: jest.fn(() => Promise.reject('failure'))
 		} as unknown as AxiosInstance
 
-		const mockImageData: IImage = Object.assign({}, getTestJPEGFile('testImage', 'small'),  {
-			humanReadableSize: '1005',
-			ownerID: '1234',
-			displayName: 'testImage',
-			originalSizeInBytes: 1000,
-			status: 'preprocessed' as 'preprocessed'
-		})
 
-		const mockResizingData = Object.assign({}, mockImageData, {
-			resizedImages: Object.assign({}, mockImageData, {
-				originalCanvas: document.createElement('canvas'),
-				neededWidths: [250],
-				resizedBlobs: [{blob: new Blob(), metaData: mockUploadReqData}]
-			}) as IResizingData
-		
-		})
-
-		const mockResizer = jest.fn(() => Promise.reject(new Error('failed'))) as unknown as TImageResizer
+		const mockResizer = jest.fn(() => mockResizingData) as unknown as TImageResizer
 
 		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
 
@@ -91,9 +58,8 @@ describe('Uploader component when files are submitted', () => {
 
         userEvent.click(submitButton);
 
-		const result = await screen.findByText('request for upload failed')
+		const result = await screen.findByText('Attempt to get upload URIs from server failed.')
 
-		console.log(result);
-		expect(result).toBeNull();
+		expect(result).not.toBeNull();
 	})
 })

@@ -14,12 +14,13 @@ import { BaseError } from '../../../core/error';
 import { local } from 'fp-ts/lib/ReaderTaskEither';
 import { TUploaderActions } from '../state/uploadStateTypes';
 
-const toMetadata: (x: IResizingData) => IUploadsRequestPayload = (x) =>
-	pipe(
+const toMetadata: (x: IResizingData) => IUploadsRequestPayload = (x) => {
+	return pipe(
 		x.resizedBlobs,
 		NEAMap((b) => b.metaData),
 		(a) => ({ uploadRequests: a })
 	);
+};
 
 const requestURIs = (
 	imageData: IResizingData
@@ -35,10 +36,7 @@ export const _requestUploadURIs = (imageData: IResizingData) => (
 		() => pipe(imageData, requestURIs, httpRunner, extractResponseData),
 
 		(e) =>
-			new BaseError(
-				'Attempt to get upload URI from server failed with the following reason: ',
-				e
-			)
+			new BaseError('Attempt to get upload URIs from server failed.', e)
 	);
 
 export const requestUploadURIs = flow(
