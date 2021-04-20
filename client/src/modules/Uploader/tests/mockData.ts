@@ -1,4 +1,4 @@
-import { IUser } from '../../auth/AuthManager/authTypes';
+import { IUser } from '../../Auth/domain/authDomainTypes';
 import { IImage, IResizingData } from '../domain/domainTypes';
 import {
 	IUploadRequestMetadata,

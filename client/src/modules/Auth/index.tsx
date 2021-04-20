@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
-import App from '../../App';
-import { fetchUserData } from './fetchUserData';
-import AuthProvider, {useAuthDispatch, useAuthState} from './useAuthState';
+import App from '../App';
+import { fetchUserData } from './http/fetchUserData';
+import AuthProvider, {useAuthDispatch, useAuthState} from './state/useAuthState';
 
 const AuthManager: React.FunctionComponent = ({children}) => {
     const authDispatch = useAuthDispatch();

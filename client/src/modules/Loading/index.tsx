@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '@material-ui/core/Modal';
-import {TAuthStatus} from '../AuthManager/authTypes';
+import {TAuthStatus} from '../Auth/state/authStateTypes';
 
 interface IProps {
     status: TAuthStatus

@@ -3,7 +3,7 @@ import Uploader from '../index';
 import { render, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {mockUser} from './mockData'
-import { IUser } from '../../auth/AuthManager/authTypes';
+import { IUser } from '../../Auth/domain/authDomainTypes';
 import {getTestJPEGFile, getOversizeImageFile} from '../../../testUtils/imageUtils'
 import {createMockFileList} from '../../../testUtils/fileMocks'
 

@@ -1,8 +1,12 @@
+/**
+ * Site design adapted from Material-UI's Paperbase theme,
+ * https://material-ui.com/store/items/paperbase/
+ *  */ 
+
 import React from 'react';
-import Landing from '../landing/Landing';
-import AuthManager from '../auth/AuthManager'
-import AuthProvider from '../auth/AuthManager/useAuthState'
-import PaperBase from '../../template/paperbase/Paperbase'
+import Landing from '../Landing';
+import AuthManager from '../Auth'
+import AuthProvider from '../Auth/state/useAuthState'
 import DependencyContext, {liveDependencies} from '../../core/dependencyContext'
 
 const App: React.FunctionComponent = (props) => {

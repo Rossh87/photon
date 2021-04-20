@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import { authReducer, defaultState } from './authState';
-import {IAuthState, TAuthActions} from './authTypes'
+import {IAuthState, TAuthActions} from './authStateTypes'
 
 // We cast the context types because we need to initialize them *outside* of the component
 // to be able to provide the contexts in separate hooks
