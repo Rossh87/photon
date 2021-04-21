@@ -1,21 +1,29 @@
 import React, { Dispatch } from 'react';
 import { uploadReducer } from './state/uploadReducer';
 import { TPreprocessArgs } from './domain/domainTypes';
-import {
-	IImageUploadState,
-	TSelectedFilesState,
-	TUploaderActions,
-} from './state/uploadStateTypes';
+import { IImageUploadState, TUploaderActions, TSelectedFilesState } from './state/uploadStateTypes';
 import { preprocessImages } from './useCases/preProcessSelectedFiles';
 import { processSelectedFiles } from './useCases/processSelectedFiles';
+import DependencyContext, {IDependencies} from '../../core/dependencyContext'
 import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
 import { useFPMiddleware } from 'react-use-fp';
-import { hasFileErrors } from './state/reducerUtils/hasFileErrors';
-import DependencyContext, { IDependencies } from '../../core/dependencyContext';
 import { useAuthState } from '../Auth/state/useAuthState';
+import { Paper } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+import {hasFileErrors} from './state/reducerUtils/hasFileErrors';
+
+const useStyles = makeStyles({
+	paper: {
+		maxWidth: 936,
+		margin: 'auto',
+		overflow: 'hidden',
+	},
+});
 
 const Uploader: React.FunctionComponent = () => {
+	const classes = useStyles();
+
 	const { user } = useAuthState();
 
 	const defaultState: IImageUploadState = {
@@ -45,7 +53,8 @@ const Uploader: React.FunctionComponent = () => {
 		uploadState.selectedFiles.length === 0;
 
 	return (
-		<div>
+		<main>
+			<Paper className={classes.paper}>
 			<SelectedImagesDisplay
 				uploadState={uploadState}
 				uploadDispatch={uploadDispatch}
@@ -57,8 +66,9 @@ const Uploader: React.FunctionComponent = () => {
 				acceptedExtensions={acceptedExtensions}
 				selectedFiles={uploadState.selectedFiles}
 			/>
-		</div>
-	);
+			</Paper>
+		</main>
+	)
 };
 
 export default Uploader;

@@ -1,27 +1,15 @@
 import PeopleIcon from '@material-ui/icons/People';
-import DnsRoundedIcon from '@material-ui/icons/DnsRounded';
-import PermMediaOutlinedIcon from '@material-ui/icons/PhotoSizeSelectActual';
-import PublicIcon from '@material-ui/icons/Public';
-import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
-import SettingsInputComponentIcon from '@material-ui/icons/SettingsInputComponent';
-import TimerIcon from '@material-ui/icons/Timer';
-import SettingsIcon from '@material-ui/icons/Settings';
-import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
+import ImageSearchIcon from '@material-ui/icons/ImageSearch';
+import BackupIcon from '@material-ui/icons/Backup';
 
 const navItems = [
 	{
-	  id: 'Profile',
-	  icon: <PeopleIcon />,
+		id: 'Profile',
+		icon: <PeopleIcon />,
 	},
-	{ id: 'Database', icon: <DnsRoundedIcon /> },
-	{ id: 'Upload', icon: <PermMediaOutlinedIcon /> },
-	{ id: 'Hosting', icon: <PublicIcon /> },
-	{ id: 'Functions', icon: <SettingsEthernetIcon /> },
-	{
-	  id: 'ML Kit',
-	  icon: <SettingsInputComponentIcon />,
-	},
-  ]
+	{ id: 'Image Search', icon: <ImageSearchIcon /> },
+	{ id: 'Upload', icon: <BackupIcon /> },
+];
 
 // const navItems = [
 // 	{

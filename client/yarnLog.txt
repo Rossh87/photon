@@ -1,0 +1,94 @@
+yarn run v1.22.5
+$ react-scripts start
+[34mℹ[39m [90m｢wds｣[39m: Project is running at http://192.168.0.20/
+[34mℹ[39m [90m｢wds｣[39m: webpack output is served from 
+[34mℹ[39m [90m｢wds｣[39m: Content not from webpack is served from /home/ross/Desktop/dev/photon/client/public
+[34mℹ[39m [90m｢wds｣[39m: 404s will fallback to /
+Starting the development server...
+
+Files successfully emitted, waiting for typecheck results...
+Failed to compile.
+
+/home/ross/Desktop/dev/photon/client/src/modules/Landing/index.tsx
+TypeScript error in /home/ross/Desktop/dev/photon/client/src/modules/Landing/index.tsx(13,85):
+Type '{ user: TUserState; }' is not assignable to type 'IntrinsicAttributes & { children?: ReactNode; }'.
+  Property 'user' does not exist on type 'IntrinsicAttributes & { children?: ReactNode; }'.  TS2322
+
+    11 |     const authState = useAuthState();
+    12 | 
+  > 13 |     const renderChild: (u: TUserState) => React.ReactElement = (u) => u ? <Uploader user={authState.user} /> : <Login />
+       |                                                                                     ^
+    14 | 
+    15 |     return(
+    16 |         <React.Fragment>
+Compiling...
+Compiled with warnings.
+
+src/core/dependencyContext.ts
+  Line 4:10:  'DependencyCreator' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Auth/domain/AuthError.ts
+  Line 10:2:  Useless constructor  @typescript-eslint/no-useless-constructor
+
+src/modules/Auth/index.tsx
+  Line 1:28:  'useReducer' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+  Line 2:8:   'App' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+  Line 4:8:   'AuthProvider' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 4:40:  'useAuthState' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 11:8:  React Hook useEffect has a missing dependency: 'authDispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/modules/Content/index.tsx
+  Line 2:8:   'AppBar' is defined but never used            @typescript-eslint/no-unused-vars
+  Line 3:8:   'Toolbar' is defined but never used           @typescript-eslint/no-unused-vars
+  Line 4:8:   'Typography' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 5:8:   'Paper' is defined but never used             @typescript-eslint/no-unused-vars
+  Line 6:8:   'Grid' is defined but never used              @typescript-eslint/no-unused-vars
+  Line 7:8:   'Button' is defined but never used            @typescript-eslint/no-unused-vars
+  Line 8:8:   'TextField' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 9:8:   'Tooltip' is defined but never used           @typescript-eslint/no-unused-vars
+  Line 10:8:  'IconButton' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 13:2:  'createStyles' is defined but never used      @typescript-eslint/no-unused-vars
+  Line 15:2:  'withStyles' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 16:2:  'WithStyles' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 18:8:  'SearchIcon' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 19:8:  'RefreshIcon' is defined but never used       @typescript-eslint/no-unused-vars
+  Line 52:8:  'classes' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Landing/index.tsx
+  Line 2:8:  'Container' is defined but never used  @typescript-eslint/no-unused-vars
+  Line 5:8:  'Loading' is defined but never used    @typescript-eslint/no-unused-vars
+  Line 8:8:  'Uploader' is defined but never used   @typescript-eslint/no-unused-vars
+
+src/modules/Uploader/http/uploadOneImageToGCS.ts
+  Line 1:16:  'flow' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Uploader/state/reducerUtils/hasFileErrors.ts
+  Line 1:33:  'IResizingData' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Uploader/ui/FileUpdateForm.tsx
+  Line 2:10:  'IImage' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Uploader/ui/SelectedImage.tsx
+  Line 75:35:  React Hook React.useEffect has a missing dependency: 'uploadDispatch'. Either include it or remove the dependency array. If 'uploadDispatch' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+src/modules/Uploader/ui/SelectedImagesDisplay.tsx
+  Line 2:33:  'IImage' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Uploader/useCases/preProcessSelectedFiles/index.ts
+  Line 8:9:   'Emap' is defined but never used           @typescript-eslint/no-unused-vars
+  Line 9:13:  'EMapLeft' is defined but never used       @typescript-eslint/no-unused-vars
+  Line 18:2:  'NonEmptyArray' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Uploader/useCases/processSelectedFiles/index.ts
+  Line 9:16:  'RTOf' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Uploader/useCases/resizeImage/canvasToBlob.ts
+  Line 1:20:  'map' is defined but never used    @typescript-eslint/no-unused-vars
+  Line 1:25:  'chain' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/modules/Uploader/useCases/resizeImage/deriveNeededWidths.ts
+  Line 1:10:  'IResizingData' is defined but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+

@@ -18,7 +18,7 @@ import {
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { Switch, Route } from 'react-router-dom';
-import UploadPage from './UploadPage';
+import Uploader from '../Uploader';
 import ImageSearchPage from './ImageSearchPage';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -54,9 +54,9 @@ const Content: React.FunctionComponent<ContentProps> = (
 	return (
 		<Switch>
 			<Route path="/upload">
-				<UploadPage />
+				<Uploader />
 			</Route>
-			<Route path="/images">
+			<Route path="/imagesearch">
 				<ImageSearchPage />
 			</Route>
 		</Switch>
