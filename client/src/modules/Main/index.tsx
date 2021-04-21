@@ -1,9 +1,7 @@
 import * as React from 'react';
 import {
-  createStyles,
+  makeStyles,
   ThemeProvider,
-  withStyles,
-  WithStyles,
 } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Hidden from '@material-ui/core/Hidden';
@@ -14,7 +12,7 @@ import theme from '../theme';
 
 const drawerWidth = 256;
 
-const styles = createStyles({
+const useStyles = makeStyles({
   root: {
     display: 'flex',
     minHeight: '100vh',
@@ -41,10 +39,9 @@ const styles = createStyles({
   },
 });
 
-export interface PaperbaseProps extends WithStyles<typeof styles> {}
 
-function Paperbase(props: PaperbaseProps) {
-  const { classes } = props;
+const Paperbase: React.FunctionComponent = () => {
+  const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -81,4 +78,4 @@ function Paperbase(props: PaperbaseProps) {
   );
 }
 
-export default withStyles(styles)(Paperbase);
+export default Paperbase;

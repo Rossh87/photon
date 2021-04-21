@@ -10,16 +10,14 @@ import { preprocessImages } from './useCases/preProcessSelectedFiles';
 import { processSelectedFiles } from './useCases/processSelectedFiles';
 import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
-import { TUserState } from '../Auth/domain/authDomainTypes';
+import { useFPMiddleware } from 'react-use-fp';
 import { hasFileErrors } from './state/reducerUtils/hasFileErrors';
 import DependencyContext, { IDependencies } from '../../core/dependencyContext';
-import { useFPMiddleware } from 'react-use-fp';
+import { useAuthState } from '../Auth/state/useAuthState';
 
-interface IProps {
-	user: TUserState;
-}
+const Uploader: React.FunctionComponent = () => {
+	const { user } = useAuthState();
 
-const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 	const defaultState: IImageUploadState = {
 		status: 'awaitingFileSelection',
 		selectedFiles: [],

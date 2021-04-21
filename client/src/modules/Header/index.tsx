@@ -15,16 +15,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import {
-  createStyles,
-  Theme,
-  withStyles,
-  WithStyles,
+	makeStyles,
+  	Theme,
 } from '@material-ui/core/styles';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
-const styles = (theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) =>
+  ({
     secondaryBar: {
       zIndex: 0,
     },
@@ -41,14 +39,14 @@ const styles = (theme: Theme) =>
     button: {
       borderColor: lightColor,
     },
-  });
+  }));
 
-interface HeaderProps extends WithStyles<typeof styles> {
+interface HeaderProps {
   onDrawerToggle: () => void;
 }
 
-function Header(props: HeaderProps) {
-  const { classes, onDrawerToggle } = props;
+const Header: React.FunctionComponent<HeaderProps> = ({onDrawerToggle}) => {
+  const classes = useStyles();
 
   return (
     <React.Fragment>
@@ -139,4 +137,4 @@ function Header(props: HeaderProps) {
   );
 }
 
-export default withStyles(styles)(Header);
+export default Header;
