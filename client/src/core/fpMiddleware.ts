@@ -39,10 +39,8 @@ export default class MiddleWareRunner<A extends Action, D> {
 		this._readerTaskEither = [];
 	}
 
-	rte = (actionTag: A['type']) => <E>(
-		RTE: (...args: any[]) => RTE.ReaderTaskEither<D, E, void>
-	): void => {
-		this._readerTaskEither.push({
+	rte = (actionTag: A['type']) => <E>(RTE: (...args: any[]) => any): any => {
+		this._readerTask.push({
 			_tag: actionTag,
 			runner: RTE,
 		});
@@ -52,23 +50,30 @@ export default class MiddleWareRunner<A extends Action, D> {
 		this.dependencies = deps;
 	};
 
-	private runRTE = <E, B>(arg: B) => (
-		mw: MiddleWare<A, RTE.ReaderTaskEither<D, E, void>>
-	) =>
+	private runRT = <E, B>(arg: B) => (
+		mw: MiddleWare<A, ReaderTask<D, void>>
+	) => {
 		pipe(
 			this.dependencies,
+			(x) => {
+				console.log('deps:', x);
+				return x;
+			},
 			fromNullable,
 			getOrElseW(() => {
 				throw new Error('reader middleware dependencies uninitialized');
 			}),
 			(d) => mw.runner(arg)(d)()
 		);
+	};
 
 	mDispatch = (a: A) => {
-		this._readerTaskEither.forEach((mw) => {
+		this._readerTask.forEach((mw) => {
 			if (mw._tag === a.type) {
-				this.runRTE(mw);
+				this.runRT(a.data)(mw);
 			}
 		});
+
+		this._reactDispatch(a);
 	};
 }

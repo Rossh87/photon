@@ -5,11 +5,12 @@ import Login from '../Login'
 import Loading from '../Loading'
 import {useAuthState} from '../Auth/state/useAuthState'
 import Main from '../Main'
+import Uploader from '../Uploader'
 
 const Landing: React.FunctionComponent = () => {
     const authState = useAuthState();
 
-    const renderChild: (u: TUserState) => React.ReactElement = (u) => u ? <Main /> : <Login />
+    const renderChild: (u: TUserState) => React.ReactElement = (u) => u ? <Uploader user={authState.user} /> : <Login />
 
     return(
         <React.Fragment>

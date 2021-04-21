@@ -34,6 +34,10 @@ export interface IFileAction<T> {
 	data: T;
 }
 
+export interface IProcessFilesAction extends IFileAction<TSelectedFilesState> {
+	type: 'PROCESS_FILES';
+}
+
 export interface IFilesSelectedAction
 	extends IFileAction<TPreprocessingResults> {
 	type: 'FILES_SELECTED';
@@ -73,7 +77,12 @@ export interface IUploadFailedAction extends IFileAction<IUploadFailureData> {
 	type: 'UPLOAD_FAILED';
 }
 
+export interface IUploadComponentErr extends IFileAction<string> {
+	type: 'UPLOAD_COMPONENT_ERR';
+}
+
 export type TUploaderActions =
+	| IProcessFilesAction
 	| IFilesSelectedAction
 	| IInvalidFileSelectionAction
 	| IUpdateFileAction
@@ -82,4 +91,5 @@ export type TUploaderActions =
 	| IUploadFailedAction
 	| IUploadSuccessAction
 	| IImagesEmittedAction
-	| IInitUploadAction;
+	| IInitUploadAction
+	| IUploadComponentErr;

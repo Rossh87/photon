@@ -8,10 +8,9 @@ import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
 import { pipe } from 'fp-ts/lib/function';
 import { TUserState } from '../Auth/domain/authDomainTypes';
-import { fold, map, ap, some} from 'fp-ts/lib/Option'
+import { fold} from 'fp-ts/lib/Option'
 import {hasFileErrors} from './state/reducerUtils/hasFileErrors';
 import DependencyContext, {IDependencies} from '../../core/dependencyContext';
-import {fromArray} from 'fp-ts/lib/NonEmptyArray';
 import MiddleWareRunner from '../../core/fpMiddleware'
 
 interface IProps {
@@ -31,16 +30,16 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 
 	const dependencies: IDependencies<TUploaderActions> = React.useContext(DependencyContext)(uploadDispatch);
 
+	const mw = new MiddleWareRunner<TUploaderActions, IDependencies<TUploaderActions>>(uploadDispatch);
+
+	mw.initDependencies(dependencies);
+
+	mw.rte('PROCESS_FILES')(processSelectedFiles);
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// does nothing if uploadState.selectedFiles is unpopulated
-		pipe(
-			uploadState.selectedFiles,
-			fromArray,
-			map(processSelectedFiles),
-			ap(some(dependencies))
-		)
+		mw.mDispatch({type: 'PROCESS_FILES', data: uploadState.selectedFiles});
 	};
 
 	const handleFileRemoval = (fileName: string) =>
