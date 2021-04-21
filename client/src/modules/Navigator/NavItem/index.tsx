@@ -7,6 +7,7 @@ import {
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) => ({
     item: {
@@ -26,26 +27,31 @@ const useStyles = makeStyles((theme: Theme) => ({
     itemIcon: {
       minWidth: 'auto',
       marginRight: theme.spacing(2),
-    }
+    },
+	navItemLink: {
+		textDecoration: 'none'
+	}
   }));
 
 interface NavItemProps {
 	id: string,
 	icon: React.ReactElement,
-	active?: boolean,
+	active: boolean,
 	handleClick: () => void
 }
 
 const NavItem: React.FunctionComponent<NavItemProps> = ({id, icon, active, handleClick}) => {
 	const classes = useStyles();
 
-	return (<React.Fragment>
+	return (
+	<Link to={`/${id.toLowerCase()}`} className={classes.navItemLink}>
 	  <ListItem
 	  		onClick={handleClick}
 		  key={id}
 		  button
 		  className={clsx(classes.item, active && classes.itemActiveItem)}
 		>
+				
 		  <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
 		  <ListItemText
 			classes={{
@@ -55,7 +61,8 @@ const NavItem: React.FunctionComponent<NavItemProps> = ({id, icon, active, handl
 			{id}
 		  </ListItemText>
 		</ListItem>
-	</React.Fragment>)
+		</Link>
+	)
 }
 
 export default NavItem;
