@@ -17,9 +17,11 @@ export type TImageUploadStateStatus =
 	| 'success'
 	| 'failed';
 
+export type TSelectedFilesState = TPreprocessingResults | [];
+
 export interface IImageUploadState {
 	status: TImageUploadStateStatus;
-	selectedFiles: TPreprocessingResults | [];
+	selectedFiles: TSelectedFilesState;
 }
 
 export interface IUploadFailureData {
