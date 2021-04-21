@@ -17,7 +17,7 @@ interface Action {
 // runners should be pure functions with wrapped void values
 interface MiddleWare<A extends Action, T> {
 	_tag: A['type'];
-	runner: T;
+	runner: (...args: any[]) => T;
 }
 
 export default class MiddleWareRunner<A extends Action, D> {
@@ -40,7 +40,7 @@ export default class MiddleWareRunner<A extends Action, D> {
 	}
 
 	rte = (actionTag: A['type']) => <E>(
-		RTE: RTE.ReaderTaskEither<D, E, void>
+		RTE: (...args: any[]) => RTE.ReaderTaskEither<D, E, void>
 	): void => {
 		this._readerTaskEither.push({
 			_tag: actionTag,
@@ -52,14 +52,16 @@ export default class MiddleWareRunner<A extends Action, D> {
 		this.dependencies = deps;
 	};
 
-	private runRTE = <E>(mw: MiddleWare<A, RTE.ReaderTaskEither<D, E, void>>) =>
+	private runRTE = <E, B>(arg: B) => (
+		mw: MiddleWare<A, RTE.ReaderTaskEither<D, E, void>>
+	) =>
 		pipe(
 			this.dependencies,
 			fromNullable,
 			getOrElseW(() => {
 				throw new Error('reader middleware dependencies uninitialized');
 			}),
-			(d) => mw.runner(d)()
+			(d) => mw.runner(arg)(d)()
 		);
 
 	mDispatch = (a: A) => {
