@@ -11,7 +11,8 @@ import { TUserState } from '../Auth/domain/authDomainTypes';
 import { fold, map, ap, some} from 'fp-ts/lib/Option'
 import {hasFileErrors} from './state/reducerUtils/hasFileErrors';
 import DependencyContext, {IDependencies} from '../../core/dependencyContext';
-import {fromArray} from 'fp-ts/lib/NonEmptyArray'
+import {fromArray} from 'fp-ts/lib/NonEmptyArray';
+import MiddleWareRunner from '../../core/fpMiddleware'
 
 interface IProps {
 	user: TUserState;
