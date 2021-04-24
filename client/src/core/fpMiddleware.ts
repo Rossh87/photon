@@ -27,7 +27,6 @@ export default class MiddleWareRunner<A extends Action, D> {
 	private _task: MiddleWare<A, Task<void>>[];
 	private _reader: MiddleWare<A, Reader<D, void>>[];
 	private _readerTask: MiddleWare<A, ReaderTask<D, void>>[];
-	private _readerTaskEither: MiddleWare<A, ReaderTaskEither<D, any, void>>[];
 
 	constructor(dispatch: React.Dispatch<A>) {
 		this._reactDispatch = dispatch;
@@ -36,10 +35,11 @@ export default class MiddleWareRunner<A extends Action, D> {
 		this._task = [];
 		this._reader = [];
 		this._readerTask = [];
-		this._readerTaskEither = [];
 	}
 
-	rte = (actionTag: A['type']) => <E>(RTE: (...args: any[]) => any): any => {
+	addRT = (actionTag: A['type']) => <E>(
+		RTE: (...args: any[]) => any
+	): any => {
 		this._readerTask.push({
 			_tag: actionTag,
 			runner: RTE,
@@ -55,10 +55,6 @@ export default class MiddleWareRunner<A extends Action, D> {
 	) => {
 		pipe(
 			this.dependencies,
-			(x) => {
-				console.log('deps:', x);
-				return x;
-			},
 			fromNullable,
 			getOrElseW(() => {
 				throw new Error('reader middleware dependencies uninitialized');
