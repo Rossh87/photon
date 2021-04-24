@@ -23,15 +23,14 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 		selectedFiles: [],
 	};
 
-	const dependencies = React.useContext(DependencyContext);
+	const makeDependencies = React.useContext(DependencyContext);
 
 	const [uploadState, uploadDispatch, addUploadHandler] = useFPMiddleware(
 		uploadReducer,
-		defaultState,
-		dependencies
+		defaultState
 	);
 
-	addUploadHandler('PROCESS_FILES')(processSelectedFiles);
+	addUploadHandler('PROCESS_FILES')(processSelectedFiles, makeDependencies);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();

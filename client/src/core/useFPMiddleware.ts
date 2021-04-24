@@ -1,70 +1,115 @@
-import React, { useReducer, Dispatch } from 'react';
-import { ReaderTask } from 'fp-ts/lib/ReaderTask';
+import React, { useReducer, Dispatch, ReducerAction, Reducer } from 'react';
 import { fromPredicate, map, fromNullable, fold } from 'fp-ts/lib/Option';
 import { pipe, flow } from 'fp-ts/lib/function';
-import { IO } from 'fp-ts/lib/IO';
-import { map as EMap, left, mapLeft as EMapLeft } from 'fp-ts/lib/Either';
+import { Reader } from 'fp-ts/lib/Reader';
 
-type HandlerKind = 'readertask' | 'task' | 'io' | 'reader';
-
-interface Dependencies<A> {
+interface DependencyObject<A> {
 	dispatch: React.Dispatch<A>;
 }
 
-interface DispatchInjector<A, D extends Dependencies<A> = Dependencies<A>> {
-	(dispatch: React.Dispatch<A>): D;
+type MergedDependencies<A, D> = DependencyObject<A> & D;
+
+type ReaderDependencies<A, D> = MergedDependencies<A, D> | React.Dispatch<A>
+
+export interface DependencyCreator<A, D = {}> {
+	(dispatch: React.Dispatch<A>): MergedDependencies<A, D>;
 }
 
-interface Action {
+interface ActionReceiver<A, D> {
 	type: string;
-	data?: any;
+	handler: <P, FB>(p: P) => Reader<ReaderDependencies<A, D>, FB> | 
+	makeDependencies?: DependencyCreator<A, D>;
 }
 
-interface ActionReceiver {
-	type: string;
-	handler: any;
+interface Action<T, S extends string> {
+	type: S;
+	payload?: T;
 }
 
-export const useFPMiddleware = <S, A extends Action>(
+export type ActionHandler<A, FB> = Reader<Dispatch<A>, FB>;
+
+export type PayloadHandler = 
+
+interface Composable<A> {
+	(dispatch: Dispatch<A>): (next: (a: A) => void) => (action: A) => void;
+}
+
+export const useFPMiddleware = <S, A extends Action<any, any>, D>(
 	r: React.Reducer<S, A>,
-	initialState: S,
-	dependencies?: DispatchInjector<A>
-): [S, React.Dispatch<A>, (s: string) => (h: Function) => void] => {
+	initialState: S
+) => {
 	const [state, baseDispatch] = useReducer<React.Reducer<S, A>>(
 		r,
 		initialState
 	);
 
-	const deps = dependencies ? dependencies(baseDispatch) : baseDispatch;
+	const callHandler = (receiver: ActionReceiver<A, D>) => (
+		dispatch: Dispatch<A>
+	) =>
+		pipe(
+			receiver.makeDependencies,
+			fromNullable,
+			fold(
+				() => receiver.handler(dispatch)(),
+				(dependencyCreator) =>
+					receiver.handler(dependencyCreator(dispatch))()
+			)
+		);
 
-	const handlers: ActionReceiver[] = [];
+	const callHandlerWithPayload = (receiver: ActionReceiver<A>) => (
+		dispatch: Dispatch<A>
+	) => (payload: any) =>
+		pipe(
+			receiver.makeDependencies,
+			fromNullable,
+			fold(
+				() => receiver.handler(payload)(dispatch)(),
+				(dependencyCreator) =>
+					receiver.handler(payload)(dependencyCreator(dispatch))()
+			)
+		);
 
-	const addHandler = (type: A['type']) => <F>(handler: F) =>
-		handlers.push({
-			type,
-			handler,
-		});
-
-	const dispatch = (a: A) => {
-		handlers.forEach((receiver) => {
-			pipe(
-				a,
-				fromPredicate((t) => t.type === receiver.type),
-				map(
-					flow(
-						(a) => a.data,
-						fromNullable,
-						fold(
-							() => receiver.handler(deps)(),
-							(data) => receiver.handler(data)(deps)()
-						)
+	const toComposable = (receiver: ActionReceiver<A>) => (
+		dispatch: Dispatch<A>
+	) => (next: (a: A) => void) => (action: A) => {
+		pipe(
+			action,
+			fromPredicate((t) => t.type === receiver.type),
+			map(
+				flow(
+					(a) => a.payload,
+					fromNullable,
+					fold(
+						() => callHandler(receiver)(dispatch),
+						(payload) =>
+							callHandlerWithPayload(receiver)(dispatch)(payload)
 					)
 				)
-			);
-		});
+			)
+		);
 
-		baseDispatch(a);
+		return next(action);
 	};
+
+	const handlers: Composable<A>[] = [];
+
+	const addHandler = (type: A['type']) => (
+		handler: any,
+		makeDependencies?: DependencyCreator<A, D>
+	) =>
+		handlers.push(
+			toComposable({
+				type,
+				handler,
+				makeDependencies,
+			})
+		);
+
+	const dispatch = (action: A) =>
+		handlers.reduceRight(
+			(next, fn) => fn(baseDispatch)(next),
+			baseDispatch
+		)(action);
 
 	return [state, dispatch, addHandler];
 };
