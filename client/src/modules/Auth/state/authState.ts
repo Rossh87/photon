@@ -13,7 +13,7 @@ export const authReducer: Reducer<IAuthState, TAuthActions> = (
 ) => {
 	switch (action.type) {
 		case 'ADD_USER':
-			return { ...state, user: action.data, status: 'authorized' };
+			return { ...state, user: action.payload, status: 'authorized' };
 
 		case 'LOGOUT_USER':
 			return {
@@ -25,7 +25,7 @@ export const authReducer: Reducer<IAuthState, TAuthActions> = (
 		case 'ADD_AUTH_ERR':
 			return {
 				...state,
-				errors: [...state.errors, action.data],
+				errors: [...state.errors, action.payload],
 				status: 'failed',
 			};
 

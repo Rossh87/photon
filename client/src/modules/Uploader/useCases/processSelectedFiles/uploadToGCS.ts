@@ -27,22 +27,23 @@ const leftIfHasErrors = (res: IUploadsResponsePayload) =>
 		  )
 		: right(res.successes as NonEmptyArray<IUploadURIMetadata>);
 
-export const uploadToGCS = (images: IResizingData) => (
-	response: IUploadsResponsePayload
-) => (deps: IDependencies<TUploaderActions>) =>
-	pipe(
-		response,
-		leftIfHasErrors,
-		// lift to Task to avoid a weird return type
-		TOf,
-		TEChain(
-			flow(
-				NEAMapWithIdx((i, uri) =>
-					uploadOneImageToGCS(uri.resumableURI)(
-						images.resizedBlobs[i]
-					)(deps)
-				),
-				sequenceArray
+export const uploadToGCS =
+	(images: IResizingData) =>
+	(response: IUploadsResponsePayload) =>
+	(deps: IDependencies<TUploaderActions>) =>
+		pipe(
+			response,
+			leftIfHasErrors,
+			// lift to Task to avoid a weird return type
+			TOf,
+			TEChain(
+				flow(
+					NEAMapWithIdx((i, uri) =>
+						uploadOneImageToGCS(uri.resumableURI)(
+							images.resizedBlobs[i]
+						)(deps)
+					),
+					sequenceArray
+				)
 			)
-		)
-	);
+		);

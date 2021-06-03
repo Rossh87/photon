@@ -1,7 +1,11 @@
 import React from 'react';
 import { uploadReducer } from './state/uploadReducer';
 import { IImage } from './domain/domainTypes';
-import { IImageUploadState, TUploaderActions } from './state/uploadStateTypes';
+import {
+	IImageUploadState,
+	TSelectedFilesState,
+	TUploaderActions,
+} from './state/uploadStateTypes';
 import { preprocessImages } from './useCases/preProcessSelectedFiles';
 import { processSelectedFiles } from './useCases/processSelectedFiles';
 import UploadForm from './ui/UploadForm';
@@ -11,7 +15,7 @@ import { TUserState } from '../Auth/domain/authDomainTypes';
 import { fold } from 'fp-ts/lib/Option';
 import { hasFileErrors } from './state/reducerUtils/hasFileErrors';
 import DependencyContext, { IDependencies } from '../../core/dependencyContext';
-import { useFPMiddleware } from '../../core/useFPMiddleware';
+import { useFPMiddleware } from 'react-use-fp';
 
 interface IProps {
 	user: TUserState;
@@ -25,27 +29,29 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 
 	const makeDependencies = React.useContext(DependencyContext);
 
-	const [uploadState, uploadDispatch, addUploadHandler] = useFPMiddleware(
+	const [uploadState, uploadDispatch, withUploadDispatch] = useFPMiddleware(
 		uploadReducer,
 		defaultState
 	);
 
-	addUploadHandler('PROCESS_FILES')(processSelectedFiles, makeDependencies);
+	withUploadDispatch<IDependencies<TUploaderActions>, TSelectedFilesState>(
+		'PROCESS_FILES'
+	)(processSelectedFiles, makeDependencies);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-
+		console.log('submit!');
 		uploadDispatch({
 			type: 'PROCESS_FILES',
-			data: uploadState.selectedFiles,
+			payload: uploadState.selectedFiles,
 		});
 	};
 
 	const handleFileRemoval = (fileName: string) =>
-		uploadDispatch({ type: 'UNSELECT_FILE', data: fileName });
+		uploadDispatch({ type: 'UNSELECT_FILE', payload: fileName });
 
 	const handleFileUpdate = (previousName: string, updates: Partial<IImage>) =>
-		uploadDispatch({ type: 'UPDATE_FILE', previousName, data: updates });
+		uploadDispatch({ type: 'UPDATE_FILE', previousName, payload: updates });
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { files } = e.target;
@@ -55,9 +61,13 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 			pipe(
 				preprocessImages({ ownerID })(files),
 				fold(
-					() => uploadDispatch({ type: 'UNSELECT_ALL', data: null }),
+					() =>
+						uploadDispatch({ type: 'UNSELECT_ALL', payload: null }),
 					(images) =>
-						uploadDispatch({ type: 'FILES_SELECTED', data: images })
+						uploadDispatch({
+							type: 'FILES_SELECTED',
+							payload: images,
+						})
 				)
 			);
 

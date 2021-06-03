@@ -16,7 +16,7 @@ export type TAuthStatus =
 
 export interface IAuthAction<T> {
 	type: string;
-	data: T;
+	payload: T;
 }
 
 export interface IAddUserAction extends IAuthAction<IUser> {

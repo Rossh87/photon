@@ -31,7 +31,7 @@ export interface IUploadFailureData {
 
 export interface IFileAction<T> {
 	type: string;
-	data: T;
+	payload: T;
 }
 
 export interface IProcessFilesAction extends IFileAction<TSelectedFilesState> {

@@ -24,7 +24,7 @@ const loadDataURL = (f: IImage) =>
 			e.target?.result
 				? res(e.target.result as string)
 				: rej(
-						'conversion from file to dataURL failed--expected result to be truthy, but received null'
+						'conversion from file to payloadURL failed--expected result to be truthy, but received null'
 				  )
 		);
 

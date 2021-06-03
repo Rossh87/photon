@@ -22,22 +22,24 @@ const toMetadata: (x: IResizingData) => IUploadsRequestPayload = (x) => {
 	);
 };
 
-const requestURIs = (
-	imageData: IResizingData
-): IHttpCall<IUploadsResponsePayload> => (httpLib) =>
-	httpLib.post(REQUEST_UPLOAD_URI_ENDPOINT, toMetadata(imageData), {
-		withCredentials: true,
-	});
+const requestURIs =
+	(imageData: IResizingData): IHttpCall<IUploadsResponsePayload> =>
+	(httpLib) =>
+		httpLib.post(REQUEST_UPLOAD_URI_ENDPOINT, toMetadata(imageData), {
+			withCredentials: true,
+		});
 
-export const _requestUploadURIs = (imageData: IResizingData) => (
-	httpRunner: THTTPRunner
-) =>
-	tryCatch(
-		() => pipe(imageData, requestURIs, httpRunner, extractResponseData),
+export const _requestUploadURIs =
+	(imageData: IResizingData) => (httpRunner: THTTPRunner) =>
+		tryCatch(
+			() => pipe(imageData, requestURIs, httpRunner, extractResponseData),
 
-		(e) =>
-			new BaseError('Attempt to get upload URIs from server failed.', e)
-	);
+			(e) =>
+				new BaseError(
+					'Attempt to get upload URIs from server failed.',
+					e
+				)
+		);
 
 export const requestUploadURIs = flow(
 	_requestUploadURIs,

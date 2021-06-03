@@ -19,12 +19,14 @@ export const processSelectedFiles = (files: TSelectedFilesState) =>
 		fromArray,
 		OMap(NEAMap(processOneImage)),
 		OMap(sequenceArray),
-		getOrElseW<T>(() => (deps: IDependencies<TUploaderActions>) =>
-			fromIO(() =>
-				deps.dispatch({
-					type: 'UPLOAD_COMPONENT_ERR',
-					data: 'Please select files to upload before submission',
-				})
-			)
+		getOrElseW<T>(
+			() => (deps: IDependencies<TUploaderActions>) =>
+				fromIO(() =>
+					deps.dispatch({
+						type: 'UPLOAD_COMPONENT_ERR',
+						payload:
+							'Please select files to upload before submission',
+					})
+				)
 		)
 	);

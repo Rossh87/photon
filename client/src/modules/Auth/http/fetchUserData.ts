@@ -22,25 +22,24 @@ const _extractUserData = (response: AxiosResponse<IUser>): IUser =>
 const extractUserData = TE.map(_extractUserData);
 
 const initRequest: IDispatcher<TAuthActions> = (dispatch) =>
-	dispatch({ type: 'AUTH_REQUEST_INITIATED', data: null });
+	dispatch({ type: 'AUTH_REQUEST_INITIATED', payload: null });
 
 const onSuccess = (dispatch: Dispatch<TAuthActions>) => (user: IUser) =>
-	dispatch({ type: 'ADD_USER', data: user });
+	dispatch({ type: 'ADD_USER', payload: user });
 
 const onFailure = (dispatch: Dispatch<TAuthActions>) => (e: AuthError) =>
-	dispatch({ type: 'ADD_AUTH_ERR', data: e });
+	dispatch({ type: 'ADD_AUTH_ERR', payload: e });
 
-export const _fetchUserData = (fetcher: AxiosInstance) => async (
-	dispatch: Dispatch<TAuthActions>
-) => {
-	initRequest(dispatch);
+export const _fetchUserData =
+	(fetcher: AxiosInstance) => async (dispatch: Dispatch<TAuthActions>) => {
+		initRequest(dispatch);
 
-	return await pipe(
-		attemptToFetchUserData(fetcher),
-		extractUserData,
-		TE.map(onSuccess(dispatch)),
-		TE.mapLeft(onFailure(dispatch))
-	)();
-};
+		return await pipe(
+			attemptToFetchUserData(fetcher),
+			extractUserData,
+			TE.map(onSuccess(dispatch)),
+			TE.mapLeft(onFailure(dispatch))
+		)();
+	};
 
 export const fetchUserData = _fetchUserData(axios);

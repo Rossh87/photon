@@ -4,14 +4,13 @@ import { pipe } from 'fp-ts/lib/function';
 import { map } from 'fp-ts/lib/TaskEither';
 import { TUploaderActions } from '../../state/uploadStateTypes';
 
-export const doResize = (file: IImage) => (
-	deps: IDependencies<TUploaderActions>
-) =>
-	pipe(
-		file,
-		deps.imageReducer,
-		map((resized) => {
-			deps.dispatch({ type: 'IMAGES_EMITTED', data: resized });
-			return resized;
-		})
-	);
+export const doResize =
+	(file: IImage) => (deps: IDependencies<TUploaderActions>) =>
+		pipe(
+			file,
+			deps.imageReducer,
+			map((resized) => {
+				deps.dispatch({ type: 'IMAGES_EMITTED', payload: resized });
+				return resized;
+			})
+		);
