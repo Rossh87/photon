@@ -1,24 +1,20 @@
-import React from 'react';
-import {
-	IImage
-} from '../domain/domainTypes';
+import React, { Dispatch } from 'react';
+import { IImage } from '../domain/domainTypes';
+import { TUploaderActions } from '../state/uploadStateTypes';
 import TextField from '@material-ui/core/TextField';
-import {fromPredicate, map} from 'fp-ts/lib/Option';
-import {pipe} from 'fp-ts/lib/function'
+import { fromPredicate, map } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/function';
 
 interface IFileUpdateFormProps {
-	handleFileUpdate: (
-		previousName: string,
-		updates: Partial<IImage>
-	) => void;
+	uploadDispatch: Dispatch<TUploaderActions>;
 	fileName: string;
 	closeAccordion: () => void;
 }
 
 const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
-	handleFileUpdate,
 	fileName,
 	closeAccordion,
+	uploadDispatch,
 }) => {
 	const [inputState, setInputState] = React.useState<string>('');
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -30,16 +26,20 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 		pipe(
 			inputState,
 			fromPredicate<string>((s) => s.length > 0),
-			map(x => {
-				handleFileUpdate(fileName, { displayName: inputState });
+			map((x) => {
+				uploadDispatch({
+					type: 'UPDATE_FILE',
+					previousName: fileName,
+					payload: { displayName: inputState },
+				});
 				return x;
 			}),
-			map(x => {
+			map((x) => {
 				setInputState('');
-				return x
+				return x;
 			})
-		)
-		
+		);
+
 		closeAccordion();
 	};
 
@@ -56,4 +56,4 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 	);
 };
 
-export default FileUpdateForm
+export default FileUpdateForm;

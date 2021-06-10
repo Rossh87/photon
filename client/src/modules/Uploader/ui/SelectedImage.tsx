@@ -1,7 +1,6 @@
-import React from 'react';
-import {
-	IImage
-} from '../domain/domainTypes';
+import React, { Dispatch } from 'react';
+import { IImage } from '../domain/domainTypes';
+import { TUploaderActions } from '../state/uploadStateTypes';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -14,33 +13,31 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles } from '@material-ui/core/styles';
 import FileUpdateForm from './FileUpdateForm';
-import SelectedImageStatusIcon from './SelectedImageStatusIcon'
+import SelectedImageStatusIcon from './SelectedImageStatusIcon';
 
 const useSelectedImageStyles = makeStyles({
 	root: {
 		width: '100%',
-	}
+	},
 });
 
 interface ISelectedImageProps {
 	imageFile: IImage;
-	handleRemoval: (fileForRemoval: string) => void;
-	handleFileUpdate: (p: string, u: Partial<IImage>) => void;
+	uploadDispatch: Dispatch<TUploaderActions>;
 }
 
 const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 	imageFile,
-	handleRemoval,
-	handleFileUpdate,
+	uploadDispatch,
 }) => {
 	// state stuff
 	const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
 	const classes = useSelectedImageStyles();
 
-	const hasError = !!(imageFile.error);
+	const hasError = !!imageFile.error;
 
-	const {status, displayName} = imageFile;
+	const { status, displayName } = imageFile;
 
 	const textColor = hasError ? 'error' : 'primary';
 
@@ -54,21 +51,28 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 
 	const removeFileListItem = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		handleRemoval(displayName);
+		uploadDispatch({ type: 'UNSELECT_FILE', payload: displayName });
 	};
 
 	const removeIfSuccess = () => {
 		let cancel = () => clearTimeout();
 
-		if(status === 'success'){
-			const timerID = setTimeout(() => handleRemoval(displayName), 1000);
+		if (status === 'success') {
+			const timerID = setTimeout(
+				() =>
+					uploadDispatch({
+						type: 'UNSELECT_FILE',
+						payload: displayName,
+					}),
+				1000
+			);
 			cancel = () => clearTimeout(timerID);
-		} 
+		}
 
 		return cancel;
-	}
+	};
 
-	React.useEffect(removeIfSuccess, [status, displayName, handleRemoval]);
+	React.useEffect(removeIfSuccess, [status, displayName]);
 
 	return (
 		<ListItem>
@@ -99,8 +103,8 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 				<AccordionDetails>
 					<FileUpdateForm
 						closeAccordion={closeAccordion}
-						handleFileUpdate={handleFileUpdate}
 						fileName={displayName}
+						uploadDispatch={uploadDispatch}
 					/>
 				</AccordionDetails>
 			</Accordion>

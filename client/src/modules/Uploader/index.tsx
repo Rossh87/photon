@@ -46,12 +46,6 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 		});
 	};
 
-	const handleFileRemoval = (fileName: string) =>
-		uploadDispatch({ type: 'UNSELECT_FILE', payload: fileName });
-
-	const handleFileUpdate = (previousName: string, updates: Partial<IImage>) =>
-		uploadDispatch({ type: 'UPDATE_FILE', previousName, payload: updates });
-
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { files } = e.target;
 		const ownerID = user?._id;
@@ -87,8 +81,7 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 		<div>
 			<SelectedImagesDisplay
 				uploadState={uploadState}
-				handleFileRemoval={handleFileRemoval}
-				handleFileUpdate={handleFileUpdate}
+				uploadDispatch={uploadDispatch}
 			/>
 			<UploadForm
 				submitIsDisabled={submitIsDisabled}

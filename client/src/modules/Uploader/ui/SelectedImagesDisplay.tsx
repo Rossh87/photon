@@ -1,37 +1,35 @@
-import React from 'react';
-import {
-	TPreprocessingResults,
-	IImage
-} from '../domain/domainTypes';
-import { IImageUploadState } from '../state/uploadStateTypes'
+import React, { Dispatch } from 'react';
+import { TPreprocessingResults, IImage } from '../domain/domainTypes';
+import { IImageUploadState, TUploaderActions } from '../state/uploadStateTypes';
 import List from '@material-ui/core/List';
-import SelectedImage from './SelectedImage'
+import SelectedImage from './SelectedImage';
 
 interface IDisplayProps {
 	uploadState: IImageUploadState;
-	handleFileRemoval: (f: string) => void;
-	handleFileUpdate: (p: string, u: Partial<IImage>) => void;
+	uploadDispatch: Dispatch<TUploaderActions>;
 }
 
 // TODO: passing of error message to list item component through a null prop isn't great...
 const SelectedImagesDisplay: React.FunctionComponent<IDisplayProps> = ({
 	uploadState,
-	handleFileRemoval,
-	handleFileUpdate,
+	uploadDispatch,
 }) => {
-	const {selectedFiles} = uploadState;
+	const { selectedFiles } = uploadState;
 
 	const generateSelectedImageItems = (imageFiles: TPreprocessingResults) =>
 		imageFiles.map((f) => (
 			<SelectedImage
 				imageFile={f}
-				handleRemoval={handleFileRemoval}
-				handleFileUpdate={handleFileUpdate}
+				uploadDispatch={uploadDispatch}
 				key={f.displayName}
 			/>
 		));
 
-	return selectedFiles.length? <List>{generateSelectedImageItems(selectedFiles as TPreprocessingResults)}</List> : null;
+	return selectedFiles.length ? (
+		<List>
+			{generateSelectedImageItems(selectedFiles as TPreprocessingResults)}
+		</List>
+	) : null;
 };
 
-export default SelectedImagesDisplay
+export default SelectedImagesDisplay;
