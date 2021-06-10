@@ -13,9 +13,11 @@ export interface IImage extends File {
 	status: 'preprocessed' | 'populated' | 'processing' | 'success' | 'error';
 }
 
-export interface IPreprocessDependencies {
-	ownerID: string;
-}
+export type TOwnerID = string;
+
+export type TPreprocessArgs = [FileList, TOwnerID];
+
+export type TNonEmptyPreprocessArgs = [NonEmptyArray<File>, TOwnerID];
 
 export interface IUploadableBlob {
 	blob: Blob;

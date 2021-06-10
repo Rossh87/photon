@@ -17,8 +17,18 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 	uploadDispatch,
 }) => {
 	const [inputState, setInputState] = React.useState<string>('');
+
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setInputState(e.target.value);
+
+	const setNewDisplayName = () =>
+		uploadDispatch({
+			type: 'UPDATE_FILE',
+			previousName: fileName,
+			payload: { displayName: inputState },
+		});
+
+	const resetFileNameInput = () => setInputState('');
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -26,21 +36,10 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 		pipe(
 			inputState,
 			fromPredicate<string>((s) => s.length > 0),
-			map((x) => {
-				uploadDispatch({
-					type: 'UPDATE_FILE',
-					previousName: fileName,
-					payload: { displayName: inputState },
-				});
-				return x;
-			}),
-			map((x) => {
-				setInputState('');
-				return x;
-			})
+			map(setNewDisplayName),
+			map(resetFileNameInput),
+			map(closeAccordion)
 		);
-
-		closeAccordion();
 	};
 
 	return (

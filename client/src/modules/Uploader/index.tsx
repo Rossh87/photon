@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { uploadReducer } from './state/uploadReducer';
-import { IImage } from './domain/domainTypes';
+import { TPreprocessArgs } from './domain/domainTypes';
 import {
 	IImageUploadState,
 	TSelectedFilesState,
@@ -10,9 +10,7 @@ import { preprocessImages } from './useCases/preProcessSelectedFiles';
 import { processSelectedFiles } from './useCases/processSelectedFiles';
 import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
-import { pipe } from 'fp-ts/lib/function';
 import { TUserState } from '../Auth/domain/authDomainTypes';
-import { fold } from 'fp-ts/lib/Option';
 import { hasFileErrors } from './state/reducerUtils/hasFileErrors';
 import DependencyContext, { IDependencies } from '../../core/dependencyContext';
 import { useFPMiddleware } from 'react-use-fp';
@@ -38,44 +36,15 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 		'PROCESS_FILES'
 	)(processSelectedFiles, makeDependencies);
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		uploadDispatch({
-			type: 'PROCESS_FILES',
-			payload: uploadState.selectedFiles,
-		});
-	};
-
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { files } = e.target;
-		const ownerID = user?._id;
-
-		if (files && ownerID) {
-			pipe(
-				preprocessImages({ ownerID })(files),
-				fold(
-					() =>
-						uploadDispatch({ type: 'UNSELECT_ALL', payload: null }),
-					(images) =>
-						uploadDispatch({
-							type: 'FILES_SELECTED',
-							payload: images,
-						})
-				)
-			);
-
-			// reset file input
-			e.target.value = '';
-		} else {
-			return;
-		}
-	};
-
-	const _handleFileChange = React.useCallback(handleFileChange, [user?._id]);
+	withUploadDispatch<Dispatch<TUploaderActions>, TPreprocessArgs>(
+		'FILES_CHANGED'
+	)(preprocessImages);
 
 	const acceptedExtensions = ['image/jpg', 'image/jpeg', 'image/png'];
 
-	const submitIsDisabled = hasFileErrors(uploadState.selectedFiles);
+	const submitIsDisabled =
+		hasFileErrors(uploadState.selectedFiles) ||
+		uploadState.selectedFiles.length === 0;
 
 	return (
 		<div>
@@ -85,9 +54,10 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 			/>
 			<UploadForm
 				submitIsDisabled={submitIsDisabled}
-				handleFileChange={_handleFileChange}
-				handleSubmit={handleSubmit}
+				uploadDispatch={uploadDispatch}
+				ownerID={user?._id}
 				acceptedExtensions={acceptedExtensions}
+				selectedFiles={uploadState.selectedFiles}
 			/>
 		</div>
 	);

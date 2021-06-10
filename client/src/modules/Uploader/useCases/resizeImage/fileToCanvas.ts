@@ -1,4 +1,4 @@
-import { tryCatch, map as TEMap } from 'fp-ts/lib/TaskEither';
+import { tryCatch } from 'fp-ts/lib/TaskEither';
 import { left, right, chain as EChain } from 'fp-ts/lib/Either';
 import { map as TMap } from 'fp-ts/lib/Task';
 import { flow } from 'fp-ts/lib/function';
@@ -19,16 +19,19 @@ const loadImg = (f: IImage) =>
 const loadDataURL = (f: IImage) =>
 	new Promise<string>((res, rej) => {
 		const reader = new FileReader();
-
-		reader.addEventListener('load', (e) =>
-			e.target?.result
+		reader.addEventListener('load', (e) => {
+			return e.target?.result
 				? res(e.target.result as string)
 				: rej(
 						'conversion from file to payloadURL failed--expected result to be truthy, but received null'
-				  )
-		);
+				  );
+		});
 
-		reader.readAsDataURL(f);
+		try {
+			reader.readAsDataURL(f);
+		} catch (e) {
+			console.log(e);
+		}
 	});
 
 const populateImg = (url: string) => {

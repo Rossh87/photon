@@ -1,4 +1,8 @@
-import { IPreprocessDependencies, IImage } from '../../domain/domainTypes';
+import {
+	TPreprocessArgs,
+	IImage,
+	TNonEmptyPreprocessArgs,
+} from '../../domain/domainTypes';
 import {
 	Either,
 	map as Emap,
@@ -7,15 +11,18 @@ import {
 	left,
 	fold as Efold,
 } from 'fp-ts/lib/Either';
-import { map as OMap } from 'fp-ts/lib/Option';
+import { map as OMap, Option } from 'fp-ts/lib/Option';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { MAX_RAW_FILE_SIZE_IN_BYTES } from '../../../../CONSTANTS';
 import {
 	NonEmptyArray,
 	map as NEAmap,
-	fromArray,
+	fromArray as NEAFromArray,
 } from 'fp-ts/lib/NonEmptyArray';
 import { ImagePreprocessError } from '../../domain/ImagePreprocessError';
+import { TUploaderActions } from '../../state/uploadStateTypes';
+import { Dispatch } from 'react';
+import { IO } from 'fp-ts/lib/IO';
 
 export const bytesToHumanReadableSize = (byteCount: number): string =>
 	byteCount < 1024
@@ -37,7 +44,7 @@ const validateFileSize = (file: IImage): Either<ImagePreprocessError, IImage> =>
 		? right(file)
 		: left(generateFileSizeErr(file));
 
-const appendMetadataToFile = (deps: IPreprocessDependencies) => (file: File) =>
+const appendMetadataToFile = (ownerID: string) => (file: File) =>
 	Object.assign<
 		File,
 		Pick<
@@ -49,15 +56,23 @@ const appendMetadataToFile = (deps: IPreprocessDependencies) => (file: File) =>
 			| 'status'
 		>
 	>(file, {
-		ownerID: deps.ownerID,
+		ownerID: ownerID,
 		humanReadableSize: bytesToHumanReadableSize(file.size),
 		displayName: file.name,
 		originalSizeInBytes: file.size,
 		status: 'preprocessed',
 	});
 
-export const fileListToNonEmptyArray = (f: FileList) =>
-	pipe(Array.from(f), fromArray);
+export const fileListToNonEmptyArray = ([
+	fileList,
+	ownerID,
+]: TPreprocessArgs): Option<TNonEmptyPreprocessArgs> =>
+	pipe(
+		fileList,
+		(list) => Array.from<File>(list),
+		NEAFromArray,
+		OMap((files) => [files, ownerID])
+	);
 
 // TODO: this is MEGA hacky to get the error type and success type to
 // converge to the same type.  This is to allow for changes in the IImage
@@ -73,12 +88,24 @@ export const foldToResult = NEAmap<
 	)
 );
 
-export const processAndValidateFiles = (deps: IPreprocessDependencies) =>
-	pipe(flow(appendMetadataToFile(deps), validateFileSize), NEAmap);
+const preprocessOneFile = (ownerID: string) =>
+	flow(appendMetadataToFile(ownerID), validateFileSize);
 
-export const preprocessImages = (deps: IPreprocessDependencies) =>
-	flow(
-		fileListToNonEmptyArray,
-		OMap(processAndValidateFiles(deps)),
-		OMap(foldToResult)
-	);
+export const processAndValidateFiles = ([
+	files,
+	ownerID,
+]: TNonEmptyPreprocessArgs) => pipe(files, NEAmap(preprocessOneFile(ownerID)));
+
+export const preprocessImages =
+	(fileData: TPreprocessArgs) =>
+	(dispatch: Dispatch<TUploaderActions>): IO<void> =>
+	() =>
+		pipe(
+			fileData,
+			fileListToNonEmptyArray,
+			OMap(processAndValidateFiles),
+			OMap(foldToResult),
+			OMap((preprocessedFiles) =>
+				dispatch({ type: 'FILES_SELECTED', payload: preprocessedFiles })
+			)
+		);

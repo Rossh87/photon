@@ -1,6 +1,7 @@
 import React, { Dispatch } from 'react';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { resizeImage } from '../modules/Uploader/useCases/resizeImage';
+import { DependencyCreator } from 'react-use-fp';
 
 export interface IHttpCall<T> {
 	(httpLib: AxiosInstance): Promise<AxiosResponse<T>>;
@@ -24,22 +25,21 @@ export interface IHTTPLib extends AxiosInstance {}
 
 export type TResizer = typeof resizeImage;
 
-const makeHttpRunner = (httpLib: AxiosInstance) => <T>(fn: IHttpCall<T>) =>
-	fn(httpLib);
+const makeHttpRunner =
+	(httpLib: AxiosInstance) =>
+	<T>(fn: IHttpCall<T>) =>
+		fn(httpLib);
 
-export const createDependenciesObject = (a: AxiosInstance) => (b: TResizer) => <
-	T
->(
-	c: Dispatch<T>
-): IDependencies<T> => ({
-	http: makeHttpRunner(a),
-	imageReducer: b,
-	dispatch: c,
-});
+export const createDependenciesObject =
+	(a: AxiosInstance) =>
+	(b: TResizer) =>
+	<T>(c: Dispatch<T>): IDependencies<T> => ({
+		http: makeHttpRunner(a),
+		imageReducer: b,
+		dispatch: c,
+	});
 
-export const liveDependencies: IDispatchInjector<any> = createDependenciesObject(
-	axios
-)(resizeImage);
+export const liveDependencies = createDependenciesObject(axios)(resizeImage);
 
 // TODO: not an ideal place for this
 export const extractResponseData = <T>(res: Promise<AxiosResponse<T>>) =>

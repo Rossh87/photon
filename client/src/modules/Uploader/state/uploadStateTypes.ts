@@ -4,6 +4,7 @@ import {
 	IImage,
 	TPreprocessingResults,
 	IResizingData,
+	TPreprocessArgs,
 } from '../domain/domainTypes';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
@@ -36,6 +37,10 @@ export interface IFileAction<T> {
 
 export interface IProcessFilesAction extends IFileAction<TSelectedFilesState> {
 	type: 'PROCESS_FILES';
+}
+
+export interface IFilesChangedAction extends IFileAction<TPreprocessArgs> {
+	type: 'FILES_CHANGED';
 }
 
 export interface IFilesSelectedAction
@@ -92,4 +97,5 @@ export type TUploaderActions =
 	| IUploadSuccessAction
 	| IImagesEmittedAction
 	| IInitUploadAction
+	| IFilesChangedAction
 	| IUploadComponentErr;
