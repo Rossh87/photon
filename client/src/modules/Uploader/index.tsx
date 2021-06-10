@@ -40,7 +40,6 @@ const Uploader: React.FunctionComponent<IProps> = ({ user }) => {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log('submit!');
 		uploadDispatch({
 			type: 'PROCESS_FILES',
 			payload: uploadState.selectedFiles,
