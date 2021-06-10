@@ -12,15 +12,15 @@ describe('user data fetching functiong', () => {
 			age: 20,
 		};
 		const dispatch = (action: any) => actions.push(action);
-		const mockAxios = ({
+		const mockAxios = {
 			get: jest.fn(() => Promise.resolve({ data: user })),
-		} as unknown) as AxiosInstance;
+		} as unknown as AxiosInstance;
 
 		const expected: TAuthActions[] = [
-			{ type: 'AUTH_REQUEST_INITIATED', data: null },
+			{ type: 'AUTH_REQUEST_INITIATED', payload: null },
 			{
 				type: 'ADD_USER',
-				data: (user as unknown) as IUser,
+				payload: user as unknown as IUser,
 			},
 		];
 
@@ -33,13 +33,13 @@ describe('user data fetching functiong', () => {
 	it('dispatches correct error on request failure', async () => {
 		const failureReason = 'failure';
 
-		const mockAxios = ({
+		const mockAxios = {
 			get: jest.fn(() => Promise.reject(failureReason)),
-		} as unknown) as AxiosInstance;
+		} as unknown as AxiosInstance;
 
 		const expectedAction: TAuthActions = {
 			type: 'ADD_AUTH_ERR',
-			data: AuthError.create(failureReason),
+			payload: AuthError.create(failureReason),
 		};
 
 		const dispatch = jest.fn();
