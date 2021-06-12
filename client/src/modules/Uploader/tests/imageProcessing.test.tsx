@@ -1,5 +1,7 @@
 import React from 'react';
 import { simulateInvalidFileInput } from './preprocessing.test';
+import { AuthStateContext } from '../../Auth/state/useAuthState';
+import { IAuthState } from '../../Auth/state/authStateTypes';
 import Uploader from '../index';
 import { render, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -12,6 +14,16 @@ import DependencyContext, {
 	TImageResizer,
 } from '../../../core/dependencyContext';
 import { AxiosInstance } from 'axios';
+
+const mockAuthState: IAuthState = {
+	user: mockUser,
+	errors: [],
+	status: 'authorized',
+};
+
+let authState: IAuthState;
+
+beforeEach(() => (authState = Object.assign({}, mockAuthState)));
 
 export const simulateFileInput = (targetElement: HTMLElement) => {
 	const files = [mockImageData];
@@ -28,11 +40,13 @@ describe('Uploader component when files are submitted', () => {
 		} as IDependencies<any>;
 		render(
 			<DependencyContext.Provider value={() => mockDeps}>
-				<Uploader user={mockUser} />
+				<AuthStateContext.Provider value={authState}>
+					<Uploader />
+				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
 		);
 
-		const input = screen.getByLabelText('Choose Files');
+		const input = screen.getByLabelText('Select Files');
 		const submitButton = screen.getByText('Submit!');
 
 		simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
@@ -58,11 +72,13 @@ describe('Uploader component when files are submitted', () => {
 
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-					<Uploader user={mockUser} />
+					<AuthStateContext.Provider value={authState}>
+						<Uploader />
+					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
 			);
 
-			const input = screen.getByLabelText('Choose Files');
+			const input = screen.getByLabelText('Select Files');
 
 			const submitButton = screen.getByText('Submit!');
 

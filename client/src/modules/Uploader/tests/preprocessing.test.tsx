@@ -1,5 +1,7 @@
 import React from 'react';
 import Uploader from '../index';
+import { AuthStateContext } from '../../Auth/state/useAuthState';
+import { IAuthState } from '../../Auth/state/authStateTypes';
 import { render, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockUser } from './mockData';
@@ -10,9 +12,15 @@ import {
 } from '../../../testUtils/imageUtils';
 import { createMockFileList } from '../../../testUtils/fileMocks';
 
-let user: IUser;
+const mockAuthState: IAuthState = {
+	user: mockUser,
+	errors: [],
+	status: 'authorized',
+};
 
-beforeEach(() => (user = Object.assign({}, mockUser)));
+let authState: IAuthState;
+
+beforeEach(() => (authState = Object.assign({}, mockAuthState)));
 
 export const simulateFileInput = (targetElement: HTMLElement) => {
 	const files = [
@@ -24,23 +32,30 @@ export const simulateFileInput = (targetElement: HTMLElement) => {
 	return fireEvent.change(targetElement, { target: { files: mockFileList } });
 };
 
-export const simulateInvalidFileInput = (
-	getInvalidFile: (...args: any[]) => File
-) => (...extraArgs: any[]) => (targetElement: HTMLElement) => {
-	const files = [
-		getInvalidFile(...extraArgs),
-		getTestJPEGFile('testImage1', 'small'),
-	];
-	const mockFileList = createMockFileList(...files);
+export const simulateInvalidFileInput =
+	(getInvalidFile: (...args: any[]) => File) =>
+	(...extraArgs: any[]) =>
+	(targetElement: HTMLElement) => {
+		const files = [
+			getInvalidFile(...extraArgs),
+			getTestJPEGFile('testImage1', 'small'),
+		];
+		const mockFileList = createMockFileList(...files);
 
-	return fireEvent.change(targetElement, { target: { files: mockFileList } });
-};
+		return fireEvent.change(targetElement, {
+			target: { files: mockFileList },
+		});
+	};
 
 describe('Uploader component', () => {
 	it('displays 1 child for each input file', () => {
-		render(<Uploader />);
+		render(
+			<AuthStateContext.Provider value={authState}>
+				<Uploader />
+			</AuthStateContext.Provider>
+		);
 
-		const input = screen.getByLabelText('Choose Files');
+		const input = screen.getByLabelText('Select Files');
 
 		simulateFileInput(input);
 
@@ -52,9 +67,13 @@ describe('Uploader component', () => {
 	});
 
 	it('uses "error" text color for invalid inputs', () => {
-		render(<Uploader user={mockUser} />);
+		render(
+			<AuthStateContext.Provider value={authState}>
+				<Uploader />
+			</AuthStateContext.Provider>
+		);
 
-		const input = screen.getByLabelText('Choose Files');
+		const input = screen.getByLabelText('Select Files');
 
 		simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
 			input
@@ -75,9 +94,13 @@ describe('Uploader component', () => {
 	});
 
 	it('displays error message for files with errors', () => {
-		render(<Uploader user={mockUser} />);
+		render(
+			<AuthStateContext.Provider value={authState}>
+				<Uploader />
+			</AuthStateContext.Provider>
+		);
 
-		const input = screen.getByLabelText('Choose Files');
+		const input = screen.getByLabelText('Select Files');
 
 		simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
 			input
@@ -93,9 +116,13 @@ describe('Uploader component', () => {
 
 	describe('updating the display name of a selected file', () => {
 		it('updates file display name with user input', () => {
-			render(<Uploader user={mockUser} />);
+			render(
+				<AuthStateContext.Provider value={authState}>
+					<Uploader />
+				</AuthStateContext.Provider>
+			);
 
-			const fileInput = screen.getByLabelText('Choose Files');
+			const fileInput = screen.getByLabelText('Select Files');
 
 			simulateFileInput(fileInput);
 
@@ -103,9 +130,8 @@ describe('Uploader component', () => {
 
 			userEvent.click(selectedFileUI);
 
-			const newDisplayNameInput = screen.getAllByLabelText(
-				'Update name'
-			)[0];
+			const newDisplayNameInput =
+				screen.getAllByLabelText('Update name')[0];
 
 			userEvent.type(newDisplayNameInput, 'newDisplayName');
 
@@ -117,9 +143,13 @@ describe('Uploader component', () => {
 		});
 
 		it('does not update if newly-submitted name is empty', () => {
-			render(<Uploader user={mockUser} />);
+			render(
+				<AuthStateContext.Provider value={authState}>
+					<Uploader />
+				</AuthStateContext.Provider>
+			);
 
-			const fileInput = screen.getByLabelText('Choose Files');
+			const fileInput = screen.getByLabelText('Select Files');
 
 			simulateFileInput(fileInput);
 
@@ -127,9 +157,8 @@ describe('Uploader component', () => {
 
 			userEvent.click(selectedFileUI);
 
-			const newDisplayNameInput = screen.getAllByLabelText(
-				'Update name'
-			)[0];
+			const newDisplayNameInput =
+				screen.getAllByLabelText('Update name')[0];
 
 			// select text input that updates file displayName...
 			userEvent.click(newDisplayNameInput);
@@ -145,9 +174,13 @@ describe('Uploader component', () => {
 
 	describe('removing a selected file from the list', () => {
 		it('removes the deselected file from the UI', () => {
-			render(<Uploader user={mockUser} />);
+			render(
+				<AuthStateContext.Provider value={authState}>
+					<Uploader />
+				</AuthStateContext.Provider>
+			);
 
-			const fileInput = screen.getByLabelText('Choose Files');
+			const fileInput = screen.getByLabelText('Select Files');
 
 			simulateFileInput(fileInput);
 
