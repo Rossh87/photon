@@ -60,10 +60,10 @@ export const mockUserFromGoogleResponse: IUser = {
 	OAuthEmailVerified: true,
 };
 
-const mockId = ObjectId.createFromTime(Date.now());
+export const mockObjectID = ObjectId.createFromTime(Date.now());
 
 export const mockUserFromDatabase: WithId<IDBUser> = {
-	_id: mockId,
+	_id: mockObjectID,
 	OAuthProviderName: 'google',
 	OAuthProviderID: '123456',
 	thumbnailURL: 'https://myphotos@myphotos.com',

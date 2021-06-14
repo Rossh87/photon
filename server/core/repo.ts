@@ -5,36 +5,67 @@ import {
 	OptionalId,
 	FilterQuery,
 	UpdateQuery,
+	FindOneOptions,
+	WithoutProjection,
 } from 'mongodb';
 import { BaseError, HTTPErrorTypes, HTTPErrorType } from './error';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as T from 'fp-ts/lib/Task';
 import { pipe } from 'fp-ts/lib/function';
 import { reverseTwo } from './utils/reverseCurried';
+import { fromNullable, fold } from 'fp-ts/lib/Option';
 
-export const getCollection = <T>(collection: string) => (client: MongoClient) =>
-	client.db('photon').collection<T>(collection);
+export const getCollection =
+	<T>(collection: string) =>
+	(client: MongoClient) =>
+		client.db('photon').collection<T>(collection);
 
 export const _getCollection = reverseTwo(getCollection);
 
-export const trySaveOne = <T>(document: OptionalId<T>) => (c: Collection<T>) =>
-	TE.tryCatch(
-		pipe(
-			() => c.insertOne(document),
-			T.map((writeResult) => writeResult.ops[0])
-		),
-		(reason) => DBWriteError.create(c.collectionName, document, reason)
-	);
+export const trySaveOne =
+	<T>(document: OptionalId<T>) =>
+	(c: Collection<T>) =>
+		TE.tryCatch(
+			pipe(
+				() => c.insertOne(document),
+				T.map((writeResult) => writeResult.ops[0])
+			),
+			(reason) => DBWriteError.create(c.collectionName, document, reason)
+		);
 
 export const _trySaveOne = reverseTwo(trySaveOne);
 
-export const tryUpdateOne = <T>(filter: FilterQuery<T>) => (
-	updateQuery: UpdateQuery<T>
-) => (c: Collection<T>) =>
-	TE.tryCatch(
-		pipe(() => c.updateOne(filter, updateQuery)),
-		(reason) => DBUpdateError.create(c.collectionName, filter, reason)
-	);
+export const tryUpdateOne =
+	<T>(filter: FilterQuery<T>) =>
+	(updateQuery: UpdateQuery<T>) =>
+	(c: Collection<T>) =>
+		TE.tryCatch(
+			pipe(() => c.updateOne(filter, updateQuery)),
+			(reason) => DBUpdateError.create(c.collectionName, filter, reason)
+		);
+
+export const tryFindArray =
+	<T>(filter: FilterQuery<T>) =>
+	(options: WithoutProjection<FindOneOptions<T>> | undefined) =>
+	(c: Collection<T>) =>
+		pipe(
+			options,
+			fromNullable,
+			fold(
+				() =>
+					TE.tryCatch(
+						() => c.find(filter).toArray(),
+						(reason) =>
+							DBReadError.create(c.collectionName, filter, reason)
+					),
+				(opts) =>
+					TE.tryCatch(
+						() => c.find(filter, opts).toArray(),
+						(reason) =>
+							DBReadError.create(c.collectionName, filter, reason)
+					)
+			)
+		);
 
 // Error classes
 export class MongoConnectionError extends BaseError {

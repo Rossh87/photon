@@ -30,7 +30,7 @@ const loadDataURL = (f: IImage) =>
 		try {
 			reader.readAsDataURL(f);
 		} catch (e) {
-			console.log(e);
+			rej(e);
 		}
 	});
 

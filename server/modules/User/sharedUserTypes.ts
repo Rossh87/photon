@@ -17,7 +17,7 @@ export interface IUser extends Record<string, any> {
 
 // type of User docs retrieved from database
 export interface IDBUser extends IUser {
-	_id?: ObjectId;
+	_id: ObjectId;
 	registeredDomains: Array<string>;
 	imageCount: number;
 	uploadUsage: number;

@@ -1,8 +1,8 @@
-import { _processUploadInitSuccess } from './processUploadInitSuccess';
+import { _processUploadInitSuccess } from '../helpers/processUploadInitSuccess';
 import {
 	_requestResumableUpload,
 	requestResumableUpload,
-} from './requestResumableUpload';
+} from '../helpers/requestResumableUpload';
 import { IUploadRequestMetadata } from '../sharedUploadTypes';
 import {
 	map as NEAMap,
@@ -11,7 +11,7 @@ import {
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import * as RT from 'fp-ts/lib/ReaderTask';
 import { pipe, flow } from 'fp-ts/lib/function';
-import { toResponsePayload } from './toResponsePayload';
+import { toResponsePayload } from '../helpers/toResponsePayload';
 
 export const handleOneUpload = (uploadRequest: IUploadRequestMetadata) => {
 	return pipe(

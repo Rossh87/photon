@@ -10,7 +10,6 @@ import session from 'express-session';
 import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import requiredInEnv from './configs/requiredInEnv';
-import bodyParser from 'body-parser';
 import axios from 'axios';
 import { IDBUser } from './modules/User/sharedUserTypes';
 import { IAsyncDeps } from './core/asyncDeps';
@@ -39,8 +38,6 @@ declare module 'express-session' {
 		user?: IDBUser;
 	}
 }
-
-//
 
 async function run() {
 	const sessionSecret = process.env.SESSION_SECRET;

@@ -36,7 +36,7 @@ describe('controller to save info about successful uploads', () => {
 
 		const mockInsert = jest.fn(() => Promise.resolve('whatever'));
 
-		const deps = ({
+		const deps = {
 			repoClient: {
 				db: (s: string) => ({
 					collection: (t: string) => ({
@@ -44,7 +44,7 @@ describe('controller to save info about successful uploads', () => {
 					}),
 				}),
 			},
-		} as unknown) as IAsyncDeps;
+		} as unknown as IAsyncDeps;
 
 		await saveUploadMetadataController(deps)(
 			req,
@@ -65,15 +65,16 @@ describe('controller to save info about successful uploads', () => {
 
 		const mockStatus = jest.fn();
 
-		const res = ({ status: mockStatus } as unknown) as Response;
-
-		const mockNext = ((args: any) => console.log(args)) as NextFunction;
+		const res = {
+			status: mockStatus,
+			end: jest.fn(),
+		} as unknown as Response;
 
 		const mockInsert = jest.fn(() =>
 			Promise.resolve({ ops: [mockRequestData] })
 		);
 
-		const deps = ({
+		const deps = {
 			repoClient: {
 				db: (s: string) => ({
 					collection: (t: string) => ({
@@ -81,9 +82,13 @@ describe('controller to save info about successful uploads', () => {
 					}),
 				}),
 			},
-		} as unknown) as IAsyncDeps;
+		} as unknown as IAsyncDeps;
 
-		await saveUploadMetadataController(deps)(req, res, mockNext);
+		await saveUploadMetadataController(deps)(
+			req,
+			res,
+			jest.fn() as NextFunction
+		);
 
 		const expected = Object.assign(
 			{ ...mockUser },
@@ -115,7 +120,7 @@ describe('controller to save info about successful uploads', () => {
 
 		const failedInsert = jest.fn(() => Promise.reject(expectedErr));
 
-		const deps = ({
+		const deps = {
 			repoClient: {
 				db: (s: string) => ({
 					collection: (t: string) => ({
@@ -124,7 +129,7 @@ describe('controller to save info about successful uploads', () => {
 					}),
 				}),
 			},
-		} as unknown) as IAsyncDeps;
+		} as unknown as IAsyncDeps;
 
 		await saveUploadMetadataController(deps)(req, {} as Response, mockNext);
 

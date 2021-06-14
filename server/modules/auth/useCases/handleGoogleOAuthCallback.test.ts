@@ -47,7 +47,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 		it('saves a new user to the database on their first authorization', async () => {
 			const deps = {
 				repoClient: repoClient,
-				fetcher: (mockAxios as unknown) as IFetcher,
+				fetcher: mockAxios as unknown as IFetcher,
 			} as IAsyncDeps;
 
 			const mockRequest: Request = {
@@ -74,7 +74,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 		it('adds correct additional properties to a new user before first save', async () => {
 			const deps = {
 				repoClient: repoClient,
-				fetcher: (mockAxios as unknown) as IFetcher,
+				fetcher: mockAxios as unknown as IFetcher,
 			} as IAsyncDeps;
 
 			const mockRequest: Request = {
@@ -110,7 +110,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 
 			expect(saved?.registeredDomains).toEqual([]);
 			expect(saved?.imageCount).toEqual(0);
-			expect(saved?.uploadUsage).toEqual('0');
+			expect(saved?.uploadUsage).toEqual(0);
 		});
 
 		it('updates an existing user correctly if incoming user has fresh data', async () => {
@@ -121,7 +121,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 
 			const deps = {
 				repoClient: repoClient,
-				fetcher: (mockAxios as unknown) as IFetcher,
+				fetcher: mockAxios as unknown as IFetcher,
 			} as IAsyncDeps;
 
 			const mockRequest: Request = {
@@ -147,35 +147,6 @@ describe('callback fn to handle Google OAuth access token', () => {
 			);
 
 			match(normalizeGoogleResponse(googleResponse));
-		});
-
-		it('assigns the correct user to req.session.user', async () => {
-			const req = {
-				session: {},
-			} as Request;
-
-			const deps = {
-				repoClient: repoClient,
-				fetcher: (mockAxios as unknown) as IFetcher,
-			} as IAsyncDeps;
-
-			const mockRequest: Request = {
-				session: {
-					grant: {
-						response: {
-							access_token: 'supersecret',
-						},
-					},
-				},
-			} as Request;
-
-			await handleGoogleOAuthCallback(mockRequest)(deps)();
-
-			const saved = await getCollection<IUser>('users')(
-				repoClient
-			).findOne({
-				OAuthProviderID: mockUserFromGoogleResponse.OAuthProviderID,
-			});
 		});
 	});
 });
