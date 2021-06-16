@@ -11,3 +11,5 @@ export interface ITEDispatcher<E, A, B, C = void> {
 }
 
 export interface IHTTPLib extends AxiosInstance {}
+
+export type TWithId<T> = T & { _id: string };

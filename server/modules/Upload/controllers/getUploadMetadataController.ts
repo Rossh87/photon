@@ -33,7 +33,7 @@ export const getUploadMetadataController =
 		const { _id } = req.session.user as IDBUser;
 
 		await pipe(
-			_id.toHexString(),
+			_id as unknown as string,
 			getUploadMetadata,
 			RTE.map(successEffects),
 			RTE.mapLeft(failureEffects),
