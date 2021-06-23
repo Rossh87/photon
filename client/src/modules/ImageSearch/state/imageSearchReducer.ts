@@ -1,4 +1,3 @@
-import ActionAccessibility from 'material-ui/svg-icons/action/accessibility';
 import { Reducer } from 'react';
 import {
 	TImageSearchActions,

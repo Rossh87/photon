@@ -125,7 +125,8 @@ describe('The ImageSearch component', () => {
 				screen.getAllByRole('img')
 			).toThrow();
 
-			// verify the no results message is onscreen
+			// verify the no results message is onscreen.  If 'getByText'
+			// doesn't find anything, test will fail.
 			const notFoundMessage = screen.getByText('No results found!');
 		});
 
