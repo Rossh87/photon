@@ -56,7 +56,7 @@ export const requestResumableUpload =
 				cacheControl: 'public, max-age=604800000',
 				contentType: uploadMetaData.mediaType,
 				// contentEncoding: 'gzip',
-				// md5Hash: uploadMetaData.integrityHash,
+				md5Hash: uploadMetaData.integrityHash,
 			},
 		};
 
