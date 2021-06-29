@@ -46,7 +46,7 @@ export const tryUpdateOne =
 
 export const tryFindArray =
 	<T>(filter: FilterQuery<T>) =>
-	(options: WithoutProjection<FindOneOptions<T>> | undefined) =>
+	(options?: FindOneOptions<T>) =>
 	(c: Collection<T>) =>
 		pipe(
 			options,
@@ -58,7 +58,8 @@ export const tryFindArray =
 						(reason) =>
 							DBReadError.create(c.collectionName, filter, reason)
 					),
-				(opts) =>
+				// TODO: any type here is not good...
+				(opts: any) =>
 					TE.tryCatch(
 						() => c.find(filter, opts).toArray(),
 						(reason) =>
