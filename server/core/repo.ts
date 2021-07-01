@@ -13,7 +13,7 @@ import * as TE from 'fp-ts/lib/TaskEither';
 import * as T from 'fp-ts/lib/Task';
 import { pipe } from 'fp-ts/lib/function';
 import { reverseTwo } from './utils/reverseCurried';
-import { fromNullable, fold } from 'fp-ts/lib/Option';
+import { fromNullable, foldW } from 'fp-ts/lib/Option';
 
 export const getCollection =
 	<T>(collection: string) =>
@@ -45,13 +45,13 @@ export const tryUpdateOne =
 		);
 
 export const tryFindArray =
-	<T>(filter: FilterQuery<T>) =>
+	<T, K extends Partial<T> = T>(filter: FilterQuery<T>) =>
 	(options?: FindOneOptions<T>) =>
 	(c: Collection<T>) =>
 		pipe(
 			options,
 			fromNullable,
-			fold(
+			foldW(
 				() =>
 					TE.tryCatch(
 						() => c.find(filter).toArray(),
@@ -61,7 +61,7 @@ export const tryFindArray =
 				// TODO: any type here is not good...
 				(opts: any) =>
 					TE.tryCatch(
-						() => c.find(filter, opts).toArray(),
+						() => c.find<K>(filter, opts).toArray(),
 						(reason) =>
 							DBReadError.create(c.collectionName, filter, reason)
 					)

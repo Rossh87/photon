@@ -1,10 +1,12 @@
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { ResumableUploadCreationErr } from './helpers/requestResumableUpload';
 
+export type TMediaType = 'image/jpeg' | 'image/png';
+
 export interface IUploadRequestMetadata {
 	ownerID: string;
 	displayName: string;
-	mediaType: string;
+	mediaType: TMediaType;
 	sizeInBytes: number;
 	integrityHash: string;
 	primaryColor?: string;
@@ -29,7 +31,7 @@ export interface IUploadURIMetadata extends IUploadRequestMetadata {
 export interface ICombinedUploadRequestMetadata {
 	ownerID: string;
 	displayName: string;
-	mediaType: string;
+	mediaType: TMediaType;
 	sizeInBytes: number;
 	integrityHash: NonEmptyArray<string>;
 	primaryColor?: string;
@@ -38,3 +40,9 @@ export interface ICombinedUploadRequestMetadata {
 }
 
 export type TRequestedUploads = NonEmptyArray<IUploadRequestMetadata>;
+
+export type TDedupeNamesPayload = {
+	displayNames: NonEmptyArray<string>;
+};
+
+export type TDedupeNamesResponse = { _id: string; displayName: string }[];
