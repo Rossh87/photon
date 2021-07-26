@@ -45,4 +45,8 @@ export type TDedupeNamesPayload = {
 	displayNames: NonEmptyArray<string>;
 };
 
-export type TDedupeNamesResponse = { _id: string; displayName: string }[];
+export type TDedupeNamesResponse = {
+	_id: string;
+	ownerID: string;
+	displayName: string;
+}[];

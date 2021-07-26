@@ -14,5 +14,5 @@ export const getDupeDisplayNames =
 			tryFindArray<ICombinedUploadRequestMetadata>({
 				ownerID,
 				displayName: { $in: submittedNames },
-			})({ projection: { displayName: 1 } })
+			})({ projection: { displayName: 1, ownerID: 1 } })
 		);

@@ -6,3 +6,6 @@ export const BASE_PUBLIC_IMAGE_PATH =
 
 export const SAVE_SUCCESSFUL_UPLOAD_DATA_ENDPOINT =
 	'http://localhost:8000/upload/save';
+
+export const DEDUPLICATION_ENDPOINT =
+	'http://localhost:8000/upload/deduplicate';

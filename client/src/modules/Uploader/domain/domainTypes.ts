@@ -3,14 +3,25 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { BaseError } from '../../../core/error';
 import { IUploadRequestMetadata } from '../http/httpTypes';
 
-export interface IImage extends File {
+// TODO: IImage types still aren't quite right IMO--need to better
+// distinguish between err and ok states.
+interface IImageBaseProps extends File, Record<string, any> {
 	humanReadableSize: string;
 	ownerID: string;
 	displayName: string;
 	originalSizeInBytes: number;
 	resizedImages?: IResizingData;
-	error?: BaseError;
-	status: 'preprocessed' | 'populated' | 'processing' | 'success' | 'error';
+	isUniqueDisplayName: 'pending' | 'yes' | 'no';
+}
+
+export interface IImage extends IImageBaseProps {
+	status: 'preprocessed';
+}
+
+export interface IImageWithErrors<T extends BaseError = BaseError>
+	extends IImageBaseProps {
+	status: 'error';
+	error: T;
 }
 
 export type TOwnerID = string;

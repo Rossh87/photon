@@ -20,8 +20,8 @@ import { gcs } from './core/gcs';
 import { makeReadEnv } from './core/readEnv';
 
 // routes
-import { authRoutes } from './modules/auth/routes';
-import { uploadRoutes } from './modules/Upload/routes';
+import { authRoutes } from './modules/auth';
+import { uploadRoutes } from './modules/Upload';
 
 // initialize needed objects
 const app = express();
