@@ -1,4 +1,4 @@
-import { pipe, flow } from 'fp-ts/lib/function';
+import { pipe } from 'fp-ts/lib/function';
 import { tryCatch } from 'fp-ts/lib/TaskEither';
 import {
 	IHTTPLib,

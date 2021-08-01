@@ -5,7 +5,6 @@ import {
 } from '../domain/domainTypes';
 import { pipe, flow } from 'fp-ts/lib/function';
 import {
-	NonEmptyArray,
 	map as NEAmap,
 	fromArray,
 } from 'fp-ts/lib/NonEmptyArray';

@@ -1,4 +1,3 @@
-import { IResizingData } from '../../domain/domainTypes';
 import { ImageReducerError } from '../../domain/ImageReducerError';
 import { UPLOAD_WIDTH_VALUES, UPLOAD_WIDTHS } from '../../../../CONSTANTS';
 import { left, right, Either } from 'fp-ts/lib/Either';

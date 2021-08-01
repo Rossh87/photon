@@ -1,7 +1,7 @@
 import spark from 'spark-md5';
 import { tryCatch } from 'fp-ts/lib/TaskEither';
 import { ImageReducerError } from '../../domain/ImageReducerError';
-import { identity, flow } from 'fp-ts/lib/function';
+import { identity } from 'fp-ts/lib/function';
 export const calculateBlobMD5Hash = (b: Blob) =>
 	tryCatch(
 		() => getHash(b),

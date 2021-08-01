@@ -1,7 +1,5 @@
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -14,7 +12,7 @@ import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { TImageSearchActions } from '../state/imageSearchStateTypes';
 import { pipe } from 'fp-ts/lib/function';
-import { fromNullable, map, fromPredicate } from 'fp-ts/lib/Option';
+import { map, fromPredicate } from 'fp-ts/lib/Option';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	searchBar: {

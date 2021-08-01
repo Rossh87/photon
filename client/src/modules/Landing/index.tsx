@@ -1,11 +1,8 @@
 import React from 'react';
-import Container from '@material-ui/core/Container';
 import { TUserState } from '../Auth/domain/authDomainTypes';
 import Login from '../Login';
-import Loading from '../Loading';
 import { useAuthState } from '../Auth/state/useAuthState';
 import Main from '../Main';
-import Uploader from '../Uploader';
 
 const Landing: React.FunctionComponent = () => {
 	const authState = useAuthState();

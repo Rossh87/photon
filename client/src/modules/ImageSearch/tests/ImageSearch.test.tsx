@@ -1,15 +1,9 @@
 import React, { Dispatch } from 'react';
-import { AuthStateContext } from '../../Auth/state/useAuthState';
-import { TImageSearchActions } from '../state/imageSearchStateTypes';
-import { IAuthState } from '../../Auth/state/authStateTypes';
 import ImageSearch from '../index';
-import { render, fireEvent, screen, act } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockImageData } from './mockData';
-import { getOversizeImageFile } from '../../../testUtils/imageUtils';
-import DependencyContext, {
-	IDependencies,
-} from '../../../core/dependencyContext';
+import DependencyContext from '../../../core/dependencyContext';
 import { REQUEST_USER_IMG_DATA_ENDPOINT } from '../http/endpoints';
 
 const renderComponentWithMockFetch = (http: any) =>

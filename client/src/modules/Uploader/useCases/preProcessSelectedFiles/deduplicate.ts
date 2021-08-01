@@ -5,31 +5,19 @@ import {
 } from '../../domain/domainTypes';
 import {
 	Either,
-	right,
-	left,
 	isRight,
 	fold as EFold,
-	map as EMap,
 } from 'fp-ts/lib/Either';
 import { pipe, flow } from 'fp-ts/lib/function';
-import { MAX_RAW_FILE_SIZE_IN_BYTES } from '../../../../CONSTANTS';
-import { ImagePreprocessError } from '../../domain/ImagePreprocessError';
 import { getDupeDisplayNames } from '../../http/getDupeDisplayNames';
 import {
-	NonEmptyArray,
 	fromArray,
-	foldMap,
 	map as NEAMap,
 } from 'fp-ts/lib/NonEmptyArray';
 import {
-	getMonoid as getArrayMonoid,
-	of as ArrayOf,
-	map as ArrMap,
 	filter,
 } from 'fp-ts/Array';
 import {
-	asks,
-	chain as RTEChain,
 	map as RTEMap,
 	bind as RTEBind,
 	bindTo as RTEBindTo,
@@ -37,18 +25,12 @@ import {
 	ReaderTaskEither,
 } from 'fp-ts/ReaderTaskEither';
 import {
-	map as OMap,
 	fold as OFold,
-	Applicative as OApplicative,
-	fromEither,
-	getOrElseW,
-	fromPredicate,
 } from 'fp-ts/Option';
 import { IDependencies } from '../../../../core/dependencyContext';
 import { TUploaderActions } from '../../state/uploadStateTypes';
 import {
 	TDedupeNamesResponse,
-	IDedupeMetadata,
 } from 'server/modules/Upload/sharedUploadTypes';
 import { BaseError } from '../../../../core/error';
 

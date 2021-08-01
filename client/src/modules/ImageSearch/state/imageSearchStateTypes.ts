@@ -1,5 +1,4 @@
 import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { BaseError } from '../../../core/error';
 
 export interface IImageSearchState {

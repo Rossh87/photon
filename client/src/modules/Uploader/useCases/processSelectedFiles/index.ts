@@ -6,7 +6,7 @@ import { TUploaderActions } from '../../state/uploadStateTypes';
 import { sequenceArray } from 'fp-ts/lib/ReaderTask';
 import { map as NEAMap, fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/lib/Option';
-import { of as RTOf, ReaderTask } from 'fp-ts/lib/ReaderTask';
+import { ReaderTask } from 'fp-ts/lib/ReaderTask';
 import { fromIO } from 'fp-ts/lib/Task';
 
 type T = ReaderTask<IDependencies<TUploaderActions>, void>;

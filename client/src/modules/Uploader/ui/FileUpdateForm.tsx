@@ -1,5 +1,4 @@
 import React, { Dispatch } from 'react';
-import { IImage } from '../domain/domainTypes';
 import { TUploaderActions } from '../state/uploadStateTypes';
 import TextField from '@material-ui/core/TextField';
 import { fromPredicate, map } from 'fp-ts/lib/Option';

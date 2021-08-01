@@ -1,4 +1,4 @@
-import { TPreprocessingResults, IResizingData } from '../../domain/domainTypes';
+import { TPreprocessingResults } from '../../domain/domainTypes';
 
 export const hasFileErrors = (selectedFiles: TPreprocessingResults | []) =>
 	selectedFiles.length > 0

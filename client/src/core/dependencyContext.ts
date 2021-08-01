@@ -1,7 +1,6 @@
 import React, { Dispatch } from 'react';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { resizeImage } from '../modules/Uploader/useCases/resizeImage';
-import { DependencyCreator } from 'react-use-fp';
 
 export interface IHttpCall<T> {
 	(httpLib: AxiosInstance): Promise<AxiosResponse<T>>;

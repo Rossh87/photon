@@ -1,19 +1,14 @@
 import React, { Dispatch } from 'react';
-import { AuthStateContext } from '../../Auth/state/useAuthState';
 import {
 	TImageSearchActions,
 	IInitImageSearchAction,
 } from '../state/imageSearchStateTypes';
-import { IAuthState } from '../../Auth/state/authStateTypes';
 import ImageSearchBar from '../ui/ImageSearchBar';
-import { render, fireEvent, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockImageData } from './mockData';
-import { getOversizeImageFile } from '../../../testUtils/imageUtils';
-import DependencyContext, {
-	IDependencies,
-} from '../../../core/dependencyContext';
-import { REQUEST_USER_IMG_DATA_ENDPOINT } from '../http/endpoints';
+
+
 
 describe('The ImageSearchBar component', () => {
 	it('dispatches correct data when input submitted via keyboard', () => {

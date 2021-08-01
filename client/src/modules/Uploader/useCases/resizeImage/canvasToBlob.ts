@@ -1,4 +1,4 @@
-import { tryCatch, map, chain } from 'fp-ts/lib/TaskEither';
+import { tryCatch } from 'fp-ts/lib/TaskEither';
 import { ImageReducerError } from '../../domain/ImageReducerError';
 
 export const canvasToBlob = (quality: number) => (type: string) => (

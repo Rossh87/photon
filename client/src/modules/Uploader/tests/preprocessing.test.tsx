@@ -5,7 +5,6 @@ import { IAuthState } from '../../Auth/state/authStateTypes';
 import { render, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockUser } from './mockData';
-import { IUser } from '../../Auth/domain/authDomainTypes';
 import {
 	getTestJPEGFile,
 	getOversizeImageFile,
