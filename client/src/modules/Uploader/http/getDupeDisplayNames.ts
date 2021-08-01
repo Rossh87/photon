@@ -1,4 +1,8 @@
-import { IImage } from '../domain/domainTypes';
+import {
+	IImage,
+	IImageWithErrors,
+	TAllUploadedImages,
+} from '../domain/domainTypes';
 import { pipe, flow } from 'fp-ts/lib/function';
 import {
 	NonEmptyArray,
@@ -20,9 +24,13 @@ import {
 import { DEDUPLICATION_ENDPOINT } from './endpoints';
 import { BaseError } from '../../../core/error';
 import { fold } from 'fp-ts/lib/Option';
+import { isLeft, Either } from 'fp-ts/lib/Either';
 
-const toPayload: (as: NonEmptyArray<IImage>) => TDedupeNamesPayload = flow(
-	NEAmap<IImage, string>((x) => x.displayName),
+const displayNameFromEither = (e: Either<IImageWithErrors, IImage>) =>
+	isLeft(e) ? e.left.displayName : e.right.displayName;
+
+const toPayload: (as: TAllUploadedImages) => TDedupeNamesPayload = flow(
+	NEAmap(displayNameFromEither),
 	(displayNames) => ({ displayNames })
 );
 
@@ -31,8 +39,11 @@ const requestDupes =
 	(httpLib) =>
 		httpLib.post(DEDUPLICATION_ENDPOINT, potentialDupes);
 
+// this optimistically extracts displayName and checks for its uniqueness, even
+// if the image file in question has errs
 export const getDupeDisplayNames =
-	(imageFiles: Array<IImage>) => (deps: IDependencies<TUploaderActions>) =>
+	(imageFiles: TAllUploadedImages) =>
+	(deps: IDependencies<TUploaderActions>) =>
 		pipe(
 			imageFiles,
 			fromArray,

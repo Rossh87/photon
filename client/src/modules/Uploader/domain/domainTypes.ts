@@ -2,6 +2,7 @@ import { ImagePreprocessError } from './ImagePreprocessError';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { BaseError } from '../../../core/error';
 import { IUploadRequestMetadata } from '../http/httpTypes';
+import { Either } from 'fp-ts/lib/Either';
 
 // TODO: IImage types still aren't quite right IMO--need to better
 // distinguish between err and ok states.
@@ -23,6 +24,10 @@ export interface IImageWithErrors<T extends BaseError = BaseError>
 	status: 'error';
 	error: T;
 }
+
+export type TAllUploadedImages = NonEmptyArray<
+	Either<IImageWithErrors, IImage>
+>;
 
 export type TOwnerID = string;
 

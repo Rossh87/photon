@@ -45,8 +45,9 @@ export type TDedupeNamesPayload = {
 	displayNames: NonEmptyArray<string>;
 };
 
-export type TDedupeNamesResponse = {
+export interface IDedupeMetadata {
 	_id: string;
 	ownerID: string;
 	displayName: string;
-}[];
+}
+export type TDedupeNamesResponse = Array<IDedupeMetadata>;
