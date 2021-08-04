@@ -7,7 +7,7 @@ import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import { InputLabel } from '@material-ui/core';
 import { pipe } from 'fp-ts/lib/function';
-import { map, fromNullable, Apply as OApply } from 'fp-ts/lib/Option';
+import { map, fromNullable, Applicative } from 'fp-ts/lib/Option';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { makeStyles } from '@material-ui/styles';
 import theme from '../../theme';
@@ -65,12 +65,12 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 	uploadDispatch,
 	selectedFiles,
 }) => {
-	// does nothing if ownerID or FileList is nullable
 	const classes = useStyles();
-
+	
+	// does nothing if ownerID or FileList is nullable
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) =>
 		pipe(
-			sequenceT(OApply)(
+			sequenceT(Applicative)(
 				fromNullable(e.target.files),
 				fromNullable(ownerID)
 			),
