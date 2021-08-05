@@ -5,9 +5,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import InfoIcon from '@material-ui/icons/Info';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
+import ImageList from '@material-ui/core/ImageList';
+import ImageListItem from '@material-ui/core/ImageListItem';
+import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		backgroundColor: red[500],
 	},
 
-	gridList: {
+	ImageList: {
 		width: '100%',
 	},
 
@@ -63,12 +63,12 @@ const ImageDisplay: React.FunctionComponent<IProps> = ({
 					publicPathPrefix,
 					availableWidths,
 				}) => (
-					<GridListTile key={_id}>
+					<ImageListItem key={_id}>
 						<img
 							src={`${publicPathPrefix}/${availableWidths[0]}`}
 							alt="uploaded image in grid"
 						/>
-						<GridListTileBar
+						<ImageListItemBar
 							title={displayName}
 							actionIcon={
 								<IconButton
@@ -79,7 +79,7 @@ const ImageDisplay: React.FunctionComponent<IProps> = ({
 								</IconButton>
 							}
 						/>
-					</GridListTile>
+					</ImageListItem>
 				)
 			)
 		) : (
@@ -87,9 +87,9 @@ const ImageDisplay: React.FunctionComponent<IProps> = ({
 		);
 
 	return (
-		<GridList cellHeight={200} cols={4} className={classes.gridList}>
+		<ImageList rowHeight={200} cols={4} className={classes.ImageList}>
 			{renderImages()}
-		</GridList>
+		</ImageList>
 	);
 };
 

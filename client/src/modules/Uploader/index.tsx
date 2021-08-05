@@ -1,6 +1,6 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import { uploadReducer } from './state/uploadReducer';
-import { TPreprocessArgs } from './domain/domainTypes';
+import { TPreprocessArgs, TUpdateDisplayNameArgs } from './domain/domainTypes';
 import { IImageUploadState, TUploaderActions, TSelectedFilesState } from './state/uploadStateTypes';
 import { preprocessImages } from './useCases/preProcessSelectedFiles';
 import { processSelectedFiles } from './useCases/processSelectedFiles';
@@ -11,7 +11,8 @@ import { useFPMiddleware } from 'react-use-fp';
 import { useAuthState } from '../Auth/state/useAuthState';
 import { Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import {hasFileErrors} from './state/reducerUtils/hasFileErrors';
+import {canProcess} from './state/reducerUtils/canProcess';
+import { updateDisplayName } from './useCases/updateDisplayName';
 
 const useStyles = makeStyles({
 	paper: {
@@ -42,15 +43,18 @@ const Uploader: React.FunctionComponent = () => {
 		'PROCESS_FILES'
 	)(processSelectedFiles, makeDependencies);
 
-	withUploadDispatch<Dispatch<TUploaderActions>, TPreprocessArgs>(
+	withUploadDispatch<IDependencies<TUploaderActions>, TPreprocessArgs>(
 		'FILES_CHANGED'
-	)(preprocessImages);
+	)(preprocessImages, makeDependencies);
+
+	withUploadDispatch<IDependencies<TUploaderActions>, TUpdateDisplayNameArgs>(
+		'INIT_NAME_UPDATE'
+	)(updateDisplayName, makeDependencies);
 
 	const acceptedExtensions = ['image/jpg', 'image/jpeg', 'image/png'];
 
 	const submitIsDisabled =
-		hasFileErrors(uploadState.selectedFiles) ||
-		uploadState.selectedFiles.length === 0;
+		canProcess(uploadState.selectedFiles)
 
 	return (
 		<main>

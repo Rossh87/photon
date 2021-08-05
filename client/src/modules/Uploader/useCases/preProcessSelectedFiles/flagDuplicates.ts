@@ -4,65 +4,61 @@ import {
     TAllUploadedImages,
 } from '../../domain/domainTypes';
 import { Either, isRight, fold as EFold } from 'fp-ts/lib/Either';
-import { pipe, flow, flip } from 'fp-ts/lib/function';
+import { pipe } from 'fp-ts/lib/function';
 import { getDupeDisplayNames } from '../../http/getDupeDisplayNames';
 import { fromArray, map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
 import { filter } from 'fp-ts/Array';
 import {
     map as RTEMap,
-    bind as RTEBind,
-    bindTo as RTEBindTo,
     of as RTEOf,
-    ReaderTaskEither,
     chain as RTEChain,
 } from 'fp-ts/ReaderTaskEither';
 import { fold as OFold } from 'fp-ts/Option';
-import { IDependencies } from '../../../../core/dependencyContext';
-import { TUploaderActions } from '../../state/uploadStateTypes';
 import { TDedupeNamesResponse } from 'server/modules/Upload/sharedUploadTypes';
-import { BaseError } from '../../../../core/error';
 
-const setUniqueness = (maybeDupe: Either<IImageWithErrors, IImage>) => (
-    isUnique: boolean
-) =>
-    isRight(maybeDupe)
-        ? Object.assign(maybeDupe, {
-              right: {
-                  ...maybeDupe.right,
-                  isUniqueDisplayName: isUnique ? 'yes' : 'no',
-              },
-          })
-        : Object.assign(maybeDupe, {
-              left: {
-                  ...maybeDupe.left,
-                  isUniqueDisplayName: isUnique ? 'yes' : 'no',
-              },
-          });
+const setUniqueness =
+    (maybeDupe: Either<IImageWithErrors, IImage>) => (isUnique: boolean) =>
+        isRight(maybeDupe)
+            ? Object.assign(maybeDupe, {
+                  right: {
+                      ...maybeDupe.right,
+                      isUniqueDisplayName: isUnique ? 'yes' : 'no',
+                  },
+              })
+            : Object.assign(maybeDupe, {
+                  left: {
+                      ...maybeDupe.left,
+                      isUniqueDisplayName: isUnique ? 'yes' : 'no',
+                  },
+              });
 
-const searchDupes = (dupes: TDedupeNamesResponse) => (
-    maybeDupe: Either<IImageWithErrors, IImage>
-): Either<IImageWithErrors, IImage> =>
-    pipe(
-        maybeDupe,
-        EFold(
-            (e) => e.displayName,
-            (a) => a.displayName
-        ),
-        (dn) =>
-            pipe(
-                dupes,
-                filter((x) => x.displayName === dn)
+const searchDupes =
+    (dupes: TDedupeNamesResponse) =>
+    (
+        maybeDupe: Either<IImageWithErrors, IImage>
+    ): Either<IImageWithErrors, IImage> =>
+        pipe(
+            maybeDupe,
+            EFold(
+                (e) => e.displayName,
+                (a) => a.displayName
             ),
-        fromArray,
-        OFold(
-            () => setUniqueness(maybeDupe)(true),
-            () => setUniqueness(maybeDupe)(false)
-        )
-    );
+            (dn) =>
+                pipe(
+                    dupes,
+                    filter((x) => x.displayName === dn)
+                ),
+            fromArray,
+            OFold(
+                () => setUniqueness(maybeDupe)(true),
+                () => setUniqueness(maybeDupe)(false)
+            )
+        );
 
-const setNonUniqueNames = (submitted: TAllUploadedImages) => (
-    dupeInfo: TDedupeNamesResponse
-): TAllUploadedImages => pipe(submitted, pipe(dupeInfo, searchDupes, NEAMap));
+const setNonUniqueNames =
+    (submitted: TAllUploadedImages) =>
+    (dupeInfo: TDedupeNamesResponse): TAllUploadedImages =>
+        pipe(submitted, pipe(dupeInfo, searchDupes, NEAMap));
 
 export const flagDuplicates = (as: TAllUploadedImages) =>
     pipe(

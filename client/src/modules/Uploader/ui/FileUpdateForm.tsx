@@ -3,17 +3,18 @@ import { TUploaderActions } from '../state/uploadStateTypes';
 import TextField from '@material-ui/core/TextField';
 import { fromPredicate, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/function';
+import { TPreprocessingResult } from '../domain/domainTypes';
 
 interface IFileUpdateFormProps {
 	uploadDispatch: Dispatch<TUploaderActions>;
-	fileName: string;
 	closeAccordion: () => void;
+	imageFile: TPreprocessingResult
 }
 
 const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
-	fileName,
 	closeAccordion,
 	uploadDispatch,
+	imageFile
 }) => {
 	const [inputState, setInputState] = React.useState<string>('');
 
@@ -22,9 +23,8 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 
 	const setNewDisplayName = () =>
 		uploadDispatch({
-			type: 'UPDATE_FILE',
-			previousName: fileName,
-			payload: { displayName: inputState },
+			type: 'INIT_NAME_UPDATE',
+			payload: [imageFile, inputState]
 		});
 
 	const resetFileNameInput = () => setInputState('');

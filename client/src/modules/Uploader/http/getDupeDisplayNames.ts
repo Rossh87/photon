@@ -4,10 +4,10 @@ import {
     TAllUploadedImages,
 } from '../domain/domainTypes';
 import { pipe, flow } from 'fp-ts/lib/function';
-import { map as NEAmap, fromArray } from 'fp-ts/lib/NonEmptyArray';
+import { map as NEAmap } from 'fp-ts/lib/NonEmptyArray';
 import { TUploaderActions } from '../state/uploadStateTypes';
 
-import { tryCatch, of as TEOf } from 'fp-ts/TaskEither';
+import { tryCatch } from 'fp-ts/TaskEither';
 import {
     IDependencies,
     IHttpCall,
@@ -19,7 +19,6 @@ import {
 } from 'server/modules/Upload/sharedUploadTypes';
 import { DEDUPLICATION_ENDPOINT } from './endpoints';
 import { BaseError } from '../../../core/error';
-import { fold } from 'fp-ts/lib/Option';
 import { isLeft, Either } from 'fp-ts/lib/Either';
 
 const displayNameFromEither = (e: Either<IImageWithErrors, IImage>) =>

@@ -16,7 +16,7 @@ interface IImageBaseProps extends File, Record<string, any> {
 }
 
 export interface IImage extends IImageBaseProps {
-    status: 'preprocessed';
+    status: 'preprocessed' | 'success';
 }
 
 export interface IImageWithErrors<T extends BaseError = BaseError>
@@ -31,11 +31,17 @@ export type TAllUploadedImages = NonEmptyArray<
 
 export type TOwnerID = string;
 
+export type TNewDisplayName = string;
+
 export type TPreprocessArgs = [FileList, TOwnerID];
 
 export type TNonEmptyPreprocessArgs = [NonEmptyArray<File>, TOwnerID];
 
-export type TPreprocessingResults = NonEmptyArray<IImage | IImageWithErrors>;
+export type TPreprocessingResult = IImage | IImageWithErrors;
+
+export type TPreprocessingResults = NonEmptyArray<TPreprocessingResult>;
+
+export type TUpdateDisplayNameArgs = [TPreprocessingResult, TNewDisplayName];
 
 export interface IUploadableBlob {
     blob: Blob;

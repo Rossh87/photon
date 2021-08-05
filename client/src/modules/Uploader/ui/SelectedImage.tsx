@@ -1,5 +1,6 @@
 import React, { Dispatch } from 'react';
-import { IImage } from '../domain/domainTypes';
+import { TPreprocessingResult } from '../domain/domainTypes';
+import { isIImage } from '../domain/guards';
 import { TUploaderActions } from '../state/uploadStateTypes';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -22,7 +23,7 @@ const useSelectedImageStyles = makeStyles({
 });
 
 interface ISelectedImageProps {
-	imageFile: IImage;
+	imageFile: TPreprocessingResult;
 	uploadDispatch: Dispatch<TUploaderActions>;
 }
 
@@ -35,11 +36,11 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 
 	const classes = useSelectedImageStyles();
 
-	const hasError = !!imageFile.error;
+	const { status, displayName, isUniqueDisplayName} = imageFile;
 
-	const { status, displayName } = imageFile;
+	const textColor = isIImage(imageFile) ? 'primary' : 'error'
 
-	const textColor = hasError ? 'error' : 'primary';
+	const secondaryMessage = isIImage(imageFile) ? isUniqueDisplayName === "no" ? 'File name is already in use.  Please select a different name' : '' : imageFile.error.message
 
 	// handlers
 	const closeAccordion = () => setExpanded(false);
@@ -72,7 +73,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 		return cancel;
 	};
 
-	React.useEffect(removeIfSuccess, [status, displayName]);
+	React.useEffect(removeIfSuccess, [status, displayName, uploadDispatch]);
 
 	return (
 		<ListItem>
@@ -85,7 +86,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 					</ListItemAvatar>
 					<ListItemText
 						primary={displayName}
-						secondary={imageFile.error?.message}
+						secondary={secondaryMessage}
 						primaryTypographyProps={{
 							color: textColor,
 						}}
@@ -103,7 +104,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 				<AccordionDetails>
 					<FileUpdateForm
 						closeAccordion={closeAccordion}
-						fileName={displayName}
+						imageFile={imageFile}
 						uploadDispatch={uploadDispatch}
 					/>
 				</AccordionDetails>

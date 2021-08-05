@@ -1,5 +1,4 @@
-import { IImage, TNonEmptyPreprocessArgs } from '../../domain/domainTypes';
-import { map as NEAMap } from 'fp-ts/NonEmptyArray';
+import { IImage } from '../../domain/domainTypes';
 
 const bytesToHumanReadableSize = (byteCount: number): string =>
     byteCount < 1024
