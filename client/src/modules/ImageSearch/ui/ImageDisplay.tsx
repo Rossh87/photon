@@ -66,7 +66,7 @@ const ImageDisplay: React.FunctionComponent<IProps> = ({
 					<ImageListItem key={_id}>
 						<img
 							src={`${publicPathPrefix}/${availableWidths[0]}`}
-							alt="uploaded image in grid"
+							alt=''
 						/>
 						<ImageListItemBar
 							title={displayName}
