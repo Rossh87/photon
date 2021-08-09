@@ -1,4 +1,4 @@
-import { pipe } from "fp-ts/lib/function";
+import { pipe , flow} from "fp-ts/lib/function";
 import { TAvailableImageWidths, TUserBreakpoints, TDefaultBreakpoints, IBreakpoint, TBreakpoints, TDefaultBreakpoint } from "../domain/ImageSearchDomainTypes";
 import {map as ArrMap, sort, concatW} from 'fp-ts/Array'
 import {Ord as NumOrd} from 'fp-ts/number'
@@ -18,7 +18,7 @@ const makeDefaultBreakpoint = (width: number): TDefaultBreakpoint => ({
     origin: "default"
 })
 
-export const makeDefaultBreakpoints = pipe(makeDefaultBreakpoint, ArrMap)
+export const makeDefaultBreakpoints = flow(sortAscending, pipe(makeDefaultBreakpoint, ArrMap))
 
 const sizeFromBreakpoint = ({type, slotWidth, slotUnit, mediaWidth}: IBreakpoint) => `(${type}-width: ${mediaWidth}px) ${slotWidth}${slotUnit}`
 
@@ -29,12 +29,7 @@ export const mergeBreakpoints = (ubp: TUserBreakpoints) => (dbp: TDefaultBreakpo
 
 // TODO: need to get a flow set up for adding alt text to images
 const HTMLFromBreakpoints = (availableWidths: TAvailableImageWidths) => (publicPath: string) => (bps: TBreakpoints): string => 
-`
-<img srcset="${makeSrcset(availableWidths)(publicPath)}"
-     sizes="${sizesFromBreakpoints(bps)}"
-     src="${publicPath}/${availableWidths[availableWidths.length - 1]}"
-     alt="">
-`
+`<img srcset="${makeSrcset(availableWidths)(publicPath)}" sizes="${sizesFromBreakpoints(bps)}" src="${publicPath}/${availableWidths[availableWidths.length - 1]}" alt="">`
 
 /**Ordering of sizes:
  * First, build size-matchers for all user-defined breakpoints, in the order in which they were set.
@@ -42,9 +37,8 @@ const HTMLFromBreakpoints = (availableWidths: TAvailableImageWidths) => (publicP
  * SMALLEST "max-width" to LARGEST "max-width".  We want to match smaller screens (and load smaller image) FIRST.
  */
 
-export const createSizes = (userBreakpoints: TUserBreakpoints) => (availableWidths: TAvailableImageWidths) => (publicPath: string):string => pipe(
+export const createHTMLSrcsetString = (userBreakpoints: TUserBreakpoints) => (availableWidths: TAvailableImageWidths) => (publicPath: string):string => pipe(
     availableWidths,
-    sortAscending,
     makeDefaultBreakpoints,
     pipe(userBreakpoints, mergeBreakpoints),
     pipe(availableWidths, HTMLFromBreakpoints, ap(publicPath))
