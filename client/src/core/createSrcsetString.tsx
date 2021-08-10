@@ -1,5 +1,5 @@
 import { pipe , flow} from "fp-ts/lib/function";
-import { TAvailableImageWidths, TUserBreakpoints, TDefaultBreakpoints, IBreakpoint, TBreakpoints, TDefaultBreakpoint } from "../domain/ImageSearchDomainTypes";
+import { TAvailableImageWidths, TUserBreakpoints, TDefaultBreakpoints, IBreakpoint, TBreakpoints, TDefaultBreakpoint } from "../modules/ImageSearch/domain/ImageSearchDomainTypes";
 import {map as ArrMap, sort, concatW} from 'fp-ts/Array'
 import {Ord as NumOrd} from 'fp-ts/number'
 import {ap} from 'fp-ts/Identity'

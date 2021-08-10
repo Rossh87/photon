@@ -36,7 +36,7 @@ const ImageSearch: React.FunctionComponent = (props) => {
 	withDispatch('FETCH_IMG_DATA')(fetchImageData, makeDeps);
 	withDispatch('INIT_IMG_SEARCH')(getSearchResults);
 
-	useEffect(() => imageSearchDispatch({ type: 'FETCH_IMG_DATA' }), []);
+	useEffect(() => imageSearchDispatch({ type: 'FETCH_IMG_DATA' }));
 
 	return (
 		<Paper className={classes.paper}>

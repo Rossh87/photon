@@ -2,14 +2,14 @@ import { map } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/function';
 import { ap } from 'fp-ts/lib/Identity';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { TUserBreakpoints } from '../domain/ImageSearchDomainTypes';
+import { TUserBreakpoints } from '../modules/ImageSearch/domain/ImageSearchDomainTypes';
 import {
     createHTMLSrcsetString,
     makeDefaultBreakpoints,
     mergeBreakpoints,
-} from '../useCases/createSrcSet';
+} from './createSrcsetString';
 
-describe("helper function 'mergeBreakpoints", () => {
+describe("helper function 'mergeBreakpoints'", () => {
     it('returns a merged array with all user-defined breakpoints included first', () => {
         const availableWidths = [300, 1200, 1870];
 
@@ -59,7 +59,7 @@ describe("helper function 'mergeBreakpoints", () => {
     });
 });
 
-describe('the helper function makeDefaultBreakpoints', () => {
+describe('the helper function "makeDefaultBreakpoints"', () => {
     it('sorts generated breakpoints in ascending order by input width', () => {
         const availableWidths = [1200, 300, 1870];
 
