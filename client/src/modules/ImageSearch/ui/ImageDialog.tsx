@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
-import { Grid } from '@material-ui/core/Grid';
+import Grid from '@material-ui/core/Grid';
 
 interface IProps extends TFetchedImageData {
     isOpen: boolean;
@@ -20,52 +20,38 @@ export const ImageDialog: React.FunctionComponent<IProps> = ({
     setOpen,
     displayName,
 }) => {
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
     const handleClose = () => {
         setOpen(false);
     };
 
     return (
-        <div>
-            <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleClickOpen}
-            >
-                Slide in alert dialog
-            </Button>
-            <Dialog
-                open={isOpen}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={handleClose}
-                aria-labelledby={`img-dialog-${displayName}`}
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <DialogTitle id="alert-dialog-slide-title">
-                    {`Embed code for ${displayName}`}
-                </DialogTitle>
-                <DialogContent>
-                    <Grid container>
-                        <Grid item xs={12}></Grid>
+        <Dialog
+            open={isOpen}
+            TransitionComponent={Transition}
+            onClose={handleClose}
+            aria-labelledby={`img-dialog-${displayName}`}
+            aria-describedby="alert-dialog-slide-description"
+        >
+            <DialogTitle id={`img-dialog-${displayName}`}>
+                {`Embed code for ${displayName}`}
+            </DialogTitle>
+            <DialogContent>
+                <Grid container>
+                    <Grid item xs={12}></Grid>
 
-                        <Grid item xs={12} m={6}></Grid>
-                        <Grid item xs={12} m={6}></Grid>
-                    </Grid>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Disagree
-                    </Button>
-                    <Button onClick={handleClose} color="primary">
-                        Agree
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
+                    <Grid item xs={12} sm={6}></Grid>
+                    <Grid item xs={12} sm={6}></Grid>
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                    Disagree
+                </Button>
+                <Button onClick={handleClose} color="primary">
+                    Agree
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };
 
