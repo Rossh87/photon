@@ -1,14 +1,5 @@
-import { ICombinedUploadRequestMetadata } from '../../Uploader/http/httpTypes';
-import { TWithId } from '../../../core/sharedTypes';
+import { TAvailableImageWidths, IDBUpload } from './Upload';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-
-export type TFetchedImageData = TWithId<ICombinedUploadRequestMetadata>;
-
-export type TAvailableImageWidths = NonEmptyArray<number>;
-
-// re-export this type from Uploader component, since it will be crucial for search
-// page too, and we would never want to make a new, identical type and have it get out-of-sync
-export type { ICombinedUploadRequestMetadata } from '../../Uploader/http/httpTypes';
 
 export type TBreakpointWidthType = 'max' | 'min';
 
@@ -33,3 +24,16 @@ export type TBreakpoints = Array<IBreakpoint>;
 export type TUserBreakpoints = Array<TUserBreakpoint>;
 
 export type TDefaultBreakpoints = Array<TDefaultBreakpoint>;
+
+// type guards
+import { Refinement } from 'fp-ts/Refinement';
+
+export const isUserBreakpoint: Refinement<IBreakpoint, TUserBreakpoint> =
+    function (b): b is TUserBreakpoint {
+        return b.origin === 'user';
+    };
+
+export const isDefaultBreakpoint: Refinement<IBreakpoint, TDefaultBreakpoint> =
+    function (b): b is TDefaultBreakpoint {
+        return b.origin === 'default';
+    };

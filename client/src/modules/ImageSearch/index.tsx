@@ -11,45 +11,48 @@ import { fetchImageData } from './http/fetchImageData';
 import { getSearchResults } from './useCases/getSearchResults';
 
 const useStyles = makeStyles((theme: Theme) => ({
-	paper: {
-		maxWidth: 936,
-		margin: 'auto',
-		overflow: 'hidden',
-	},
+    paper: {
+        maxWidth: 936,
+        margin: 'auto',
+        overflow: 'hidden',
+    },
 }));
 
 const ImageSearch: React.FunctionComponent = (props) => {
-	const classes = useStyles();
+    const classes = useStyles();
 
-	const makeDeps = useContext(DependencyContext);
+    const makeDeps = useContext(DependencyContext);
 
-	const defaultState: IImageSearchState = {
-		imageMetadata: [],
-		currentlyActiveImages: [],
-		error: null,
-	};
-	const [imageSearchState, imageSearchDispatch, withDispatch] =
-		useFPMiddleware(imageSearchReducer, defaultState);
+    const defaultState: IImageSearchState = {
+        imageMetadata: [],
+        currentlyActiveImages: [],
+        error: null,
+    };
+    const [imageSearchState, imageSearchDispatch, withDispatch] =
+        useFPMiddleware(imageSearchReducer, defaultState);
 
-	// TODO: ideally, compiler should catch if makeDependencies
-	// is passed in with a handler that doesn't need it
-	withDispatch('FETCH_IMG_DATA')(fetchImageData, makeDeps);
-	withDispatch('INIT_IMG_SEARCH')(getSearchResults);
+    // TODO: ideally, compiler should catch if makeDependencies
+    // is passed in with a handler that doesn't need it
+    withDispatch('FETCH_IMG_DATA')(fetchImageData, makeDeps);
+    withDispatch('INIT_IMG_SEARCH')(getSearchResults);
 
-	useEffect(() => imageSearchDispatch({ type: 'FETCH_IMG_DATA' }), []);
+    useEffect(
+        () => imageSearchDispatch({ type: 'FETCH_IMG_DATA' }),
+        [] // eslint-disable-line
+    );
 
-	return (
-		<Paper className={classes.paper}>
-			<ImageSearchBar
-				dispatch={imageSearchDispatch}
-				imgData={imageSearchState.imageMetadata}
-			/>
-			<ImageDisplay
-				currentlyActiveImages={imageSearchState.currentlyActiveImages}
-				dispatch={imageSearchDispatch}
-			/>
-		</Paper>
-	);
+    return (
+        <Paper className={classes.paper}>
+            <ImageSearchBar
+                dispatch={imageSearchDispatch}
+                imgData={imageSearchState.imageMetadata}
+            />
+            <ImageDisplay
+                currentlyActiveImages={imageSearchState.currentlyActiveImages}
+                dispatch={imageSearchDispatch}
+            />
+        </Paper>
+    );
 };
 
 export default ImageSearch;

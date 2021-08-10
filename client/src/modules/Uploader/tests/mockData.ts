@@ -32,7 +32,7 @@ export const mockImageData = {
 export const mockUploadReqData: IUploadRequestMetadata = {
 	ownerID: '1234',
 	displayName: 'processingTestImage',
-	mediaType: 'img/jpg',
+	mediaType: 'image/jpeg',
 	sizeInBytes: 1024,
 	integrityHash: 'abc123',
 	width: 250,
