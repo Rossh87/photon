@@ -7,8 +7,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
+import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
+import { Grid } from '@material-ui/core/Grid';
 
-interface IProps {
+interface IProps extends TFetchedImageData {
     isOpen: boolean;
     setOpen: (a: boolean) => void;
 }
@@ -16,6 +18,7 @@ interface IProps {
 export const ImageDialog: React.FunctionComponent<IProps> = ({
     isOpen,
     setOpen,
+    displayName,
 }) => {
     const handleClickOpen = () => {
         setOpen(true);
@@ -39,18 +42,19 @@ export const ImageDialog: React.FunctionComponent<IProps> = ({
                 TransitionComponent={Transition}
                 keepMounted
                 onClose={handleClose}
-                aria-labelledby="alert-dialog-slide-title"
+                aria-labelledby={`img-dialog-${displayName}`}
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle id="alert-dialog-slide-title">
-                    {"Use Google's location service?"}
+                    {`Embed code for ${displayName}`}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        Let Google help apps determine location. This means
-                        sending anonymous location data to Google, even when no
-                        apps are running.
-                    </DialogContentText>
+                    <Grid container>
+                        <Grid item xs={12}></Grid>
+
+                        <Grid item xs={12} m={6}></Grid>
+                        <Grid item xs={12} m={6}></Grid>
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">

@@ -28,8 +28,12 @@ const sizesFromBreakpoints = (bps: TBreakpoints): string => bps.reduce((str, bp,
 export const mergeBreakpoints = (ubp: TUserBreakpoints) => (dbp: TDefaultBreakpoints): TBreakpoints => concatW(dbp)(ubp)
 
 // TODO: need to get a flow set up for adding alt text to images
-const HTMLFromBreakpoints = (availableWidths: TAvailableImageWidths) => (publicPath: string) => (bps: TBreakpoints): string => 
+const HTMLStringFromBreakpoints = (availableWidths: TAvailableImageWidths) => (publicPath: string) => (bps: TBreakpoints): string => 
 `<img srcset="${makeSrcset(availableWidths)(publicPath)}" sizes="${sizesFromBreakpoints(bps)}" src="${publicPath}/${availableWidths[availableWidths.length - 1]}" alt="">`
+
+const JSXElementFromBreakpoints = (availableWidths: TAvailableImageWidths) => (publicPath: string) => (bps: TBreakpoints): JSX.Element => (
+    <img srcSet={makeSrcset(availableWidths)(publicPath)} sizes={sizesFromBreakpoints(bps)} src={`${publicPath}/${availableWidths[availableWidths.length - 1]}`} alt=""></img>
+)
 
 /**Ordering of sizes:
  * First, build size-matchers for all user-defined breakpoints, in the order in which they were set.
@@ -41,5 +45,7 @@ export const createHTMLSrcsetString = (userBreakpoints: TUserBreakpoints) => (av
     availableWidths,
     makeDefaultBreakpoints,
     pipe(userBreakpoints, mergeBreakpoints),
-    pipe(availableWidths, HTMLFromBreakpoints, ap(publicPath))
+    pipe(availableWidths, HTMLStringFromBreakpoints, ap(publicPath))
 )
+
+export const createJSXSrcsetElement = 

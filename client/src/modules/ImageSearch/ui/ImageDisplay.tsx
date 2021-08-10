@@ -1,18 +1,14 @@
 import React, { Dispatch } from 'react';
 import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
 import { TImageSearchActions } from '../state/imageSearchStateTypes';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
-import InfoIcon from '@material-ui/icons/Info';
 import ImageList from '@material-ui/core/ImageList';
-import ImageListItem from '@material-ui/core/ImageListItem';
-import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { ImageItem } from './ImageItem';
+import ImageItem from './ImageItem';
 import { pipe } from 'fp-ts/lib/function';
-import { fromArray } from 'fp-ts/lib/NonEmptyArray';
-import { map as OMap } from 'fp-ts/Option';
+import { fromArray, map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
+import { map as OMap, getOrElseW } from 'fp-ts/Option';
 
 const useStyles = makeStyles((theme: Theme) => ({
     imageDisplayContainer: {
@@ -57,12 +53,22 @@ const ImageDisplay: React.FunctionComponent<IProps> = ({
 }) => {
     const classes = useStyles();
 
-    const renderImages = () => pipe(currentlyActiveImages, fromArray);
-    currentlyActiveImages.length > 0 ? (
-        currentlyActiveImages.map((img) => <ImageItem key={img._id} {...img} />)
-    ) : (
+    const emptyUI = (
         <Typography color="textSecondary">No results found!</Typography>
     );
+
+    const mapImagesToUI = pipe(
+        (img: TFetchedImageData) => <ImageItem key={img._id} {...img} />,
+        NEAMap
+    );
+
+    const renderImages = () =>
+        pipe(
+            currentlyActiveImages,
+            fromArray,
+            OMap(mapImagesToUI),
+            getOrElseW(() => emptyUI)
+        );
 
     return (
         <ImageList rowHeight={200} cols={4} className={classes.ImageList}>
