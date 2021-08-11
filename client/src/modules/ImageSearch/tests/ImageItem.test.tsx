@@ -2,9 +2,9 @@ import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockImage1 } from './mockData';
 import ImageItem from '../ui/ImageItem';
-import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
+import { IDBUpload } from 'sharedTypes/Upload';
 
-let mockImageData: TFetchedImageData;
+let mockImageData: IDBUpload;
 
 beforeEach(() => (mockImageData = Object.assign({}, mockImage1)));
 

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import ImageListItem from '@material-ui/core/ImageListItem';
 import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import { makeStyles } from '@material-ui/core/styles';
 import ImageDialog from './ImageDialog';
+import { IDBUpload } from '../../../../../sharedTypes/Upload';
 
 const useStyles = makeStyles(() => ({
     icon: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // don't use React.FunctionComponent since we don't want children prop on this component
-const ImageItem = (props: TFetchedImageData) => {
+const ImageItem = (props: IDBUpload) => {
     const classes = useStyles();
 
     const [isOpen, setOpen] = useState(false);

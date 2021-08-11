@@ -3,7 +3,7 @@ import {
     IBreakpoint,
     TDefaultBreakpoint,
     TUserBreakpoint,
-} from './ImageSearchDomainTypes';
+} from 'sharedTypes/Breakpoint';
 
 export const isUserBreakpoint: Refinement<IBreakpoint, TUserBreakpoint> =
     function (b): b is TUserBreakpoint {

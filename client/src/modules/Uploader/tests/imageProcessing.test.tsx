@@ -7,19 +7,25 @@ import userEvent from '@testing-library/user-event';
 import { mockUser, mockResizingData } from './mockData';
 import { getOversizeImageFile } from '../../../testUtils/imageUtils';
 import DependencyContext, {
-	IDependencies,
-	createDependenciesObject,
-	TImageResizer,
+    IDependencies,
+    createDependenciesObject,
+    TImageResizer,
 } from '../../../core/dependencyContext';
-import { REQUEST_UPLOAD_URI_ENDPOINT, DEDUPLICATION_ENDPOINT } from '../http/endpoints';
-import { IHTTPLib } from '../../../core/sharedTypes';
+import {
+    REQUEST_UPLOAD_URI_ENDPOINT,
+    DEDUPLICATION_ENDPOINT,
+} from '../http/endpoints';
+import { IHTTPLib } from '../../../core/sharedClientTypes';
 import { IDedupeMetadata } from '../../../../../server/modules/Upload/sharedUploadTypes';
-import { simulateFileInput, simulateInvalidFileInput } from '../../../testUtils';
+import {
+    simulateFileInput,
+    simulateInvalidFileInput,
+} from '../../../testUtils';
 
 const mockAuthState: IAuthState = {
-	user: mockUser,
-	errors: [],
-	status: 'authorized',
+    user: mockUser,
+    errors: [],
+    status: 'authorized',
 };
 
 let authState: IAuthState;
@@ -27,125 +33,125 @@ let authState: IAuthState;
 beforeEach(() => (authState = Object.assign({}, mockAuthState)));
 
 describe('Uploader component when files are submitted', () => {
-	it('does nothing if selected files have errors', async () => {
-		const mockAxios = {
-			post: jest.fn(() => Promise.resolve({data: []}))
-		} as unknown as IHTTPLib;
+    it('does nothing if selected files have errors', async () => {
+        const mockAxios = {
+            post: jest.fn(() => Promise.resolve({ data: [] })),
+        } as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer
+        const mockResizer = jest.fn() as TImageResizer;
 
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
+        const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
 
-		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
-		);
+        render(
+            <DependencyContext.Provider value={mockDeps}>
+                <AuthStateContext.Provider value={authState}>
+                    <Uploader />
+                </AuthStateContext.Provider>
+            </DependencyContext.Provider>
+        );
 
-		const input = screen.getByLabelText('Select Files');
-		const submitButton = screen.getByText('Submit!');
+        const input = screen.getByLabelText('Select Files');
+        const submitButton = screen.getByText('Submit!');
 
-		await act( async () => simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
-			input
-		));
-		
-		// ensure a file is actually in the UI to make sure test is valid
-		const invalidFile = screen.getByText('invalidSelection')
+        await act(async () =>
+            simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
+                input
+            )
+        );
 
-		expect(invalidFile).not.toBeNull();
+        // ensure a file is actually in the UI to make sure test is valid
+        const invalidFile = screen.getByText('invalidSelection');
 
-		/**This will throw if component is working correctly because MUI submit button
-		 * will have pointer events set to 'none'.  The user-event library will not
-		 * allow a simulated click on a element configured this way.
-		 */
-		expect(() => userEvent.click(submitButton)).toThrow();
-	});
+        expect(invalidFile).not.toBeNull();
 
-	it('does nothing if any selected files have duplicate displayName', async() => {
-		const mockDupeResponse: IDedupeMetadata = {
-			ownerID: '1234',
-			_id: 'abc123',
-			displayName: 'testImage1'
-		}
+        /**This will throw if component is working correctly because MUI submit button
+         * will have pointer events set to 'none'.  The user-event library will not
+         * allow a simulated click on a element configured this way.
+         */
+        expect(() => userEvent.click(submitButton)).toThrow();
+    });
 
-		const mockAxios = {
-			post: jest.fn(() => Promise.resolve({data: [mockDupeResponse]}))
-		} as unknown as IHTTPLib;
+    it('does nothing if any selected files have duplicate displayName', async () => {
+        const mockDupeResponse: IDedupeMetadata = {
+            ownerID: '1234',
+            _id: 'abc123',
+            displayName: 'testImage1',
+        };
 
-		const mockResizer = jest.fn() as TImageResizer
+        const mockAxios = {
+            post: jest.fn(() => Promise.resolve({ data: [mockDupeResponse] })),
+        } as unknown as IHTTPLib;
 
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
+        const mockResizer = jest.fn() as TImageResizer;
 
-		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
-		);
+        const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
 
-		const input = screen.getByLabelText('Select Files');
-		const submitButton = screen.getByText('Submit!');
+        render(
+            <DependencyContext.Provider value={mockDeps}>
+                <AuthStateContext.Provider value={authState}>
+                    <Uploader />
+                </AuthStateContext.Provider>
+            </DependencyContext.Provider>
+        );
 
-		await act( async () => simulateFileInput(
-			input
-		));
+        const input = screen.getByLabelText('Select Files');
+        const submitButton = screen.getByText('Submit!');
 
-		// ensure a file is actually in the UI and flagged as a duplicate displayName 
-		// to make sure test is valid
-		const dupeFile = screen.getByText('already in use', {exact: false})
+        await act(async () => simulateFileInput(input));
 
-		expect(dupeFile).not.toBeNull();
+        // ensure a file is actually in the UI and flagged as a duplicate displayName
+        // to make sure test is valid
+        const dupeFile = screen.getByText('already in use', { exact: false });
 
-		/**This will throw if component is working correctly because MUI submit button
-		 * will have pointer events set to 'none'.  The user-event library will not
-		 * allow a simulated click on a element configured this way.
-		 */
-		expect(() => userEvent.click(submitButton)).toThrow();
-	})
-	
-	it('displays correct error message on files that fail to upload', async () => {
-		const mockAxios = {
-			post: jest.fn(function(url: string) {
-				switch(url) {
-					case DEDUPLICATION_ENDPOINT:
-						return Promise.resolve({data: []})
-					case REQUEST_UPLOAD_URI_ENDPOINT:
-						return Promise.reject('failure')
-					default:
-						throw new Error('missed case in mock HTTP lib!!')
-				}
-			})
-		} as unknown as IHTTPLib;
+        expect(dupeFile).not.toBeNull();
 
-		const mockResizer = jest.fn(
-			() => mockResizingData
-		) as unknown as TImageResizer;
+        /**This will throw if component is working correctly because MUI submit button
+         * will have pointer events set to 'none'.  The user-event library will not
+         * allow a simulated click on a element configured this way.
+         */
+        expect(() => userEvent.click(submitButton)).toThrow();
+    });
 
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
+    it('displays correct error message on files that fail to upload', async () => {
+        const mockAxios = {
+            post: jest.fn(function (url: string) {
+                switch (url) {
+                    case DEDUPLICATION_ENDPOINT:
+                        return Promise.resolve({ data: [] });
+                    case REQUEST_UPLOAD_URI_ENDPOINT:
+                        return Promise.reject('failure');
+                    default:
+                        throw new Error('missed case in mock HTTP lib!!');
+                }
+            }),
+        } as unknown as IHTTPLib;
 
-		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
-		);
+        const mockResizer = jest.fn(
+            () => mockResizingData
+        ) as unknown as TImageResizer;
 
-		const input = screen.getByLabelText('Select Files');
+        const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
 
-		const submitButton = screen.getByText('Submit!');
+        render(
+            <DependencyContext.Provider value={mockDeps}>
+                <AuthStateContext.Provider value={authState}>
+                    <Uploader />
+                </AuthStateContext.Provider>
+            </DependencyContext.Provider>
+        );
 
-		await act(async () => simulateFileInput(input));
+        const input = screen.getByLabelText('Select Files');
 
-		await act(async () => userEvent.click(submitButton));
+        const submitButton = screen.getByText('Submit!');
 
-		const result = screen.getAllByText(
-			'Attempt to get upload URIs from server failed.'
-		);
-		
-		expect(result.length).toEqual(2)
-	});
+        await act(async () => simulateFileInput(input));
+
+        await act(async () => userEvent.click(submitButton));
+
+        const result = screen.getAllByText(
+            'Attempt to get upload URIs from server failed.'
+        );
+
+        expect(result.length).toEqual(2);
+    });
 });

@@ -1,5 +1,4 @@
 import React, { Dispatch } from 'react';
-import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
 import { TImageSearchActions } from '../state/imageSearchStateTypes';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
@@ -9,6 +8,7 @@ import ImageItem from './ImageItem';
 import { pipe } from 'fp-ts/lib/function';
 import { fromArray, map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/Option';
+import { IDBUpload } from '../../../../../sharedTypes/Upload';
 
 const useStyles = makeStyles((theme: Theme) => ({
     imageDisplayContainer: {
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface IProps {
-    currentlyActiveImages: TFetchedImageData[];
+    currentlyActiveImages: IDBUpload[];
     dispatch: Dispatch<TImageSearchActions>;
 }
 
@@ -58,7 +58,7 @@ const ImageDisplay: React.FunctionComponent<IProps> = ({
     );
 
     const mapImagesToUI = pipe(
-        (img: TFetchedImageData) => <ImageItem key={img._id} {...img} />,
+        (img: IDBUpload) => <ImageItem key={img._id} {...img} />,
         NEAMap
     );
 

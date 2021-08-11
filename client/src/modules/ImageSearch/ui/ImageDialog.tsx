@@ -7,10 +7,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import { TFetchedImageData } from '../domain/ImageSearchDomainTypes';
 import Grid from '@material-ui/core/Grid';
+import { IDBUpload } from '../../../../../sharedTypes/Upload';
 
-interface IProps extends TFetchedImageData {
+interface IProps extends IDBUpload {
     isOpen: boolean;
     setOpen: (a: boolean) => void;
 }

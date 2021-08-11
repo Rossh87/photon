@@ -1,0 +1,9 @@
+{
+  "name": "sharedTypes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "fp-ts": "^2.11.1"
+  }
+}
