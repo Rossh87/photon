@@ -8,54 +8,56 @@ import ImageDialog from './ImageDialog';
 import { IDBUpload } from '../../../../../sharedTypes/Upload';
 
 const useStyles = makeStyles(() => ({
-    icon: {
-        color: 'rgba(255, 255, 255, 0.54)',
-    },
+	icon: {
+		color: 'rgba(255, 255, 255, 0.54)',
+	},
 
-    listItem: {
-        '&:hover': {
-            cursor: 'pointer',
-        },
-    },
+	listItem: {
+		'&:hover': {
+			cursor: 'pointer',
+		},
+	},
 }));
 
 // don't use React.FunctionComponent since we don't want children prop on this component
 const ImageItem = (props: IDBUpload) => {
-    const classes = useStyles();
+	const classes = useStyles();
 
-    const [isOpen, setOpen] = useState(false);
+	const [isOpen, setOpen] = useState(false);
 
-    const { displayName, availableWidths, publicPathPrefix } = props;
+	const { displayName, availableWidths, publicPathPrefix } = props;
 
-    const handleClick: React.MouseEventHandler = (e) => {
-        e.stopPropagation();
-        setOpen(true);
-    };
+	const handleClick: React.MouseEventHandler = (e) => {
+		e.stopPropagation();
+		setOpen(true);
+	};
 
-    return (
-        <React.Fragment>
-            <ImageListItem
-                onClick={handleClick}
-                aria-label={`open embed code configuration for ${displayName}`}
-                role="button"
-                className={classes.listItem}
-            >
-                <img src={`${publicPathPrefix}/${availableWidths[0]}`} alt="" />
-                <ImageListItemBar
-                    title={displayName}
-                    // actionIcon={
-                    //     <IconButton
-                    //         aria-label={`info about user image ${displayName}`}
-                    //         className={classes.icon}
-                    //     >
-                    //         <InfoIcon />
-                    //     </IconButton>
-                    // }
-                />
-            </ImageListItem>
-            <ImageDialog isOpen={isOpen} setOpen={setOpen} {...props} />
-        </React.Fragment>
-    );
+	return (
+		<React.Fragment>
+			<ImageListItem
+				onClick={handleClick}
+				aria-label={`open embed code configuration for ${displayName}`}
+				role="button"
+				className={classes.listItem}
+				cols={1}
+				rows={1}
+			>
+				<img src={`${publicPathPrefix}/${availableWidths[0]}`} alt="" />
+				<ImageListItemBar
+					title={displayName}
+					// actionIcon={
+					//     <IconButton
+					//         aria-label={`info about user image ${displayName}`}
+					//         className={classes.icon}
+					//     >
+					//         <InfoIcon />
+					//     </IconButton>
+					// }
+				/>
+			</ImageListItem>
+			<ImageDialog isOpen={isOpen} setOpen={setOpen} {...props} />
+		</React.Fragment>
+	);
 };
 
 export default ImageItem;

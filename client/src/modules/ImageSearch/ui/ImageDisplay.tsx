@@ -11,70 +11,81 @@ import { map as OMap, getOrElseW } from 'fp-ts/Option';
 import { IDBUpload } from '../../../../../sharedTypes/Upload';
 
 const useStyles = makeStyles((theme: Theme) => ({
-    imageDisplayContainer: {
-        margin: '40px 16px',
-    },
+	imageDisplayContainer: {
+		margin: '40px 16px',
+	},
 
-    root: {
-        maxWidth: 345,
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        overflow: 'hidden',
-        backgroundColor: theme.palette.background.paper,
-    },
+	root: {
+		// maxWidth: 345,
+		// display: 'flex',
+		// flexWrap: 'wrap',
+		// justifyContent: 'space-around',
+		// overflow: 'hidden',
+		// backgroundColor: theme.palette.background.paper,
+		display: 'flex',
+		flexWrap: 'wrap',
+		justifyContent: 'space-around',
+		overflow: 'hidden',
+		backgroundColor: theme.palette.background.paper,
+	},
 
-    media: {
-        height: 0,
-        paddingTop: '56.25%', // 16:9
-    },
+	media: {
+		height: 0,
+		paddingTop: '56.25%', // 16:9
+	},
 
-    avatar: {
-        backgroundColor: red[500],
-    },
+	avatar: {
+		backgroundColor: red[500],
+	},
 
-    ImageList: {
-        width: '100%',
-    },
+	ImageList: {
+		width: 700,
+		height: 600,
+	},
 
-    icon: {
-        color: 'rgba(255, 255, 255, 0.54)',
-    },
+	icon: {
+		color: 'rgba(255, 255, 255, 0.54)',
+	},
 }));
 
 interface IProps {
-    currentlyActiveImages: IDBUpload[];
-    dispatch: Dispatch<TImageSearchActions>;
+	currentlyActiveImages: IDBUpload[];
+	dispatch: Dispatch<TImageSearchActions>;
 }
 
 const ImageDisplay: React.FunctionComponent<IProps> = ({
-    currentlyActiveImages,
-    dispatch,
+	currentlyActiveImages,
+	dispatch,
 }) => {
-    const classes = useStyles();
+	const classes = useStyles();
 
-    const emptyUI = (
-        <Typography color="textSecondary">No results found!</Typography>
-    );
+	const emptyUI = (
+		<Typography color="textSecondary">No results found!</Typography>
+	);
 
-    const mapImagesToUI = pipe(
-        (img: IDBUpload) => <ImageItem key={img._id} {...img} />,
-        NEAMap
-    );
+	const mapImagesToUI = pipe(
+		(img: IDBUpload) => <ImageItem key={img._id} {...img} />,
+		NEAMap
+	);
 
-    const renderImages = () =>
-        pipe(
-            currentlyActiveImages,
-            fromArray,
-            OMap(mapImagesToUI),
-            getOrElseW(() => emptyUI)
-        );
+	const renderImages = () =>
+		pipe(
+			currentlyActiveImages,
+			fromArray,
+			OMap(mapImagesToUI),
+			getOrElseW(() => emptyUI)
+		);
 
-    return (
-        <ImageList rowHeight={200} cols={4} className={classes.ImageList}>
-            {renderImages()}
-        </ImageList>
-    );
+	return (
+		<ImageList
+			gap={2}
+			rowHeight={200}
+			cols={8}
+			className={classes.ImageList}
+		>
+			{renderImages()}
+		</ImageList>
+	);
 };
 
 export default ImageDisplay;
