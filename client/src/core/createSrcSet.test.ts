@@ -8,7 +8,7 @@ import {
 	createSrcset,
 	makeDefaultBreakpoints,
 	mergeBreakpoints,
-} from './createSrcsetString';
+} from './createSrcset';
 
 describe("helper function 'mergeBreakpoints'", () => {
 	it('returns a merged array with all user-defined breakpoints included first', () => {
@@ -131,6 +131,37 @@ describe('createSrcSet', () => {
 				publicPath
 			);
 
+		expect(received).toEqual(expected);
+	});
+
+	it.only('works?', () => {
+		const userBreakpoints: TUserBreakpoints = [
+			{
+				mediaWidth: 550,
+				type: 'min',
+				slotWidth: 330,
+				slotUnit: 'px',
+				origin: 'user',
+			},
+		];
+
+		const availableWidths = [1200, 300] as NonEmptyArray<number>;
+
+		const publicPath = 'https://www.example.bucket.com';
+
+		const expected = React.createElement('img', {
+			srcSet: 'https://www.example.bucket.com/1200 1200w, https://www.example.bucket.com/300 300w',
+			sizes: '(min-width: 550px) 330px, (max-width: 300px) 100vw, (max-width: 1200px) 100vw',
+			src: 'https://www.example.bucket.com/300',
+			alt: '',
+		});
+
+		const received =
+			createSrcset('element')(userBreakpoints)(availableWidths)(
+				publicPath
+			);
+
+		console.log(received);
 		expect(received).toEqual(expected);
 	});
 });

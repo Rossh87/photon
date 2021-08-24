@@ -5,15 +5,21 @@ import { IAuthState } from '../../Auth/state/authStateTypes';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockUser } from './mockData';
+import { getOversizeImageFile } from '../../../testUtils/imageUtils';
+import DependencyContext, {
+	createDependenciesObject,
+	TImageResizer,
+	IHTTPLib,
+} from '../../../core/dependencyContext';
 import {
-	getOversizeImageFile,
-} from '../../../testUtils/imageUtils';
-import DependencyContext, { createDependenciesObject, TImageResizer, IHTTPLib} from '../../../core/dependencyContext'
-import {
-    TDedupeNamesPayload,
-    TDedupeNamesResponse,
+	TDedupeNamesPayload,
+	TDedupeNamesResponse,
 } from 'server/modules/Upload/sharedUploadTypes';
-import { simulateFileInput, simulateInvalidFileInput } from '../../../testUtils';
+import {
+	simulateFileInput,
+	simulateInvalidFileInput,
+} from '../../../testUtils';
+import { resetInternals } from 'react-use-fp';
 
 const mockAuthState: IAuthState = {
 	user: mockUser,
@@ -23,29 +29,32 @@ const mockAuthState: IAuthState = {
 
 let authState: IAuthState;
 
-beforeEach(() => (authState = Object.assign({}, mockAuthState)));
+beforeEach(() => {
+	authState = Object.assign({}, mockAuthState);
+	resetInternals();
+});
 
 describe('Uploader component', () => {
 	it('displays 1 child for each input file', async () => {
 		const mockAxios = {
-			post: jest.fn(() => Promise.resolve({data: []}))
+			post: jest.fn(() => Promise.resolve({ data: [] })),
 		} as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer
+		const mockResizer = jest.fn() as TImageResizer;
 
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
+		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-			<AuthStateContext.Provider value={authState}>
-				<Uploader />
-			</AuthStateContext.Provider>
+				<AuthStateContext.Provider value={authState}>
+					<Uploader />
+				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
 		);
 
 		const input = screen.getByLabelText('Select Files');
 
-		await act(async () => simulateFileInput(input))
+		await act(async () => simulateFileInput(input));
 
 		const selectedFilesUI = screen.getAllByText('testImage', {
 			exact: false,
@@ -56,26 +65,28 @@ describe('Uploader component', () => {
 
 	it('uses "error" text color for invalid inputs', async () => {
 		const mockAxios = {
-			post: jest.fn(() => Promise.resolve({data: []}))
+			post: jest.fn(() => Promise.resolve({ data: [] })),
 		} as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer
+		const mockResizer = jest.fn() as TImageResizer;
 
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
+		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-			<AuthStateContext.Provider value={authState}>
-				<Uploader />
-			</AuthStateContext.Provider>
+				<AuthStateContext.Provider value={authState}>
+					<Uploader />
+				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
 		);
 
 		const input = screen.getByLabelText('Select Files');
 
-		await act(async () => simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
-			input
-		));
+		await act(async () =>
+			simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
+				input
+			)
+		);
 
 		const UIForValid = screen.getByText('testImage', { exact: false });
 
@@ -93,26 +104,28 @@ describe('Uploader component', () => {
 
 	it('displays error message for files with local validation errors', async () => {
 		const mockAxios = {
-			post: jest.fn(() => Promise.resolve({data: []}))
+			post: jest.fn(() => Promise.resolve({ data: [] })),
 		} as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer
+		const mockResizer = jest.fn() as TImageResizer;
 
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
+		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-			<AuthStateContext.Provider value={authState}>
-				<Uploader />
-			</AuthStateContext.Provider>
+				<AuthStateContext.Provider value={authState}>
+					<Uploader />
+				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
 		);
 
 		const input = screen.getByLabelText('Select Files');
 
-		await act(async() => simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
-			input
-		));
+		await act(async () =>
+			simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
+				input
+			)
+		);
 
 		const received = screen.getByText(
 			'exceeds maximum initial image size',
@@ -125,18 +138,18 @@ describe('Uploader component', () => {
 	describe('updating the display name of a selected file', () => {
 		it('updates file display name with user input', async () => {
 			const mockAxios = {
-				post: jest.fn(() => Promise.resolve({data: []}))
+				post: jest.fn(() => Promise.resolve({ data: [] })),
 			} as unknown as IHTTPLib;
-	
-			const mockResizer = jest.fn() as TImageResizer
-	
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
-	
+
+			const mockResizer = jest.fn() as TImageResizer;
+
+			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
+
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
+					<AuthStateContext.Provider value={authState}>
+						<Uploader />
+					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
 			);
 
@@ -155,7 +168,9 @@ describe('Uploader component', () => {
 
 			// cast return type of userEvent.keyboard to void to soothe type defs
 			// for 'act'
-			await act( async () => userEvent.keyboard('{Enter}') as unknown as void);
+			await act(
+				async () => userEvent.keyboard('{Enter}') as unknown as void
+			);
 
 			const updated = screen.getAllByText('newDisplayName');
 
@@ -164,18 +179,18 @@ describe('Uploader component', () => {
 
 		it('does not update if newly-submitted name is empty', async () => {
 			const mockAxios = {
-				post: jest.fn(() => Promise.resolve({data: []}))
+				post: jest.fn(() => Promise.resolve({ data: [] })),
 			} as unknown as IHTTPLib;
-	
-			const mockResizer = jest.fn() as TImageResizer
-	
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
-	
+
+			const mockResizer = jest.fn() as TImageResizer;
+
+			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
+
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
+					<AuthStateContext.Provider value={authState}>
+						<Uploader />
+					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
 			);
 
@@ -205,18 +220,18 @@ describe('Uploader component', () => {
 	describe('removing a selected file from the list', () => {
 		it('removes the deselected file from the UI', async () => {
 			const mockAxios = {
-				post: jest.fn(() => Promise.resolve({data: []}))
+				post: jest.fn(() => Promise.resolve({ data: [] })),
 			} as unknown as IHTTPLib;
-	
-			const mockResizer = jest.fn() as TImageResizer
-	
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
-	
+
+			const mockResizer = jest.fn() as TImageResizer;
+
+			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
+
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
+					<AuthStateContext.Provider value={authState}>
+						<Uploader />
+					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
 			);
 
@@ -234,21 +249,25 @@ describe('Uploader component', () => {
 
 	describe('displayName deduplication', () => {
 		it('displays a "file name in use error" if submitted file displayName already exists on CDN', async () => {
-			const responseWithDupes: TDedupeNamesResponse = [{_id: 'abc123', ownerID: '1234', displayName: 'testImage1'}]
+			const responseWithDupes: TDedupeNamesResponse = [
+				{ _id: 'abc123', ownerID: '1234', displayName: 'testImage1' },
+			];
 
 			const mockAxios = {
-				post: jest.fn(() => Promise.resolve({data: responseWithDupes}))
+				post: jest.fn(() =>
+					Promise.resolve({ data: responseWithDupes })
+				),
 			} as unknown as IHTTPLib;
-	
-			const mockResizer = jest.fn() as TImageResizer
-	
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
-	
+
+			const mockResizer = jest.fn() as TImageResizer;
+
+			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
+
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
+					<AuthStateContext.Provider value={authState}>
+						<Uploader />
+					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
 			);
 
@@ -256,37 +275,49 @@ describe('Uploader component', () => {
 
 			await act(async () => simulateFileInput(fileInput));
 
-			const duplicateNameErrs = screen.getAllByText('already in use', {exact: false});
+			const duplicateNameErrs = screen.getAllByText('already in use', {
+				exact: false,
+			});
 
-			expect(duplicateNameErrs.length).toEqual(1)
-		})
+			expect(duplicateNameErrs.length).toEqual(1);
+		});
 
 		it('preferentially displays validation errors over duplicate displayName message', async () => {
 			// selected file will have a duplicate name message, but it won't be displayed, since other
 			// validation errors are more serious and will likely lead to removing the file from the list anyway
-			const responseWithDupes: TDedupeNamesResponse = [{_id: 'abc123', ownerID: '1234', displayName: 'invalidSelection'}]
+			const responseWithDupes: TDedupeNamesResponse = [
+				{
+					_id: 'abc123',
+					ownerID: '1234',
+					displayName: 'invalidSelection',
+				},
+			];
 
 			const mockAxios = {
-				post: jest.fn(() => Promise.resolve({data: responseWithDupes}))
+				post: jest.fn(() =>
+					Promise.resolve({ data: responseWithDupes })
+				),
 			} as unknown as IHTTPLib;
-	
-			const mockResizer = jest.fn() as TImageResizer
-	
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
-	
+
+			const mockResizer = jest.fn() as TImageResizer;
+
+			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
+
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
+					<AuthStateContext.Provider value={authState}>
+						<Uploader />
+					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
 			);
 
 			const fileInput = screen.getByLabelText('Select Files');
 
-			await act(async () => simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
-				fileInput
-			));
+			await act(async () =>
+				simulateInvalidFileInput(getOversizeImageFile)(
+					'invalidSelection'
+				)(fileInput)
+			);
 
 			const validationErrs = screen.getAllByText(
 				'exceeds maximum initial image size',
@@ -296,28 +327,42 @@ describe('Uploader component', () => {
 			expect(validationErrs.length).toEqual(1);
 
 			// ensure there's no duplicate name message on screen
-			expect(() => screen.getAllByText('already in use', {exact: false})).toThrow()
+			expect(() =>
+				screen.getAllByText('already in use', { exact: false })
+			).toThrow();
 		});
 
 		it('re-checks for duplicates whenever a displayname is updated', async () => {
-			const responseWithDupes = Promise.resolve({data: [{_id: 'abc123', ownerID: '1234', displayName: 'testImage1'}]});
-			const responseWithoutDupes = Promise.resolve({data: []});
+			const responseWithDupes = Promise.resolve({
+				data: [
+					{
+						_id: 'abc123',
+						ownerID: '1234',
+						displayName: 'testImage1',
+					},
+				],
+			});
+			const responseWithoutDupes = Promise.resolve({ data: [] });
 
 			// flag a duplicate if file name is 'testImage1'.  Otherwise, indicate
 			// no dupes
 			const mockAxios = {
-				post: jest.fn((_, payload: TDedupeNamesPayload) => payload.displayNames.some(name => name === 'testImage1') ? responseWithDupes : responseWithoutDupes)
+				post: jest.fn((_, payload: TDedupeNamesPayload) =>
+					payload.displayNames.some((name) => name === 'testImage1')
+						? responseWithDupes
+						: responseWithoutDupes
+				),
 			} as unknown as IHTTPLib;
-	
-			const mockResizer = jest.fn() as TImageResizer
-	
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer)
-	
+
+			const mockResizer = jest.fn() as TImageResizer;
+
+			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
+
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
-					<Uploader />
-				</AuthStateContext.Provider>
+					<AuthStateContext.Provider value={authState}>
+						<Uploader />
+					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
 			);
 
@@ -326,7 +371,9 @@ describe('Uploader component', () => {
 			await act(async () => simulateFileInput(fileInput));
 
 			// ensure presence of a duplicate displayName message
-			const duplicate = screen.getByText('already in use', {exact: false});
+			const duplicate = screen.getByText('already in use', {
+				exact: false,
+			});
 
 			expect(duplicate).not.toBeNull();
 
@@ -337,15 +384,19 @@ describe('Uploader component', () => {
 				screen.getAllByLabelText('Update name')[0];
 
 			userEvent.type(newDisplayNameInput, 'newDisplayName');
-			
+
 			// cast return type of userEvent.keyboard to void to soothe type defs
 			// for 'act'
-			await act(async () => userEvent.keyboard('{Enter}') as unknown as void);
+			await act(
+				async () => userEvent.keyboard('{Enter}') as unknown as void
+			);
 
 			const updated = screen.getAllByText('newDisplayName');
 
 			expect(updated.length).toEqual(1);
-			expect(() => screen.getByText('already in use', {exact: false})).toThrow()
-		})
-	})
+			expect(() =>
+				screen.getByText('already in use', { exact: false })
+			).toThrow();
+		});
+	});
 });

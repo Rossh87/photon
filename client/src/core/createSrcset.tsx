@@ -31,10 +31,9 @@ const makeSrcset =
 				(i === a.length - 1 ? '' : ', '),
 			''
 		);
-
 // Sensible default.  This will never force a browser to load an image that's more than
 // one 'size' wider than viewport width
-const makeDefaultBreakpoint = (width: number): TDefaultBreakpoint => ({
+export const makeDefaultBreakpoint = (width: number): TDefaultBreakpoint => ({
 	type: 'max',
 	mediaWidth: width,
 	slotWidth: 100,
@@ -47,7 +46,7 @@ export const makeDefaultBreakpoints = flow(
 	pipe(makeDefaultBreakpoint, ArrMap)
 );
 
-const sizeFromBreakpoint = ({
+export const sizeFromBreakpoint = ({
 	type,
 	slotWidth,
 	slotUnit,
@@ -89,6 +88,7 @@ const JSXElementFromBreakpoints =
 				src={`${publicPath}/${
 					availableWidths[availableWidths.length - 1]
 				}`}
+				style={{ maxWidth: '100%' }}
 				alt=""
 			></img>
 		);

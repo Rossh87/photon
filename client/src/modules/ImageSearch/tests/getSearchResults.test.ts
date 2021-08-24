@@ -23,7 +23,7 @@ describe('searching users image data', () => {
 			payload: [Object.assign({}, mockImage1)],
 		};
 
-		getSearchResults(searchData)(dispatch)();
+		getSearchResults(searchData)({ dispatch })();
 
 		expect(dispatched.length).toBe(1);
 		expect(dispatched[0]).toEqual(expected);
@@ -44,7 +44,7 @@ describe('searching users image data', () => {
 			payload: [Object.assign({}, mockImage1)],
 		};
 
-		getSearchResults(searchData)(dispatch)();
+		getSearchResults(searchData)({ dispatch })();
 
 		expect(dispatched.length).toBe(1);
 		expect(dispatched[0]).toEqual(expected);
@@ -68,7 +68,7 @@ describe('searching users image data', () => {
 			],
 		};
 
-		getSearchResults(searchData)(dispatch)();
+		getSearchResults(searchData)({ dispatch })();
 
 		expect(dispatched.length).toBe(1);
 		expect(dispatched[0]).toEqual(expected);

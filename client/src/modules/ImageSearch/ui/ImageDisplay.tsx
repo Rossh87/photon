@@ -1,27 +1,22 @@
-import React, { Dispatch } from 'react';
-import { TImageSearchActions } from '../state/imageSearchStateTypes';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
 import ImageList from '@material-ui/core/ImageList';
+import ImageListItemBar from '@material-ui/core/ImageListItemBar';
+import ImageListItem from '@material-ui/core/ImageListItem';
+import ImageDialog from './ImageDialog';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import ImageItem from './ImageItem';
 import { pipe } from 'fp-ts/lib/function';
 import { fromArray, map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/Option';
 import { IDBUpload } from '../../../../../sharedTypes/Upload';
+import {
+	useImageSearchDispatch,
+	useImageSearchState,
+} from '../state/useImageSearchState';
 
 const useStyles = makeStyles((theme: Theme) => ({
-	imageDisplayContainer: {
-		margin: '40px 16px',
-	},
-
 	root: {
-		// maxWidth: 345,
-		// display: 'flex',
-		// flexWrap: 'wrap',
-		// justifyContent: 'space-around',
-		// overflow: 'hidden',
-		// backgroundColor: theme.palette.background.paper,
+		padding: theme.spacing(2),
 		display: 'flex',
 		flexWrap: 'wrap',
 		justifyContent: 'space-around',
@@ -29,42 +24,61 @@ const useStyles = makeStyles((theme: Theme) => ({
 		backgroundColor: theme.palette.background.paper,
 	},
 
-	media: {
-		height: 0,
-		paddingTop: '56.25%', // 16:9
+	listItem: {
+		'&:hover': {
+			cursor: 'pointer',
+
+			border: `1px solid ${theme.palette.primary.main}`,
+		},
+
+		border: '1px solid rgba(0,0,0,0)',
 	},
 
-	avatar: {
-		backgroundColor: red[500],
-	},
-
-	ImageList: {
-		width: 700,
-		height: 600,
-	},
-
-	icon: {
-		color: 'rgba(255, 255, 255, 0.54)',
+	list: {
+		width: '100%',
 	},
 }));
 
-interface IProps {
-	currentlyActiveImages: IDBUpload[];
-	dispatch: Dispatch<TImageSearchActions>;
-}
-
-const ImageDisplay: React.FunctionComponent<IProps> = ({
-	currentlyActiveImages,
-	dispatch,
-}) => {
+const ImageDisplay: React.FunctionComponent = () => {
 	const classes = useStyles();
+
+	const { currentlyActiveImages, imageUnderConfiguration } =
+		useImageSearchState();
+
+	const imageSearchDispatch = useImageSearchDispatch();
 
 	const emptyUI = (
 		<Typography color="textSecondary">No results found!</Typography>
 	);
 
+	const handleClick =
+		(clickedImg: IDBUpload): React.MouseEventHandler =>
+		(e) => {
+			e.stopPropagation();
+			imageSearchDispatch({
+				type: 'SET_IMG_UNDER_CONFIGURATION',
+				payload: clickedImg,
+			});
+		};
+
 	const mapImagesToUI = pipe(
-		(img: IDBUpload) => <ImageItem key={img._id} {...img} />,
+		(imgProps: IDBUpload) => (
+			<ImageListItem
+				key={imgProps._id}
+				onClick={handleClick(imgProps)}
+				aria-label={`open embed code configuration for ${imgProps.displayName}`}
+				role="button"
+				className={classes.listItem}
+				cols={2}
+				rows={1}
+			>
+				<img
+					src={`${imgProps.publicPathPrefix}/${imgProps.availableWidths[0]}`}
+					alt=""
+				/>
+				<ImageListItemBar title={imgProps.displayName} />
+			</ImageListItem>
+		),
 		NEAMap
 	);
 
@@ -77,14 +91,17 @@ const ImageDisplay: React.FunctionComponent<IProps> = ({
 		);
 
 	return (
-		<ImageList
-			gap={2}
-			rowHeight={200}
-			cols={8}
-			className={classes.ImageList}
-		>
-			{renderImages()}
-		</ImageList>
+		<main className={classes.list}>
+			<ImageList
+				className={classes.root}
+				gap={10}
+				rowHeight={200}
+				cols={6}
+			>
+				{renderImages()}
+			</ImageList>
+			{imageUnderConfiguration && <ImageDialog />}
+		</main>
 	);
 };
 
