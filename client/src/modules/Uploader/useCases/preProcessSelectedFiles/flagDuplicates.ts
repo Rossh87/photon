@@ -5,10 +5,7 @@ import {
 } from '../../domain/domainTypes';
 import {
 	Either,
-	isRight,
 	fold as EFold,
-	map as EMap,
-	mapLeft as EMapLeft,
 	bimap,
 } from 'fp-ts/lib/Either';
 import { flow, pipe } from 'fp-ts/lib/function';

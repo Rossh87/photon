@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 
 describe('controller to save info about successful uploads', () => {
-	it('invokes db with correct arguments', async () => {
+	it('adds emtpy array to "breakPoints" property before saving a new upload', async () => {
 		const req = {
 			session: {
 				user: mockUser,
@@ -52,7 +52,11 @@ describe('controller to save info about successful uploads', () => {
 			jest.fn() as NextFunction
 		);
 
-		expect(mockInsert).toHaveBeenCalledWith(mockRequestData);
+		const expected = Object.assign({}, mockRequestData, {
+			breakPoints: [],
+		});
+
+		expect(mockInsert).toHaveBeenCalledWith(expected);
 	});
 
 	it('update usage metrics on session user', async () => {
@@ -112,9 +116,13 @@ describe('controller to save info about successful uploads', () => {
 
 		const mockNext = jest.fn() as NextFunction;
 
+		const failedToSave = Object.assign({}, mockRequestData, {
+			breakPoints: [],
+		});
+
 		const expectedErr = DBWriteError.create(
 			'uploads',
-			mockRequestData,
+			failedToSave,
 			'some failure reason'
 		);
 

@@ -4,10 +4,17 @@ import {
 	IImageSearchState,
 } from './imageSearchStateTypes';
 
-const imageSearchReducer: Reducer<IImageSearchState, TImageSearchActions> = (
-	s,
-	a
-) => {
+export const defaultState: IImageSearchState = {
+	imageMetadata: [],
+	currentlyActiveImages: [],
+	error: null,
+	imageUnderConfiguration: null,
+};
+
+export const imageSearchReducer: Reducer<
+	IImageSearchState,
+	TImageSearchActions
+> = (s, a) => {
 	switch (a.type) {
 		case 'IMG_DATA_RECEIVED':
 			// on initial load, all received images are also selected
@@ -35,9 +42,19 @@ const imageSearchReducer: Reducer<IImageSearchState, TImageSearchActions> = (
 				currentlyActiveImages: s.imageMetadata,
 			};
 
+		case 'SET_IMG_UNDER_CONFIGURATION':
+			return {
+				...s,
+				imageUnderConfiguration: a.payload,
+			};
+
+		case 'CLOSE_IMG_UNDER_CONFIGURATION':
+			return {
+				...s,
+				imageUnderConfiguration: null,
+			};
+
 		default:
 			return s;
 	}
 };
-
-export default imageSearchReducer;

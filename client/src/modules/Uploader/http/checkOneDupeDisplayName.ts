@@ -13,7 +13,6 @@ import {
 } from 'server/modules/Upload/sharedUploadTypes';
 import { DEDUPLICATION_ENDPOINT } from './endpoints';
 import { BaseError } from '../../../core/error';
-import { TrainRounded } from '@material-ui/icons';
 
 // TODO: this code would ideally be merged with ./getDupeDisplayNames.ts
 const toPayload: (newName: string) => TDedupeNamesPayload = (n) => ({
