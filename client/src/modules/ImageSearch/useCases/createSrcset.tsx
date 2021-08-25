@@ -1,25 +1,22 @@
 import { pipe, flow } from 'fp-ts/lib/function';
-import {
-	TUserBreakpoints,
-	TDefaultBreakpoints,
-	IBreakpoint,
-	TBreakpoints,
-	TDefaultBreakpoint,
-} from 'sharedTypes/Breakpoint';
+import { nanoid } from 'nanoid';
+import { ISavedBreakpoint, TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import { map as ArrMap, sort, concatW } from 'fp-ts/Array';
 import { TAvailableImageWidths } from 'sharedTypes/Upload';
 import { Ord as NumOrd } from 'fp-ts/number';
-import { ap, bindTo, map, chain as IDChain } from 'fp-ts/Identity';
+import { fromPredicate, map as OMap, getOrElseW } from 'fp-ts/Option';
 import {
-	fromPredicate,
-	map as OMap,
-	foldW as OFoldW,
-	getOrElseW,
-} from 'fp-ts/Option';
+	IBreakpointUI,
+	TDefaultBreakpointUI,
+	TNewBreakpointUI,
+	TUIBreakpoints,
+	TUserBreakpointUI,
+} from '../state/imageDialogState';
+import { makeDefaultUIBreakpoints } from '../helpers/makeDefaultUIBreakpoints';
 
+// NB that the following functions can accept *either* ISavedBreakpoint or TBreakpointUI, since the latter
+// extends the former.
 type TSrcsetCreationType = 'element' | 'string';
-
-const sortAscending = pipe(NumOrd, sort);
 
 const makeSrcset =
 	(widths: TAvailableImageWidths) =>
@@ -31,29 +28,16 @@ const makeSrcset =
 				(i === a.length - 1 ? '' : ', '),
 			''
 		);
-// Sensible default.  This will never force a browser to load an image that's more than
-// one 'size' wider than viewport width
-export const makeDefaultBreakpoint = (width: number): TDefaultBreakpoint => ({
-	type: 'max',
-	mediaWidth: width,
-	slotWidth: 100,
-	slotUnit: 'vw',
-	origin: 'default',
-});
-
-export const makeDefaultBreakpoints = flow(
-	sortAscending,
-	pipe(makeDefaultBreakpoint, ArrMap)
-);
 
 export const sizeFromBreakpoint = ({
-	type,
 	slotWidth,
+	queryType,
 	slotUnit,
 	mediaWidth,
-}: IBreakpoint) => `(${type}-width: ${mediaWidth}px) ${slotWidth}${slotUnit}`;
+}: ISavedBreakpoint | Omit<ISavedBreakpoint, '_id'>) =>
+	`(${queryType}-width: ${mediaWidth}px) ${slotWidth}${slotUnit}`;
 
-const sizesFromBreakpoints = (bps: TBreakpoints): string =>
+const sizesFromBreakpoints = (bps: TSavedBreakpoints): string =>
 	bps.reduce(
 		(str, bp, i, a) =>
 			str + sizeFromBreakpoint(bp) + (i === a.length - 1 ? '' : ', '),
@@ -62,15 +46,15 @@ const sizesFromBreakpoints = (bps: TBreakpoints): string =>
 
 // all user-defined breakpoints FIRST, then default breakpoints
 export const mergeBreakpoints =
-	(ubp: TUserBreakpoints) =>
-	(dbp: TDefaultBreakpoints): TBreakpoints =>
+	(ubp: TUserBreakpointUI[]) =>
+	(dbp: TDefaultBreakpointUI[]): TUIBreakpoints =>
 		concatW(dbp)(ubp);
 
 // TODO: need to get a flow set up for adding alt text to images
 const HTMLStringFromBreakpoints =
 	(availableWidths: TAvailableImageWidths) =>
 	(publicPath: string) =>
-	(bps: TBreakpoints): string =>
+	(bps: TSavedBreakpoints): string =>
 		`<img srcset="${makeSrcset(availableWidths)(
 			publicPath
 		)}" sizes="${sizesFromBreakpoints(bps)}" src="${publicPath}/${
@@ -80,7 +64,7 @@ const HTMLStringFromBreakpoints =
 const JSXElementFromBreakpoints =
 	(availableWidths: TAvailableImageWidths) =>
 	(publicPath: string) =>
-	(bps: TBreakpoints) =>
+	(bps: TSavedBreakpoints) =>
 		(
 			<img
 				srcSet={makeSrcset(availableWidths)(publicPath)}
@@ -101,12 +85,12 @@ const JSXElementFromBreakpoints =
 
 export const createSrcset =
 	(creationType: TSrcsetCreationType) =>
-	(userBreakpoints: TUserBreakpoints) =>
+	(userBreakpoints: TUserBreakpointUI[]) =>
 	(availableWidths: TAvailableImageWidths) =>
 	(publicPath: string) =>
 		pipe(
 			availableWidths,
-			makeDefaultBreakpoints,
+			makeDefaultUIBreakpoints,
 			pipe(userBreakpoints, mergeBreakpoints),
 			(x) =>
 				pipe(

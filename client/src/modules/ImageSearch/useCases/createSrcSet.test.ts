@@ -3,40 +3,44 @@ import { map } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/function';
 import { ap } from 'fp-ts/lib/Identity';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { TUserBreakpoints } from 'sharedTypes/Breakpoint';
+import { TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import {
 	createSrcset,
-	makeDefaultBreakpoints,
+	makeDefaultUIBreakpoints,
 	mergeBreakpoints,
 } from './createSrcset';
+import { breakpointToBreakpointUI } from './mapBreakpointsToUI';
+import { TUserBreakpointUI } from '../state/imageDialogState';
 
 describe("helper function 'mergeBreakpoints'", () => {
 	it('returns a merged array with all user-defined breakpoints included first', () => {
 		const availableWidths = [300, 1200, 1870];
 
-		const defaultBreakpoints = makeDefaultBreakpoints(availableWidths);
+		const defaulTSavedBreakpoints =
+			makeDefaultUIBreakpoints(availableWidths);
 
-		const receivedFromUser: TUserBreakpoints = [
+		const receivedFromUser: TSavedBreakpoints = [
 			{
-				type: 'min',
+				queryType: 'min',
 				mediaWidth: 800,
 				slotWidth: 200,
 				slotUnit: 'px',
-				origin: 'user',
+				_id: '1234',
 			},
 			{
-				type: 'max',
+				queryType: 'max',
 				mediaWidth: 1200,
 				slotWidth: 600,
 				slotUnit: 'vw',
-				origin: 'user',
+				_id: '5678',
 			},
 		];
 
 		const result = pipe(
 			receivedFromUser,
+			map(breakpointToBreakpointUI),
 			mergeBreakpoints,
-			ap(defaultBreakpoints)
+			ap(defaulTSavedBreakpoints)
 		);
 
 		expect(result.length).toBe(5);
@@ -46,12 +50,13 @@ describe("helper function 'mergeBreakpoints'", () => {
 	it('returns only the array of default objects if no user breakpoints are defined', () => {
 		const availableWidths = [300, 1200, 1870];
 
-		const defaultBreakpoints = makeDefaultBreakpoints(availableWidths);
+		const defaultBreakpoints = makeDefaultUIBreakpoints(availableWidths);
 
-		const receivedFromUser: TUserBreakpoints = [];
+		const receivedFromUser: TSavedBreakpoints = [];
 
 		const received = pipe(
 			receivedFromUser,
+			map(breakpointToBreakpointUI),
 			mergeBreakpoints,
 			ap(defaultBreakpoints)
 		);
@@ -64,7 +69,7 @@ describe('the helper function "makeDefaultBreakpoints"', () => {
 	it('sorts generated breakpoints in ascending order by input width', () => {
 		const availableWidths = [1200, 300, 1870];
 
-		const result = makeDefaultBreakpoints(availableWidths);
+		const result = makeDefaultUIBreakpoints(availableWidths);
 
 		const received = pipe(
 			result,
@@ -79,13 +84,16 @@ describe('the helper function "makeDefaultBreakpoints"', () => {
 
 describe('createSrcSet', () => {
 	it('generates a correct output string when configured to produce a string', () => {
-		const userBreakpoints: TUserBreakpoints = [
+		const userBreakpoints: TUserBreakpointUI[] = [
 			{
 				mediaWidth: 550,
-				type: 'min',
+				queryType: 'min',
 				slotWidth: 330,
 				slotUnit: 'px',
+				_id: '1234',
+				editing: false,
 				origin: 'user',
+				validationErrs: [null, null, null, null],
 			},
 		];
 
@@ -105,13 +113,16 @@ describe('createSrcSet', () => {
 	});
 
 	it('generates a correct JSX element when configured to produce an element', () => {
-		const userBreakpoints: TUserBreakpoints = [
+		const userBreakpoints: TUserBreakpointUI[] = [
 			{
 				mediaWidth: 550,
-				type: 'min',
+				queryType: 'min',
 				slotWidth: 330,
 				slotUnit: 'px',
+				editing: false,
 				origin: 'user',
+				validationErrs: [null, null, null, null],
+				_id: '1234',
 			},
 		];
 
@@ -131,37 +142,6 @@ describe('createSrcSet', () => {
 				publicPath
 			);
 
-		expect(received).toEqual(expected);
-	});
-
-	it.only('works?', () => {
-		const userBreakpoints: TUserBreakpoints = [
-			{
-				mediaWidth: 550,
-				type: 'min',
-				slotWidth: 330,
-				slotUnit: 'px',
-				origin: 'user',
-			},
-		];
-
-		const availableWidths = [1200, 300] as NonEmptyArray<number>;
-
-		const publicPath = 'https://www.example.bucket.com';
-
-		const expected = React.createElement('img', {
-			srcSet: 'https://www.example.bucket.com/1200 1200w, https://www.example.bucket.com/300 300w',
-			sizes: '(min-width: 550px) 330px, (max-width: 300px) 100vw, (max-width: 1200px) 100vw',
-			src: 'https://www.example.bucket.com/300',
-			alt: '',
-		});
-
-		const received =
-			createSrcset('element')(userBreakpoints)(availableWidths)(
-				publicPath
-			);
-
-		console.log(received);
 		expect(received).toEqual(expected);
 	});
 });

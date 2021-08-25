@@ -45,7 +45,22 @@ export const mockImage4: IDBUpload = {
 	integrityHash: ['kk231', 'y838', 'ab882'],
 	availableWidths: [250, 700, 1200],
 	publicPathPrefix: 'www.google-bucket/photon/even-more-cat',
-	breakPoints: [],
+	breakPoints: [
+		{
+			queryType: 'min',
+			mediaWidth: 800,
+			slotWidth: 200,
+			slotUnit: 'px',
+			_id: '1234',
+		},
+		{
+			queryType: 'max',
+			mediaWidth: 1150,
+			slotWidth: 600,
+			slotUnit: 'vw',
+			_id: '5678',
+		},
+	],
 };
 
 export const mockImageData = [mockImage1, mockImage2, mockImage3, mockImage4];
