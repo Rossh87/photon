@@ -8,32 +8,37 @@ import { resetInternals } from 'react-use-fp';
 import DependencyContext, {
 	createDependenciesObject,
 } from '../../../core/dependencyContext';
-import { mockImage4, mockImageData } from './mockData';
+import { mockImage4, mockImage3, mockImageData } from './mockData';
 import { ImageSearchStateContext } from '../state/useImageSearchState';
 import ImageDialog from '../ui/ImageDialog';
+import { createSrcset } from '../useCases/createSrcset';
 
-let mockImage: IDBUpload;
-
-beforeEach(() => {
-	resetInternals();
-	mockImage = Object.assign({}, mockImage4);
-});
-
-const mockState: IImageSearchState = {
+const _mockState: IImageSearchState = {
 	imageMetadata: mockImageData,
 	currentlyActiveImages: [],
 	error: null,
 	imageUnderConfiguration: mockImage4,
 };
 
+let mockState: IImageSearchState;
+
+beforeEach(() => {
+	resetInternals();
+
+	mockState = Object.assign({}, _mockState);
+	mockState.imageUnderConfiguration = Object.assign({}, mockImage4);
+});
+
+const renderWithBreakpoints = () => render(
+	<ImageSearchStateContext.Provider value={mockState}>
+		<ImageDialog></ImageDialog>
+	</ImageSearchStateContext.Provider>
+);
+
 describe('The ImageDialog component', () => {
 	it('generates correct number of each kind of breakpoint child', async () => {
 		// mockImage4 has 2 user-specified breakpoints
-		render(
-			<ImageSearchStateContext.Provider value={mockState}>
-				<ImageDialog></ImageDialog>
-			</ImageSearchStateContext.Provider>
-		);
+		renderWithBreakpoints();
 
 		// check for UI to create a new breakpoint
 		const createChild = await screen.findAllByText('create a new query', {
@@ -57,6 +62,9 @@ describe('The ImageDialog component', () => {
 	});
 
 	it('adds a new element to the list when adder is clicked', () => {
+		// select an image under config that has no user-defined
+		// breakpoints
+		mockState.imageUnderConfiguration = mockImage3;
 		render(
 			<ImageSearchStateContext.Provider value={mockState}>
 				<ImageDialog></ImageDialog>
@@ -66,12 +74,37 @@ describe('The ImageDialog component', () => {
 		const adder = screen.getByText('Create a new query');
 
 		// make sure click is actually causing the desired effect
-		const maybeNew = screen.getByTestId('breakpoint-item-new');
-		expect(maybeNew).not.toBeInTheDocument();
+		const defaultBreakpoints = screen.getAllByText('max-width');
+		const defaultCount = defaultBreakpoints.length;
 
 		userEvent.click(adder);
 
-		const definitelyNew = screen.getByTestId('breakpoint-item-new');
-		expect(definitelyNew).toBeInTheDocument();
+		const withNew = screen.getAllByText('max-width');
+		expect(withNew.length).toBe(defaultCount + 1);
+	});
+
+	it('can delete a breakpoint element from list', () => {
+		renderWithBreakpoints()
+
+		const breakpointItems = screen.getAllByRole('listitem');
+		expect(breakpointItems.length).toBe(6);
+
+		const deleteButtons = screen.getAllByRole('button', { name: 'Delete' });
+		expect(deleteButtons.length).toBe(2);
+
+		userEvent.click(deleteButtons[0]);
+
+		expect(screen.getAllByRole('listitem').length).toBe(
+			breakpointItems.length - 1
+		);
+	});
+
+	it('updates the pasteable HTML offered to user when a BP is added/removed', () => {
+		renderWithBreakpoints();
+
+		const pasteableHTML = screen.getByTestId("pasteable-HTML-block").innerHTML
+		const deleteButtons = screen.getAllByRole('button', { name: 'Delete' });
+
+		)
 	});
 });

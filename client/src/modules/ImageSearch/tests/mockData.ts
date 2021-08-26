@@ -1,4 +1,5 @@
 import { IDBUpload } from 'sharedTypes/Upload';
+import { TUIBreakpoints, TUserBreakpointUI } from '../state/imageDialogState';
 
 export const mockImage1: IDBUpload = {
 	_id: 'ak2254',
@@ -61,6 +62,17 @@ export const mockImage4: IDBUpload = {
 			_id: '5678',
 		},
 	],
+};
+
+export const mockBreakpointData: TUserBreakpointUI = {
+	queryType: 'min',
+	mediaWidth: 800,
+	slotWidth: 200,
+	slotUnit: 'px',
+	_id: '1234',
+	origin: 'user',
+	editing: false,
+	validationErrs: [null, null, null, null],
 };
 
 export const mockImageData = [mockImage1, mockImage2, mockImage3, mockImage4];

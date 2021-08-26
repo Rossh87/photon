@@ -1,104 +1,224 @@
 import React, { Dispatch } from 'react';
 import {
+	formatBPPropsForLocal,
+	formatBPStateForDispatch,
+} from '../helpers/formatBPStateForDispatch';
+import {
 	ListItem,
 	ListItemSecondaryAction,
 	ListItemText,
-	IconButton,
 	AccordionSummary,
 	AccordionDetails,
 	TextField,
+	Button,
+	makeStyles,
+	Theme,
 } from '@material-ui/core';
-import { ArrowDropDownCircleOutlined } from '@material-ui/icons';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
 import Accordion from '@material-ui/core/Accordion';
 import { sizeFromBreakpoint } from '../useCases/createSrcset';
 import { ChangeEventHandler } from 'react';
+import SettingsIcon from '@material-ui/icons/Settings';
 import {
 	IBreakpointUI,
+	ILocalBreakpointUI,
 	TDialogActions,
 	TUserBreakpointUI,
 } from '../state/imageDialogState';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
+const useStyles = makeStyles((theme: Theme) => {
+	return {
+		deleteButton: {
+			color: theme.palette.warning.main,
+		},
+	};
+});
+
 const BreakPointListItem: React.FunctionComponent<
 	IBreakpointUI & { dispatch: Dispatch<TDialogActions> }
 > = (props) => {
-	const { mediaWidth, slotUnit, slotWidth, queryType, editing, _id, origin } =
-		props;
-	const [isExpanded, setExpanded] = React.useState(false);
+	const classes = useStyles();
 
-	// state to track user's edits
-	const [bpState, setBPState] = React.useState<
-		Omit<IBreakpointUI, '_id' | 'origin'>
-	>({
+	const {
 		mediaWidth,
 		slotUnit,
 		slotWidth,
 		queryType,
-		validationErrs: [null, null, null, null],
 		editing,
+		_id,
+		origin,
+		dispatch,
+	} = props;
+
+	const [isExpanded, setExpanded] = React.useState(false);
+
+	// state to track user's edits
+	const [bpState, setBPState] = React.useState<ILocalBreakpointUI>({
+		mediaWidth: '10',
+		slotUnit: 'px',
+		slotWidth: '10',
+		queryType: 'max',
+		editing: false,
+		_id: '1234',
+		origin: 'user',
+		validationErrs: [null, null, null, null],
 	});
 
-	const primaryMessage =
-		origin === 'new' ? 'Set a new query' : sizeFromBreakpoint(bpState);
+	React.useEffect(() => {
+		// This essentially serves as a reset whenever we update props by submitting changes
+		setBPState(
+			formatBPPropsForLocal({
+				mediaWidth,
+				slotUnit,
+				slotWidth,
+				queryType,
+				editing,
+				_id,
+				origin,
+				validationErrs: [null, null, null, null],
+			})
+		);
+	}, [props]);
 
 	const handleChange =
-		(key: string): ChangeEventHandler<HTMLInputElement> =>
-		(e) => {
-			setBPState({ ...bpState, [key]: e.target.value });
-		};
-
-	const toggleAccordion: React.MouseEventHandler = (e) => {
-		e.stopPropagation();
-		return origin === 'default' ? null : setExpanded(!isExpanded);
-	};
-
-	const manageAccordion = () => {
-		return editing ? null : setExpanded(!isExpanded);
-	};
+		(key: keyof typeof bpState): ChangeEventHandler<HTMLInputElement> =>
+		(e) =>
+			setBPState((prev) => ({
+				...bpState,
+				editing: prev.editing || prev[key] !== e.target.value,
+				[key]: e.target.value,
+			}));
 
 	const handleSubmit = () => {
 		setExpanded(false);
+	};
+
+	const submitEdits = () => {
+		setExpanded(false);
+		const stateToDispatch = {
+			...formatBPStateForDispatch(bpState),
+			editing: false,
+		};
+
+		dispatch({
+			type: 'UPDATE_ONE_BREAKPOINT',
+			payload: stateToDispatch as TUserBreakpointUI,
+		});
+
+		setBPState(
+			formatBPPropsForLocal({
+				mediaWidth,
+				slotUnit,
+				slotWidth,
+				queryType,
+				editing: false,
+				_id,
+				origin,
+				validationErrs: [null, null, null, null],
+			})
+		);
+	};
+
+	const discardEdits = () => {
+		setExpanded(false);
+		setBPState(
+			formatBPPropsForLocal({
+				mediaWidth,
+				slotUnit,
+				slotWidth,
+				queryType,
+				editing: false,
+				_id,
+				origin,
+				validationErrs: [null, null, null, null],
+			})
+		);
+	};
+
+	const handleDelete = () =>
+		dispatch({ type: 'DELETE_BREAKPOINT', payload: _id });
+
+	const renderControls = () => {
+		if (origin === 'default') return null;
+
+		if (!isExpanded && !bpState.editing) {
+			return (
+				<>
+					<Button
+						className={classes.deleteButton}
+						variant="outlined"
+						onClick={handleDelete}
+					>
+						Delete
+					</Button>
+					<Button
+						variant="outlined"
+						onClick={() => setExpanded(true)}
+					>
+						Edit
+					</Button>
+				</>
+			);
+		} else if (isExpanded && !bpState.editing) {
+			return (
+				<Button
+					variant="outlined"
+					onClick={() => {
+						setExpanded(false);
+					}}
+				>
+					Close
+				</Button>
+			);
+		} else {
+			return (
+				<>
+					<Button variant="outlined" onClick={discardEdits}>
+						Discard
+					</Button>
+					<Button variant="outlined" onClick={submitEdits}>
+						Keep
+					</Button>
+				</>
+			);
+		}
 	};
 
 	return (
 		<ListItem
 			data-testid={`breakpoint-item-${origin}`}
 			disabled={origin === 'default' ? true : false}
-			button
 		>
-			<Accordion expanded={isExpanded}>
-				<AccordionSummary onClick={manageAccordion} aria-label="Expand">
+			<Accordion expanded={bpState.editing || isExpanded}>
+				<AccordionSummary aria-label="Expand">
 					<ListItemAvatar>
 						<Avatar>
-							<AddCircleOutlineIcon />
+							<SettingsIcon />
 						</Avatar>
 					</ListItemAvatar>
 					<ListItemText
-						primary={primaryMessage}
+						primary={sizeFromBreakpoint(bpState)}
 						secondary={
 							origin === 'default' ? 'Generated by default' : null
 						}
 					/>
 					<ListItemSecondaryAction>
-						<IconButton
-							edge="end"
-							aria-label="remove file"
-						></IconButton>
+						{renderControls()}
 					</ListItemSecondaryAction>
 				</AccordionSummary>
 				<AccordionDetails>
-					{/* Careful here--need to be grabbing prop names from controlled component state, not
-					from props of same name
+					{/* Careful here--need to be grabbing property names from controlled component state, not
+					from React props of same name
 					 */}
 					<form onSubmit={handleSubmit}>
 						<TextField
 							value={bpState.queryType}
-							onChange={handleChange('type')}
+							onChange={handleChange('queryType')}
 							select
 							label="query type"
+							id={`queryType-input-${bpState._id}`}
 						>
 							<option value="min">min-width</option>
 							<option value="max">max-width</option>
@@ -109,8 +229,11 @@ const BreakPointListItem: React.FunctionComponent<
 							inputProps={{
 								inputMode: 'numeric',
 								pattern: '[0-9]*',
+								maxLength: '4',
 							}}
 							label="media width"
+							name="mediaWidth"
+							id={`mediaWidth-input-${bpState._id}`}
 						>
 							<option value="min">max-width</option>
 							<option value="max">min-width</option>
@@ -121,22 +244,24 @@ const BreakPointListItem: React.FunctionComponent<
 							inputProps={{
 								inputMode: 'numeric',
 								pattern: '[0-9]*',
+								maxLength: '4',
 							}}
 							label="slot width"
+							name="slotWidth"
+							id={`slotWidth-input-${bpState._id}`}
 						/>
 						<TextField
 							value={bpState.slotUnit}
 							onChange={handleChange('slotUnit')}
 							select
 							label="slot unit"
+							name="slotUnit"
+							id={`slotUnit-input-${bpState._id}`}
 						>
 							<option value="vw">vw</option>
 							<option value="px">px</option>
 							<option value="em">em</option>
 						</TextField>
-						<IconButton type="submit">
-							<ArrowDropDownCircleOutlined />
-						</IconButton>
 					</form>
 				</AccordionDetails>
 			</Accordion>

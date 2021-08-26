@@ -2,18 +2,14 @@
 // beneath that, show all user-defined breakpoints in the order they specify
 // finally, show greyed-out defaults that will always be present
 
-import { ISavedBreakpoint } from '../../../../../sharedTypes/Breakpoint';
+import {
+	ISavedBreakpoint,
+	TBreakpointQueryType,
+	TSavedBreakpointslotUnit,
+} from '../../../../../sharedTypes/Breakpoint';
 import { BaseError } from '../../../core/error';
 import { makeNewUIBreakpoint } from '../helpers/makeNewUIBreakpoint';
 
-// creating a new breakpoint:
-// 1. generate a UID for bp--only needs to be unique amongst its siblings
-// 2. populate with defaults.  'editing' status is true, accordion UI is open
-// 3. accordion cannot be closed while bp is in editing mode
-// 4. submit the updates by clicking button at right side of UI.  At this point,
-// embed code should update
-// 5. The new element needs a prop to know if it's new or not.  If it's new, discarding
-// should remove it from the UI.  If it's an edit, discarding keeps it in the UI with unmodified values
 type TBreakpointFormValidationErr = string | null;
 // lightweight way to track errs on input values.  The string is the err message.
 // use a tuple type to keep relationship between err and the form field, since field order
@@ -26,7 +22,7 @@ export type TBreakpointFormValidationErrs = [
 ];
 // BP state needs: built-in BP props to include an _id prop, a kind indicating whether it is 'new', 'default', 'user-defined' (trackable through 'origin' prop?),
 // an 'isUnderEdit" status,
-type TBreakPointUIKinds = 'user' | 'new' | 'default';
+type TBreakPointUIKinds = 'user' | 'default';
 
 export interface IBreakpointUI extends ISavedBreakpoint {
 	origin: TBreakPointUIKinds;
@@ -47,6 +43,19 @@ export type TNewBreakpointUI = IBreakpointUI & {
 };
 
 export type TUIBreakpoints = IBreakpointUI[];
+
+// This is for components taking breakpoint values from inputs,
+// whose values are always a string
+export interface ILocalBreakpointUI {
+	queryType: TBreakpointQueryType;
+	mediaWidth: string;
+	slotWidth: string;
+	slotUnit: TSavedBreakpointslotUnit;
+	_id: string;
+	origin: TBreakPointUIKinds;
+	editing: boolean;
+	validationErrs: TBreakpointFormValidationErrs;
+}
 
 // BP listElement handlers needed are a passed-in handler to submit updates, and a passed in handler to delete a breakpoint
 
@@ -73,7 +82,7 @@ export interface IDialogState {
 	isSynchronizedWithBackend: boolean;
 	error: BaseError | null;
 	requestPending: boolean;
-	breakPoints: Array<IBreakpointUI>;
+	breakPoints: Array<TUserBreakpointUI>;
 }
 
 // dispatch regular breakpoints, and convert them in a handler
@@ -86,7 +95,21 @@ interface CreateNewBreakpointAction {
 	type: 'CREATE_NEW_BREAKPOINT';
 }
 
-export type TDialogActions = SetUIBreakpointsAction | CreateNewBreakpointAction;
+interface UpdateOneBreakpointAction {
+	type: 'UPDATE_ONE_BREAKPOINT';
+	payload: TUserBreakpointUI;
+}
+
+interface DeleteBreakpointAction {
+	type: 'DELETE_BREAKPOINT';
+	payload: string;
+}
+
+export type TDialogActions =
+	| DeleteBreakpointAction
+	| SetUIBreakpointsAction
+	| CreateNewBreakpointAction
+	| UpdateOneBreakpointAction;
 
 export const initialDialogState: IDialogState = {
 	isSynchronizedWithBackend: true,
@@ -106,6 +129,20 @@ export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
 			return {
 				...s,
 				breakPoints: [makeNewUIBreakpoint(), ...s.breakPoints],
+			};
+		case 'UPDATE_ONE_BREAKPOINT':
+			return {
+				...s,
+				isSynchronizedWithBackend: false,
+				breakPoints: s.breakPoints.map((bp) =>
+					bp._id === a.payload._id ? a.payload : bp
+				),
+			};
+		case 'DELETE_BREAKPOINT':
+			return {
+				...s,
+				isSynchronizedWithBackend: false,
+				breakPoints: s.breakPoints.filter((bp) => bp._id !== a.payload),
 			};
 		default:
 			return s;

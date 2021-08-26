@@ -7,6 +7,7 @@ import { Ord as NumOrd } from 'fp-ts/number';
 import { fromPredicate, map as OMap, getOrElseW } from 'fp-ts/Option';
 import {
 	IBreakpointUI,
+	ILocalBreakpointUI,
 	TDefaultBreakpointUI,
 	TNewBreakpointUI,
 	TUIBreakpoints,
@@ -34,7 +35,7 @@ export const sizeFromBreakpoint = ({
 	queryType,
 	slotUnit,
 	mediaWidth,
-}: ISavedBreakpoint | Omit<ISavedBreakpoint, '_id'>) =>
+}: ISavedBreakpoint | Omit<ISavedBreakpoint, '_id'> | ILocalBreakpointUI) =>
 	`(${queryType}-width: ${mediaWidth}px) ${slotWidth}${slotUnit}`;
 
 const sizesFromBreakpoints = (bps: TSavedBreakpoints): string =>
@@ -83,6 +84,7 @@ const JSXElementFromBreakpoints =
  * SMALLEST "max-width" to LARGEST "max-width".  We want to match smaller screens (and load smaller image) FIRST.
  */
 
+// TODO: this should just accept an IDBUpload
 export const createSrcset =
 	(creationType: TSrcsetCreationType) =>
 	(userBreakpoints: TUserBreakpointUI[]) =>

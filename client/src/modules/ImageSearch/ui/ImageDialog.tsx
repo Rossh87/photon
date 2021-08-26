@@ -137,16 +137,16 @@ export const ImageDialog: React.FunctionComponent = () => {
 							<Typography variant="h4">
 								Paste this code directly into your HTML
 							</Typography>
-							<TextareaAutosize
-								defaultValue={
+							<code
+								data-testid="pasteable-HTML-block"
+								style={{ maxWidth: '100%', width: '100%' }}
+							>
+								{
 									createSrcset('string')(state.breakPoints)(
 										availableWidths
 									)(publicPathPrefix) as string
 								}
-								style={{ maxWidth: '100%', width: '100%' }}
-								autoCorrect="off"
-								spellCheck="false"
-							></TextareaAutosize>
+							</code>
 						</Grid>
 					</Grid>
 				</Grid>
