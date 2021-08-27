@@ -234,6 +234,7 @@ const BreakPointListItem: React.FunctionComponent<
 							label="media width"
 							name="mediaWidth"
 							id={`mediaWidth-input-${bpState._id}`}
+							data-testid={`mediaWidth-input-${bpState._id}`}
 						>
 							<option value="min">max-width</option>
 							<option value="max">min-width</option>

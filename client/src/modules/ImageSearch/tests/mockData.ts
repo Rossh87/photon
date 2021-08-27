@@ -10,7 +10,7 @@ export const mockImage1: IDBUpload = {
 	integrityHash: ['1234', 'aabc', 'ggdf'],
 	availableWidths: [250, 700, 1120],
 	publicPathPrefix: 'www.google-bucket/photon/A-day-in-the-alps',
-	breakPoints: [],
+	breakpoints: [],
 };
 
 export const mockImage2: IDBUpload = {
@@ -22,7 +22,7 @@ export const mockImage2: IDBUpload = {
 	integrityHash: ['kk291', 'ywx8', '1171'],
 	availableWidths: [250, 700, 1200],
 	publicPathPrefix: 'www.google-bucket/photon/bears-everywhere!!',
-	breakPoints: [],
+	breakpoints: [],
 };
 
 export const mockImage3: IDBUpload = {
@@ -34,7 +34,7 @@ export const mockImage3: IDBUpload = {
 	integrityHash: ['kk231', 'y838', 'ab882'],
 	availableWidths: [250, 700, 1200],
 	publicPathPrefix: 'www.google-bucket/photon/lotsa-cats',
-	breakPoints: [],
+	breakpoints: [],
 };
 
 export const mockImage4: IDBUpload = {
@@ -46,7 +46,7 @@ export const mockImage4: IDBUpload = {
 	integrityHash: ['kk231', 'y838', 'ab882'],
 	availableWidths: [250, 700, 1200],
 	publicPathPrefix: 'www.google-bucket/photon/even-more-cat',
-	breakPoints: [
+	breakpoints: [
 		{
 			queryType: 'min',
 			mediaWidth: 800,
