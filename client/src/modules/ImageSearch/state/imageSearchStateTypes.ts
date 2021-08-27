@@ -1,4 +1,5 @@
 import { IDBUpload } from 'sharedTypes/Upload';
+import { TSavedBreakpoints } from '../../../../../sharedTypes/Breakpoint';
 import { BaseError } from '../../../core/error';
 
 export interface IImageSearchState {
@@ -6,6 +7,11 @@ export interface IImageSearchState {
 	currentlyActiveImages: IDBUpload[];
 	error: BaseError | null;
 	imageUnderConfiguration: TimageUnderConfigurationState;
+}
+
+export interface IBreakpointUpdateTransferObject {
+	imageID: string;
+	breakpoints: TSavedBreakpoints;
 }
 
 interface IFetchImageDataAction {
@@ -51,6 +57,7 @@ export interface ISetImageUnderConfigurationAction {
 }
 export interface ICloseImageUnderConfiguration {
 	type: 'CLOSE_IMG_UNDER_CONFIGURATION';
+	payload?: IBreakpointUpdateTransferObject;
 }
 
 export type TImageSearchActions =

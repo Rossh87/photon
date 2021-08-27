@@ -36,8 +36,9 @@ import {
 import NewBreakpointListItem from './NewBreakpointListItem';
 import { makeDefaultUIBreakpoint } from '../helpers/makeDefaultUIBreakpoints';
 import { synchronizeBreakpoints } from '../useCases/synchronizeBreakpoints';
-import SnackbarAction from './Snacktion';
 import Snacktion from './Snacktion';
+import { breakpointUIToBreakpoint } from '../helpers/breakpointMappers';
+import { map as ArrMap } from 'fp-ts/Array';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	snackBar: {
@@ -99,14 +100,35 @@ export const ImageDialog: React.FunctionComponent = () => {
 
 	const imageSearchDispatch = useImageSearchDispatch();
 
-	const handleDiscard = () =>
-		imageSearchDispatch({ type: 'CLOSE_IMG_UNDER_CONFIGURATION' });
+	// Dispatch a payload if updates needed, otherwise
+	// no payload. Notice we convert UIbreakpoints
+	// saved locally to their 'sparse' format for the IMageSearch parent
+	// component.
+	const handleDiscard = () => {
+		if (state.hasUpdated) {
+			const saveableBPs = pipe(
+				state.breakpoints,
+				ArrMap(breakpointUIToBreakpoint)
+			);
+
+			imageSearchDispatch({
+				type: 'CLOSE_IMG_UNDER_CONFIGURATION',
+				payload: { imageID: _id, breakpoints: saveableBPs },
+			});
+		} else {
+			imageSearchDispatch({
+				type: 'CLOSE_IMG_UNDER_CONFIGURATION',
+			});
+		}
+	};
 
 	const handleSave = () =>
-		actions.SYNC_BREAKPOINTS({
-			imageID: _id,
-			breakpoints: state.breakpoints,
-		});
+		state.isSynchronizedWithBackend
+			? null
+			: actions.SYNC_BREAKPOINTS({
+					imageID: _id,
+					breakpoints: state.breakpoints,
+			  });
 
 	const handleUnsavedClose = () =>
 		dispatch({ type: 'UNSAVED_CLOSE_ATTEMPT' });
@@ -216,6 +238,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 					variant="outlined"
 					onClick={handleSave}
 					className={styles.submitButton}
+					disabled={state.isSynchronizedWithBackend}
 				>
 					Save
 				</Button>

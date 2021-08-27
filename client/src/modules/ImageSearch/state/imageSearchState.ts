@@ -1,4 +1,5 @@
 import { Reducer } from 'react';
+import { applyBreakpointToImages } from '../helpers/applyBreakpointToImages';
 import {
 	TImageSearchActions,
 	IImageSearchState,
@@ -49,10 +50,20 @@ export const imageSearchReducer: Reducer<
 			};
 
 		case 'CLOSE_IMG_UNDER_CONFIGURATION':
-			return {
-				...s,
-				imageUnderConfiguration: null,
-			};
+			if (a.payload) {
+				const updater = applyBreakpointToImages(a.payload);
+				return {
+					...s,
+					imageUnderConfiguration: null,
+					imageMetadata: updater(s.imageMetadata),
+					currentlyActiveImages: updater(s.currentlyActiveImages),
+				};
+			} else {
+				return {
+					...s,
+					imageUnderConfiguration: null,
+				};
+			}
 
 		default:
 			return s;

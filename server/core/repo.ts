@@ -41,15 +41,9 @@ export const tryUpdateOne =
 	(c: Collection<T>) =>
 		TE.tryCatch(
 			() =>
-				c
-					.findOneAndUpdate(filter, updateQuery, {
-						returnDocument: 'after',
-					})
-					.then((doc) => {
-						console.log(doc);
-						console.log('query is: ', updateQuery);
-						console.log('collection is:', c.collectionName);
-					}),
+				c.findOneAndUpdate(filter, updateQuery, {
+					returnDocument: 'after',
+				}),
 			(reason) => DBUpdateError.create(c.collectionName, filter, reason)
 		);
 

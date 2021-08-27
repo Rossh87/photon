@@ -19,7 +19,7 @@ import { getDupeDisplayNames } from '../repo/getDupeDisplayNames';
 import { IBreakpointTransferObject } from '../../../../sharedTypes/Upload';
 import { updateBreakpoints } from '../repo/updateBreakpoints';
 
-const successEffects = flow(toEffects, addEffect(resEndEffect));
+const successEffects = flow(toEffects, addAndApplyEffect(toJSONEffect));
 
 const failureEffects = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
 
@@ -27,10 +27,10 @@ export const updateBreakpointsController =
 	(deps: IAsyncDeps): RequestHandler<any, any, IBreakpointTransferObject> =>
 	async (req, res, next) => {
 		const runner = runEffects(req, res, next);
-		console.log(req.body);
-		const result = await pipe(
+		await pipe(
 			req.body,
 			updateBreakpoints,
+			RTE.map((results) => results.value),
 			RTE.map(successEffects),
 			RTE.mapLeft(failureEffects),
 			RTE.bimap(runner, runner)

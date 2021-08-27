@@ -10,6 +10,7 @@ import {
 	TBreakpointQueryType,
 	TSavedBreakpointslotUnit,
 } from '../../../../../sharedTypes/Breakpoint';
+import { IDBUpload } from '../../../../../sharedTypes/Upload';
 import { BaseError } from '../../../core/error';
 import { makeNewUIBreakpoint } from '../helpers/makeNewUIBreakpoint';
 
@@ -88,6 +89,7 @@ export interface IDialogState {
 	requestPending: boolean;
 	breakpoints: Array<TUserBreakpointUI>;
 	snackbarStatus: TSnackbarStatus;
+	hasUpdated: boolean;
 }
 
 // dispatch regular breakpoints, and convert them in a handler
@@ -116,6 +118,7 @@ interface InitSyncRequestAction {
 
 interface SyncSuccessAction {
 	type: 'BREAKPOINT_SYNC_SUCCESS';
+	payload: TUserBreakpointUI[];
 }
 
 interface SyncFailedAction {
@@ -153,6 +156,7 @@ export const initialDialogState: IDialogState = {
 	requestPending: false,
 	breakpoints: [],
 	snackbarStatus: 'none',
+	hasUpdated: false,
 };
 
 export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
@@ -167,6 +171,10 @@ export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
 				...s,
 				breakpoints: [makeNewUIBreakpoint(), ...s.breakpoints],
 			};
+		// NB this respects the existing order of breakpoints.  Important for
+		// 'SUCCESS' action.  This is only for LOCAL state,
+		// does not trigger the 'hasUpdated' property--that is reserved
+		// for updates made to the backend.
 		case 'UPDATE_ONE_BREAKPOINT':
 			return {
 				...s,
@@ -194,6 +202,8 @@ export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
 				requestPending: false,
 				isSynchronizedWithBackend: true,
 				snackbarStatus: 'success',
+				breakpoints: a.payload,
+				hasUpdated: true,
 			};
 
 		case 'BREAKPOINT_SYNC_FAILED':

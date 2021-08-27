@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { dedupeNamesController } from './dedupeNamesController';
 import { TEST_DB_URI } from '../../../CONSTANTS';
 import { IAsyncDeps } from '../../../core/asyncDeps';
@@ -44,7 +44,7 @@ afterAll(async () => {
 });
 
 describe('route controller to update breakpoints associated with an image', () => {
-	it('updates the appropriate image correctly', async () => {
+	it('updates the appropriate image correctly and responds with updated value as json', async () => {
 		const _id = mockObjectIDs[0].toString();
 
 		const mockRequestBody: IBreakpointTransferObject = {
@@ -57,7 +57,7 @@ describe('route controller to update breakpoints associated with an image', () =
 		} as unknown as Request;
 
 		const res = {
-			end: jest.fn(),
+			json: jest.fn(),
 		} as unknown as Response;
 
 		await updateBreakpointsController(deps)(
@@ -69,8 +69,9 @@ describe('route controller to update breakpoints associated with an image', () =
 		const hopefullyUpdated = await repoClient
 			.db('photon')
 			.collection('uploads')
-			.findOne({ _id });
+			.findOne({ _id: new ObjectId(_id) });
 
 		expect(hopefullyUpdated.breakpoints).toEqual(mockIncomingBreakpoints);
+		expect(res.json).toHaveBeenCalledWith(hopefullyUpdated);
 	});
 });
