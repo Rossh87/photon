@@ -3,4 +3,4 @@ import { IDBUpload, TWithoutID } from 'sharedTypes/Upload';
 
 export const attachBreakpointsToMetadata = (
 	data: ICombinedUploadRequestMetadata
-): TWithoutID<IDBUpload> => Object.assign(data, { breakPoints: [] });
+): TWithoutID<IDBUpload> => Object.assign(data, { breakpoints: [] });

@@ -1,5 +1,5 @@
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
-import { ISavedBreakpoint, TUserBreakpoint } from './Breakpoint';
+import { ISavedBreakpoint, TSavedBreakpoints } from './Breakpoint';
 import { ResumableUploadCreationErr } from 'server/modules/Upload/helpers/requestResumableUpload';
 
 export type TMediaType = 'image/jpeg' | 'image/png';
@@ -19,11 +19,9 @@ export interface ICombinedUploadRequestMetadata {
 	publicPathPrefix: string;
 }
 
-export interface IDBUpload
-	extends ICombinedUploadRequestMetadata,
-		Record<string, any> {
+export interface IDBUpload extends ICombinedUploadRequestMetadata {
 	_id: string;
-	breakPoints: ISavedBreakpoint[];
+	breakpoints: ISavedBreakpoint[];
 }
 
 export interface IUploadRequestMetadata extends Record<string, any> {
@@ -53,3 +51,8 @@ export interface IUploadURIMetadata extends IUploadRequestMetadata {
 }
 
 export type TWithoutID<T> = Omit<T, '_id'>;
+
+export interface IBreakpointTransferObject {
+	imageID: string;
+	breakpoints: TSavedBreakpoints;
+}

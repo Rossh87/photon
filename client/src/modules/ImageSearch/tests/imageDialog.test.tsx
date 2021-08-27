@@ -1,17 +1,31 @@
-import { render, screen, act, getAllByLabelText } from '@testing-library/react';
+import {
+	render,
+	screen,
+	act,
+	getAllByLabelText,
+	waitFor,
+	waitForElementToBeRemoved,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import ImageDisplay from '../ui/ImageDisplay';
-import { IDBUpload } from 'sharedTypes/Upload';
-import { makeImageSearchProvider } from '../state/useImageSearchState';
+import '@testing-library/jest-dom';
 import { IImageSearchState } from '../state/imageSearchStateTypes';
 import { resetInternals } from 'react-use-fp';
-import DependencyContext, {
-	createDependenciesObject,
-} from '../../../core/dependencyContext';
 import { mockImage4, mockImage3, mockImageData } from './mockData';
 import { ImageSearchStateContext } from '../state/useImageSearchState';
 import ImageDialog from '../ui/ImageDialog';
-import { createSrcset } from '../useCases/createSrcset';
+import DependencyContext, {
+	createDependenciesObject,
+} from '../../../core/dependencyContext';
+import {
+	IBreakpointTransferObject,
+	IDBUpload,
+} from '../../../../../sharedTypes/Upload';
+import { AxiosResponse } from 'axios';
+import {
+	desyncDialogComponent,
+	renderDialogWithBreakpoints,
+	renderDialogWithFullDeps,
+} from './imageDisplayTestUtils';
 
 const _mockState: IImageSearchState = {
 	imageMetadata: mockImageData,
@@ -29,16 +43,9 @@ beforeEach(() => {
 	mockState.imageUnderConfiguration = Object.assign({}, mockImage4);
 });
 
-const renderWithBreakpoints = () => render(
-	<ImageSearchStateContext.Provider value={mockState}>
-		<ImageDialog></ImageDialog>
-	</ImageSearchStateContext.Provider>
-);
-
 describe('The ImageDialog component', () => {
 	it('generates correct number of each kind of breakpoint child', async () => {
-		// mockImage4 has 2 user-specified breakpoints
-		renderWithBreakpoints();
+		renderDialogWithBreakpoints(mockState);
 
 		// check for UI to create a new breakpoint
 		const createChild = await screen.findAllByText('create a new query', {
@@ -84,7 +91,7 @@ describe('The ImageDialog component', () => {
 	});
 
 	it('can delete a breakpoint element from list', () => {
-		renderWithBreakpoints()
+		renderDialogWithBreakpoints(mockState);
 
 		const breakpointItems = screen.getAllByRole('listitem');
 		expect(breakpointItems.length).toBe(6);
@@ -100,11 +107,156 @@ describe('The ImageDialog component', () => {
 	});
 
 	it('updates the pasteable HTML offered to user when a BP is added/removed', () => {
-		renderWithBreakpoints();
+		renderDialogWithBreakpoints(mockState);
 
-		const pasteableHTML = screen.getByTestId("pasteable-HTML-block").innerHTML
+		const htmlBefore = screen.getByTestId('pasteable-HTML-block').innerHTML;
+
 		const deleteButtons = screen.getAllByRole('button', { name: 'Delete' });
 
-		)
+		userEvent.click(deleteButtons[0]);
+
+		const htmlAfter = screen.getByTestId('pasteable-HTML-block').innerHTML;
+
+		expect(htmlBefore).not.toEqual(htmlAfter);
 	});
+
+	describe('when attempting to close the dialog', () => {
+		it('prompts user to save when they close modal with unsaved changes', async () => {
+			renderDialogWithBreakpoints(mockState);
+			desyncDialogComponent();
+
+			const exitButton = screen.getByRole('button', { name: 'close' });
+
+			act(() => userEvent.click(exitButton));
+
+			const warningSnackbar = screen.getByText('Are you sure', {
+				exact: false,
+			});
+
+			expect(warningSnackbar).toBeInTheDocument();
+		});
+
+		it('closes if there are no unsaved changes', () => {
+			renderDialogWithBreakpoints(mockState);
+
+			const exitButton = screen.getByRole('button', { name: 'close' });
+			userEvent.click(exitButton);
+
+			const warningSnackbar = screen.queryByText('Are you sure', {
+				exact: false,
+			});
+
+			expect(warningSnackbar).not.toBeInTheDocument();
+		});
+
+		it('shows err message when updating breakpoints with server fails', async () => {
+			let submittedData: IBreakpointTransferObject;
+
+			const httpMock = {
+				put: jest.fn((path, data) => {
+					submittedData = data;
+
+					return new Promise<void>((res, rej) => {
+						setTimeout(() => {
+							rej('some kind of server problem');
+						}, 300);
+					});
+				}),
+			};
+
+			renderDialogWithFullDeps(mockState, httpMock);
+
+			desyncDialogComponent();
+
+			// trigger the err
+			const saveButton = screen.getByRole('button', { name: 'Save' });
+			userEvent.click(saveButton);
+
+			// verify the UI
+			const errSnackbar = await screen.findByText(
+				'Attempt to update image breakpoint data failed',
+				{ exact: false }
+			);
+			expect(errSnackbar).toBeInTheDocument();
+
+			// verify the sent data
+			//@ts-ignore
+			expect(submittedData).toEqual({
+				imageID: '128796',
+				breakpoints: [
+					// note this includes edits from the desync function above
+					{
+						queryType: 'min',
+						mediaWidth: 50,
+						slotWidth: 200,
+						slotUnit: 'px',
+						_id: '1234',
+					},
+					{
+						queryType: 'max',
+						mediaWidth: 1150,
+						slotWidth: 600,
+						slotUnit: 'vw',
+						_id: '5678',
+					},
+				],
+			});
+
+			// ensure we can close the err snackbar
+			const closeSnackbarButton = screen.getByRole('button', {
+				name: 'close-snackbar',
+			});
+			userEvent.click(closeSnackbarButton);
+			expect(
+				screen.queryByText(
+					'Attempt to update image breakpoint data failed',
+					{ exact: false }
+				)
+			).not.toBeInTheDocument();
+
+			// now ensure the err snackbar will REOPEN if another problem surfaces
+			userEvent.click(saveButton);
+			const snackedAgain = await screen.findByText(
+				'Attempt to update image breakpoint data failed',
+				{ exact: false }
+			);
+			expect(snackedAgain).toBeInTheDocument();
+		}, 20000);
+	}),
+		it.only('shows success message when updating breakpoints with server succeeds', async () => {
+			// No need to check submitted data--above test does that
+			const httpMock = {
+				put: jest.fn(() => {
+					return new Promise<any>((res, rej) => {
+						setTimeout(() => {
+							res({ data: mockImage4 });
+						}, 300);
+					});
+				}),
+			};
+
+			renderDialogWithFullDeps(mockState, httpMock);
+
+			desyncDialogComponent();
+
+			// trigger save
+			const saveButton = screen.getByRole('button', { name: 'Save' });
+			userEvent.click(saveButton);
+
+			// verify the UI
+			const successSnackbar = await screen.findByText(
+				'submission successful',
+				{ exact: false }
+			);
+			expect(successSnackbar).toBeInTheDocument();
+
+			// ensure snackbar times out on its own
+			await waitForElementToBeRemoved(successSnackbar, {
+				timeout: 4000,
+			});
+
+			expect(
+				screen.queryByText('submission successful', { exact: false })
+			).not.toBeInTheDocument();
+		}, 20000);
 });

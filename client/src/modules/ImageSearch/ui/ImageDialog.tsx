@@ -5,23 +5,20 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import { ListItemText, Typography } from '@material-ui/core';
+import {
+	ListItemText,
+	Typography,
+	Snackbar,
+	IconButton,
+	Paper,
+	List,
+} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { Paper, List, ListItemIcon, ListItem } from '@material-ui/core';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
-import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
+import { Alert } from '@material-ui/lab';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { TextareaAutosize } from '@material-ui/core';
+import CloseOutlined from '@material-ui/icons/CloseOutlined';
 import {
 	useImageSearchState,
 	useImageSearchDispatch,
@@ -38,16 +35,48 @@ import {
 } from '../state/imageDialogState';
 import NewBreakpointListItem from './NewBreakpointListItem';
 import { makeDefaultUIBreakpoint } from '../helpers/makeDefaultUIBreakpoints';
+import { synchronizeBreakpoints } from '../useCases/synchronizeBreakpoints';
+import Snacktion from './Snacktion';
+import { breakpointUIToBreakpoint } from '../helpers/breakpointMappers';
+import { map as ArrMap } from 'fp-ts/Array';
 
 const useStyles = makeStyles((theme: Theme) => ({
+	snackBar: {
+		backgroundColor: theme.palette.warning.main,
+	},
+
 	paper: {
 		width: '100vw',
 		maxWidth: '1500px',
 	},
 
+	dialogTitle: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		width: '100%',
+	},
+
 	createNew: {
 		padding: '2rem',
 		width: '100%',
+	},
+
+	submitButton: {
+		color: theme.palette.success.main,
+		fontWeight: theme.typography.fontWeightBold,
+		fontSize: '1rem',
+		border: `1px solid ${theme.palette.success.main}`,
+	},
+
+	discardButton: {
+		color: theme.palette.warning.main,
+		fontWeight: theme.typography.fontWeightBold,
+		fontSize: theme.typography.fontSize,
+	},
+
+	dialogActions: {
+		display: 'flex',
+		justifyContent: 'space-between',
 	},
 }));
 
@@ -57,41 +86,94 @@ export const ImageDialog: React.FunctionComponent = () => {
 	const makeDeps = useContext(dependencyContext);
 
 	const [state, dispatch, actions] = useFPReducer(
-		{ LOAD_BREAKPOINTS: mapBreakpointsToUI },
+		{
+			LOAD_BREAKPOINTS: mapBreakpointsToUI,
+			SYNC_BREAKPOINTS: synchronizeBreakpoints,
+		},
 		makeDeps
 	)(initialDialogState, imageDialogReducer);
 
 	// we can cast this since dialog will never be open if
 	// imageUnderConfiguration is null
-	const { publicPathPrefix, availableWidths, displayName, breakPoints } =
+	const { publicPathPrefix, availableWidths, displayName, breakpoints, _id } =
 		useImageSearchState().imageUnderConfiguration as IDBUpload;
 
 	const imageSearchDispatch = useImageSearchDispatch();
 
-	const handleClose = () =>
-		imageSearchDispatch({ type: 'CLOSE_IMG_UNDER_CONFIGURATION' });
+	// Dispatch a payload if updates needed, otherwise
+	// no payload. Notice we convert UIbreakpoints
+	// saved locally to their 'sparse' format for the IMageSearch parent
+	// component.
+	const handleDiscard = () => {
+		if (state.hasUpdated) {
+			const saveableBPs = pipe(
+				state.breakpoints,
+				ArrMap(breakpointUIToBreakpoint)
+			);
+
+			imageSearchDispatch({
+				type: 'CLOSE_IMG_UNDER_CONFIGURATION',
+				payload: { imageID: _id, breakpoints: saveableBPs },
+			});
+		} else {
+			imageSearchDispatch({
+				type: 'CLOSE_IMG_UNDER_CONFIGURATION',
+			});
+		}
+	};
+
+	const handleSave = () =>
+		state.isSynchronizedWithBackend
+			? null
+			: actions.SYNC_BREAKPOINTS({
+					imageID: _id,
+					breakpoints: state.breakpoints,
+			  });
+
+	const handleUnsavedClose = () =>
+		dispatch({ type: 'UNSAVED_CLOSE_ATTEMPT' });
+
+	const handleCloseAttempt = () =>
+		state.isSynchronizedWithBackend
+			? handleDiscard()
+			: handleUnsavedClose();
+
+	const resetError = () => dispatch({ type: 'RESET_ERROR' });
+
+	const resetStatus = () => dispatch({ type: 'RESET_STATUS' });
 
 	useEffect(() => {
-		actions.LOAD_BREAKPOINTS(breakPoints);
+		actions.LOAD_BREAKPOINTS(breakpoints);
 	}, []);
 
 	return (
 		<Dialog
 			open={true}
 			TransitionComponent={Transition}
-			onClose={handleClose}
+			onClose={handleCloseAttempt}
 			aria-labelledby={`img-dialog-${displayName}`}
 			aria-describedby="alert-dialog-slide-description"
 			keepMounted={false}
 			maxWidth="md"
 		>
-			<DialogTitle id={`img-dialog-${displayName}`}>
-				{`Embed code for ${displayName}`}
+			<DialogTitle
+				disableTypography
+				id={`img-dialog-${displayName}`}
+				style={{ width: '100%' }}
+				className={styles.dialogTitle}
+			>
+				<Typography variant="h6">
+					{`Embed code for ${displayName}`}
+				</Typography>
+				<IconButton aria-label="close" onClick={handleCloseAttempt}>
+					<CloseOutlined />
+				</IconButton>
 			</DialogTitle>
-			<DialogContent>
+
+			<DialogContent dividers>
 				<Grid justifyContent="center" container>
 					<Grid item xs={4}>
-						{createSrcset('element')(state.breakPoints)(
+						{createSrcset('element')(state.breakpoints)(
 							availableWidths
 						)(publicPathPrefix)}
 					</Grid>
@@ -111,7 +193,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 									<NewBreakpointListItem
 										dispatch={dispatch}
 									/>
-									{state.breakPoints.map((bp) => {
+									{state.breakpoints.map((bp) => {
 										return (
 											<BreakPointListItem
 												{...bp}
@@ -142,7 +224,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 								style={{ maxWidth: '100%', width: '100%' }}
 							>
 								{
-									createSrcset('string')(state.breakPoints)(
+									createSrcset('string')(state.breakpoints)(
 										availableWidths
 									)(publicPathPrefix) as string
 								}
@@ -152,13 +234,23 @@ export const ImageDialog: React.FunctionComponent = () => {
 				</Grid>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleClose} color="primary">
-					Disagree
-				</Button>
-				<Button onClick={handleClose} color="primary">
-					Agree
+				<Button
+					variant="outlined"
+					onClick={handleSave}
+					className={styles.submitButton}
+					disabled={state.isSynchronizedWithBackend}
+				>
+					Save
 				</Button>
 			</DialogActions>
+			<Snacktion
+				status={state.snackbarStatus}
+				handleDiscard={handleDiscard}
+				handleSave={handleSave}
+				error={state.error}
+				resetError={resetError}
+				resetStatus={resetStatus}
+			/>
 		</Dialog>
 	);
 };

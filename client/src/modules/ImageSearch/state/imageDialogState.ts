@@ -2,11 +2,15 @@
 // beneath that, show all user-defined breakpoints in the order they specify
 // finally, show greyed-out defaults that will always be present
 
+import { none } from 'fp-ts/lib/Option';
+import { Option } from 'fp-ts/lib/Option';
+import { Interface } from 'readline';
 import {
 	ISavedBreakpoint,
 	TBreakpointQueryType,
 	TSavedBreakpointslotUnit,
 } from '../../../../../sharedTypes/Breakpoint';
+import { IDBUpload } from '../../../../../sharedTypes/Upload';
 import { BaseError } from '../../../core/error';
 import { makeNewUIBreakpoint } from '../helpers/makeNewUIBreakpoint';
 
@@ -77,12 +81,15 @@ export interface ILocalBreakpointUI {
 // track all user-defined breakpoints, update a user-defined breakpoint, re-order UD breakpoint,
 // delete a UD-breakpoint,
 // and access to user id for updating their breakpoint data
+export type TSnackbarStatus = 'none' | 'attemptedClose' | 'error' | 'success';
 
 export interface IDialogState {
 	isSynchronizedWithBackend: boolean;
-	error: BaseError | null;
+	error: Option<BaseError>;
 	requestPending: boolean;
-	breakPoints: Array<TUserBreakpointUI>;
+	breakpoints: Array<TUserBreakpointUI>;
+	snackbarStatus: TSnackbarStatus;
+	hasUpdated: boolean;
 }
 
 // dispatch regular breakpoints, and convert them in a handler
@@ -105,7 +112,39 @@ interface DeleteBreakpointAction {
 	payload: string;
 }
 
+interface InitSyncRequestAction {
+	type: 'SYNC_REQUEST_INITIALIZED';
+}
+
+interface SyncSuccessAction {
+	type: 'BREAKPOINT_SYNC_SUCCESS';
+	payload: TUserBreakpointUI[];
+}
+
+interface SyncFailedAction {
+	type: 'BREAKPOINT_SYNC_FAILED';
+	payload: Option<BaseError>;
+}
+
+interface UnsavedCloseAttemptAction {
+	type: 'UNSAVED_CLOSE_ATTEMPT';
+}
+
+interface ResetErrorAction {
+	type: 'RESET_ERROR';
+}
+
+interface ResetStatusAction {
+	type: 'RESET_STATUS';
+}
+
 export type TDialogActions =
+	| ResetStatusAction
+	| ResetErrorAction
+	| UnsavedCloseAttemptAction
+	| SyncSuccessAction
+	| SyncFailedAction
+	| InitSyncRequestAction
 	| DeleteBreakpointAction
 	| SetUIBreakpointsAction
 	| CreateNewBreakpointAction
@@ -113,9 +152,11 @@ export type TDialogActions =
 
 export const initialDialogState: IDialogState = {
 	isSynchronizedWithBackend: true,
-	error: null,
+	error: none,
 	requestPending: false,
-	breakPoints: [],
+	breakpoints: [],
+	snackbarStatus: 'none',
+	hasUpdated: false,
 };
 
 export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
@@ -124,17 +165,21 @@ export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
 ) => {
 	switch (a.type) {
 		case 'SET_UI_BREAKPOINTS':
-			return { ...s, breakPoints: a.payload };
+			return { ...s, breakpoints: a.payload };
 		case 'CREATE_NEW_BREAKPOINT':
 			return {
 				...s,
-				breakPoints: [makeNewUIBreakpoint(), ...s.breakPoints],
+				breakpoints: [makeNewUIBreakpoint(), ...s.breakpoints],
 			};
+		// NB this respects the existing order of breakpoints.  Important for
+		// 'SUCCESS' action.  This is only for LOCAL state,
+		// does not trigger the 'hasUpdated' property--that is reserved
+		// for updates made to the backend.
 		case 'UPDATE_ONE_BREAKPOINT':
 			return {
 				...s,
 				isSynchronizedWithBackend: false,
-				breakPoints: s.breakPoints.map((bp) =>
+				breakpoints: s.breakpoints.map((bp) =>
 					bp._id === a.payload._id ? a.payload : bp
 				),
 			};
@@ -142,7 +187,48 @@ export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
 			return {
 				...s,
 				isSynchronizedWithBackend: false,
-				breakPoints: s.breakPoints.filter((bp) => bp._id !== a.payload),
+				breakpoints: s.breakpoints.filter((bp) => bp._id !== a.payload),
+			};
+
+		case 'SYNC_REQUEST_INITIALIZED':
+			return {
+				...s,
+				requestPending: true,
+			};
+
+		case 'BREAKPOINT_SYNC_SUCCESS':
+			return {
+				...s,
+				requestPending: false,
+				isSynchronizedWithBackend: true,
+				snackbarStatus: 'success',
+				breakpoints: a.payload,
+				hasUpdated: true,
+			};
+
+		case 'BREAKPOINT_SYNC_FAILED':
+			return {
+				...s,
+				requestPending: false,
+				isSynchronizedWithBackend: false,
+				error: a.payload,
+				snackbarStatus: 'error',
+			};
+		case 'UNSAVED_CLOSE_ATTEMPT':
+			return {
+				...s,
+				snackbarStatus: 'attemptedClose',
+			};
+		case 'RESET_ERROR':
+			return {
+				...s,
+				snackbarStatus: 'none' as const,
+				error: none,
+			};
+		case 'RESET_STATUS':
+			return {
+				...s,
+				snackbarStatus: 'none' as const,
 			};
 		default:
 			return s;
