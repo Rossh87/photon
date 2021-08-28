@@ -16,7 +16,16 @@ import ImageDialog from '../ui/ImageDialog';
 import DependencyContext, {
 	createDependenciesObject,
 } from '../../../core/dependencyContext';
-import { IBreakpointTransferObject } from '../../../../../sharedTypes/Upload';
+import {
+	IBreakpointTransferObject,
+	IDBUpload,
+} from '../../../../../sharedTypes/Upload';
+import { AxiosResponse } from 'axios';
+import {
+	desyncDialogComponent,
+	renderDialogWithBreakpoints,
+	renderDialogWithFullDeps,
+} from './imageDisplayTestUtils';
 
 const _mockState: IImageSearchState = {
 	imageMetadata: mockImageData,
@@ -34,44 +43,9 @@ beforeEach(() => {
 	mockState.imageUnderConfiguration = Object.assign({}, mockImage4);
 });
 
-const renderWithBreakpoints = () =>
-	render(
-		<ImageSearchStateContext.Provider value={mockState}>
-			<ImageDialog></ImageDialog>
-		</ImageSearchStateContext.Provider>
-	);
-
-const renderWithFullDeps = (httpMock: any) => {
-	const makeDeps = createDependenciesObject(httpMock)(jest.fn);
-	render(
-		<DependencyContext.Provider value={makeDeps}>
-			<ImageSearchStateContext.Provider value={mockState}>
-				<ImageDialog></ImageDialog>
-			</ImageSearchStateContext.Provider>
-		</DependencyContext.Provider>
-	);
-};
-
-// create some unsaved changes to the component state.
-// NEVER FUCKING TOUCH THIS YOU WILL WISH YOU HADN'T
-const desyncComponent = () => {
-	// open editing form
-	const editButton = screen.getAllByRole('button', { name: 'Edit' })[0];
-	userEvent.click(editButton);
-
-	// make some change
-	const input = screen.getAllByLabelText('media width')[0];
-	userEvent.clear(input);
-	userEvent.type(input, '500');
-
-	// add the change
-	const keepButton = screen.getAllByRole('button', { name: 'Keep' })[0];
-	userEvent.click(keepButton);
-};
-
 describe('The ImageDialog component', () => {
 	it('generates correct number of each kind of breakpoint child', async () => {
-		renderWithBreakpoints();
+		renderDialogWithBreakpoints(mockState);
 
 		// check for UI to create a new breakpoint
 		const createChild = await screen.findAllByText('create a new query', {
@@ -117,7 +91,7 @@ describe('The ImageDialog component', () => {
 	});
 
 	it('can delete a breakpoint element from list', () => {
-		renderWithBreakpoints();
+		renderDialogWithBreakpoints(mockState);
 
 		const breakpointItems = screen.getAllByRole('listitem');
 		expect(breakpointItems.length).toBe(6);
@@ -133,7 +107,7 @@ describe('The ImageDialog component', () => {
 	});
 
 	it('updates the pasteable HTML offered to user when a BP is added/removed', () => {
-		renderWithBreakpoints();
+		renderDialogWithBreakpoints(mockState);
 
 		const htmlBefore = screen.getByTestId('pasteable-HTML-block').innerHTML;
 
@@ -148,8 +122,8 @@ describe('The ImageDialog component', () => {
 
 	describe('when attempting to close the dialog', () => {
 		it('prompts user to save when they close modal with unsaved changes', async () => {
-			renderWithBreakpoints();
-			desyncComponent();
+			renderDialogWithBreakpoints(mockState);
+			desyncDialogComponent();
 
 			const exitButton = screen.getByRole('button', { name: 'close' });
 
@@ -163,7 +137,7 @@ describe('The ImageDialog component', () => {
 		});
 
 		it('closes if there are no unsaved changes', () => {
-			renderWithBreakpoints();
+			renderDialogWithBreakpoints(mockState);
 
 			const exitButton = screen.getByRole('button', { name: 'close' });
 			userEvent.click(exitButton);
@@ -190,9 +164,9 @@ describe('The ImageDialog component', () => {
 				}),
 			};
 
-			renderWithFullDeps(httpMock);
+			renderDialogWithFullDeps(mockState, httpMock);
 
-			desyncComponent();
+			desyncDialogComponent();
 
 			// trigger the err
 			const saveButton = screen.getByRole('button', { name: 'Save' });
@@ -253,18 +227,17 @@ describe('The ImageDialog component', () => {
 			// No need to check submitted data--above test does that
 			const httpMock = {
 				put: jest.fn(() => {
-					return new Promise<void>((res, rej) => {
+					return new Promise<any>((res, rej) => {
 						setTimeout(() => {
-							console.log('resolved!');
-							res();
+							res({ data: mockImage4 });
 						}, 300);
 					});
 				}),
 			};
 
-			renderWithFullDeps(httpMock);
+			renderDialogWithFullDeps(mockState, httpMock);
 
-			desyncComponent();
+			desyncDialogComponent();
 
 			// trigger save
 			const saveButton = screen.getByRole('button', { name: 'Save' });
@@ -279,7 +252,7 @@ describe('The ImageDialog component', () => {
 
 			// ensure snackbar times out on its own
 			await waitForElementToBeRemoved(successSnackbar, {
-				timeout: 2200,
+				timeout: 4000,
 			});
 
 			expect(
