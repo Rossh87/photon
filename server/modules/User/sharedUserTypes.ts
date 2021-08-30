@@ -1,8 +1,7 @@
 import { ObjectId } from 'mongodb';
+import { IAuthorizedUserResponse, TOAuthProvider } from 'sharedTypes/User';
 
-type TOAuthProvider = 'google';
-
-export interface IUser extends Record<string, any> {
+export interface IUser extends Omit<IAuthorizedUserResponse, '_id'> {
 	OAuthProviderName: TOAuthProvider;
 	OAuthProviderID: string;
 	thumbnailURL: string;
@@ -21,15 +20,4 @@ export interface IDBUser extends IUser {
 	registeredDomains: Array<string>;
 	imageCount: number;
 	uploadUsage: number;
-}
-
-// type for data shape that will be sent to client on authorization
-export interface IAuthorizedUserResponse extends Record<string, any> {
-	OAuthProviderName: TOAuthProvider;
-	_id: string;
-	thumbnailURL: string;
-	displayName: string;
-	familyName: string;
-	givenName: string;
-	emailAddress: string;
 }

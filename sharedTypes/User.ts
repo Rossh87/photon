@@ -1,5 +1,8 @@
+export type TOAuthProvider = 'google';
+
+// type for data shape that will be sent to client on authorization
 export interface IAuthorizedUserResponse {
-	OAuthProviderName: string;
+	OAuthProviderName: TOAuthProvider;
 	_id: string;
 	thumbnailURL: string;
 	displayName: string;
@@ -7,5 +10,3 @@ export interface IAuthorizedUserResponse {
 	givenName: string;
 	emailAddress: string;
 }
-
-export type TUserState = IAuthorizedUserResponse | null;

@@ -1,4 +1,4 @@
-import { IUser } from '../../Auth/domain/authDomainTypes';
+import { IAuthorizedUserResponse } from '../../Auth/domain/authDomainTypes';
 import { IImage, IResizingData } from '../domain/domainTypes';
 import {
 	IUploadRequestMetadata,
@@ -7,7 +7,7 @@ import {
 } from '../http/httpTypes';
 import { of as TEOf } from 'fp-ts/lib/TaskEither';
 
-export const mockUser: IUser = {
+export const mockUser: IAuthorizedUserResponse = {
 	OAuthProviderName: 'google',
 	_id: '1234',
 	thumbnailURL: 'someImg@domain.com',

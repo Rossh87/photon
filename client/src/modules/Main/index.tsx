@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { CssBaseline } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import Hidden from '@material-ui/core/Hidden';
 import Navigator from '../Navigator';
 import Header from '../Header';
@@ -66,8 +67,12 @@ const Paperbase: React.FunctionComponent = () => {
 						/>
 					</Hidden>
 				</nav>
+
 				<div className={classes.app}>
 					<Header onDrawerToggle={handleDrawerToggle} />
+					<Alert severity="info">
+						This is an info alert — check it out!
+					</Alert>
 					<main className={classes.main}>
 						<Switch>
 							<Route path="/upload">
