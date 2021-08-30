@@ -11,7 +11,7 @@ import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import requiredInEnv from './configs/requiredInEnv';
 import axios from 'axios';
-import { IDBUser } from './modules/User/sharedUserTypes';
+import { TDBUser } from 'sharedTypes/User';
 import { IAsyncDeps } from './core/asyncDeps';
 import { MongoClient } from 'mongodb';
 import { TEST_DB_URI } from './CONSTANTS';
@@ -35,7 +35,7 @@ declare module 'express-session' {
 			response: GrantResponse;
 		};
 
-		user?: IDBUser;
+		user?: TDBUser;
 	}
 }
 

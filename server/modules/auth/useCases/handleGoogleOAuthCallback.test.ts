@@ -8,7 +8,7 @@ import {
 	mockUserFromGoogleResponse,
 } from '../helpers/mockData';
 import { IFetcher } from '../../../core/fetcher';
-import { IDBUser, IUser } from '../../User/sharedUserTypes';
+import { TDBUser, IUserProfileProperties } from 'sharedTypes/User';
 import { Request } from 'express';
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
 import { normalizeGoogleResponse } from '../helpers';
@@ -62,7 +62,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 
 			await handleGoogleOAuthCallback(mockRequest)(deps)();
 
-			const saved = await getCollection<IDBUser>('users')(
+			const saved = await getCollection<TDBUser>('users')(
 				repoClient
 			).findOne({
 				OAuthProviderID: mockUserFromGoogleResponse.OAuthProviderID,
@@ -95,16 +95,16 @@ describe('callback fn to handle Google OAuth access token', () => {
 			};
 
 			const expectedSave = Object.assign<
-				IUser,
+				IUserProfileProperties,
 				Pick<
-					IDBUser,
+					TDBUser,
 					'registeredDomains' | 'imageCount' | 'uploadUsage'
 				>
 			>(mockUserFromGoogleResponse, propsToAdd);
 
 			await handleGoogleOAuthCallback(mockRequest)(deps)();
 
-			const saved = await getCollection<WithId<IDBUser>>('users')(
+			const saved = await getCollection<WithId<TDBUser>>('users')(
 				repoClient
 			).findOne({
 				OAuthProviderID: mockUserFromGoogleResponse.OAuthProviderID,
@@ -136,13 +136,13 @@ describe('callback fn to handle Google OAuth access token', () => {
 
 			await handleGoogleOAuthCallback(mockRequest)(deps)();
 
-			const saved = await getCollection<IUser>('users')(
+			const saved = await getCollection<IUserProfileProperties>('users')(
 				repoClient
 			).findOne({
 				OAuthProviderID: mockUserFromGoogleResponse.OAuthProviderID,
 			});
 
-			const match = E.map<IUser, void>((u) =>
+			const match = E.map<IUserProfileProperties, void>((u) =>
 				expect(saved).toMatchObject(u)
 			);
 

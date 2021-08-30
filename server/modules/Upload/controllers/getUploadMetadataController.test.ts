@@ -1,4 +1,4 @@
-import { IDBUser } from '../../User/sharedUserTypes';
+import { TDBUser } from 'sharedTypes/User';
 import { ICombinedUploadRequestMetadata } from '../sharedUploadTypes';
 import { getUploadMetadataController } from './getUploadMetadataController';
 import {
@@ -31,7 +31,7 @@ const _mockRequestData2: ICombinedUploadRequestMetadata = {
 
 let mockRequestData1: ICombinedUploadRequestMetadata;
 let mockRequestData2: ICombinedUploadRequestMetadata;
-let mockUser: IDBUser;
+let mockUser: TDBUser;
 
 beforeEach(() => {
 	mockRequestData1 = Object.assign({}, _mockRequestData1);
@@ -75,7 +75,7 @@ describe('controller to send saved upload data to client', () => {
 		);
 
 		expect(mockFind).toHaveBeenCalledWith(
-			{ ownerID: mockObjectID.toHexString() },
+			{ ownerID: mockObjectID },
 			{ sort: { _id: -1 } }
 		);
 

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { IAuthorizedUserResponse } from '../domain/authDomainTypes';
+import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { TAuthActions } from '../state/authStateTypes';
 import { IDispatcher } from '../../../core/sharedClientTypes';
 import { AuthError } from '../domain/AuthError';
@@ -10,15 +10,15 @@ import { Dispatch } from 'react';
 
 const attemptToFetchUserData = (
 	fetcher: AxiosInstance
-): TE.TaskEither<AuthError, AxiosResponse<IAuthorizedUserResponse>> =>
+): TE.TaskEither<AuthError, AxiosResponse<TAuthorizedUserResponse>> =>
 	TE.tryCatch(
 		() => fetcher.get(AUTH_API_ENDPOINT, { withCredentials: true }),
 		(reason) => AuthError.create(reason)
 	);
 
 const _extractUserData = (
-	response: AxiosResponse<IAuthorizedUserResponse>
-): IAuthorizedUserResponse => response.data;
+	response: AxiosResponse<TAuthorizedUserResponse>
+): TAuthorizedUserResponse => response.data;
 
 const extractUserData = TE.map(_extractUserData);
 
@@ -26,7 +26,7 @@ const initRequest: IDispatcher<TAuthActions> = (dispatch) =>
 	dispatch({ type: 'AUTH_REQUEST_INITIATED', payload: null });
 
 const onSuccess =
-	(dispatch: Dispatch<TAuthActions>) => (user: IAuthorizedUserResponse) =>
+	(dispatch: Dispatch<TAuthActions>) => (user: TAuthorizedUserResponse) =>
 		dispatch({ type: 'ADD_USER', payload: user });
 
 const onFailure = (dispatch: Dispatch<TAuthActions>) => (e: AuthError) =>

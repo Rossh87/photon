@@ -1,4 +1,4 @@
-import { IDBUser, IUser } from '../sharedUserTypes';
+import { TDBUser, IUserProfileProperties } from 'sharedTypes/User';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import { MongoClient, ObjectQuerySelector, Collection } from 'mongodb';
 import { getCollection, DBReadError } from '../../../core/repo';
@@ -7,30 +7,29 @@ import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import { reverseTwo } from '../../../core/utils/reverseCurried';
 
-export type TGetUserByIDResult = TE.TaskEither<DBReadError, O.Option<IDBUser>>;
+export type TGetUserByIDResult = TE.TaskEither<DBReadError, O.Option<TDBUser>>;
 
 export const getUserByOAuthID: (
 	id: string
 ) => (
 	repoClient: MongoClient
-) => TE.TaskEither<DBReadError, O.Option<IDBUser>> = (id) => (repoClient) =>
-	pipe(repoClient, getCollection<IDBUser>('users'), findUser(id));
+) => TE.TaskEither<DBReadError, O.Option<TDBUser>> = (id) => (repoClient) =>
+	pipe(repoClient, getCollection<TDBUser>('users'), findUser(id));
 
-const findUser: (
-	id: string
-) => (c: Collection<IDBUser>) => TGetUserByIDResult = (id) => (c) =>
-	TE.tryCatch(
-		() =>
-			c
-				.findOne({ OAuthProviderID: id })
-				.then((usr) => (usr ? O.some(usr) : O.none)),
-		(reason) =>
-			DBReadError.create<IUser>(
-				c.collectionName,
-				{ OAuthProviderID: id },
-				reason
-			)
-	);
+const findUser: (id: string) => (c: Collection<TDBUser>) => TGetUserByIDResult =
+	(id) => (c) =>
+		TE.tryCatch(
+			() =>
+				c
+					.findOne({ OAuthProviderID: id })
+					.then((usr) => (usr ? O.some(usr) : O.none)),
+			(reason) =>
+				DBReadError.create<IUserProfileProperties>(
+					c.collectionName,
+					{ OAuthProviderID: id },
+					reason
+				)
+		);
 
 // export with args reversed for convenience
 export const _getUserByOAuthID = reverseTwo(getUserByOAuthID);

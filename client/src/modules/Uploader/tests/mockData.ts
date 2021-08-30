@@ -1,4 +1,4 @@
-import { IAuthorizedUserResponse } from '../../Auth/domain/authDomainTypes';
+import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { IImage, IResizingData } from '../domain/domainTypes';
 import {
 	IUploadRequestMetadata,
@@ -7,14 +7,22 @@ import {
 } from '../http/httpTypes';
 import { of as TEOf } from 'fp-ts/lib/TaskEither';
 
-export const mockUser: IAuthorizedUserResponse = {
-	OAuthProviderName: 'google',
+export const mockUser: TAuthorizedUserResponse = {
 	_id: '1234',
+	OAuthProviderName: 'google',
+	OAuthProviderID: 'kk174635',
 	thumbnailURL: 'someImg@domain.com',
 	displayName: 'userGuy',
 	familyName: 'tibbers',
 	givenName: 'tom',
-	emailAddress: 'tom@tom.com',
+	OAuthEmail: 'tom@tom.com',
+	preferredEmail: 'tom@tom.com',
+	OAuthEmailVerified: true,
+	preferredVerified: true,
+	registeredDomains: ['www.mydomain.com'],
+	imageCount: 2,
+	uploadUsage: 102466,
+	accessLevel: 'demo',
 };
 
 // mockImageData includes some stubbed-out props that would normally be

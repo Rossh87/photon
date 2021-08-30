@@ -1,7 +1,7 @@
 import { _fetchUserData } from './fetchUserData';
 import { AxiosInstance } from 'axios';
 import { AuthError } from '../domain/AuthError';
-import { IAuthorizedUserResponse } from 'sharedTypes/User';
+import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { TAuthActions } from '../state/authStateTypes';
 
 describe('user data fetching functiong', () => {
@@ -20,7 +20,7 @@ describe('user data fetching functiong', () => {
 			{ type: 'AUTH_REQUEST_INITIATED', payload: null },
 			{
 				type: 'ADD_USER',
-				payload: user as unknown as IAuthorizedUserResponse,
+				payload: user as unknown as TAuthorizedUserResponse,
 			},
 		];
 

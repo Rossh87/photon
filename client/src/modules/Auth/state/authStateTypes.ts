@@ -1,4 +1,5 @@
-import { TUserState, IAuthorizedUserResponse } from '../domain/authDomainTypes';
+import { TUserState } from '../domain/authDomainTypes';
+import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { AuthError } from '../domain/AuthError';
 
 export interface IAuthState {
@@ -19,7 +20,7 @@ export interface IAuthAction<T> {
 	payload: T;
 }
 
-export interface IAddUserAction extends IAuthAction<IAuthorizedUserResponse> {
+export interface IAddUserAction extends IAuthAction<TAuthorizedUserResponse> {
 	type: 'ADD_USER';
 }
 

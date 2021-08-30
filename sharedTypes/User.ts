@@ -1,15 +1,31 @@
-export type TOAuthProvider = 'google';
+import { ObjectId } from 'mongodb';
 
+export type TOAuthProvider = 'google';
 export type TAccessLevel = 'demo' | 'admin' | 'full';
 
-// type for data shape that will be sent to client on authorization
-export interface IAuthorizedUserResponse {
+export interface IUserServiceUsageProperties {
+	registeredDomains: Array<string>;
+	imageCount: number;
+	uploadUsage: number;
+	accessLevel: TAccessLevel;
+}
+
+export interface IUserProfileProperties {
 	OAuthProviderName: TOAuthProvider;
-	_id: string;
+	OAuthProviderID: string;
 	thumbnailURL: string;
 	displayName: string;
 	familyName: string;
 	givenName: string;
-	emailAddress: string;
-	accessLevel: TAccessLevel;
+	OAuthEmail: string;
+	OAuthEmailVerified: boolean;
+	preferredEmail?: string;
+	preferredVerified?: boolean;
 }
+
+export type TUser = IUserProfileProperties & IUserServiceUsageProperties;
+
+export type TDBUser = TUser & { _id: ObjectId };
+
+// type for data shape that will be sent to client on authorization
+export type TAuthorizedUserResponse = TUser & { _id: string };

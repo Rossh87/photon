@@ -14,7 +14,7 @@ import { pipe } from 'fp-ts/lib/function';
 import { TDedupeNamesPayload } from '../sharedUploadTypes';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import { flow } from 'fp-ts/lib/function';
-import { IDBUser } from '../../User/sharedUserTypes';
+import { TDBUser } from 'sharedTypes/User';
 import { getDupeDisplayNames } from '../repo/getDupeDisplayNames';
 import { IBreakpointTransferObject } from '../../../../sharedTypes/Upload';
 import { updateBreakpoints } from '../repo/updateBreakpoints';

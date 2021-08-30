@@ -1,5 +1,5 @@
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
-import { IDBUser, IUser } from '../../User/sharedUserTypes';
+import { TDBUser, IUserProfileProperties } from 'sharedTypes/User';
 import { ObjectId, WithId } from 'mongodb';
 
 export const mockGoogleOAuthResponse: IGoogleOAuthResponse = {
@@ -49,7 +49,7 @@ export const mockGoogleOAuthResponse: IGoogleOAuthResponse = {
 	],
 };
 
-export const mockUserFromGoogleResponse: IUser = {
+export const mockUserFromGoogleResponse: IUserProfileProperties = {
 	OAuthProviderName: 'google',
 	OAuthProviderID: '123456',
 	thumbnailURL: 'https://myphotos@myphotos.com',
@@ -62,7 +62,7 @@ export const mockUserFromGoogleResponse: IUser = {
 
 export const mockObjectID = ObjectId.createFromTime(Date.now());
 
-export const mockUserFromDatabase: WithId<IDBUser> = {
+export const mockUserFromDatabase: TDBUser = {
 	_id: mockObjectID,
 	OAuthProviderName: 'google',
 	OAuthProviderID: '123456',
@@ -75,4 +75,16 @@ export const mockUserFromDatabase: WithId<IDBUser> = {
 	registeredDomains: ['mySite.com'],
 	uploadUsage: 100,
 	imageCount: 223,
+	accessLevel: 'demo',
+};
+
+export const mockIncomingOAuthUserData: IUserProfileProperties = {
+	OAuthProviderName: 'google',
+	OAuthProviderID: '123456',
+	thumbnailURL: 'https://myphotos@myphotos.com',
+	displayName: 'Tim123',
+	familyName: 'Roosevelt',
+	givenName: 'Tim',
+	OAuthEmail: 'tim@gmail.com',
+	OAuthEmailVerified: true,
 };

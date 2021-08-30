@@ -1,4 +1,4 @@
-import { IDBUser } from '../../User/sharedUserTypes';
+import { TDBUser } from 'sharedTypes/User';
 import { ICombinedUploadRequestMetadata } from '../sharedUploadTypes';
 import { saveUploadMetadataController } from './saveUploadMetadataController';
 import { mockUserFromDatabase } from '../../auth/helpers/mockData';
@@ -18,7 +18,7 @@ const _mockRequestData: ICombinedUploadRequestMetadata = {
 };
 
 let mockRequestData: ICombinedUploadRequestMetadata;
-let mockUser: IDBUser;
+let mockUser: TDBUser;
 
 beforeEach(() => {
 	mockRequestData = Object.assign({}, _mockRequestData);

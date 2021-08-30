@@ -15,7 +15,7 @@ import { saveUploadMetadata } from '../repo/saveUploadMetadata';
 import { ICombinedUploadRequestMetadata } from '../sharedUploadTypes';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import { flow } from 'fp-ts/lib/function';
-import { IDBUser } from '../../User/sharedUserTypes';
+import { TDBUser } from 'sharedTypes/User';
 import { attachBreakpointsToMetadata } from '../helpers/attachBreakpointsToMetadata';
 
 const updateUsageMetricsEffect =
@@ -23,7 +23,7 @@ const updateUsageMetricsEffect =
 	(req, res, next) => {
 		// cast this--can't be null/undefined since this handler comes after auth gate handler
 		// that explicitly checks this property
-		const { uploadUsage, imageCount } = req.session.user as IDBUser;
+		const { uploadUsage, imageCount } = req.session.user as TDBUser;
 
 		req.session.user = Object.assign({}, req.session.user, {
 			uploadUsage: uploadUsage + uploadData.sizeInBytes,

@@ -5,12 +5,15 @@ import {
 	IGoogleEmailsObject,
 	TGoogleOAuthSubData,
 } from '../sharedAuthTypes';
-import { IUser } from '../../User/sharedUserTypes';
+import { IUserProfileProperties } from 'sharedTypes/User';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
-export type TGoogleNormalizerResult = E.Either<GoogleNormalizationError, IUser>;
+export type TGoogleNormalizerResult = E.Either<
+	GoogleNormalizationError,
+	IUserProfileProperties
+>;
 
 export const normalizeGoogleResponse = (
 	a: IGoogleOAuthResponse
@@ -33,10 +36,9 @@ export const normalizeGoogleResponse = (
 	result.OAuthEmail = emailData?.OAuthEmail;
 	result.OAuthEmailVerified = emailData?.OAuthEmailVerified;
 
-	const missingFields = Object.keys(result as IUser).reduce<Array<string>>(
-		(errs, key) => (result[key] ? errs : [...errs, key]),
-		[]
-	);
+	const missingFields = Object.keys(result as IUserProfileProperties).reduce<
+		Array<string>
+	>((errs, key) => (result[key] ? errs : [...errs, key]), []);
 
 	return missingFields.length
 		? E.left(
@@ -45,7 +47,7 @@ export const normalizeGoogleResponse = (
 					a
 				)
 		  )
-		: E.right(result as IUser);
+		: E.right(result as IUserProfileProperties);
 };
 
 export class GoogleNormalizationError extends BaseError {
@@ -77,7 +79,7 @@ const getPrimaryImageURL: (
 
 const processNameData: (
 	names?: Array<IGoogleNamesObject>
-) => Partial<IUser> | null = (names) => {
+) => Partial<IUserProfileProperties> | null = (names) => {
 	const primaryName = names
 		? names.filter((o) => o.metadata.primary === true)
 		: null;
@@ -92,7 +94,7 @@ const processNameData: (
 
 const getPrimaryEmail: (
 	emails?: Array<IGoogleEmailsObject>
-) => Partial<IUser> | null = (emails) => {
+) => Partial<IUserProfileProperties> | null = (emails) => {
 	const primaryEmails = emails
 		? emails.filter((o) => o.metadata.primary === true)
 		: null;

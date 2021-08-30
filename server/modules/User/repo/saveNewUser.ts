@@ -1,4 +1,4 @@
-import { IUser, IDBUser } from '../sharedUserTypes';
+import { IUserProfileProperties, TDBUser, TUser } from 'sharedTypes/User';
 import {
 	MongoClient,
 	ObjectQuerySelector,
@@ -11,18 +11,19 @@ import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
 import { reverseTwo } from '../../../core/utils/reverseCurried';
 
-export type TSaveNewUserResult = TE.TaskEither<DBWriteError, IDBUser>;
+export type TSaveNewUserResult = TE.TaskEither<DBWriteError, TDBUser>;
 
 // we return the saved user in case we want to send to client or some such
-export const saveNewUser = (newUser: IUser) => (repoClient: MongoClient) =>
-	pipe(
-		repoClient,
-		getCollection('users'),
-		pipe(newUser, prepNewUserForSave, trySaveOne)
-	);
+export const saveNewUser =
+	(newUser: IUserProfileProperties) => (repoClient: MongoClient) =>
+		pipe(
+			repoClient,
+			getCollection('users'),
+			pipe(newUser, prepNewUserForSave, trySaveOne)
+		);
 
 // add app-specific properties to user object here.
-const prepNewUserForSave = (u: IUser): Omit<IDBUser, '_id'> =>
+const prepNewUserForSave = (u: IUserProfileProperties): TUser =>
 	Object.assign({}, u, {
 		registeredDomains: [],
 		imageCount: 0,

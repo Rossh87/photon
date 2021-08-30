@@ -1,3 +1,4 @@
-import { IUser, IDBUser } from '../sharedUserTypes';
+import { IUserProfileProperties, TDBUser } from 'sharedTypes/User';
 
-export const getUserOAuthID = (u: IUser | IDBUser) => u.OAuthProviderID;
+export const getUserOAuthID = (u: IUserProfileProperties | TDBUser) =>
+	u.OAuthProviderID;
