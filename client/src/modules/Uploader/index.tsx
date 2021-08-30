@@ -13,10 +13,14 @@ import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
 import { useFPReducer } from 'react-use-fp';
 import { useAuthState } from '../Auth/state/useAuthState';
-import { Paper } from '@material-ui/core';
+import { Paper, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { canProcess } from './state/reducerUtils/canProcess';
 import { updateDisplayName } from './useCases/updateDisplayName';
+import { none, map as OMap, foldW as OFoldW } from 'fp-ts/Option';
+import { pipe } from 'fp-ts/lib/function';
+import { constVoid } from 'fp-ts/lib/function';
+import { identity } from 'fp-ts/lib/function';
 
 const useStyles = makeStyles({
 	paper: {
@@ -34,6 +38,7 @@ const Uploader: React.FunctionComponent = () => {
 	const defaultState: IImageUploadState = {
 		status: 'awaitingFileSelection',
 		selectedFiles: [],
+		componentLevelError: none,
 	};
 
 	const makeDependencies = React.useContext(DependencyContext);
@@ -49,7 +54,24 @@ const Uploader: React.FunctionComponent = () => {
 
 	const acceptedExtensions = ['image/jpg', 'image/jpeg', 'image/png'];
 
-	const submitIsDisabled = canProcess(uploadState.selectedFiles);
+	const submitIsDisabled = !canProcess(uploadState);
+
+	const renderSnackbar = () =>
+		pipe(
+			uploadState.componentLevelError,
+			OMap((err) => (
+				<Snackbar
+					anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+					ContentProps={{
+						style: {
+							backgroundColor: 'red',
+						},
+					}}
+					message={err.message}
+				></Snackbar>
+			)),
+			OFoldW(constVoid, identity)
+		);
 
 	return (
 		<main>
@@ -65,6 +87,7 @@ const Uploader: React.FunctionComponent = () => {
 					acceptedExtensions={acceptedExtensions}
 					selectedFiles={uploadState.selectedFiles}
 				/>
+				{renderSnackbar()}
 			</Paper>
 		</main>
 	);
