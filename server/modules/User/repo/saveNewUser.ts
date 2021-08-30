@@ -21,12 +21,13 @@ export const saveNewUser = (newUser: IUser) => (repoClient: MongoClient) =>
 		pipe(newUser, prepNewUserForSave, trySaveOne)
 	);
 
-// need better name here
-const prepNewUserForSave = (u: IUser) =>
+// add app-specific properties to user object here.
+const prepNewUserForSave = (u: IUser): Omit<IDBUser, '_id'> =>
 	Object.assign({}, u, {
 		registeredDomains: [],
 		imageCount: 0,
 		uploadUsage: 0,
+		accessLevel: 'demo' as const,
 	});
 
 export const _saveNewUser = reverseTwo(saveNewUser);

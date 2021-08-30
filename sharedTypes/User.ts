@@ -1,5 +1,7 @@
 export type TOAuthProvider = 'google';
 
+export type TAccessLevel = 'demo' | 'admin' | 'full';
+
 // type for data shape that will be sent to client on authorization
 export interface IAuthorizedUserResponse {
 	OAuthProviderName: TOAuthProvider;
@@ -9,4 +11,5 @@ export interface IAuthorizedUserResponse {
 	familyName: string;
 	givenName: string;
 	emailAddress: string;
+	accessLevel: TAccessLevel;
 }

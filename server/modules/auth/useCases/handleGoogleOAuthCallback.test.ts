@@ -62,7 +62,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 
 			await handleGoogleOAuthCallback(mockRequest)(deps)();
 
-			const saved = await getCollection<IUser>('users')(
+			const saved = await getCollection<IDBUser>('users')(
 				repoClient
 			).findOne({
 				OAuthProviderID: mockUserFromGoogleResponse.OAuthProviderID,
@@ -71,7 +71,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 			expect(saved).toMatchObject(mockUserFromGoogleResponse);
 		});
 
-		it('adds correct additional properties to a new user before first save', async () => {
+		it.only('adds correct additional properties to a new user before first save', async () => {
 			const deps = {
 				repoClient: repoClient,
 				fetcher: mockAxios as unknown as IFetcher,
@@ -90,6 +90,8 @@ describe('callback fn to handle Google OAuth access token', () => {
 			const propsToAdd: any = {
 				registeredDomains: [],
 				imageCount: 0,
+				accessLevel: 'demo',
+				uploadUsage: 0,
 			};
 
 			const expectedSave = Object.assign<
@@ -108,9 +110,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 				OAuthProviderID: mockUserFromGoogleResponse.OAuthProviderID,
 			});
 
-			expect(saved?.registeredDomains).toEqual([]);
-			expect(saved?.imageCount).toEqual(0);
-			expect(saved?.uploadUsage).toEqual(0);
+			expect(saved).toMatchObject(expectedSave);
 		});
 
 		it('updates an existing user correctly if incoming user has fresh data', async () => {

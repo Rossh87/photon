@@ -1,7 +1,12 @@
 import { ObjectId } from 'mongodb';
-import { IAuthorizedUserResponse, TOAuthProvider } from 'sharedTypes/User';
+import {
+	IAuthorizedUserResponse,
+	TOAuthProvider,
+	TAccessLevel,
+} from 'sharedTypes/User';
 
-export interface IUser extends Omit<IAuthorizedUserResponse, '_id'> {
+export interface IUser
+	extends Omit<IAuthorizedUserResponse, '_id' | 'accessLevel'> {
 	OAuthProviderName: TOAuthProvider;
 	OAuthProviderID: string;
 	thumbnailURL: string;
@@ -20,4 +25,5 @@ export interface IDBUser extends IUser {
 	registeredDomains: Array<string>;
 	imageCount: number;
 	uploadUsage: number;
+	accessLevel: TAccessLevel;
 }
