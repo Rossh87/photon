@@ -223,7 +223,7 @@ describe('The ImageDialog component', () => {
 			expect(snackedAgain).toBeInTheDocument();
 		}, 20000);
 	}),
-		it.only('shows success message when updating breakpoints with server succeeds', async () => {
+		it('shows success message when updating breakpoints with server succeeds', async () => {
 			// No need to check submitted data--above test does that
 			const httpMock = {
 				put: jest.fn(() => {

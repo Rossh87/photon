@@ -4,12 +4,12 @@ import { pipe } from 'fp-ts/lib/function';
 import { ap } from 'fp-ts/lib/Identity';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { TSavedBreakpoints } from 'sharedTypes/Breakpoint';
+import { createSrcset, mergeBreakpoints } from './createSrcset';
 import {
-	createSrcset,
+	makeDefaultUIBreakpoint,
 	makeDefaultUIBreakpoints,
-	mergeBreakpoints,
-} from './createSrcset';
-import { breakpointToBreakpointUI } from './mapBreakpointsToUI';
+} from '../helpers/makeDefaultUIBreakpoints';
+import { breakpointToBreakpointUI } from '../helpers/breakpointMappers';
 import { TUserBreakpointUI } from '../state/imageDialogState';
 
 describe("helper function 'mergeBreakpoints'", () => {
@@ -135,6 +135,7 @@ describe('createSrcSet', () => {
 			sizes: '(min-width: 550px) 330px, (max-width: 300px) 100vw, (max-width: 1200px) 100vw',
 			src: 'https://www.example.bucket.com/300',
 			alt: '',
+			style: { maxWidth: '100%' },
 		});
 
 		const received =

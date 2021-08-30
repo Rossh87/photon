@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 
 describe('controller to save info about successful uploads', () => {
-	it('adds emtpy array to "breakPoints" property before saving a new upload', async () => {
+	it('adds emtpy array to "breakpoints" property before saving a new upload', async () => {
 		const req = {
 			session: {
 				user: mockUser,
@@ -53,7 +53,7 @@ describe('controller to save info about successful uploads', () => {
 		);
 
 		const expected = Object.assign({}, mockRequestData, {
-			breakPoints: [],
+			breakpoints: [],
 		});
 
 		expect(mockInsert).toHaveBeenCalledWith(expected);
@@ -117,7 +117,7 @@ describe('controller to save info about successful uploads', () => {
 		const mockNext = jest.fn() as NextFunction;
 
 		const failedToSave = Object.assign({}, mockRequestData, {
-			breakPoints: [],
+			breakpoints: [],
 		});
 
 		const expectedErr = DBWriteError.create(

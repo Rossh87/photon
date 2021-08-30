@@ -124,7 +124,6 @@ describe('The ImageDisplay component', () => {
 				put: jest.fn(() => {
 					return new Promise<any>((res, rej) => {
 						setTimeout(() => {
-							console.log('resolved!');
 							res(mockResponseData);
 						}, 300);
 					});
