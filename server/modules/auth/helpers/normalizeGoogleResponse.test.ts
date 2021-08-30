@@ -1,40 +1,40 @@
 import {
-    mockGoogleOAuthResponse,
-    mockUserFromGoogleResponse,
+	mockGoogleOAuthResponse,
+	mockUserFromGoogleResponse,
 } from './mockData';
 import {
-    normalizeGoogleResponse,
-    GoogleNormalizationError,
+	normalizeGoogleResponse,
+	GoogleNormalizationError,
 } from './normalizeGoogleResponse';
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
 import * as E from 'fp-ts/lib/Either';
 
 let mockData = Object.assign<{}, IGoogleOAuthResponse>(
-    {},
-    mockGoogleOAuthResponse
+	{},
+	mockGoogleOAuthResponse
 );
 
 // cleanup any changes our individual tests make to the mock data object
 beforeEach(() => (mockData = Object.assign({}, mockGoogleOAuthResponse)));
 
 describe('Google OAuth response normalizer', () => {
-    it('returns a correctly populated instance of User data', () => {
-        const received = normalizeGoogleResponse(mockData);
-        expect(received).toEqual(E.right(mockUserFromGoogleResponse));
-    });
+	it('returns a correctly populated instance of User data', () => {
+		const received = normalizeGoogleResponse(mockData);
+		expect(received).toEqual(E.right(mockUserFromGoogleResponse));
+	});
 
-    it('returns an error that lists missing fields if response is incomplete', () => {
-        Object.defineProperty(mockData, 'resourceName', {
-            value: null,
-        });
+	it('returns an error that lists missing fields if response is incomplete', () => {
+		Object.defineProperty(mockData, 'resourceName', {
+			value: null,
+		});
 
-        const expectedErr = GoogleNormalizationError.create(
-            ['OAuthProviderID'],
-            mockData
-        );
+		const expectedErr = GoogleNormalizationError.create(
+			['OAuthProviderID'],
+			mockData
+		);
 
-        const received = normalizeGoogleResponse(mockData);
+		const received = normalizeGoogleResponse(mockData);
 
-        expect(received).toEqual(E.left(expectedErr));
-    });
+		expect(received).toEqual(E.left(expectedErr));
+	});
 });

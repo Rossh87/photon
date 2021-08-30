@@ -7,10 +7,11 @@ import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import { InputLabel } from '@material-ui/core';
 import { pipe } from 'fp-ts/lib/function';
-import { map, fromNullable, Applicative } from 'fp-ts/lib/Option';
+import { map, fromNullable, Applicative, fold } from 'fp-ts/lib/Option';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { makeStyles } from '@material-ui/styles';
 import theme from '../../theme';
+import { TUserState } from '../../Auth/domain/authDomainTypes';
 
 const useStyles = makeStyles({
 	fileForm: {
@@ -54,31 +55,39 @@ interface IProps {
 	uploadDispatch: Dispatch<TUploaderActions>;
 	acceptedExtensions: Array<string>;
 	submitIsDisabled: boolean;
-	ownerID: string | undefined;
+	user: TUserState;
 	selectedFiles: TSelectedFilesState;
 }
 
 const UploadForm: React.FunctionComponent<IProps> = ({
-	ownerID,
+	user,
 	acceptedExtensions,
 	submitIsDisabled,
 	uploadDispatch,
 	selectedFiles,
 }) => {
 	const classes = useStyles();
-	
+
 	// does nothing if ownerID or FileList is nullable
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const reset = () => (e.target.files = null);
+
 		pipe(
 			sequenceT(Applicative)(
 				fromNullable(e.target.files),
-				fromNullable(ownerID)
+				fromNullable(user)
 			),
 			map((fileListArgs) =>
 				uploadDispatch({ type: 'FILES_CHANGED', payload: fileListArgs })
 			),
-			map(() => (e.target.value = ''))
+			// We reset the native file input after every change, whether
+			// it passes pre-processing or not.
+			// This keeps the native file input from getting out-of-sync
+			// with application state--we don't ever want files from previous
+			// change events to end up in the pre-processing flow a second time.
+			fold(reset, reset)
 		);
+	};
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();

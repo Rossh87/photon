@@ -9,7 +9,7 @@ import {
 	getSemigroup as getNEASemigroup,
 	foldMap,
 } from 'fp-ts/lib/NonEmptyArray';
-import { Either, isLeft } from 'fp-ts/lib/Either';
+import { Either, isLeft, right } from 'fp-ts/lib/Either';
 import { _processUploadInitSuccess } from './processUploadInitSuccess';
 import {
 	_requestResumableUpload,
@@ -18,7 +18,7 @@ import {
 import {
 	IUploadURIMetadata,
 	IUploadsResponsePayload,
-} from '../sharedUploadTypes';
+} from 'sharedTypes/Upload';
 import { flow } from 'fp-ts/lib/function';
 
 const failedUploadInitSG = getNEASemigroup<ResumableUploadCreationErr>();
@@ -51,7 +51,10 @@ const onMixed = (
 	as: NonEmptyArray<IUploadURIMetadata>
 ): IUploadsResponsePayload => ({ successes: as, failures: es });
 
+// Note that we re-wrap this in a 'Right' for compatibility with the
+// control flow in the controller
 export const toResponsePayload = flow(
 	eithersToThese,
-	Thfold(onErrsOnly, onSuccessOnly, onMixed)
+	Thfold(onErrsOnly, onSuccessOnly, onMixed),
+	right
 );

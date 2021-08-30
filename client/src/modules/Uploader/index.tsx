@@ -13,7 +13,8 @@ import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
 import { useFPReducer } from 'react-use-fp';
 import { useAuthState } from '../Auth/state/useAuthState';
-import { Paper, Snackbar } from '@material-ui/core';
+import { Paper, Snackbar, IconButton } from '@material-ui/core';
+import { CloseOutlined } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 import { canProcess } from './state/reducerUtils/canProcess';
 import { updateDisplayName } from './useCases/updateDisplayName';
@@ -68,6 +69,17 @@ const Uploader: React.FunctionComponent = () => {
 						},
 					}}
 					message={err.message}
+					open={true}
+					action={
+						<IconButton
+							aria-label="close-upload-component-err"
+							onClick={() =>
+								uploadDispatch({ type: 'CLEAR_COMPONENT_ERR' })
+							}
+						>
+							<CloseOutlined />
+						</IconButton>
+					}
 				></Snackbar>
 			)),
 			OFoldW(constVoid, identity)
@@ -83,7 +95,7 @@ const Uploader: React.FunctionComponent = () => {
 				<UploadForm
 					submitIsDisabled={submitIsDisabled}
 					uploadDispatch={uploadDispatch}
-					ownerID={user?._id}
+					user={user}
 					acceptedExtensions={acceptedExtensions}
 					selectedFiles={uploadState.selectedFiles}
 				/>

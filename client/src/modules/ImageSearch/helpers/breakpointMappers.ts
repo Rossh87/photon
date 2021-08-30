@@ -1,9 +1,6 @@
 import { flow, pipe } from 'fp-ts/lib/function';
 import { PayloadFPReader } from 'react-use-fp';
-import {
-	ISavedBreakpoint,
-	TSavedBreakpoints,
-} from '../../../../../sharedTypes/Breakpoint';
+import { ISavedBreakpoint, TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import {
 	IBreakpointUI,
 	TBreakpointFormValidationErrs,

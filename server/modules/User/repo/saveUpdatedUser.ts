@@ -1,4 +1,4 @@
-import { TDBUser, IUserProfileProperties } from 'sharedTypes/User';
+import { TDBUser } from 'sharedTypes/User';
 import { MongoClient, FilterQuery, UpdateQuery } from 'mongodb';
 import { getCollection, DBError, tryUpdateOne } from '../../../core/repo';
 import * as TE from 'fp-ts/lib/TaskEither';

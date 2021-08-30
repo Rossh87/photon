@@ -9,8 +9,8 @@ import {
 	ISavedBreakpoint,
 	TBreakpointQueryType,
 	TSavedBreakpointslotUnit,
-} from '../../../../../sharedTypes/Breakpoint';
-import { IDBUpload } from '../../../../../sharedTypes/Upload';
+} from 'sharedTypes/Breakpoint';
+import { IDBUpload } from 'sharedTypes/Upload';
 import { BaseError } from '../../../core/error';
 import { makeNewUIBreakpoint } from '../helpers/makeNewUIBreakpoint';
 

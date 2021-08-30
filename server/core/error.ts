@@ -20,6 +20,11 @@ export const HTTPErrorTypes: Record<string, HTTPErrorType> = {
 		clientMessage: 'Needed credentials were invalid or missing',
 	},
 
+	FORBIDDEN: {
+		status: 403,
+		clientMessage: 'Attempted to access an unauthorized resource',
+	},
+
 	INTERNAL_SERVER_ERROR: {
 		status: 500,
 		clientMessage:

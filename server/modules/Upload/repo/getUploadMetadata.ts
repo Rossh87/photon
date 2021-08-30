@@ -1,4 +1,4 @@
-import { ICombinedUploadRequestMetadata } from '../sharedUploadTypes';
+import { ICombinedUploadRequestMetadata } from 'sharedTypes/Upload';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { getCollection, tryFindArray } from '../../../core/repo';
 import { pipe } from 'fp-ts/lib/function';

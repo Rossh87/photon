@@ -1,5 +1,5 @@
 import { TDBUser } from 'sharedTypes/User';
-import { ICombinedUploadRequestMetadata } from '../sharedUploadTypes';
+import { ICombinedUploadRequestMetadata } from 'sharedTypes/Upload';
 import { getUploadMetadataController } from './getUploadMetadataController';
 import {
 	mockUserFromDatabase,

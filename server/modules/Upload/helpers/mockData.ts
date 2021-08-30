@@ -1,11 +1,10 @@
-import {
-	IUploadRequestMetadata,
-	ICombinedUploadRequestMetadata,
-} from '../sharedUploadTypes';
 import { CreateResumableUploadResponse } from '@google-cloud/storage';
-import { ObjectID, ObjectId, WithId } from 'mongodb';
-import { IDBUpload } from '../../../../sharedTypes/Upload';
-import { TWithoutID } from '../../../../sharedTypes/Upload';
+import { ObjectId } from 'mongodb';
+import {
+	IDBUpload,
+	IUploadRequestMetadata,
+	IUploadsRequestPayload,
+} from 'sharedTypes/Upload';
 import { ISavedBreakpoint } from 'sharedTypes/Breakpoint';
 
 export const mockUploadRequestObject: IUploadRequestMetadata = {
@@ -16,6 +15,10 @@ export const mockUploadRequestObject: IUploadRequestMetadata = {
 	primaryColor: 'red',
 	mediaType: 'image/jpeg',
 	width: 250,
+};
+
+export const mockUploadsRequestPayload: IUploadsRequestPayload = {
+	uploadRequests: [{ ...mockUploadRequestObject }],
 };
 
 export const mockExistingBreakpoints: ISavedBreakpoint[] = [

@@ -62,6 +62,7 @@ export const mockUserFromGoogleResponse: IUserProfileProperties = {
 
 export const mockObjectID = ObjectId.createFromTime(Date.now());
 
+// note that this user is
 export const mockUserFromDatabase: TDBUser = {
 	_id: mockObjectID,
 	OAuthProviderName: 'google',
@@ -74,7 +75,7 @@ export const mockUserFromDatabase: TDBUser = {
 	OAuthEmailVerified: true,
 	registeredDomains: ['mySite.com'],
 	uploadUsage: 100,
-	imageCount: 223,
+	imageCount: 5,
 	accessLevel: 'demo',
 };
 

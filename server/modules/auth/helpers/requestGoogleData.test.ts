@@ -9,11 +9,11 @@ import { IAsyncDeps } from '../../../core/asyncDeps';
 
 describe('requestGoogleData', () => {
 	it('calls "get" library method with the correct endpoint and headers', async () => {
-		const deps = ({
+		const deps = {
 			fetcher: {
 				get: jest.fn(() => Promise.resolve({ data: 'data' })),
 			},
-		} as unknown) as IAsyncDeps;
+		} as unknown as IAsyncDeps;
 		const mockToken = 'abc';
 
 		const received = requestGoogleData(mockToken)(deps);
@@ -32,11 +32,11 @@ describe('requestGoogleData', () => {
 
 	it("returns a Left if there's a problem with response from Google", async () => {
 		const httpErr = new Error('something failed');
-		const deps = ({
+		const deps = {
 			fetcher: {
 				get: jest.fn(() => Promise.reject(httpErr)),
 			},
-		} as unknown) as IAsyncDeps;
+		} as unknown as IAsyncDeps;
 		const mockToken = 'abc';
 
 		await pipe(

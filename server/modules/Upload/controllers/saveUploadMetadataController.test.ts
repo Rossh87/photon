@@ -59,7 +59,7 @@ describe('controller to save info about successful uploads', () => {
 		expect(mockInsert).toHaveBeenCalledWith(expected);
 	});
 
-	it('update usage metrics on session user', async () => {
+	it('updates usage metrics on session user', async () => {
 		const req = {
 			session: {
 				user: mockUser,
@@ -98,7 +98,7 @@ describe('controller to save info about successful uploads', () => {
 			{ ...mockUser },
 			{
 				uploadUsage: 1100,
-				imageCount: 224,
+				imageCount: 6,
 			}
 		);
 

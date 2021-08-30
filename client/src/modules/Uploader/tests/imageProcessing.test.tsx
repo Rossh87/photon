@@ -17,7 +17,7 @@ import {
 import { IHTTPLib } from '../../../core/sharedClientTypes';
 import { IDedupeMetadata } from '../../../../../server/modules/Upload/sharedUploadTypes';
 import {
-	simulateFileInput,
+	simulateTwoFilesInput,
 	simulateInvalidFileInput,
 } from '../../../testUtils';
 import { resetInternals } from 'react-use-fp';
@@ -100,7 +100,7 @@ describe('Uploader component when files are submitted', () => {
 		const input = screen.getByLabelText('Select Files');
 		const submitButton = screen.getByText('Submit!');
 
-		await act(async () => simulateFileInput(input));
+		await act(async () => simulateTwoFilesInput(input));
 
 		// ensure a file is actually in the UI and flagged as a duplicate displayName
 		// to make sure test is valid
@@ -147,7 +147,7 @@ describe('Uploader component when files are submitted', () => {
 
 		const submitButton = screen.getByText('Submit!');
 
-		await act(async () => simulateFileInput(input));
+		await act(async () => simulateTwoFilesInput(input));
 
 		await act(async () => userEvent.click(submitButton));
 

@@ -8,7 +8,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import { pipe } from 'fp-ts/lib/function';
 import { fromArray, map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/Option';
-import { IDBUpload } from '../../../../../sharedTypes/Upload';
+import { IDBUpload } from 'sharedTypes/Upload';
 import {
 	useImageSearchDispatch,
 	useImageSearchState,

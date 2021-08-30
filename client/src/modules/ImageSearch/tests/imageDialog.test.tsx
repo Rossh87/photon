@@ -16,10 +16,7 @@ import ImageDialog from '../ui/ImageDialog';
 import DependencyContext, {
 	createDependenciesObject,
 } from '../../../core/dependencyContext';
-import {
-	IBreakpointTransferObject,
-	IDBUpload,
-} from '../../../../../sharedTypes/Upload';
+import { IBreakpointTransferObject, IDBUpload } from 'sharedTypes/Upload';
 import { AxiosResponse } from 'axios';
 import {
 	desyncDialogComponent,

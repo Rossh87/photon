@@ -1,4 +1,4 @@
-import { IUploadRequestMetadata } from '../sharedUploadTypes';
+import { IUploadRequestMetadata } from 'sharedTypes/Upload';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { tryCatch } from 'fp-ts/lib/TaskEither';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';

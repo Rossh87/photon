@@ -5,10 +5,7 @@ import { ap } from 'fp-ts/lib/Identity';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import { createSrcset, mergeBreakpoints } from './createSrcset';
-import {
-	makeDefaultUIBreakpoint,
-	makeDefaultUIBreakpoints,
-} from '../helpers/makeDefaultUIBreakpoints';
+import { makeDefaultUIBreakpoints } from '../helpers/makeDefaultUIBreakpoints';
 import { breakpointToBreakpointUI } from '../helpers/breakpointMappers';
 import { TUserBreakpointUI } from '../state/imageDialogState';
 

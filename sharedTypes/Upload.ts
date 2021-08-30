@@ -24,7 +24,7 @@ export interface IDBUpload extends ICombinedUploadRequestMetadata {
 	breakpoints: ISavedBreakpoint[];
 }
 
-export interface IUploadRequestMetadata extends Record<string, any> {
+export interface IUploadRequestMetadata {
 	ownerID: string;
 	displayName: string;
 	mediaType: TMediaType;

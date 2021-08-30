@@ -3,7 +3,7 @@ import {
 	_requestResumableUpload,
 	requestResumableUpload,
 } from '../helpers/requestResumableUpload';
-import { IUploadRequestMetadata } from '../sharedUploadTypes';
+import { IUploadRequestMetadata } from 'sharedTypes/Upload';
 import {
 	map as NEAMap,
 	sequence as NEASequence,

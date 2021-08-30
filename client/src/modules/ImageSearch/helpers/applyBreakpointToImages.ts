@@ -1,6 +1,6 @@
 import { map as ArrMap } from 'fp-ts/Array';
 import { pipe } from 'fp-ts/lib/function';
-import { IDBUpload } from '../../../../../sharedTypes/Upload';
+import { IDBUpload } from 'sharedTypes/Upload';
 import { IBreakpointUpdateTransferObject } from '../state/imageSearchStateTypes';
 
 // s.breakpoints.map((bp) =>

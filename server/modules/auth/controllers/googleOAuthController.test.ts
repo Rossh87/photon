@@ -54,13 +54,13 @@ describe('google OAuth callback controller', () => {
 			},
 		} as Request;
 
-		const res = ({ redirect: jest.fn() } as unknown) as Response;
+		const res = { redirect: jest.fn() } as unknown as Response;
 
 		const next = jest.fn();
 
 		const deps = {
 			repoClient: repoClient,
-			fetcher: (mockAxios as unknown) as IFetcher,
+			fetcher: mockAxios as unknown as IFetcher,
 		} as IAsyncDeps;
 
 		await googleOAuthController(deps)(req, res, next);
@@ -84,7 +84,7 @@ describe('google OAuth callback controller', () => {
 
 		const deps = {
 			repoClient: repoClient,
-			fetcher: (mockAxios as unknown) as IFetcher,
+			fetcher: mockAxios as unknown as IFetcher,
 		} as IAsyncDeps;
 
 		const missingTokenErr = new MissingOAuthTokenErr(
@@ -118,7 +118,7 @@ describe('google OAuth callback controller', () => {
 
 		const deps = {
 			repoClient: repoClient,
-			fetcher: (brokenFetcher as unknown) as IFetcher,
+			fetcher: brokenFetcher as unknown as IFetcher,
 		} as IAsyncDeps;
 
 		const failedExternalRequestErr = new GoogleDataRequestErr(

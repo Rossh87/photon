@@ -9,7 +9,7 @@ import {
 } from '../helpers/mockData';
 import { NextFunction, Request, Response } from 'express';
 import { TDedupeNamesResponse } from '../sharedUploadTypes';
-import { IBreakpointTransferObject } from '../../../../sharedTypes/Upload';
+import { IBreakpointTransferObject } from 'sharedTypes/Upload';
 import { mockObjectID } from '../../auth/helpers/mockData';
 import { updateBreakpointsController } from './updateBreakpointsController';
 

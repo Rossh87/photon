@@ -69,16 +69,16 @@ describe('The ImageDisplay component', () => {
 			</MockProvider>
 		);
 
-		const getDialogElement = () => screen.getByRole('dialog');
+		const getDialogElement = () => screen.queryByRole('dialog');
 
 		const imgThumbnail = screen.getByText('even more cats');
 
 		// ensure test is valid by checking that Dialog is *closed*, i.e. not mounted
-		expect(getDialogElement).toThrow();
+		expect(getDialogElement()).not.toBeInTheDocument();
 
 		act(() => userEvent.click(imgThumbnail));
 
-		expect(getDialogElement()).toBeTruthy();
+		expect(getDialogElement()).toBeInTheDocument();
 	});
 
 	describe('when breakpoints are updated and the dialog is closed and reopened', () => {

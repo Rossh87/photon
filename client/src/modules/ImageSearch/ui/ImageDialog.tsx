@@ -24,7 +24,7 @@ import {
 	useImageSearchDispatch,
 } from '../state/useImageSearchState';
 import { createSrcset } from '../useCases/createSrcset';
-import { IDBUpload } from '../../../../../sharedTypes/Upload';
+import { IDBUpload } from 'sharedTypes/Upload';
 import BreakPointListItem from './BreakPointListItem';
 import { mapBreakpointsToUI } from '../useCases/mapBreakpointsToUI';
 import { useFPReducer } from 'react-use-fp';

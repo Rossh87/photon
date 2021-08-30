@@ -1,5 +1,5 @@
 import { IDBUpload } from 'sharedTypes/Upload';
-import { TSavedBreakpoints } from '../../../../../sharedTypes/Breakpoint';
+import { TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import { BaseError } from '../../../core/error';
 
 export interface IImageSearchState {

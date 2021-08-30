@@ -12,26 +12,30 @@ export type TGoogleRequestResult = TE.TaskEither<
 	IGoogleOAuthResponse
 >;
 
-export const requestGoogleData = (
-	token: string
-): ReaderTaskEither<IAsyncDeps, GoogleDataRequestErr, IGoogleOAuthResponse> => (
-	asyncDeps
-) => {
-	const requestUserData = () =>
-		asyncDeps.fetcher.get<IGoogleOAuthResponse>(
-			GOOGLE_PEOPLE_OAUTH_ENDPOINT,
-			{
-				headers: {
-					Authorization: 'Bearer ' + token,
-				},
-			}
-		);
+export const requestGoogleData =
+	(
+		token: string
+	): ReaderTaskEither<
+		IAsyncDeps,
+		GoogleDataRequestErr,
+		IGoogleOAuthResponse
+	> =>
+	(asyncDeps) => {
+		const requestUserData = () =>
+			asyncDeps.fetcher.get<IGoogleOAuthResponse>(
+				GOOGLE_PEOPLE_OAUTH_ENDPOINT,
+				{
+					headers: {
+						Authorization: 'Bearer ' + token,
+					},
+				}
+			);
 
-	return pipe(
-		TE.tryCatch(requestUserData, GoogleDataRequestErr.create),
-		TE.map((d) => d.data)
-	);
-};
+		return pipe(
+			TE.tryCatch(requestUserData, GoogleDataRequestErr.create),
+			TE.map((d) => d.data)
+		);
+	};
 
 export class GoogleDataRequestErr extends BaseError {
 	public static create(e: any) {

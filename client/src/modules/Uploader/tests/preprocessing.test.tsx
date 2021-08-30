@@ -2,7 +2,8 @@ import React from 'react';
 import Uploader from '../index';
 import { AuthStateContext } from '../../Auth/state/useAuthState';
 import { IAuthState } from '../../Auth/state/authStateTypes';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { mockUser } from './mockData';
 import { getOversizeImageFile } from '../../../testUtils/imageUtils';
@@ -16,10 +17,13 @@ import {
 	TDedupeNamesResponse,
 } from 'server/modules/Upload/sharedUploadTypes';
 import {
-	simulateFileInput,
+	simulateTwoFilesInput,
 	simulateInvalidFileInput,
+	simulateSingleFileInput,
 } from '../../../testUtils';
 import { resetInternals } from 'react-use-fp';
+import { TAuthorizedUserResponse } from 'sharedTypes/User';
+import { MAX_DEMO_UPLOAD_COUNT } from 'sharedTypes/CONSTANTS';
 
 const mockAuthState: IAuthState = {
 	user: mockUser,
@@ -54,7 +58,7 @@ describe('Uploader component', () => {
 
 		const input = screen.getByLabelText('Select Files');
 
-		await act(async () => simulateFileInput(input));
+		await act(async () => simulateTwoFilesInput(input));
 
 		const selectedFilesUI = screen.getAllByText('testImage', {
 			exact: false,
@@ -155,7 +159,7 @@ describe('Uploader component', () => {
 
 			const fileInput = screen.getByLabelText('Select Files');
 
-			await act(async () => simulateFileInput(fileInput));
+			await act(async () => simulateTwoFilesInput(fileInput));
 
 			const selectedFileUI = screen.getByText('testImage1');
 
@@ -196,7 +200,7 @@ describe('Uploader component', () => {
 
 			const fileInput = screen.getByLabelText('Select Files');
 
-			await act(async () => simulateFileInput(fileInput));
+			await act(async () => simulateTwoFilesInput(fileInput));
 
 			const selectedFileUI = screen.getByText('testImage1');
 
@@ -237,7 +241,7 @@ describe('Uploader component', () => {
 
 			const fileInput = screen.getByLabelText('Select Files');
 
-			await act(async () => simulateFileInput(fileInput));
+			await act(async () => simulateTwoFilesInput(fileInput));
 
 			const deleteButton = screen.getAllByLabelText('remove file')[0];
 
@@ -273,7 +277,7 @@ describe('Uploader component', () => {
 
 			const fileInput = screen.getByLabelText('Select Files');
 
-			await act(async () => simulateFileInput(fileInput));
+			await act(async () => simulateTwoFilesInput(fileInput));
 
 			const duplicateNameErrs = screen.getAllByText('already in use', {
 				exact: false,
@@ -368,7 +372,7 @@ describe('Uploader component', () => {
 
 			const fileInput = screen.getByLabelText('Select Files');
 
-			await act(async () => simulateFileInput(fileInput));
+			await act(async () => simulateTwoFilesInput(fileInput));
 
 			// ensure presence of a duplicate displayName message
 			const duplicate = screen.getByText('already in use', {
@@ -397,6 +401,51 @@ describe('Uploader component', () => {
 			expect(() =>
 				screen.getByText('already in use', { exact: false })
 			).toThrow();
+		});
+	});
+
+	describe('when number of submitted files is too large for demo mode', () => {
+		it('displays a flash error message', async () => {
+			// these mocks should never be called
+			const mockAxios = jest.fn() as unknown as IHTTPLib;
+
+			const mockResizer = jest.fn() as TImageResizer;
+
+			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
+
+			// simulate user with all their demo-mode uploads used up
+			(authState.user as TAuthorizedUserResponse).imageCount =
+				MAX_DEMO_UPLOAD_COUNT - 1;
+
+			render(
+				<DependencyContext.Provider value={mockDeps}>
+					<AuthStateContext.Provider value={authState}>
+						<Uploader />
+					</AuthStateContext.Provider>
+				</DependencyContext.Provider>
+			);
+
+			const fileInput = screen.getByLabelText(
+				'Select Files'
+			) as HTMLInputElement;
+
+			simulateTwoFilesInput(fileInput);
+
+			await screen.findByText('while app is in demo mode', {
+				exact: false,
+			});
+
+			const closeErrButton = screen.getByRole('button', {
+				name: 'close-upload-component-err',
+			});
+
+			userEvent.click(closeErrButton);
+
+			expect(
+				screen.queryByText('while app is in demo mode', {
+					exact: false,
+				})
+			).not.toBeInTheDocument();
 		});
 	});
 });

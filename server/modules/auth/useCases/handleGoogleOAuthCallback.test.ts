@@ -71,7 +71,7 @@ describe('callback fn to handle Google OAuth access token', () => {
 			expect(saved).toMatchObject(mockUserFromGoogleResponse);
 		});
 
-		it.only('adds correct additional properties to a new user before first save', async () => {
+		it('adds correct additional properties to a new user before first save', async () => {
 			const deps = {
 				repoClient: repoClient,
 				fetcher: mockAxios as unknown as IFetcher,
