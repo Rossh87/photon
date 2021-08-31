@@ -1,6 +1,3 @@
 export { extractOAuthToken } from './extractOAuthToken';
-export {
-	normalizeGoogleResponse,
-	TGoogleNormalizerResult,
-} from './normalizeGoogleResponse';
+export { normalizeGoogleResponse } from './normalizeGoogleResponse';
 export { updateOrAddUser, TUpdateOrAddUserResult } from './updateOrAddUser';
