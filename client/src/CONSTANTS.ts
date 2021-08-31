@@ -6,6 +6,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
  */
 export const AUTH_API_ENDPOINT = 'http://localhost:8000/auth/user';
 export const GOOGLE_OAUTH_ENDPOINT = 'http://localhost:8000/connect/google';
+export const GITHUB_OAUTH_ENDPOINT = 'http://localhost:8000/connect/github';
 export const REQUEST_UPLOAD_URI_ENDPOINT =
 	'http://localhost:8000/upload/request';
 export const REQUEST_USER_IMG_DATA_ENDPOINT =

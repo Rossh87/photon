@@ -2,10 +2,8 @@ import {
 	mockGoogleOAuthResponse,
 	mockUserFromGoogleResponse,
 } from './mockData';
-import {
-	normalizeGoogleResponse,
-	GoogleNormalizationError,
-} from './normalizeGoogleResponse';
+import { normalizeGoogleResponse } from './normalizeGoogleResponse';
+import { OAuthDataNormalizationError } from '../domain/OAuthDataNormalizationError';
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
 import * as E from 'fp-ts/lib/Either';
 
@@ -28,7 +26,7 @@ describe('Google OAuth response normalizer', () => {
 			value: null,
 		});
 
-		const expectedErr = GoogleNormalizationError.create(
+		const expectedErr = OAuthDataNormalizationError.create(
 			['OAuthProviderID'],
 			mockData
 		);

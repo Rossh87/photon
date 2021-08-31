@@ -2,12 +2,24 @@ import grant, { GrantConfig } from 'grant';
 
 const g_client_secret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
 const g_client_id = process.env.GOOGLE_OAUTH_CLIENT_APP_ID;
+const github_client_id = process.env.GITHUB_OAUTH_CLIENT_ID;
+const github_client_secret = process.env.GITHUB_OAUTH_CLIENT_SECRET;
 
-if (g_client_id === undefined || g_client_secret === undefined) {
-	throw new Error(
-		'Grant config: missing needed credentials. Please check env variables'
-	);
-}
+const credentials = [
+	g_client_id,
+	g_client_secret,
+	github_client_id,
+	github_client_secret,
+];
+
+// completely implode if these are missing--app won't work at all
+credentials.forEach((cred) => {
+	if (cred === undefined) {
+		throw new Error(
+			'Grant config: missing needed credentials. Please check env variables'
+		);
+	}
+});
 
 const grantConfig: GrantConfig = {
 	defaults: {
@@ -25,6 +37,14 @@ const grantConfig: GrantConfig = {
 		],
 		nonce: true,
 		callback: 'http://localhost:8000/auth/google/callback',
+	},
+	github: {
+		pkce: true,
+		client_id: github_client_id,
+		secret: github_client_secret,
+		scope: ['read:user'],
+		nonce: true,
+		callback: 'http://localhost:8000/auth/github/callback',
 	},
 };
 

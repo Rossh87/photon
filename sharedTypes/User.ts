@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 
-export type TOAuthProvider = 'google';
+export type TOAuthProvider = 'google' | 'github';
 export type TAccessLevel = 'demo' | 'admin' | 'full';
 
 export interface IUserServiceUsageProperties {

@@ -9,14 +9,15 @@ import { IUserProfileProperties } from 'sharedTypes/User';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { OAuthDataNormalizationError } from '../domain/OAuthDataNormalizationError';
 
 export type TGoogleNormalizerResult = E.Either<
-	GoogleNormalizationError,
+	OAuthDataNormalizationError,
 	IUserProfileProperties
 >;
 
 export const normalizeGoogleResponse = (
-	a: IGoogleOAuthResponse
+	a: Partial<IGoogleOAuthResponse>
 ): TGoogleNormalizerResult => {
 	const result: any = {
 		OAuthProviderName: 'google',
@@ -42,31 +43,13 @@ export const normalizeGoogleResponse = (
 
 	return missingFields.length
 		? E.left(
-				GoogleNormalizationError.create(
+				OAuthDataNormalizationError.create(
 					missingFields as NonEmptyArray<string>,
 					a
 				)
 		  )
 		: E.right(result as IUserProfileProperties);
 };
-
-export class GoogleNormalizationError extends BaseError {
-	static create(
-		errs: NonEmptyArray<string>,
-		received: Partial<IGoogleOAuthResponse>
-	) {
-		return new GoogleNormalizationError(errs, received);
-	}
-
-	constructor(
-		errs: NonEmptyArray<string>,
-		received: Partial<IGoogleOAuthResponse>
-	) {
-		const errString = errs.join(', ');
-		const devMessage = `OAuth response normalization failed.  The following properties are missing or invald: ${errString}`;
-		super(devMessage, HTTPErrorTypes.BAD_GATEWAY, received);
-	}
-}
 
 const getPrimaryImageURL: (
 	images?: Array<IGooglePhotosObject>
