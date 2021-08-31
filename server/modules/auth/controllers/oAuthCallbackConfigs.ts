@@ -14,7 +14,7 @@ import { normalizeGoogleResponse } from '../helpers/normalizeGoogleResponse';
 export interface IOAuthCallbackConfig {
 	OAuthProviderName: TOAuthProvider;
 	normalizer: (
-		a: any
+		a: unknown
 	) => E.Either<OAuthDataNormalizationError, IUserProfileProperties>;
 	tokenExchangeEndpoint: string;
 }

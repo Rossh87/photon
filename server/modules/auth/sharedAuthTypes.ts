@@ -1,6 +1,29 @@
 import { AxiosInstance } from 'axios';
 import * as t from 'io-ts';
 
+const MetadataSourceObject = t.type({
+	type: t.string,
+	id: t.string,
+});
+
+export const GoogleMetadataObject = t.intersection([
+	t.type({
+		primary: t.boolean,
+		source: MetadataSourceObject,
+	}),
+	t.partial({
+		verified: t.boolean,
+	}),
+]);
+
+export const GooglePhotosObject = t.type({
+	url: t.string,
+	metadata: GoogleMetadataObject,
+	primary: t.boolean,
+});
+
+export const GooglePhotosObjects = t.array(GooglePhotosObject);
+
 // Begin Google OAuth flow types
 export type TOAuthAccessToken = string;
 
@@ -28,16 +51,40 @@ export interface IGoogleNamesObject {
 	displayNameLastFirst: string;
 	unstructuredName: string;
 }
+
+export const GoogleNamesObject = t.intersection([
+	t.type({
+		metadata: GoogleMetadataObject,
+		displayName: t.string,
+	}),
+	t.partial({
+		familyName: t.string,
+		givenName: t.string,
+		displayNameLastFirst: t.string,
+		unstructuredName: t.string,
+	}),
+]);
+
+export const GoogleNamesObjects = t.array(GoogleNamesObject);
+
 export interface IGoogleEmailsObject {
 	metadata: IGoogleMetadataObject;
 	value: string;
 }
 
+export const GoogleEmailObject = t.type({
+	metadata: GoogleMetadataObject,
+	value: t.string,
+});
+
+export const GoogleEmailObjects = t.array(GoogleEmailObject);
+
 export interface IGooglePhotosObject {
 	url: string;
 	metadata: IGoogleMetadataObject;
-	primary: true;
+	primary: boolean;
 }
+
 export interface IGoogleMetadataObject {
 	primary: boolean;
 	verified?: boolean;
@@ -46,6 +93,21 @@ export interface IGoogleMetadataObject {
 		id: string;
 	};
 }
+
+const GoogleOAuthRequiredProps = t.type({
+	emailAddresses: GoogleEmailObjects,
+	names: GoogleNamesObjects,
+	resourceName: t.string,
+});
+
+const GoogleOAuthOptionalProps = t.partial({
+	photos: GooglePhotosObjects,
+});
+
+export const GoogleOAuthResponse = t.intersection([
+	GoogleOAuthRequiredProps,
+	GoogleOAuthOptionalProps,
+]);
 
 // Begin Github OAuth flow types
 // with token scope "read:user"

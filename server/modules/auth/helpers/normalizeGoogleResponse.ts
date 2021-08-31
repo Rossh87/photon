@@ -4,91 +4,47 @@ import {
 	IGoogleNamesObject,
 	IGoogleEmailsObject,
 	TGoogleOAuthSubData,
+	GoogleOAuthResponse,
+	GoogleMetadataObject,
 } from '../sharedAuthTypes';
 import { IUserProfileProperties } from 'sharedTypes/User';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { OAuthDataNormalizationError } from '../domain/OAuthDataNormalizationError';
+import * as t from 'io-ts';
+import { pipe } from 'fp-ts/lib/function';
 
-export type TGoogleNormalizerResult = E.Either<
-	OAuthDataNormalizationError,
-	IUserProfileProperties
->;
+type DecodedGoogleResponse = t.TypeOf<typeof GoogleOAuthResponse>;
+type GoogleMetaData = t.TypeOf<typeof GoogleMetadataObject>;
 
-export const normalizeGoogleResponse = (
-	a: Partial<IGoogleOAuthResponse>
-): TGoogleNormalizerResult => {
-	const result: any = {
+const getPrimary = <T extends { metadata: GoogleMetaData }>(as: Array<T>) =>
+	as.filter((o) => o.metadata.primary === true)[0];
+
+const googleResponseToProfileProps = (
+	res: DecodedGoogleResponse
+): IUserProfileProperties => {
+	const { displayName, familyName, givenName } = getPrimary(res.names);
+	const emailData = getPrimary(res.emailAddresses);
+	const photoURL = res.photos && getPrimary(res.photos);
+	const OAuthProviderID = res.resourceName.split('/')[1];
+
+	return {
 		OAuthProviderName: 'google',
+		OAuthProviderID,
+		thumbnailURL: photoURL?.url,
+		displayName: displayName,
+		familyName,
+		givenName,
+		OAuthEmail: emailData.value,
+		OAuthEmailVerified: emailData.metadata.verified,
 	};
-
-	const photoURL = a.photos ? getPrimaryImageURL(a.photos) : null;
-	const nameData = a.names ? processNameData(a.names) : null;
-	const emailData = a.emailAddresses
-		? getPrimaryEmail(a.emailAddresses)
-		: null;
-
-	result.OAuthProviderID = a.resourceName?.split('/')[1];
-	result.thumbnailURL = photoURL;
-	result.displayName = nameData?.displayName;
-	result.familyName = nameData?.familyName;
-	result.givenName = nameData?.givenName;
-	result.OAuthEmail = emailData?.OAuthEmail;
-	result.OAuthEmailVerified = emailData?.OAuthEmailVerified;
-
-	const missingFields = Object.keys(result as IUserProfileProperties).reduce<
-		Array<string>
-	>((errs, key) => (result[key] ? errs : [...errs, key]), []);
-
-	return missingFields.length
-		? E.left(
-				OAuthDataNormalizationError.create(
-					missingFields as NonEmptyArray<string>,
-					a
-				)
-		  )
-		: E.right(result as IUserProfileProperties);
 };
 
-const getPrimaryImageURL: (
-	images?: Array<IGooglePhotosObject>
-) => string | null = (images) => {
-	const res = images
-		? images.filter((o) => o.metadata.primary === true)
-		: null;
-	return res && res.length ? res[0].url : null;
-};
-
-const processNameData: (
-	names?: Array<IGoogleNamesObject>
-) => Partial<IUserProfileProperties> | null = (names) => {
-	const primaryName = names
-		? names.filter((o) => o.metadata.primary === true)
-		: null;
-
-	if (primaryName?.length) {
-		const { displayName, familyName, givenName } = primaryName[0];
-		return { displayName, familyName, givenName };
-	} else {
-		return null;
-	}
-};
-
-const getPrimaryEmail: (
-	emails?: Array<IGoogleEmailsObject>
-) => Partial<IUserProfileProperties> | null = (emails) => {
-	const primaryEmails = emails
-		? emails.filter((o) => o.metadata.primary === true)
-		: null;
-
-	if (primaryEmails?.length) {
-		const result = {
-			OAuthEmail: primaryEmails[0].value,
-			OAuthEmailVerified: primaryEmails[0].metadata.verified,
-		};
-		return result;
-	} else {
-		return null;
-	}
-};
+export const normalizeGoogleResponse = (res: unknown) =>
+	pipe(
+		res,
+		GoogleOAuthResponse.decode,
+		E.map(googleResponseToProfileProps),
+		E.mapLeft((e) => OAuthDataNormalizationError.create(e, res))
+	);
