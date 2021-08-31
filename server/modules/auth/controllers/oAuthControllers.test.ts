@@ -16,7 +16,7 @@ import { makeOAuthCallbackController } from './makeOAuthCallbackController';
 import { oAuthCallbackConfigs } from './oAuthCallbackConfigs';
 import { OAuthDataRequestError } from '../domain/OAuthDataRequestError';
 import { getCollection } from '../../../core/repo';
-import { TDBUser } from '../../../../sharedTypes/User';
+import { TDBUser, TUser } from '../../../../sharedTypes/User';
 
 let repoClient: MongoClient;
 let googleResponse = Object.assign({}, mockGoogleOAuthResponse);
@@ -219,7 +219,7 @@ describe('factory-provided OAuth callback controller', () => {
 				uploadUsage: 0,
 			};
 
-			const expectedSave: Omit<TDBUser, '_id'> = Object.assign(
+			const expectedSave: TUser = Object.assign(
 				mockUserFromGoogleResponse,
 				propsToAdd
 			);

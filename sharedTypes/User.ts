@@ -13,18 +13,21 @@ export interface IUserServiceUsageProperties {
 export interface IUserProfileProperties {
 	OAuthProviderName: TOAuthProvider;
 	OAuthProviderID: string;
-	thumbnailURL: string;
+	thumbnailURL?: string;
 	displayName: string;
-	familyName: string;
-	givenName: string;
+	familyName?: string;
+	givenName?: string;
 	OAuthEmail: string;
-	OAuthEmailVerified: boolean;
+	OAuthEmailVerified?: boolean;
 	preferredEmail?: string;
 	preferredVerified?: boolean;
 }
 
+// TUser represents combination of normalized OAuth data and properties
+// tracked by our app
 export type TUser = IUserProfileProperties & IUserServiceUsageProperties;
 
+// TUser object as recovered from database
 export type TDBUser = TUser & { _id: ObjectId };
 
 // type for data shape that will be sent to client on authorization

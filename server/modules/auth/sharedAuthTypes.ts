@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { Either } from 'fp-ts/lib/Either';
+import * as t from 'io-ts';
 
 // Begin Google OAuth flow types
 export type TOAuthAccessToken = string;
@@ -49,6 +49,22 @@ export interface IGoogleMetadataObject {
 
 // Begin Github OAuth flow types
 // with token scope "read:user"
+const GithubOAuthRequiredProps = t.type({
+	email: t.string,
+	login: t.string,
+	id: t.number,
+});
+
+const GithubOAuthOptionalProps = t.partial({
+	avatar_url: t.string,
+	name: t.string,
+});
+
+export const GithubOAuthResponse = t.intersection([
+	GithubOAuthOptionalProps,
+	GithubOAuthRequiredProps,
+]);
+
 export interface IGithubOAuthResponse {
 	login: string;
 	id: number;
