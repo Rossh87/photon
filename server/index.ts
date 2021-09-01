@@ -53,8 +53,8 @@ async function run() {
 	app.use(
 		session({
 			secret: sessionSecret,
-			saveUninitialized: true,
-			resave: false,
+			saveUninitialized: false,
+			resave: true,
 		})
 	);
 
@@ -80,10 +80,6 @@ async function run() {
 		gcs,
 		readEnv: makeReadEnv(requiredInEnv, process.env),
 	};
-
-	app.get('/', (req, res) => {
-		req.session.user ? res.json(req.session.user) : res.end('no user');
-	});
 
 	app.use('/auth/', authRoutes(asyncDeps));
 

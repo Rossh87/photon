@@ -17,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useAuthDispatch } from '../Auth/state/useAuthState';
+import { useHistory } from 'react-router';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -46,10 +47,13 @@ interface HeaderProps {
 const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 	const classes = useStyles();
 
+	const history = useHistory();
+
 	const handleLogout = () => {
 		axios
-			.get('http://localhost:8000/auth/logout')
+			.get('http://localhost:8000/auth/logout', { withCredentials: true })
 			.then(() => authDispatch({ type: 'LOGOUT_USER' }))
+			.then(() => history.push('/'))
 			.catch((e) => console.log(e));
 	};
 

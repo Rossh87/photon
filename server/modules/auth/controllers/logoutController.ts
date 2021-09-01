@@ -7,7 +7,7 @@ export const logoutController: RequestHandler = (req, res) => {
 		if (e !== undefined) {
 			throw LogoutFailureError.create(e);
 		} else {
-			res.redirect('/');
+			res.end();
 		}
 	});
 };
