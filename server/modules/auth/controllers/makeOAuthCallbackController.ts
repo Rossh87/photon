@@ -37,7 +37,7 @@ export const makeOAuthCallbackController =
 			extractOAuthToken,
 			RTE.fromEither,
 			RTE.chain(requestOAuthData(config)),
-			RTE.chain((x) => RTE.fromEither(config.normalizer(x))),
+			RTE.chainW((x) => RTE.fromEither(config.normalizer(x))),
 			RTE.chain(updateOrAddUser),
 			RTE.map(oAuthSuccessEffects),
 			RTE.mapLeft(oAuthFailureEffects),

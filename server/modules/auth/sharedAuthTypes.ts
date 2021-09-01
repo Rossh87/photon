@@ -19,7 +19,6 @@ export const GoogleMetadataObject = t.intersection([
 export const GooglePhotosObject = t.type({
 	url: t.string,
 	metadata: GoogleMetadataObject,
-	primary: t.boolean,
 });
 
 export const GooglePhotosObjects = t.array(GooglePhotosObject);
