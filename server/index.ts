@@ -5,7 +5,7 @@ const env_path = path.join(__dirname, '.env.local');
 console.log(env_path);
 dotenv.config({ path });
 
-import express from 'express';
+import express, { NextFunction } from 'express';
 import session from 'express-session';
 import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
@@ -18,10 +18,12 @@ import { TEST_DB_URI } from './CONSTANTS';
 import cors from 'cors';
 import { gcs } from './core/gcs';
 import { makeReadEnv } from './core/readEnv';
+import { errorHandler } from './modules/errorHandler';
 
 // routes
 import { authRoutes } from './modules/auth';
 import { uploadRoutes } from './modules/Upload';
+import { BaseError } from './core/error';
 
 // initialize needed objects
 const app = express();
@@ -86,6 +88,8 @@ async function run() {
 	app.use('/auth/', authRoutes(asyncDeps));
 
 	app.use('/upload/', uploadRoutes(asyncDeps));
+
+	app.use(errorHandler);
 
 	app.listen(process.env.PORT || 3000, () => {
 		console.log(`listening on ${PORT}`);

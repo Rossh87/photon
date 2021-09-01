@@ -175,3 +175,6 @@ server/configs/testDB/data/*
 
 ### secrets ###
 secrets/
+
+### server logs in development ###
+server/log.json
