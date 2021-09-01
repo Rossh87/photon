@@ -24,7 +24,7 @@ export interface IAddUserAction extends IAuthAction<TAuthorizedUserResponse> {
 	type: 'ADD_USER';
 }
 
-export interface ILogoutUserAction extends IAuthAction<null> {
+export interface ILogoutUserAction {
 	type: 'LOGOUT_USER';
 }
 
