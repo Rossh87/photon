@@ -11,8 +11,6 @@ import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
 import { reverseTwo } from '../../../core/utils/reverseCurried';
 
-export type TSaveNewUserResult = TE.TaskEither<DBWriteError, TDBUser>;
-
 // we return the saved user in case we want to send to client or some such
 export const saveNewUser =
 	(newUser: IUserProfileProperties) => (repoClient: MongoClient) =>

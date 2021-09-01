@@ -10,6 +10,12 @@ export interface IUserServiceUsageProperties {
 	accessLevel: TAccessLevel;
 }
 
+export interface IUserProfilePreferences {
+	preferredEmail?: string;
+	preferredThumbnailURL?: string;
+	preferredDisplayName?: string;
+}
+
 export interface IUserProfileProperties {
 	OAuthProviderName: TOAuthProvider;
 	OAuthProviderID: string;
@@ -19,8 +25,7 @@ export interface IUserProfileProperties {
 	givenName?: string;
 	OAuthEmail: string;
 	OAuthEmailVerified?: boolean;
-	preferredEmail?: string;
-	preferredVerified?: boolean;
+	userPreferences?: IUserProfilePreferences;
 }
 
 // TUser represents combination of normalized OAuth data and properties

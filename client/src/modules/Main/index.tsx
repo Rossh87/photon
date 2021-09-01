@@ -8,6 +8,7 @@ import Header from '../Header';
 import theme from '../theme';
 import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
+import Profile from '../Profile';
 
 import { Switch, Route } from 'react-router-dom';
 
@@ -80,6 +81,9 @@ const Paperbase: React.FunctionComponent = () => {
 							</Route>
 							<Route path="/imagesearch">
 								<ImageSearchPage />
+							</Route>
+							<Route path="/profile">
+								<Profile />
 							</Route>
 						</Switch>
 					</main>
