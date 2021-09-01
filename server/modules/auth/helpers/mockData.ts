@@ -77,6 +77,9 @@ export const mockUserFromDatabase: TDBUser = {
 	uploadUsage: 100,
 	imageCount: 5,
 	accessLevel: 'demo',
+	userPreferences: {
+		preferredDisplayName: 'TimmyTims',
+	},
 };
 
 export const mockIncomingOAuthUserData: IUserProfileProperties = {

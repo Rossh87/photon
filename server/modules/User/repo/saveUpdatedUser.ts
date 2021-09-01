@@ -22,9 +22,7 @@ export const saveUpdatedUser =
 export const _saveUpdatedUser = reverseTwo(saveUpdatedUser);
 
 // TODO: it may be helpful to abstract these types to reusable types--unclear as of yet
-const getUserFilter: (updatedUser: TDBUser) => FilterQuery<TDBUser> = (
-	updatedUser
-) => ({
+const getUserFilter = (updatedUser: TDBUser): FilterQuery<TDBUser> => ({
 	OAuthProviderID: updatedUser.OAuthProviderID,
 	OAuthProviderName: updatedUser.OAuthProviderName,
 });

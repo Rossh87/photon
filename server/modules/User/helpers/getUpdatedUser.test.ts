@@ -4,8 +4,6 @@ import {
 	mockIncomingOAuthUserData,
 } from '../../auth/helpers/mockData';
 import { TDBUser, IUserProfileProperties } from 'sharedTypes/User';
-import { pipe } from 'fp-ts/function';
-import * as E from 'fp-ts/lib/Either';
 
 let savedUser: TDBUser;
 beforeEach(() => {
@@ -21,56 +19,12 @@ describe('function to merge current OAuth user data with saved user data', () =>
 
 		Object.defineProperty(incoming, 'displayName', { value: 'newName' });
 
-		const received = getUpdatedUser(savedUser)(incoming);
+		const received = getUpdatedUser(incoming)(mockUserFromDatabase);
 
-		pipe(
-			received,
-			E.fold(
-				() => {
-					throw new Error('this should never be called');
-				},
-				(result) => expect(result.displayName).toEqual('newName')
-			)
+		expect(received.displayName).toEqual('newName');
+		expect(received.userPreferences).toEqual(
+			mockUserFromDatabase.userPreferences
 		);
-	});
-
-	it('retains the same _id property even if updates are made', () => {
-		const incoming: IUserProfileProperties = Object.assign(
-			{},
-			mockIncomingOAuthUserData
-		);
-
-		Object.defineProperty(incoming, 'displayName', { value: 'newName' });
-
-		const received = getUpdatedUser(savedUser)(incoming);
-
-		pipe(
-			received,
-			E.fold(
-				() => {
-					throw new Error('this should never be called');
-				},
-				(result) => expect(result._id).toEqual(savedUser._id)
-			)
-		);
-	});
-
-	it('passes the saved user data through if there are no updates', () => {
-		const incoming: IUserProfileProperties = Object.assign(
-			{},
-			mockIncomingOAuthUserData
-		);
-
-		const received = getUpdatedUser(savedUser)(incoming);
-
-		pipe(
-			received,
-			E.fold(
-				(result) => expect(result).toEqual(savedUser),
-				() => {
-					throw new Error('this should never be called');
-				}
-			)
-		);
+		expect(received._id).toEqual(mockUserFromDatabase._id);
 	});
 });

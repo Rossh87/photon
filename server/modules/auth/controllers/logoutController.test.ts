@@ -1,65 +1,65 @@
 import { logoutController, LogoutFailureError } from './logoutController';
 import { Request, Response, NextFunction } from 'express';
 
-const res = ({
-    redirect: jest.fn(),
-} as unknown) as Response;
+const res = {
+	redirect: jest.fn(),
+} as unknown as Response;
 
 const next = jest.fn() as NextFunction;
 
 beforeEach(() => jest.resetAllMocks());
 
 describe('express controller to log a user out', () => {
-    it('invokes session.destroy', () => {
-        const req = ({
-            session: {
-                destroy: jest.fn((cb) => cb()),
-            },
-        } as unknown) as Request;
+	it('invokes session.destroy', () => {
+		const req = {
+			session: {
+				destroy: jest.fn((cb) => cb()),
+			},
+		} as unknown as Request;
 
-        logoutController(req, res, next);
+		const res = {
+			end: jest.fn(),
+		} as unknown as Response;
 
-        expect(req.session.destroy).toHaveBeenCalledTimes(1);
-    });
+		logoutController(req, res, next);
 
-    it('does not throw if session destruction succeeds', () => {
-        const req = ({
-            session: {
-                destroy: jest.fn((cb) => cb()),
-            },
-        } as unknown) as Request;
+		expect(req.session.destroy).toHaveBeenCalledTimes(1);
+	});
 
-        const runController = () => logoutController(req, res, next);
+	it('does not throw if session destruction succeeds', () => {
+		const req = {
+			session: {
+				destroy: jest.fn((cb) => cb()),
+			},
+		} as unknown as Request;
 
-        expect(runController).not.toThrow();
-        expect(req.session.destroy).toHaveBeenCalledTimes(1);
-    });
+		const res = {
+			end: jest.fn(),
+		} as unknown as Response;
 
-    it('throws if session destruction fails', () => {
-        const failureReason = 'failed';
+		const runController = () => logoutController(req, res, next);
 
-        const req = ({
-            session: {
-                destroy: jest.fn((cb) => cb(new Error(failureReason))),
-            },
-        } as unknown) as Request;
+		expect(runController).not.toThrow();
+		expect(req.session.destroy).toHaveBeenCalledTimes(1);
+	});
 
-        const expectedErr = LogoutFailureError.create(failureReason);
+	it('throws if session destruction fails', () => {
+		const failureReason = 'failed';
 
-        const runController = () => logoutController(req, res, next);
+		const req = {
+			session: {
+				destroy: jest.fn((cb) => cb(new Error(failureReason))),
+			},
+		} as unknown as Request;
 
-        expect(runController).toThrowError(expectedErr);
-    });
+		const res = {
+			end: jest.fn(),
+		} as unknown as Response;
 
-    it('redirects to root after session destruction', () => {
-        const req = ({
-            session: {
-                destroy: jest.fn((cb) => cb()),
-            },
-        } as unknown) as Request;
+		const expectedErr = LogoutFailureError.create(failureReason);
 
-        logoutController(req, res, next);
+		const runController = () => logoutController(req, res, next);
 
-        expect(res.redirect).toHaveBeenCalledTimes(1);
-    });
+		expect(runController).toThrowError(expectedErr);
+	});
 });
