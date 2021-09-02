@@ -145,3 +145,12 @@ export class MissingCollectionOrDBError extends BaseError {
 		super(devMessage, HTTPErrorTypes.INTERNAL_SERVER_ERROR, raw);
 	}
 }
+
+export class DBTransactionError extends BaseError {
+	public static create(devMessage: string, raw: any) {
+		return new DBTransactionError(devMessage, raw);
+	}
+	private constructor(devMessage: string, raw: any) {
+		super(devMessage, HTTPErrorTypes.INTERNAL_SERVER_ERROR, raw);
+	}
+}

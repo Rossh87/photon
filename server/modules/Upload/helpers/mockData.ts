@@ -1,6 +1,7 @@
 import { CreateResumableUploadResponse } from '@google-cloud/storage';
 import { ObjectId } from 'mongodb';
 import {
+	ICombinedUploadRequestMetadata,
 	IDBUpload,
 	IUploadRequestMetadata,
 	IUploadsRequestPayload,
@@ -15,6 +16,16 @@ export const mockUploadRequestObject: IUploadRequestMetadata = {
 	primaryColor: 'red',
 	mediaType: 'image/jpeg',
 	width: 250,
+};
+
+export const mockCombinedUploadRequest: ICombinedUploadRequestMetadata = {
+	ownerID: 'abc123',
+	displayName: 'someFile.jpg',
+	mediaType: 'image/jpeg',
+	sizeInBytes: 1000,
+	integrityHash: ['123abc', '456def'],
+	availableWidths: [250, 700],
+	publicPathPrefix: 'googlestorage/1234/someFile.jpg',
 };
 
 export const mockUploadsRequestPayload: IUploadsRequestPayload = {

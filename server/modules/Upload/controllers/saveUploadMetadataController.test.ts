@@ -2,91 +2,67 @@ import { TDBUser } from 'sharedTypes/User';
 import { ICombinedUploadRequestMetadata } from '../sharedUploadTypes';
 import { saveUploadMetadataController } from './saveUploadMetadataController';
 import { mockUserFromDatabase } from '../../auth/helpers/mockData';
+import { mockCombinedUploadRequest } from '../helpers/mockData';
 import { Request, Response, NextFunction } from 'express';
 import { IAsyncDeps } from '../../../core/asyncDeps';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { DBWriteError } from '../../../core/repo';
-
-const _mockRequestData: ICombinedUploadRequestMetadata = {
-	ownerID: 'abc123',
-	displayName: 'someFile.jpg',
-	mediaType: 'image/jpeg',
-	sizeInBytes: 1000,
-	integrityHash: ['123abc', '456def'],
-	availableWidths: [250, 700],
-	publicPathPrefix: 'googlestorage/1234/someFile.jpg',
-};
+import { TEST_DB_URI } from '../../../CONSTANTS';
 
 let mockRequestData: ICombinedUploadRequestMetadata;
 let mockUser: TDBUser;
+let repoClient: MongoClient;
+let deps: IAsyncDeps;
 
-beforeEach(() => {
-	mockRequestData = Object.assign({}, _mockRequestData);
-	mockUser = Object.assign({}, mockUserFromDatabase);
+beforeAll(async () => {
+	repoClient = await MongoClient.connect(TEST_DB_URI, {
+		useUnifiedTopology: true,
+	});
+
+	deps = {
+		repoClient,
+	} as IAsyncDeps;
+});
+
+// cleanup changes to database between tests
+afterEach(async () => {
+	await repoClient.db('photon').collection('uploads').drop();
+	await repoClient.db('photon').collection('users').drop();
+});
+
+// clear db for next test suite and close db connection
+afterAll(async () => {
+	await repoClient.close();
+});
+
+beforeEach(async () => {
+	// add an existing user object to check updates against
+	await repoClient
+		.db('photon')
+		.collection('users')
+		.insertOne(mockUserFromDatabase);
+
+	mockRequestData = { ...mockCombinedUploadRequest };
+	mockUser = { ...mockUserFromDatabase };
 });
 
 describe('controller to save info about successful uploads', () => {
-	it('adds emtpy array to "breakpoints" property before saving a new upload', async () => {
+	it.only('persists correct info to db', async () => {
+		// we HAVE to set mock request data's ownerID prop to be the same
+		// as that of our mockUser
+		const mockRequest = { ...mockRequestData, ownerID: mockUser._id };
+
 		const req = {
 			session: {
 				user: mockUser,
 			},
-			body: mockRequestData,
+			body: mockRequest,
 		} as Request;
-
-		const mockInsert = jest.fn(() => Promise.resolve('whatever'));
-
-		const deps = {
-			repoClient: {
-				db: (s: string) => ({
-					collection: (t: string) => ({
-						insertOne: mockInsert,
-					}),
-				}),
-			},
-		} as unknown as IAsyncDeps;
-
-		await saveUploadMetadataController(deps)(
-			req,
-			{} as Response,
-			jest.fn() as NextFunction
-		);
-
-		const expected = Object.assign({}, mockRequestData, {
-			breakpoints: [],
-		});
-
-		expect(mockInsert).toHaveBeenCalledWith(expected);
-	});
-
-	it('updates usage metrics on session user', async () => {
-		const req = {
-			session: {
-				user: mockUser,
-			},
-			body: mockRequestData,
-		} as Request;
-
-		const mockStatus = jest.fn();
 
 		const res = {
-			status: mockStatus,
+			status: jest.fn(),
 			end: jest.fn(),
 		} as unknown as Response;
-
-		const mockInsert = jest.fn(() =>
-			Promise.resolve({ ops: [mockRequestData] })
-		);
-
-		const deps = {
-			repoClient: {
-				db: (s: string) => ({
-					collection: (t: string) => ({
-						insertOne: mockInsert,
-					}),
-				}),
-			},
-		} as unknown as IAsyncDeps;
 
 		await saveUploadMetadataController(deps)(
 			req,
@@ -94,7 +70,19 @@ describe('controller to save info about successful uploads', () => {
 			jest.fn() as NextFunction
 		);
 
-		const expected = Object.assign(
+		const expectedUser: TDBUser = Object.assign({}, mockUserFromDatabase, {
+			imageCount: mockUserFromDatabase.imageCount + 1,
+			uploadUsage:
+				mockUserFromDatabase.uploadUsage +
+				mockCombinedUploadRequest.sizeInBytes,
+		});
+
+		const expectedUpload: any = {
+			...mockRequest,
+			breakpoints: [],
+		};
+
+		const expectedSessionUser = Object.assign(
 			{ ...mockUser },
 			{
 				uploadUsage: 1100,
@@ -102,45 +90,107 @@ describe('controller to save info about successful uploads', () => {
 			}
 		);
 
-		expect(mockStatus).toHaveBeenCalledWith(200);
-		expect(req.session.user).toEqual(expected);
+		const dbUser = await repoClient
+			.db('photon')
+			.collection('users')
+			.findOne({ _id: mockUser._id });
+
+		const dbUpload = await repoClient
+			.db('photon')
+			.collection('uploads')
+			.findOne({ ownerID: mockUserFromDatabase._id });
+
+		// check database state
+		expect(dbUser).toEqual(expectedUser);
+		expect(dbUpload).toMatchObject(expectedUpload);
+
+		// check response behaviors
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(req.session.user).toEqual(expectedSessionUser);
 	});
 
-	it('passes errors to error handler', async () => {
-		const req = {
-			session: {
-				user: mockUser,
-			},
-			body: mockRequestData,
-		} as Request;
+	// it.only('updates usage metrics on session user', async () => {
+	// 	const req = {
+	// 		session: {
+	// 			user: mockUser,
+	// 		},
+	// 		body: mockRequestData,
+	// 	} as Request;
 
-		const mockNext = jest.fn() as NextFunction;
+	// 	const mockStatus = jest.fn();
 
-		const failedToSave = Object.assign({}, mockRequestData, {
-			breakpoints: [],
-		});
+	// 	const res = {
+	// 		status: mockStatus,
+	// 		end: jest.fn(),
+	// 	} as unknown as Response;
 
-		const expectedErr = DBWriteError.create(
-			'uploads',
-			failedToSave,
-			'some failure reason'
-		);
+	// 	const mockInsert = jest.fn(() =>
+	// 		Promise.resolve({ ops: [mockRequestData] })
+	// 	);
 
-		const failedInsert = jest.fn(() => Promise.reject(expectedErr));
+	// 	const mockDeps = {
+	// 		repoClient: {
+	// 			db: (s: string) => ({
+	// 				collection: (t: string) => ({
+	// 					insertOne: mockInsert,
+	// 				}),
+	// 			}),
+	// 		},
+	// 	} as unknown as IAsyncDeps;
 
-		const deps = {
-			repoClient: {
-				db: (s: string) => ({
-					collection: (t: string) => ({
-						insertOne: failedInsert,
-						collectionName: 'uploads',
-					}),
-				}),
-			},
-		} as unknown as IAsyncDeps;
+	// 	await saveUploadMetadataController(mockDeps)(
+	// 		req,
+	// 		res,
+	// 		jest.fn() as NextFunction
+	// 	);
 
-		await saveUploadMetadataController(deps)(req, {} as Response, mockNext);
+	// 	const expected = Object.assign(
+	// 		{ ...mockUser },
+	// 		{
+	// 			uploadUsage: 1100,
+	// 			imageCount: 6,
+	// 		}
+	// 	);
 
-		expect(mockNext).toHaveBeenCalledWith(expectedErr);
-	});
+	// 	expect(mockStatus).toHaveBeenCalledWith(200);
+	// 	expect(req.session.user).toEqual(expected);
+	// });
+
+	// it('passes errors to error handler', async () => {
+	// 	const req = {
+	// 		session: {
+	// 			user: mockUser,
+	// 		},
+	// 		body: mockRequestData,
+	// 	} as Request;
+
+	// 	const mockNext = jest.fn() as NextFunction;
+
+	// 	const failedToSave = Object.assign({}, mockRequestData, {
+	// 		breakpoints: [],
+	// 	});
+
+	// 	const expectedErr = DBWriteError.create(
+	// 		'uploads',
+	// 		failedToSave,
+	// 		'some failure reason'
+	// 	);
+
+	// 	const failedInsert = jest.fn(() => Promise.reject(expectedErr));
+
+	// 	const deps = {
+	// 		repoClient: {
+	// 			db: (s: string) => ({
+	// 				collection: (t: string) => ({
+	// 					insertOne: failedInsert,
+	// 					collectionName: 'uploads',
+	// 				}),
+	// 			}),
+	// 		},
+	// 	} as unknown as IAsyncDeps;
+
+	// 	await saveUploadMetadataController(deps)(req, {} as Response, mockNext);
+
+	// 	expect(mockNext).toHaveBeenCalledWith(expectedErr);
+	// });
 });

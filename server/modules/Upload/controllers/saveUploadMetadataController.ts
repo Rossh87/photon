@@ -46,7 +46,6 @@ export const saveUploadMetadataController =
 	): RequestHandler<any, any, ICombinedUploadRequestMetadata> =>
 	async (req, res, next) => {
 		const runner = runEffects(req, res, next);
-
 		await pipe(
 			req.body,
 			// here we attach an empty array for saving user-defined breakpoints
