@@ -67,7 +67,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 				key={imgProps._id}
 				onClick={handleClick(imgProps)}
 				aria-label={`open embed code configuration for ${imgProps.displayName}`}
-				role="button"
+				// role="button"
 				className={classes.listItem}
 				cols={2}
 				rows={1}

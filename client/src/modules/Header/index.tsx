@@ -1,23 +1,37 @@
 import * as React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import HelpIcon from '@material-ui/icons/Help';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
+import { Link as RouterLink } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import {
+	Button,
+	ClickAwayListener,
+	Grow,
+	Menu,
+	MenuItem,
+	MenuList,
+	Paper,
+	Popper,
+} from '@material-ui/core';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import axios from 'axios';
-import { useAuthDispatch } from '../Auth/state/useAuthState';
+import { useAuthDispatch, useAuthState } from '../Auth/state/useAuthState';
 import { useHistory } from 'react-router';
+import { pipe } from 'fp-ts/lib/function';
+import { TAuthorizedUserResponse } from '../../../../sharedTypes/User';
+import { getProfileURL } from './helpers';
+import { fold } from 'fp-ts/Option';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -26,7 +40,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 		zIndex: 0,
 	},
 	iconButtonAvatar: {
-		padding: 4,
+		width: theme.spacing(6),
+		height: theme.spacing(6),
 	},
 	link: {
 		textDecoration: 'none',
@@ -36,7 +51,20 @@ const useStyles = makeStyles((theme: Theme) => ({
 		},
 	},
 	button: {
-		borderColor: lightColor,
+		color: theme.palette.common.white,
+		fontSize: theme.typography.fontSize,
+		textDecoration: 'none',
+		'&:hover': {
+			color: theme.palette.common.white,
+		},
+	},
+	appbarGrid: {
+		padding: theme.spacing(2),
+	},
+
+	routerLink: {
+		textDecoration: 'none',
+		color: 'inherit',
 	},
 }));
 
@@ -45,9 +73,14 @@ interface HeaderProps {
 }
 
 const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
+	const menuRef = React.useRef<HTMLButtonElement>(null);
+
 	const classes = useStyles();
 
 	const history = useHistory();
+
+	const authState = useAuthState();
+	const authDispatch = useAuthDispatch();
 
 	const handleLogout = () => {
 		axios
@@ -57,13 +90,65 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 			.catch((e) => console.log(e));
 	};
 
-	const authDispatch = useAuthDispatch();
+	const renderAvatar = (photoUrl: string) => (
+		<Avatar className={classes.iconButtonAvatar} src={photoUrl} />
+	);
+
+	const renderPlaceholderIcon = () => (
+		<AccountCircleIcon className={classes.iconButtonAvatar} />
+	);
+
+	const renderProfileImage = () =>
+		pipe(
+			authState.user as TAuthorizedUserResponse,
+			getProfileURL,
+			fold(renderPlaceholderIcon, renderAvatar)
+		);
+
+	// Popover menu stuff
+	const [open, setOpen] = React.useState(false);
+
+	const handleToggle = () => {
+		setOpen((prevOpen) => !prevOpen);
+	};
+
+	const handleClose = (e: React.MouseEvent<EventTarget>) => {
+		if (
+			menuRef.current &&
+			menuRef.current!.contains(e.target as HTMLElement)
+		) {
+			return;
+		}
+
+		setOpen(false);
+	};
+
+	function handleListKeyDown(event: React.KeyboardEvent) {
+		if (event.key === 'Tab') {
+			event.preventDefault();
+			setOpen(false);
+		}
+	}
+
+	const prevOpen = React.useRef(open);
+	React.useEffect(() => {
+		if (prevOpen.current === true && open === false) {
+			menuRef.current!.focus();
+		}
+
+		prevOpen.current = open;
+	}, [open]);
 
 	return (
 		<React.Fragment>
 			<AppBar color="primary" position="sticky" elevation={0}>
 				<Toolbar>
-					<Grid container spacing={1} alignItems="center">
+					<Grid
+						container
+						spacing={3}
+						className={classes.appbarGrid}
+						alignItems="center"
+					>
 						<Hidden smUp>
 							<Grid item>
 								<IconButton
@@ -84,7 +169,9 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 								variant="body2"
 								onClick={handleLogout}
 							>
-								Logout
+								<Button className={classes.button}>
+									Logout
+								</Button>
 							</Link>
 						</Grid>
 						<Grid item>
@@ -98,12 +185,64 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 							<IconButton
 								color="inherit"
 								className={classes.iconButtonAvatar}
+								ref={menuRef}
+								onClick={handleToggle}
 							>
-								<Avatar
-									src="/static/images/avatar/1.jpg"
-									alt="My Avatar"
-								/>
+								{renderProfileImage()}
 							</IconButton>
+							<Popper
+								open={open}
+								anchorEl={menuRef.current}
+								role={undefined}
+								transition
+								disablePortal
+							>
+								{({ TransitionProps, placement }) => (
+									<Grow
+										{...TransitionProps}
+										style={{
+											transformOrigin:
+												placement === 'bottom'
+													? 'center top'
+													: 'center bottom',
+										}}
+									>
+										<Paper>
+											<ClickAwayListener
+												onClickAway={handleClose}
+											>
+												<MenuList
+													autoFocusItem={open}
+													id="menu-list-grow"
+													onKeyDown={
+														handleListKeyDown
+													}
+												>
+													<RouterLink
+														className={
+															classes.routerLink
+														}
+														to="/profile"
+													>
+														<MenuItem
+															onClick={
+																handleClose
+															}
+														>
+															Profile
+														</MenuItem>
+													</RouterLink>
+													<MenuItem
+														onClick={handleLogout}
+													>
+														Logout
+													</MenuItem>
+												</MenuList>
+											</ClickAwayListener>
+										</Paper>
+									</Grow>
+								)}
+							</Popper>
 						</Grid>
 					</Grid>
 				</Toolbar>
@@ -114,51 +253,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 				color="primary"
 				position="static"
 				elevation={0}
-			>
-				<Toolbar>
-					<Grid container alignItems="center" spacing={1}>
-						<Grid item xs>
-							<Typography
-								color="inherit"
-								variant="h5"
-								component="h1"
-							>
-								Authentication
-							</Typography>
-						</Grid>
-						<Grid item>
-							<Button
-								className={classes.button}
-								variant="outlined"
-								color="inherit"
-								size="small"
-							>
-								Web setup
-							</Button>
-						</Grid>
-						<Grid item>
-							<Tooltip title="Help">
-								<IconButton color="inherit">
-									<HelpIcon />
-								</IconButton>
-							</Tooltip>
-						</Grid>
-					</Grid>
-				</Toolbar>
-			</AppBar>
-			<AppBar
-				component="div"
-				className={classes.secondaryBar}
-				position="static"
-				elevation={0}
-			>
-				<Tabs value={0} textColor="inherit">
-					<Tab label="Users" />
-					<Tab label="Sign-in method" />
-					<Tab label="Templates" />
-					<Tab label="Usage" />
-				</Tabs>
-			</AppBar>
+			></AppBar>
 		</React.Fragment>
 	);
 };

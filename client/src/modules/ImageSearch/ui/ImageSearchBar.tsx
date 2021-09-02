@@ -23,6 +23,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 	searchInput: {
 		fontSize: theme.typography.fontSize,
 	},
+
+	searchForm: {
+		padding: theme.spacing(2),
+		display: 'grid',
+		alignItems: 'center',
+	},
 	block: {
 		display: 'block',
 	},
@@ -73,13 +79,16 @@ const ImageSearchBar: React.FunctionComponent = () => {
 						<SearchIcon className={classes.block} color="inherit" />
 					</Grid>
 					<Grid item xs>
-						<form id="imgSearchBar" onSubmit={handleSubmit}>
+						<form
+							className={classes.searchForm}
+							id="imgSearchBar"
+							onSubmit={handleSubmit}
+						>
 							<TextField
 								fullWidth
 								placeholder="Enter search term..."
 								InputProps={{
 									disableUnderline: true,
-									className: classes.searchInput,
 								}}
 								variant="standard"
 								value={searchTerm}
@@ -98,7 +107,7 @@ const ImageSearchBar: React.FunctionComponent = () => {
 								Search
 							</Button>
 						</Tooltip>
-						<Tooltip title="Reload">
+						<Tooltip title="Reset">
 							<IconButton
 								onClick={() =>
 									imageSearchDispatch({

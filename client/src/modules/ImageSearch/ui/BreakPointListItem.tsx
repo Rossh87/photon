@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme: Theme) => {
 		deleteButton: {
 			color: theme.palette.warning.main,
 		},
+
+		keepButton: {
+			color: theme.palette.success.main,
+		},
 	};
 });
 
@@ -175,10 +179,18 @@ const BreakPointListItem: React.FunctionComponent<
 		} else {
 			return (
 				<>
-					<Button variant="outlined" onClick={discardEdits}>
+					<Button
+						variant="outlined"
+						className={classes.deleteButton}
+						onClick={discardEdits}
+					>
 						Discard
 					</Button>
-					<Button variant="outlined" onClick={submitEdits}>
+					<Button
+						variant="outlined"
+						className={classes.keepButton}
+						onClick={submitEdits}
+					>
 						Keep
 					</Button>
 				</>
