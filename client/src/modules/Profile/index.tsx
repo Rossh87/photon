@@ -30,6 +30,7 @@ import { fromNullable, map, getOrElse, alt, fold } from 'fp-ts/lib/Option';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { fetchUserData } from '../Auth/http/fetchUserData';
 import ProfileListItem from './ProfileListItem';
+import { extractViewableProps } from './helpers';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	avatar: {
@@ -41,15 +42,19 @@ const useStyles = makeStyles((theme: Theme) => ({
 		maxHeight: '300px',
 		maxWidth: '300px',
 	},
+
+	list: {
+		width: '100%',
+	},
 }));
 
-interface IUserFacingProfileProps {
+export interface IUserFacingProfileProps {
 	emailAddress: string;
 	uniqueUploads: number;
 	uploadUsage: string;
 	accessLevel: TAccessLevel;
 	userName: string;
-	profileImage: string | undefined;
+	profileImage: string;
 }
 
 const Profile: React.FunctionComponent = (props) => {
@@ -58,20 +63,8 @@ const Profile: React.FunctionComponent = (props) => {
 	// cast this since it won't ever be displayed if user isn't logged in
 	const user = useAuthState().user as TAuthorizedUserResponse;
 
-	// TODO: this is disgraceful.
 	const [localProfileState, setUserState] =
-		React.useState<IUserFacingProfileProps>({
-			userName: user.displayName,
-			emailAddress: user.userPreferences?.preferredEmail
-				? user.userPreferences.preferredEmail
-				: user.OAuthEmail,
-			uniqueUploads: user.imageCount,
-			accessLevel: user.accessLevel,
-			profileImage: user.userPreferences?.preferredThumbnailURL
-				? user.userPreferences.preferredThumbnailURL
-				: user.thumbnailURL,
-			uploadUsage: bytesToHumanReadableSize(user.uploadUsage),
-		});
+		React.useState<IUserFacingProfileProps>(extractViewableProps(user));
 
 	// hard-code the props that user can edit for now...
 	const editables = ['profileImage', 'emailAddress', 'userName'];
@@ -97,32 +90,28 @@ const Profile: React.FunctionComponent = (props) => {
 			)
 		);
 
-	// refresh user's data whenever this component mounts
 	const authDispatch = useAuthDispatch();
 
+	// refresh user's data whenever this component mounts
 	React.useEffect(() => {
 		fetchUserData(authDispatch);
 	}, []);
 
 	return (
 		<Paper>
-			<Grid
-				item
-				container
-				xs={12}
-				alignContent="center"
-				alignItems="center"
-				justifyContent="center"
-				direction="column"
-			>
-				{renderAvatar()}
-				<Divider variant="middle" />
-				<Grid item sm={12} md={10} lg={8}>
-					<List>
+			<Grid container justifyContent="center">
+				<Grid item container xs={12} justifyContent="center">
+					{renderAvatar()}
+				</Grid>
+				<Grid item xs={12} md={10} lg={7} xl={5}>
+					<Divider variant="middle" />
+					<List className={classes.list}>
 						{Object.keys(localProfileState).map((key) => {
 							return (
 								<ProfileListItem
-									fieldName={key}
+									fieldName={
+										key as keyof IUserFacingProfileProps
+									}
 									initialValue={
 										(localProfileState as any)[key]
 									}

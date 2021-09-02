@@ -17,20 +17,14 @@ import {
 	IconButton,
 	ListItemSecondaryAction,
 } from '@material-ui/core';
-import { useAuthDispatch, useAuthState } from '../Auth/state/useAuthState';
 import EditIcon from '@material-ui/icons/Edit';
-import { bytesToHumanReadableSize } from '../Uploader/useCases/preProcessSelectedFiles/appendMetadata';
-import {
-	IUserProfilePreferences,
-	TAccessLevel,
-	TAuthorizedUserResponse,
-} from '../../../../sharedTypes/User';
-import { pipe } from 'fp-ts/lib/function';
-import { fromNullable, map, getOrElse, alt, fold } from 'fp-ts/lib/Option';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { fetchUserData } from '../Auth/http/fetchUserData';
+import { MapPropsToHumanLabels } from './helpers';
+import { IUserFacingProfileProps } from '.';
 
 const useStyles = makeStyles((theme: Theme) => ({
+	root: {
+		width: '100%',
+	},
 	listItemTypo: {
 		padding: theme.spacing(2.75),
 	},
@@ -41,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ProfileItemProps {
-	fieldName: string;
+	fieldName: keyof IUserFacingProfileProps;
 	initialValue: string | number;
 	handleFieldSubmit: (a: string | number) => void;
 	editable: boolean;
@@ -71,9 +65,13 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 	const typoComponent = (
 		<Typography color="textPrimary">
 			<Box component="span" fontWeight="fontWeightBold">
-				{`${fieldName}: `}
+				{`${MapPropsToHumanLabels[fieldName]}: `}
 			</Box>
-			<Box component="span" fontWeight="fontWeightRegular">
+			<Box
+				component="span"
+				fontWeight="fontWeightRegular"
+				overflow="hidden"
+			>
 				{initialValue}
 			</Box>
 		</Typography>
@@ -85,8 +83,9 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 				value={value}
 				onChange={handleChange}
 				id={`profile-${fieldName}-input`}
-				label={fieldName}
+				label={MapPropsToHumanLabels[fieldName]}
 				variant="outlined"
+				fullWidth
 			/>
 		</form>
 	);
