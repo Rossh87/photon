@@ -36,11 +36,16 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 
 	const classes = useSelectedImageStyles();
 
-	const { status, displayName, isUniqueDisplayName} = imageFile;
+	const { status, displayName, isUniqueDisplayName } = imageFile;
 
-	const textColor = isIImage(imageFile) ? 'primary' : 'error'
+	const textColor =
+		isIImage(imageFile) && isUniqueDisplayName ? 'primary' : 'error';
 
-	const secondaryMessage = isIImage(imageFile) ? isUniqueDisplayName === "no" ? 'File name is already in use.  Please select a different name' : '' : imageFile.error.message
+	const secondaryMessage = isIImage(imageFile)
+		? isUniqueDisplayName === 'no'
+			? 'File name is already in use.  Please select a different name'
+			: ''
+		: imageFile.error.message;
 
 	// handlers
 	const closeAccordion = () => setExpanded(false);

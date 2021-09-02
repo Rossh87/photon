@@ -18,8 +18,8 @@ import {
 	ListItemSecondaryAction,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { MapPropsToHumanLabels } from './helpers';
-import { IUserFacingProfileProps } from '.';
+import { MapPropsToHumanLabels } from '../helpers';
+import { IUserFacingProfileProps } from '..';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -27,10 +27,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	listItemTypo: {
 		padding: theme.spacing(2.75),
+		paddingRight: theme.spacing(8),
 	},
 
 	listItemInput: {
 		padding: theme.spacing(0.75),
+	},
+
+	typography: {
+		overflow: 'hidden',
 	},
 }));
 
@@ -63,15 +68,11 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 	};
 
 	const typoComponent = (
-		<Typography color="textPrimary">
+		<Typography color="textPrimary" className={classes.typography}>
 			<Box component="span" fontWeight="fontWeightBold">
 				{`${MapPropsToHumanLabels[fieldName]}: `}
 			</Box>
-			<Box
-				component="span"
-				fontWeight="fontWeightRegular"
-				overflow="hidden"
-			>
+			<Box component="span" fontWeight="fontWeightRegular">
 				{initialValue}
 			</Box>
 		</Typography>

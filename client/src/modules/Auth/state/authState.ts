@@ -1,5 +1,6 @@
 import { IAuthState, TAuthActions } from './authStateTypes';
 import { Reducer } from 'react';
+import { TAuthorizedUserResponse } from '../../../../../sharedTypes/User';
 
 export const defaultState: IAuthState = {
 	user: null,
@@ -27,6 +28,15 @@ export const authReducer: Reducer<IAuthState, TAuthActions> = (
 				...state,
 				errors: [...state.errors, action.payload],
 				status: 'failed',
+			};
+
+		case 'UPDATE_PROFILE_ACTION':
+			return {
+				...state,
+				user: {
+					...(state.user as TAuthorizedUserResponse),
+					userPreferences: action.payload,
+				},
 			};
 
 		case 'AUTH_REQUEST_INITIATED':

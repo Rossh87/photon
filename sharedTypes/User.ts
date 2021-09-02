@@ -37,3 +37,7 @@ export type TDBUser = TUser & { _id: ObjectId };
 
 // type for data shape that will be sent to client on authorization
 export type TAuthorizedUserResponse = TUser & { _id: string };
+
+// extract this to its own type just for clarity in naming
+export interface IUserProfilePreferencesTransportObject
+	extends IUserProfilePreferences {}

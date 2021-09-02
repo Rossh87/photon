@@ -11,9 +11,9 @@ import {
 	ListItemIcon,
 	ListItemText,
 	Typography,
-	Box,
 	makeStyles,
 	Theme,
+	Box,
 	IconButton,
 	ListItemSecondaryAction,
 } from '@material-ui/core';
@@ -29,8 +29,12 @@ import { pipe } from 'fp-ts/lib/function';
 import { fromNullable, map, getOrElse, alt, fold } from 'fp-ts/lib/Option';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { fetchUserData } from '../Auth/http/fetchUserData';
-import ProfileListItem from './ProfileListItem';
-import { extractViewableProps } from './helpers';
+import ProfileListItem from './ui/ProfileListItem';
+import { extractViewableProps, userFacingPropsToPreferences } from './helpers';
+import DependencyContext from '../../core/dependencyContext';
+import { handleUserProfileUpdate } from './useCases/handleUserProfileUpdate';
+import { chainFirst } from 'fp-ts/Identity';
+import { map as TEMap } from 'fp-ts/TaskEither';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	avatar: {
@@ -46,6 +50,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 	list: {
 		width: '100%',
 	},
+
+	saveButton: {
+		color: theme.palette.success.main,
+		margin: theme.spacing(1),
+	},
+
+	cancelButton: {
+		color: theme.palette.warning.main,
+		margin: theme.spacing(1),
+	},
 }));
 
 export interface IUserFacingProfileProps {
@@ -60,18 +74,46 @@ export interface IUserFacingProfileProps {
 const Profile: React.FunctionComponent = (props) => {
 	const classes = useStyles();
 
-	// cast this since it won't ever be displayed if user isn't logged in
+	const authDispatch = useAuthDispatch();
+	const dependencies = React.useContext(DependencyContext)(authDispatch);
+
+	// state setup
 	const user = useAuthState().user as TAuthorizedUserResponse;
 
-	const [localProfileState, setUserState] =
+	const [localProfileState, setLocalProfileState] =
 		React.useState<IUserFacingProfileProps>(extractViewableProps(user));
+
+	const [hasUpdated, setUpdated] = React.useState(false);
+
+	const buttonDisabilityState = !hasUpdated;
 
 	// hard-code the props that user can edit for now...
 	const editables = ['profileImage', 'emailAddress', 'userName'];
 
+	// begin handlers
 	const handleFieldSubmit =
-		(fieldName: string) => (newValue: string | number) =>
-			setUserState({ ...localProfileState, [fieldName]: newValue });
+		(fieldName: string) => (newValue: string | number) => {
+			setUpdated(true);
+			setLocalProfileState({
+				...localProfileState,
+				[fieldName]: newValue,
+			});
+		};
+
+	const handleCancel = () =>
+		pipe(
+			user,
+			chainFirst(() => setUpdated(false)),
+			extractViewableProps,
+			setLocalProfileState
+		);
+
+	const handleSave = () =>
+		pipe(
+			dependencies,
+			handleUserProfileUpdate(localProfileState),
+			TEMap(() => setUpdated(false))
+		)();
 
 	const renderAvatar = () =>
 		pipe(
@@ -89,8 +131,6 @@ const Profile: React.FunctionComponent = (props) => {
 				)
 			)
 		);
-
-	const authDispatch = useAuthDispatch();
 
 	// refresh user's data whenever this component mounts
 	React.useEffect(() => {
@@ -121,6 +161,28 @@ const Profile: React.FunctionComponent = (props) => {
 							);
 						})}
 					</List>
+					<Box
+						display="flex"
+						justifyContent="flex-end"
+						paddingBottom="2rem"
+					>
+						<Button
+							className={classes.cancelButton}
+							variant="outlined"
+							onClick={handleCancel}
+							disabled={buttonDisabilityState}
+						>
+							Cancel
+						</Button>
+						<Button
+							className={classes.saveButton}
+							variant="outlined"
+							onClick={handleSave}
+							disabled={buttonDisabilityState}
+						>
+							Save
+						</Button>
+					</Box>
 				</Grid>
 			</Grid>
 		</Paper>

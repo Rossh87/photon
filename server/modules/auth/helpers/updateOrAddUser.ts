@@ -1,5 +1,6 @@
 import { IUserProfileProperties, TDBUser } from 'sharedTypes/User';
-import { getUserOAuthID, getUpdatedUser } from '../../User';
+import { getUpdatedUser } from '../../User/helpers/getUpdatedUser';
+import { getUserOAuthID } from '../../User/helpers/getUserOAuthID';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither';
 import { MongoClient } from 'mongodb';

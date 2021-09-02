@@ -72,7 +72,7 @@ const Paperbase: React.FunctionComponent = () => {
 				<div className={classes.app}>
 					<Header onDrawerToggle={handleDrawerToggle} />
 					<Alert severity="info">
-						This is an info alert — check it out!
+						Photon is currently running in demo mode.
 					</Alert>
 					<main className={classes.main}>
 						<Switch>

@@ -23,7 +23,7 @@ import { errorHandler } from './modules/errorHandler';
 // routes
 import { authRoutes } from './modules/auth';
 import { uploadRoutes } from './modules/Upload';
-import { BaseError } from './core/error';
+import { userRoutes } from './modules/User';
 
 // initialize needed objects
 const app = express();
@@ -84,6 +84,8 @@ async function run() {
 	app.use('/auth/', authRoutes(asyncDeps));
 
 	app.use('/upload/', uploadRoutes(asyncDeps));
+
+	app.use('/user/', userRoutes(asyncDeps));
 
 	app.use(errorHandler);
 
