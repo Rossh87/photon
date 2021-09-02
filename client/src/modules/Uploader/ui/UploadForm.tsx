@@ -70,8 +70,11 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 
 	// does nothing if ownerID or FileList is nullable
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const reset = () => (e.target.files = null);
-
+		const reset = () => {
+			e.target.files = null;
+			e.target.value = '';
+		};
+		console.log('changed!!');
 		pipe(
 			sequenceT(Applicative)(
 				fromNullable(e.target.files),
