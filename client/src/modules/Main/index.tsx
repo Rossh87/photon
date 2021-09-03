@@ -20,10 +20,10 @@ const useStyles = makeStyles({
 		minHeight: '100vh',
 	},
 	drawer: {
-		[theme.breakpoints.up('sm')]: {
-			width: drawerWidth,
-			flexShrink: 0,
-		},
+		// [theme.breakpoints.up('sm')]: {
+		// 	width: drawerWidth,
+		// 	flexShrink: 0,
+		// },
 	},
 	app: {
 		flex: 1,
@@ -43,10 +43,11 @@ const useStyles = makeStyles({
 
 const Main: React.FunctionComponent = () => {
 	const classes = useStyles();
-	const [mobileOpen, setMobileOpen] = React.useState(false);
+	const [drawerOpen, setDrawerOpen] = React.useState(false);
 
 	const handleDrawerToggle = () => {
-		setMobileOpen(!mobileOpen);
+		console.log('toggle');
+		setDrawerOpen(!drawerOpen);
 	};
 
 	return (
@@ -54,19 +55,17 @@ const Main: React.FunctionComponent = () => {
 			<div className={classes.root}>
 				<CssBaseline />
 				<nav className={classes.drawer}>
-					<Hidden xsUp implementation="js">
-						<Navigator
-							PaperProps={{ style: { width: drawerWidth } }}
-							variant="temporary"
-							open={mobileOpen}
-							onClose={handleDrawerToggle}
-						/>
-					</Hidden>
-					<Hidden smDown implementation="css">
+					<Navigator
+						PaperProps={{ style: { width: drawerWidth } }}
+						variant="temporary"
+						open={drawerOpen}
+						onClose={() => setDrawerOpen(false)}
+					/>
+					{/* <Hidden smDown implementation="css">
 						<Navigator
 							PaperProps={{ style: { width: drawerWidth } }}
 						/>
-					</Hidden>
+					</Hidden> */}
 				</nav>
 
 				<div className={classes.app}>
@@ -79,7 +78,7 @@ const Main: React.FunctionComponent = () => {
 							<Route path="/upload">
 								<Uploader />
 							</Route>
-							<Route path="/imagesearch">
+							<Route path="/image-search">
 								<ImageSearchPage />
 							</Route>
 							<Route path="/profile">

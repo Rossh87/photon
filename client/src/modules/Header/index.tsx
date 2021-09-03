@@ -144,18 +144,16 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 						className={classes.appbarGrid}
 						alignItems="center"
 					>
-						<Hidden smUp>
-							<Grid item>
-								<IconButton
-									color="inherit"
-									aria-label="open drawer"
-									onClick={onDrawerToggle}
-									edge="start"
-								>
-									<MenuIcon />
-								</IconButton>
-							</Grid>
-						</Hidden>
+						<Grid item>
+							<IconButton
+								color="inherit"
+								aria-label="open drawer"
+								onClick={onDrawerToggle}
+								edge="start"
+							>
+								<MenuIcon />
+							</IconButton>
+						</Grid>
 						<Grid item xs />
 						<Grid item>
 							<Link

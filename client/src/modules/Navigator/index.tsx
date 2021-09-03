@@ -52,18 +52,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }));
 
-// export interface NavigatorProps
-//   extends Omit<DrawerProps, 'classes'>,
-//     WithStyles<typeof styles> {}
+export interface INavigatorProps extends Omit<DrawerProps, 'classes'> {}
 
-const Navigator: React.FunctionComponent<Omit<DrawerProps, 'classes'>> = (
-	props
-) => {
+const Navigator: React.FunctionComponent<INavigatorProps> = (props) => {
 	const classes = useStyles();
 
 	return (
-		<Drawer variant="permanent" {...props}>
-			<List disablePadding>
+		<Drawer {...props} anchor="left">
+			<List>
 				<ListItem
 					className={clsx(
 						classes.firebase,
