@@ -146,20 +146,21 @@ const Profile: React.FunctionComponent = (props) => {
 				<Grid item xs={12} md={10} lg={7} xl={5}>
 					<Divider variant="middle" />
 					<List className={classes.list}>
-						{Object.keys(localProfileState).map((key) => {
-							return (
-								<ProfileListItem
-									fieldName={
-										key as keyof IUserFacingProfileProps
-									}
-									initialValue={
-										(localProfileState as any)[key]
-									}
-									handleFieldSubmit={handleFieldSubmit(key)}
-									editable={editables.includes(key)}
-								/>
-							);
-						})}
+						{Object.keys(localProfileState).map((stateKey) => (
+							<ProfileListItem
+								// okay to just use the property name as a key here,
+								// since the contents of this list are never changed/reordered
+								key={stateKey}
+								fieldName={
+									stateKey as keyof IUserFacingProfileProps
+								}
+								initialValue={
+									(localProfileState as any)[stateKey]
+								}
+								handleFieldSubmit={handleFieldSubmit(stateKey)}
+								editable={editables.includes(stateKey)}
+							/>
+						))}
 					</List>
 					<Box
 						display="flex"
