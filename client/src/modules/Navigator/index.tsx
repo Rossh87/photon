@@ -6,6 +6,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import navItems from './navItems';
 import NavItem from './NavItem';
+import RouterLink from '../RouterLink';
+import { useLocation } from 'react-router';
 
 export const navLinkActiveColor = '#4fc3f7';
 
@@ -59,8 +61,6 @@ const Navigator: React.FunctionComponent<Omit<DrawerProps, 'classes'>> = (
 ) => {
 	const classes = useStyles();
 
-	const [activeNavItem, setActiveNavItem] = React.useState<number>(0);
-
 	return (
 		<Drawer variant="permanent" {...props}>
 			<List disablePadding>
@@ -72,15 +72,10 @@ const Navigator: React.FunctionComponent<Omit<DrawerProps, 'classes'>> = (
 					)}
 					key={'invariant'}
 				>
-					Photon
+					<RouterLink to="/">Photon</RouterLink>
 				</ListItem>
 				{navItems.map((vals, i) => (
-					<NavItem
-						{...vals}
-						key={vals.id}
-						active={i === activeNavItem}
-						handleClick={() => setActiveNavItem(i)}
-					></NavItem>
+					<NavItem {...vals} key={vals.pageName}></NavItem>
 				))}
 			</List>
 		</Drawer>

@@ -1,14 +1,28 @@
+import React, { ReactElement } from 'react';
 import PeopleIcon from '@material-ui/icons/People';
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
 import BackupIcon from '@material-ui/icons/Backup';
 
-const navItems = [
+type NavigablePages = 'Profile' | 'Image Search' | 'Upload';
+
+export interface INavItemData {
+	pageName: NavigablePages;
+	icon: ReactElement;
+	matchesRouterPath: string;
+}
+
+const navItems: INavItemData[] = [
 	{
-		id: 'Profile',
+		pageName: 'Profile',
 		icon: <PeopleIcon />,
+		matchesRouterPath: '/profile',
 	},
-	{ id: 'Image Search', icon: <ImageSearchIcon /> },
-	{ id: 'Upload', icon: <BackupIcon /> },
+	{
+		pageName: 'Image Search',
+		icon: <ImageSearchIcon />,
+		matchesRouterPath: '/image-search',
+	},
+	{ pageName: 'Upload', icon: <BackupIcon />, matchesRouterPath: '/upload' },
 ];
 
 // const navItems = [

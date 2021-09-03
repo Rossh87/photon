@@ -6,7 +6,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
-import { Link as RouterLink } from 'react-router-dom';
+import RouterLink from '../RouterLink';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Tab from '@material-ui/core/Tab';
@@ -60,11 +60,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	appbarGrid: {
 		padding: theme.spacing(2),
-	},
-
-	routerLink: {
-		textDecoration: 'none',
-		color: 'inherit',
 	},
 }));
 
@@ -218,12 +213,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 														handleListKeyDown
 													}
 												>
-													<RouterLink
-														className={
-															classes.routerLink
-														}
-														to="/profile"
-													>
+													<RouterLink to="/profile">
 														<MenuItem
 															onClick={
 																handleClose

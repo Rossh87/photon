@@ -4,7 +4,8 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { INavItemData } from '../navItems';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	item: {
@@ -30,30 +31,25 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }));
 
-interface NavItemProps {
-	id: string;
-	icon: React.ReactElement;
-	active: boolean;
-	handleClick: () => void;
-}
-
-const NavItem: React.FunctionComponent<NavItemProps> = ({
-	id,
+const NavItem: React.FunctionComponent<INavItemData> = ({
+	pageName,
 	icon,
-	active,
-	handleClick,
+	matchesRouterPath,
 }) => {
 	const classes = useStyles();
 
+	const location = useLocation();
+
+	const isActive = location.pathname === matchesRouterPath;
+
 	return (
-		<Link
-			to={`/${id.split(' ').join('').toLowerCase()}`}
-			className={classes.navItemLink}
-		>
+		<Link to={matchesRouterPath} className={classes.navItemLink}>
 			<ListItem
-				onClick={handleClick}
 				button
-				className={clsx(classes.item, active && classes.itemActiveItem)}
+				className={clsx(
+					classes.item,
+					isActive && classes.itemActiveItem
+				)}
 			>
 				<ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
 				<ListItemText
@@ -61,7 +57,7 @@ const NavItem: React.FunctionComponent<NavItemProps> = ({
 						primary: classes.itemPrimary,
 					}}
 				>
-					{id}
+					{pageName}
 				</ListItemText>
 			</ListItem>
 		</Link>

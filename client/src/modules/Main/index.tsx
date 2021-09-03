@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const Paperbase: React.FunctionComponent = () => {
+const Main: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -54,7 +54,7 @@ const Paperbase: React.FunctionComponent = () => {
 			<div className={classes.root}>
 				<CssBaseline />
 				<nav className={classes.drawer}>
-					<Hidden smUp implementation="js">
+					<Hidden xsUp implementation="js">
 						<Navigator
 							PaperProps={{ style: { width: drawerWidth } }}
 							variant="temporary"
@@ -94,4 +94,4 @@ const Paperbase: React.FunctionComponent = () => {
 	);
 };
 
-export default Paperbase;
+export default Main;
