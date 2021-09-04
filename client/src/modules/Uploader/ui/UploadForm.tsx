@@ -3,6 +3,7 @@ import {
 	TUploaderActions,
 	TSelectedFilesState,
 } from '../state/uploadStateTypes';
+import clsx from 'clsx';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import { InputLabel } from '@material-ui/core';
@@ -16,7 +17,7 @@ import { TUserState } from '../../Auth/domain/authDomainTypes';
 const useStyles = makeStyles({
 	fileForm: {
 		display: 'flex',
-		justifyContent: 'space-around',
+		justifyContent: 'flex-end',
 		margin: theme.spacing(2),
 	},
 
@@ -27,27 +28,14 @@ const useStyles = makeStyles({
 		position: 'absolute',
 	},
 
-	submitButton: {
-		width: '20%',
+	button: {
+		margin: theme.spacing(0, 1),
+		textTransform: 'uppercase',
+		fontWeight: theme.typography.fontWeightBold,
 	},
 
-	label: {
-		fontFamily: theme.typography.fontFamily,
-		fontSize: theme.typography.fontSize,
-		alignContent: 'center',
-		backgroundColor: 'red',
-		borderRadius: theme.shape.borderRadius,
-		textAlign: 'center',
-		paddingTop: theme.spacing(1),
-		paddingBottom: theme.spacing(1),
-		paddingLeft: theme.spacing(2),
-		paddingRight: theme.spacing(2),
-		color: 'white',
-		width: '20%',
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		cursor: 'pointer',
+	submitButton: {
+		color: theme.palette.success.main,
 	},
 });
 
@@ -100,30 +88,17 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 		});
 	};
 
-	const inputProps = {
-		accept: acceptedExtensions.join(','),
-		multiple: true,
-	};
-
 	return (
 		<form onSubmit={handleSubmit} className={classes.fileForm}>
-			<InputLabel
+			{/* <InputLabel
 				htmlFor="fileSelectionInput"
 				color="primary"
 				className={classes.label}
 			>
 				Select Files
-			</InputLabel>
+			</InputLabel> */}
 
-			<Button
-				variant="contained"
-				color="primary"
-				disabled={submitIsDisabled}
-				type="submit"
-			>
-				Submit!
-			</Button>
-
+			{/* 
 			<Input
 				className={classes.hiddenInput}
 				id="fileSelectionInput"
@@ -133,29 +108,37 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 				inputProps={inputProps}
 				color="primary"
 				disableUnderline={true}
-			></Input>
-		</form>
+			></Input> */}
 
-		// <div>
-		// 	<input
-		// 		accept="image/*"
-		// 		// className={classes.input}
-		// 		id="raised-button-file"
-		// 		multiple
-		// 		type="file"
-		// 		hidden={true}
-		// 	/>
-		// 	<label htmlFor="raised-button-file">
-		// 		<Button
-		// 			component="span"
-		// 			variant="contained"
-		// 			color="primary"
-		// 			// className={classes.button}
-		// 		>
-		// 			Upload
-		// 		</Button>
-		// 	</label>
-		// </div>
+			<label htmlFor="file-selection-input">
+				<input
+					className={classes.hiddenInput}
+					accept={acceptedExtensions.join(',')}
+					id="file-selection-input"
+					multiple
+					type="file"
+					onChange={handleFileChange}
+				/>
+				<Button
+					className={classes.button}
+					size="large"
+					variant="text"
+					color="primary"
+					component="span"
+				>
+					SELECT FILES
+				</Button>
+			</label>
+			<Button
+				className={clsx(classes.button, classes.submitButton)}
+				size="large"
+				variant="text"
+				disabled={submitIsDisabled}
+				type="submit"
+			>
+				SUBMIT
+			</Button>
+		</form>
 	);
 };
 

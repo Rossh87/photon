@@ -3,7 +3,7 @@ import { TPreprocessingResult } from '../domain/domainTypes';
 import { isIImage } from '../domain/guards';
 import { TUploaderActions } from '../state/uploadStateTypes';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import { ListItemText, Hidden } from '@material-ui/core';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,11 +16,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import FileUpdateForm from './FileUpdateForm';
 import SelectedImageStatusIcon from './SelectedImageStatusIcon';
 
-const useSelectedImageStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		width: '100%',
 	},
-});
+
+	listItem: {
+		'&:hover': {
+			border: `1px solid  ${theme.palette.primary.main}`,
+		},
+	},
+}));
 
 interface ISelectedImageProps {
 	imageFile: TPreprocessingResult;
@@ -34,7 +40,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 	// state stuff
 	const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
-	const classes = useSelectedImageStyles();
+	const classes = useStyles();
 
 	const { status, displayName, isUniqueDisplayName } = imageFile;
 
@@ -81,14 +87,17 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 	React.useEffect(removeIfSuccess, [status, displayName, uploadDispatch]);
 
 	return (
-		<ListItem>
+		<ListItem dense>
 			<Accordion expanded={isExpanded} className={classes.root}>
 				<AccordionSummary aria-label="Expand" onClick={toggleAccordion}>
-					<ListItemAvatar>
-						<Avatar>
-							<PhotoOutlinedIcon />
-						</Avatar>
-					</ListItemAvatar>
+					<Hidden smDown>
+						<ListItemAvatar>
+							<Avatar>
+								<PhotoOutlinedIcon />
+							</Avatar>
+						</ListItemAvatar>
+					</Hidden>
+
 					<ListItemText
 						primary={displayName}
 						secondary={secondaryMessage}

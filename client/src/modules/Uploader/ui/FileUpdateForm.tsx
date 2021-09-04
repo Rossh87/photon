@@ -8,13 +8,13 @@ import { TPreprocessingResult } from '../domain/domainTypes';
 interface IFileUpdateFormProps {
 	uploadDispatch: Dispatch<TUploaderActions>;
 	closeAccordion: () => void;
-	imageFile: TPreprocessingResult
+	imageFile: TPreprocessingResult;
 }
 
 const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 	closeAccordion,
 	uploadDispatch,
-	imageFile
+	imageFile,
 }) => {
 	const [inputState, setInputState] = React.useState<string>('');
 
@@ -24,7 +24,7 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 	const setNewDisplayName = () =>
 		uploadDispatch({
 			type: 'INIT_NAME_UPDATE',
-			payload: [imageFile, inputState]
+			payload: [imageFile, inputState],
 		});
 
 	const resetFileNameInput = () => setInputState('');
@@ -44,6 +44,7 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 	return (
 		<form onSubmit={onSubmit} noValidate autoComplete="off">
 			<TextField
+				size="small"
 				id="outlined-basic"
 				label="Update name"
 				variant="outlined"

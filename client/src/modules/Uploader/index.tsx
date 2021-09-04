@@ -86,22 +86,20 @@ const Uploader: React.FunctionComponent = () => {
 		);
 
 	return (
-		<main>
-			<Paper className={classes.paper}>
-				<SelectedImagesDisplay
-					uploadState={uploadState}
-					uploadDispatch={uploadDispatch}
-				/>
-				<UploadForm
-					submitIsDisabled={submitIsDisabled}
-					uploadDispatch={uploadDispatch}
-					user={user}
-					acceptedExtensions={acceptedExtensions}
-					selectedFiles={uploadState.selectedFiles}
-				/>
-				{renderSnackbar()}
-			</Paper>
-		</main>
+		<>
+			<SelectedImagesDisplay
+				uploadState={uploadState}
+				uploadDispatch={uploadDispatch}
+			/>
+			<UploadForm
+				submitIsDisabled={submitIsDisabled}
+				uploadDispatch={uploadDispatch}
+				user={user}
+				acceptedExtensions={acceptedExtensions}
+				selectedFiles={uploadState.selectedFiles}
+			/>
+			{renderSnackbar()}
+		</>
 	);
 };
 

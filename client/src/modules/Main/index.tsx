@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import { CssBaseline, Container, Grid } from '@material-ui/core';
+import { CssBaseline, Container, Grid, Paper } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import Hidden from '@material-ui/core/Hidden';
 import Navigator from '../Navigator';
@@ -12,8 +12,7 @@ import Profile from '../Profile';
 import AppMessages from '../AppMessages';
 
 import { Switch, Route } from 'react-router-dom';
-
-const drawerWidth = 256;
+import { findLastIndex } from 'fp-ts/lib/Array';
 
 const useStyles = makeStyles({
 	root: {
@@ -27,10 +26,28 @@ const useStyles = makeStyles({
 	},
 	mainGrid: {
 		padding: theme.spacing(1),
+		display: 'flex',
+		flexDirection: 'column',
 	},
-	footer: {
+
+	drawer: {
+		display: 'grid',
+		alignContent: 'center',
+		width: '250px',
+	},
+
+	drawerPaperProps: {
+		backgroundColor: 'rgba(0,0,0,0)',
+	},
+
+	paper: {
 		padding: theme.spacing(2),
-		background: '#eaeff1',
+		height: '80vh',
+	},
+
+	contentGrid: {
+		width: '100%',
+		flexGrow: 1,
 	},
 });
 
@@ -47,8 +64,24 @@ const Main: React.FunctionComponent = () => {
 			<CssBaseline />
 			<nav>
 				<Navigator
-					PaperProps={{ style: { width: drawerWidth } }}
-					variant="temporary"
+					PaperProps={{
+						style: {
+							boxShadow:
+								'0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)',
+							backgroundColor: 'white',
+							border: 'none',
+							width: '100px',
+							height: '350px',
+							marginTop: '157px',
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'center',
+							justifyContent: 'space-around',
+							marginLeft: '1vw',
+							borderRadius: '10px',
+						},
+					}}
+					variant="permanent"
 					open={drawerOpen}
 					onClose={() => setDrawerOpen(false)}
 					setDrawerOpen={setDrawerOpen}
@@ -56,30 +89,22 @@ const Main: React.FunctionComponent = () => {
 			</nav>
 
 			<Header onDrawerToggle={handleDrawerToggle} />
-			<Container maxWidth="md" component="main" className={classes.app}>
-				<Grid
-					className={classes.mainGrid}
-					container
-					direction="column"
-					spacing={2}
-				>
-					<Grid item>
-						<AppMessages />
-					</Grid>
-					<Grid item>
-						<Switch>
-							<Route path="/upload">
-								<Uploader />
-							</Route>
-							<Route path="/image-search">
-								<ImageSearchPage />
-							</Route>
-							<Route path="/profile">
-								<Profile />
-							</Route>
-						</Switch>
-					</Grid>
-				</Grid>
+			<Container component="main" maxWidth="md">
+				<AppMessages />
+
+				<Paper className={classes.paper}>
+					<Switch>
+						<Route path="/upload">
+							<Uploader />
+						</Route>
+						<Route path="/image-search">
+							<ImageSearchPage />
+						</Route>
+						<Route path="/profile">
+							<Profile />
+						</Route>
+					</Switch>
+				</Paper>
 			</Container>
 		</ThemeProvider>
 	);

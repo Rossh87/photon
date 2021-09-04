@@ -38,13 +38,13 @@ import { map as TEMap } from 'fp-ts/TaskEither';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	avatar: {
-		width: '20vw',
-		height: '20vw',
+		width: '100px',
+		height: '100px',
 		margin: theme.spacing(2),
-		minWidth: '200px',
-		minHeight: '200px',
-		maxHeight: '300px',
-		maxWidth: '300px',
+		// minWidth: '200px',
+		// minHeight: '200px',
+		// maxHeight: '300px',
+		// maxWidth: '300px',
 	},
 
 	list: {
@@ -59,6 +59,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 	cancelButton: {
 		color: theme.palette.warning.main,
 		margin: theme.spacing(1),
+	},
+
+	myGrid: {
+		flexGrow: 1,
 	},
 }));
 
@@ -138,12 +142,15 @@ const Profile: React.FunctionComponent = (props) => {
 	}, []);
 
 	return (
-		<Paper>
-			<Grid container justifyContent="center">
-				<Grid item container xs={12} justifyContent="center">
-					{renderAvatar()}
-				</Grid>
-				<Grid item xs={12} md={10} lg={7} xl={5}>
+		<>
+			<Grid
+				className={classes.myGrid}
+				container
+				direction="column"
+				alignItems="center"
+			>
+				{renderAvatar()}
+				<Grid item xs={12}>
 					<Divider variant="middle" />
 					<List className={classes.list}>
 						{Object.keys(localProfileState).map((stateKey) => (
@@ -186,7 +193,7 @@ const Profile: React.FunctionComponent = (props) => {
 					</Box>
 				</Grid>
 			</Grid>
-		</Paper>
+		</>
 	);
 };
 

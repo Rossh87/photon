@@ -9,9 +9,9 @@ import ImageSearchProvider, {
 
 const useStyles = makeStyles((theme: Theme) => ({
 	paper: {
-		maxWidth: 936,
-		margin: 'auto',
-		overflow: 'hidden',
+		// maxWidth: 936,
+		// margin: 'auto',
+		// overflow: 'hidden',
 		padding: theme.spacing(2),
 	},
 }));
@@ -24,10 +24,10 @@ export const _ImageSearch: React.FunctionComponent = (props) => {
 	useEffect(() => imageSearchDispatch({ type: 'FETCH_IMG_DATA' }), []);
 
 	return (
-		<Paper className={classes.paper}>
+		<>
 			<ImageSearchBar />
 			<ImageDisplay />
-		</Paper>
+		</>
 	);
 };
 

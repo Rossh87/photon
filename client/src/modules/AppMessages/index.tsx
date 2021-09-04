@@ -5,12 +5,19 @@ import { map as OMap, fold as OFold } from 'fp-ts/Option';
 import React, { FunctionComponent, ReactElement } from 'react';
 import { TAppMessages } from '../Auth/state/authStateTypes';
 import { useAuthDispatch, useAuthState } from '../Auth/state/useAuthState';
-import { IconButton } from '@material-ui/core';
+import { IconButton, makeStyles } from '@material-ui/core';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
-// NB
+
+const useStyles = makeStyles((theme) => ({
+	alert: {
+		margin: theme.spacing(2, 0),
+	},
+}));
+
 const AppMessages: FunctionComponent = () => {
 	const { appMessages } = useAuthState();
 	const authDispatch = useAuthDispatch();
+	const classes = useStyles();
 
 	return pipe(
 		appMessages,
@@ -18,6 +25,7 @@ const AppMessages: FunctionComponent = () => {
 		OMap((msgs) => msgs[msgs.length - 1]),
 		OFold(constNull, ({ severity, action, message, id }) => (
 			<Alert
+				className={classes.alert}
 				severity={severity}
 				action={
 					<IconButton

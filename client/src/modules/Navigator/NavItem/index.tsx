@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { alpha } from '@material-ui/core/styles/colorManipulator';
-import ListItem from '@material-ui/core/ListItem';
+import { ListItem, IconButton } from '@material-ui/core';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link, useLocation } from 'react-router-dom';
@@ -13,17 +13,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 		paddingTop: 1,
 		paddingBottom: 1,
 		color: theme.palette.primary.main,
-		'&:hover, &:focus': {
-			backgroundColor: alpha(theme.palette.primary.light, 0.2),
-		},
+		width: '50px',
+		height: '50px',
+		// '&:hover, &:focus': {
+		// 	backgroundColor: alpha(theme.palette.primary.light, 0.2),
+		// },
 	},
 	itemActiveItem: {
 		color: theme.palette.secondary.light,
+		boxShadow: `0px 0px 3px 1px ${theme.palette.secondary.light}`,
 	},
-	itemIcon: {
-		minWidth: 'auto',
-		marginRight: theme.spacing(2),
-	},
+
 	navItemLink: {
 		textDecoration: 'none',
 	},
@@ -40,16 +40,18 @@ const NavItem: React.FunctionComponent<
 
 	return (
 		<Link to={matchesRouterPath} className={classes.navItemLink}>
-			<ListItem
-				button
-				className={clsx(
-					classes.item,
-					isActive && classes.itemActiveItem
-				)}
-				onClick={handleClick}
-			>
-				<ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
-				<ListItemText>{pageName}</ListItemText>
+			<ListItem onClick={handleClick}>
+				{/* <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
+				<ListItemText>{pageName}</ListItemText> */}
+				<IconButton
+					className={clsx(
+						classes.item,
+						isActive && classes.itemActiveItem
+					)}
+					onClick={handleClick}
+				>
+					{icon}
+				</IconButton>
 			</ListItem>
 		</Link>
 	);

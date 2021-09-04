@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '10px',
 		height: '50vh',
 		margin: theme.spacing(2),
+		overflow: 'auto',
 	},
 }));
 

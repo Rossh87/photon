@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		width: '100%',
 	},
 	listItemTypo: {
-		padding: theme.spacing(2.75),
+		// padding: theme.spacing(2.75),
 		paddingRight: theme.spacing(8),
 	},
 
@@ -81,6 +81,7 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 	const inputComponent = (
 		<form onSubmit={handleSubmit}>
 			<TextField
+				size="small"
 				value={value}
 				onChange={handleChange}
 				id={`profile-${fieldName}-input`}

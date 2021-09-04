@@ -26,6 +26,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 	navIcon: {
 		fill: theme.palette.common.white,
 	},
+
+	navList: {
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-around',
+	},
 }));
 
 export interface INavigatorProps extends Omit<DrawerProps, 'classes'> {
@@ -40,7 +46,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 
 	return (
 		<Drawer {...passThrough} anchor="left">
-			<Box
+			{/* <Box
 				className={clsx(classes.itemCategory)}
 				padding={2}
 				display="grid"
@@ -54,8 +60,8 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 						/>
 					</IconButton>
 				</RouterLink>
-			</Box>
-			<List>
+			</Box> */}
+			<List className={classes.navList}>
 				{navItems.map((vals, i) => (
 					<NavItem
 						handleClick={() => setDrawerOpen(false)}
