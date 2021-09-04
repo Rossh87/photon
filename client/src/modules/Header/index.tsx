@@ -43,23 +43,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 		width: theme.spacing(6),
 		height: theme.spacing(6),
 	},
-	link: {
-		textDecoration: 'none',
-		color: lightColor,
-		'&:hover': {
-			color: theme.palette.common.white,
-		},
-	},
-	button: {
-		color: theme.palette.common.white,
-		fontSize: theme.typography.fontSize,
-		textDecoration: 'none',
-		'&:hover': {
-			color: theme.palette.common.white,
-		},
-	},
 	appbarGrid: {
 		padding: theme.spacing(2),
+	},
+
+	headerButton: {
+		color: theme.palette.common.white,
+		fontWeight: theme.typography.fontWeightBold,
 	},
 }));
 
@@ -156,16 +146,13 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 						</Grid>
 						<Grid item xs />
 						<Grid item>
-							<Link
-								href="#"
-								className={classes.link}
-								variant="body2"
+							<Button
+								className={classes.headerButton}
 								onClick={handleLogout}
+								size="large"
 							>
-								<Button className={classes.button}>
-									Logout
-								</Button>
-							</Link>
+								Logout
+							</Button>
 						</Grid>
 						<Grid item>
 							<Tooltip title="Alerts • No alerts">

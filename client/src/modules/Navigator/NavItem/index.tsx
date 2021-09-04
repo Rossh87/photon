@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import { alpha } from '@material-ui/core/styles/colorManipulator';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -11,16 +12,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 	item: {
 		paddingTop: 1,
 		paddingBottom: 1,
-		color: 'rgba(255, 255, 255, 0.7)',
+		color: theme.palette.primary.main,
 		'&:hover, &:focus': {
-			backgroundColor: 'rgba(255, 255, 255, 0.08)',
+			backgroundColor: alpha(theme.palette.primary.light, 0.2),
 		},
 	},
 	itemActiveItem: {
-		color: '#4fc3f7',
-	},
-	itemPrimary: {
-		fontSize: 'inherit',
+		color: theme.palette.secondary.light,
 	},
 	itemIcon: {
 		minWidth: 'auto',
@@ -31,11 +29,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }));
 
-const NavItem: React.FunctionComponent<INavItemData> = ({
-	pageName,
-	icon,
-	matchesRouterPath,
-}) => {
+const NavItem: React.FunctionComponent<
+	INavItemData & { handleClick: () => void }
+> = ({ pageName, icon, matchesRouterPath, handleClick }) => {
 	const classes = useStyles();
 
 	const location = useLocation();
@@ -50,15 +46,10 @@ const NavItem: React.FunctionComponent<INavItemData> = ({
 					classes.item,
 					isActive && classes.itemActiveItem
 				)}
+				onClick={handleClick}
 			>
 				<ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
-				<ListItemText
-					classes={{
-						primary: classes.itemPrimary,
-					}}
-				>
-					{pageName}
-				</ListItemText>
+				<ListItemText>{pageName}</ListItemText>
 			</ListItem>
 		</Link>
 	);

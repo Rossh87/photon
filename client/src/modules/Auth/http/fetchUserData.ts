@@ -7,6 +7,7 @@ import { IDispatcher } from '../../../core/sharedClientTypes';
 import { AuthError } from '../domain/AuthError';
 import { AUTH_API_ENDPOINT } from '../../../CONSTANTS';
 import { Dispatch } from 'react';
+import { createAppMessage } from '../../AppMessages/helpers';
 
 const attemptToFetchUserData = (
 	fetcher: AxiosInstance
@@ -26,8 +27,18 @@ const initRequest: IDispatcher<TAuthActions> = (dispatch) =>
 	dispatch({ type: 'AUTH_REQUEST_INITIATED', payload: null });
 
 const onSuccess =
-	(dispatch: Dispatch<TAuthActions>) => (user: TAuthorizedUserResponse) =>
+	(dispatch: Dispatch<TAuthActions>) => (user: TAuthorizedUserResponse) => {
+		if (user.accessLevel === 'demo') {
+			dispatch({
+				type: 'ADD_APP_MESSAGE',
+				payload: createAppMessage(
+					'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
+					'info'
+				),
+			});
+		}
 		dispatch({ type: 'ADD_USER', payload: user });
+	};
 
 const onFailure = (dispatch: Dispatch<TAuthActions>) => (e: AuthError) =>
 	dispatch({ type: 'ADD_AUTH_ERR', payload: e });

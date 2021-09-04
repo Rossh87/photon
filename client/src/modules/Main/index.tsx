@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline, Container, Grid } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import Hidden from '@material-ui/core/Hidden';
 import Navigator from '../Navigator';
@@ -9,6 +9,7 @@ import theme from '../theme';
 import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
 import Profile from '../Profile';
+import AppMessages from '../AppMessages';
 
 import { Switch, Route } from 'react-router-dom';
 
@@ -19,21 +20,13 @@ const useStyles = makeStyles({
 		display: 'flex',
 		minHeight: '100vh',
 	},
-	drawer: {
-		// [theme.breakpoints.up('sm')]: {
-		// 	width: drawerWidth,
-		// 	flexShrink: 0,
-		// },
-	},
 	app: {
 		flex: 1,
 		display: 'flex',
 		flexDirection: 'column',
 	},
-	main: {
-		flex: 1,
-		padding: theme.spacing(6, 4),
-		background: '#eaeff1',
+	mainGrid: {
+		padding: theme.spacing(1),
 	},
 	footer: {
 		padding: theme.spacing(2),
@@ -46,34 +39,34 @@ const Main: React.FunctionComponent = () => {
 	const [drawerOpen, setDrawerOpen] = React.useState(false);
 
 	const handleDrawerToggle = () => {
-		console.log('toggle');
 		setDrawerOpen(!drawerOpen);
 	};
 
 	return (
 		<ThemeProvider theme={theme}>
-			<div className={classes.root}>
-				<CssBaseline />
-				<nav className={classes.drawer}>
-					<Navigator
-						PaperProps={{ style: { width: drawerWidth } }}
-						variant="temporary"
-						open={drawerOpen}
-						onClose={() => setDrawerOpen(false)}
-					/>
-					{/* <Hidden smDown implementation="css">
-						<Navigator
-							PaperProps={{ style: { width: drawerWidth } }}
-						/>
-					</Hidden> */}
-				</nav>
+			<CssBaseline />
+			<nav>
+				<Navigator
+					PaperProps={{ style: { width: drawerWidth } }}
+					variant="temporary"
+					open={drawerOpen}
+					onClose={() => setDrawerOpen(false)}
+					setDrawerOpen={setDrawerOpen}
+				/>
+			</nav>
 
-				<div className={classes.app}>
-					<Header onDrawerToggle={handleDrawerToggle} />
-					<Alert severity="info">
-						Photon is currently running in demo mode.
-					</Alert>
-					<main className={classes.main}>
+			<Header onDrawerToggle={handleDrawerToggle} />
+			<Container maxWidth="md" component="main" className={classes.app}>
+				<Grid
+					className={classes.mainGrid}
+					container
+					direction="column"
+					spacing={2}
+				>
+					<Grid item>
+						<AppMessages />
+					</Grid>
+					<Grid item>
 						<Switch>
 							<Route path="/upload">
 								<Uploader />
@@ -85,10 +78,9 @@ const Main: React.FunctionComponent = () => {
 								<Profile />
 							</Route>
 						</Switch>
-					</main>
-					<footer className={classes.footer}></footer>
-				</div>
-			</div>
+					</Grid>
+				</Grid>
+			</Container>
 		</ThemeProvider>
 	);
 };

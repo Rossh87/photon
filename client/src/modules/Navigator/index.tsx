@@ -2,76 +2,66 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
+import { alpha } from '@material-ui/core/styles/colorManipulator';
+import { List, Button, ListItem, IconButton } from '@material-ui/core';
 import navItems from './navItems';
 import NavItem from './NavItem';
 import RouterLink from '../RouterLink';
 import { useLocation } from 'react-router';
+import BackupIcon from '@material-ui/icons/Backup';
+import { Box } from '@material-ui/core';
+import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
 export const navLinkActiveColor = '#4fc3f7';
 
 const useStyles = makeStyles((theme: Theme) => ({
-	categoryHeader: {
-		paddingTop: theme.spacing(2),
-		paddingBottom: theme.spacing(2),
-	},
-	categoryHeaderPrimary: {
-		color: theme.palette.common.white,
-	},
-	item: {
-		paddingTop: 1,
-		paddingBottom: 1,
-		color: 'rgba(255, 255, 255, 0.7)',
-		'&:hover, &:focus': {
-			backgroundColor: 'rgba(255, 255, 255, 0.08)',
-		},
-	},
 	itemCategory: {
-		backgroundColor: '#232f3e',
-		boxShadow: '0 -1px 0 #404854 inset',
-		paddingTop: theme.spacing(2),
-		paddingBottom: theme.spacing(2),
-	},
-	firebase: {
+		backgroundColor: theme.palette.primary.main,
+		boxShadow: `0 -1px 0 ${theme.palette.primary.main} inset`,
 		fontSize: 24,
 		color: theme.palette.common.white,
+		textAlign: 'center',
 	},
-	itemActiveItem: {
-		color: '#4fc3f7',
-	},
-	itemPrimary: {
-		fontSize: 'inherit',
-	},
-	itemIcon: {
-		minWidth: 'auto',
-		marginRight: theme.spacing(2),
-	},
-	divider: {
-		marginTop: theme.spacing(2),
+
+	navIcon: {
+		fill: theme.palette.common.white,
 	},
 }));
 
-export interface INavigatorProps extends Omit<DrawerProps, 'classes'> {}
+export interface INavigatorProps extends Omit<DrawerProps, 'classes'> {
+	setDrawerOpen: (a: boolean) => void;
+}
 
-const Navigator: React.FunctionComponent<INavigatorProps> = (props) => {
+const Navigator: React.FunctionComponent<INavigatorProps> = ({
+	setDrawerOpen,
+	...passThrough
+}) => {
 	const classes = useStyles();
 
 	return (
-		<Drawer {...props} anchor="left">
+		<Drawer {...passThrough} anchor="left">
+			<Box
+				className={clsx(classes.itemCategory)}
+				padding={2}
+				display="grid"
+				justifyContent="center"
+			>
+				<RouterLink to="/">
+					<IconButton>
+						<ExploreIcon
+							fontSize="large"
+							className={classes.navIcon}
+						/>
+					</IconButton>
+				</RouterLink>
+			</Box>
 			<List>
-				<ListItem
-					className={clsx(
-						classes.firebase,
-						classes.item,
-						classes.itemCategory
-					)}
-					key={'invariant'}
-				>
-					<RouterLink to="/">Photon</RouterLink>
-				</ListItem>
 				{navItems.map((vals, i) => (
-					<NavItem {...vals} key={vals.pageName}></NavItem>
+					<NavItem
+						handleClick={() => setDrawerOpen(false)}
+						{...vals}
+						key={vals.pageName}
+					></NavItem>
 				))}
 			</List>
 		</Drawer>

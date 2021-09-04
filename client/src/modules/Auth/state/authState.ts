@@ -1,4 +1,4 @@
-import { IAuthState, TAuthActions } from './authStateTypes';
+import { IAuthState, TAuthActions, IAppMessage } from './authStateTypes';
 import { Reducer } from 'react';
 import { TAuthorizedUserResponse } from '../../../../../sharedTypes/User';
 
@@ -6,6 +6,7 @@ export const defaultState: IAuthState = {
 	user: null,
 	errors: [],
 	status: 'fresh',
+	appMessages: [],
 };
 
 export const authReducer: Reducer<IAuthState, TAuthActions> = (
@@ -41,5 +42,18 @@ export const authReducer: Reducer<IAuthState, TAuthActions> = (
 
 		case 'AUTH_REQUEST_INITIATED':
 			return { ...state, status: 'pending' };
+
+		case 'ADD_APP_MESSAGE':
+			return {
+				...state,
+				appMessages: [...state.appMessages, action.payload],
+			};
+		case 'REMOVE_APP_MESSAGE':
+			return {
+				...state,
+				appMessages: state.appMessages.filter(
+					(msg) => msg.id !== action.payload
+				),
+			};
 	}
 };
