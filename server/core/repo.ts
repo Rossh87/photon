@@ -71,6 +71,30 @@ export const tryFindArray =
 			)
 		);
 
+export const tryFindOne =
+	<T, K extends Partial<T> = T>(filter: FilterQuery<T>) =>
+	(options?: FindOneOptions<T>) =>
+	(c: Collection<T>) =>
+		pipe(
+			options,
+			fromNullable,
+			foldW(
+				() =>
+					TE.tryCatch(
+						() => c.findOne(filter),
+						(reason) =>
+							DBReadError.create(c.collectionName, filter, reason)
+					),
+				// TODO: any type here is not good...
+				(opts: any) =>
+					TE.tryCatch(
+						() => c.findOne<K>(filter, opts),
+						(reason) =>
+							DBReadError.create(c.collectionName, filter, reason)
+					)
+			)
+		);
+
 // Error classes
 export class MongoConnectionError extends BaseError {
 	public static create(uri: string, e?: any) {
@@ -98,6 +122,22 @@ export class DBReadError extends BaseError {
 			query
 		)}`;
 		return new DBReadError(devMessage, raw);
+	}
+	private constructor(devMessage: string, raw: any) {
+		super(devMessage, HTTPErrorTypes.INTERNAL_SERVER_ERROR, raw);
+	}
+}
+
+export class DBDeletionError extends BaseError {
+	public static create<T extends object>(
+		collection: string,
+		query: RootQuerySelector<T>,
+		raw: any
+	) {
+		const devMessage = `Deletion from collection: ${collection} with query: ${JSON.stringify(
+			query
+		)} failed.  See "raw" error for details`;
+		return new DBDeletionError(devMessage, raw);
 	}
 	private constructor(devMessage: string, raw: any) {
 		super(devMessage, HTTPErrorTypes.INTERNAL_SERVER_ERROR, raw);

@@ -25,6 +25,12 @@ export const HTTPErrorTypes: Record<string, HTTPErrorType> = {
 		clientMessage: 'Attempted to access an unauthorized resource',
 	},
 
+	MISSING_OR_CONFLICTED_RESOURCE: {
+		status: 409,
+		clientMessage:
+			'Server was unable to locate the requested resource, or could not perform the requested action due to a conflict',
+	},
+
 	INTERNAL_SERVER_ERROR: {
 		status: 500,
 		clientMessage:

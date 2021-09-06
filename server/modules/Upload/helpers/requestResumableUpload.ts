@@ -8,7 +8,6 @@ import {
 } from '@google-cloud/storage';
 import { reverseTwo } from '../../../core/utils/reverseCurried';
 import { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither';
-import { UPLOAD_ORIGIN } from '../../../CONSTANTS';
 
 export class ResumableUploadCreationErr extends BaseError {
 	public static create(
@@ -32,7 +31,6 @@ export class ResumableUploadCreationErr extends BaseError {
 	}
 }
 
-// TODO: hash comparison always fails--need to know why
 export const requestResumableUpload =
 	(
 		uploadMetaData: IUploadRequestMetadata
@@ -47,10 +45,12 @@ export const requestResumableUpload =
 
 		const fileName = `${ownerID}/${displayName}/${width.toString()}`;
 
+		const uploadOrigin = deps.readEnv('UPLOAD_ORIGIN');
+
 		const opts: CreateResumableUploadOptions = {
 			public: true,
 			predefinedAcl: 'publicRead',
-			origin: UPLOAD_ORIGIN,
+			origin: uploadOrigin,
 			metadata: {
 				name: fileName,
 				cacheControl: 'public, max-age=604800000',

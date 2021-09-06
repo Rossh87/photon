@@ -1,6 +1,7 @@
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { ISavedBreakpoint, TSavedBreakpoints } from './Breakpoint';
 import { ResumableUploadCreationErr } from 'server/modules/Upload/helpers/requestResumableUpload';
+import { ObjectId, ObjectID } from 'bson';
 
 export type TMediaType = 'image/jpeg' | 'image/png';
 
@@ -20,7 +21,7 @@ export interface ICombinedUploadRequestMetadata {
 }
 
 export interface IDBUpload extends ICombinedUploadRequestMetadata {
-	_id: string;
+	_id: ObjectID;
 	breakpoints: ISavedBreakpoint[];
 }
 
@@ -55,4 +56,10 @@ export type TWithoutID<T> = Omit<T, '_id'>;
 export interface IBreakpointTransferObject {
 	imageID: string;
 	breakpoints: TSavedBreakpoints;
+}
+
+export type TUploadDeletionID = string;
+
+export interface IUploadDeletionPayload {
+	idToDelete: TUploadDeletionID;
 }
