@@ -37,7 +37,8 @@ describe('user data fetching functiong', () => {
 		const expectedMessage = createAppMessage(
 			'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
 			'info',
-			false
+			false,
+			'demo'
 		);
 
 		await _fetchUserData(mockAxios)(dispatch);

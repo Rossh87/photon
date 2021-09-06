@@ -8,6 +8,11 @@ export const defaultState: IAuthState = {
 	errors: [],
 	status: 'fresh',
 	appMessages: [],
+	// this can be false for all users, since
+	// profile data handler checks the access level
+	// of the user before dispatching the 'demo mode'
+	// message.
+	demoMessageViewed: false,
 };
 
 export const authReducer: Reducer<IAuthState, TAuthActions> = (
@@ -45,13 +50,8 @@ export const authReducer: Reducer<IAuthState, TAuthActions> = (
 			return { ...state, status: 'pending' };
 
 		case 'ADD_APP_MESSAGE':
-			return {
-				...state,
-				appMessages: handleIncomingMessage(
-					action.payload,
-					state.appMessages
-				),
-			};
+			return handleIncomingMessage(state, action.payload);
+
 		case 'REMOVE_APP_MESSAGE':
 			return {
 				...state,

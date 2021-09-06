@@ -9,6 +9,10 @@ import { ReactElement } from 'react';
 
 export type TMessageSeverity = 'error' | 'warning' | 'info' | 'success';
 
+// TODO: type other than 'demo' only exists for testing
+// purposes ATM
+export type TAppMessageKind = 'demo' | 'other';
+
 export type TMessageID = string;
 
 export interface IAppMessage {
@@ -17,17 +21,26 @@ export interface IAppMessage {
 	severity: TMessageSeverity;
 	allowMultiple: boolean;
 	action?: ReactElement;
+	kind: TAppMessageKind;
 }
+
+export type TDemoModeMessage = IAppMessage & {
+	kind: 'demo';
+};
 
 export type TAppErrors = BaseError[];
 
 export type TAppMessages = IAppMessage[];
 
+// NB: demoMessageViewed is not persisted
+// with the user's data--it will be re-triggered
+// every time user logs into app
 export interface IAuthState {
 	user: TUserState;
 	errors: TAppErrors;
 	status: TAuthStatus;
 	appMessages: TAppMessages;
+	demoMessageViewed: boolean;
 }
 
 export type TAuthStatus =
