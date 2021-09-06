@@ -202,6 +202,7 @@ const BreakPointListItem: React.FunctionComponent<
 		<ListItem
 			data-testid={`breakpoint-item-${origin}`}
 			disabled={origin === 'default' ? true : false}
+			dense
 		>
 			<Accordion expanded={bpState.editing || isExpanded}>
 				<AccordionSummary aria-label="Expand">

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import { flow, pipe } from 'fp-ts/function';
+import { pipe } from 'fp-ts/function';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -10,13 +10,14 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import {
 	ListItemText,
 	Typography,
-	Snackbar,
 	IconButton,
-	Paper,
 	List,
+	Tabs,
+	AppBar,
+	Tab,
+	Box,
 } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { Alert } from '@material-ui/lab';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
 import {
@@ -25,7 +26,6 @@ import {
 } from '../state/useImageSearchState';
 import { createSrcset } from '../useCases/createSrcset';
 import { IDBUpload } from 'sharedTypes/Upload';
-import BreakPointListItem from './BreakPointListItem';
 import { mapBreakpointsToUI } from '../useCases/mapBreakpointsToUI';
 import { useFPReducer } from 'react-use-fp';
 import dependencyContext from '../../../core/dependencyContext';
@@ -33,31 +33,26 @@ import {
 	initialDialogState,
 	imageDialogReducer,
 } from '../state/imageDialogState';
-import NewBreakpointListItem from './NewBreakpointListItem';
-import { makeDefaultUIBreakpoint } from '../helpers/makeDefaultUIBreakpoints';
 import { synchronizeBreakpoints } from '../useCases/synchronizeBreakpoints';
 import Snacktion from './Snacktion';
 import { breakpointUIToBreakpoint } from '../helpers/breakpointMappers';
 import { map as ArrMap } from 'fp-ts/Array';
+import { tabA11yProps } from '../helpers/tabA11yProps';
+import BreakpointsTab from './BreakpointsTab';
+import PasteableCodeTab from './PasteableCodeTab';
+import Tabpanel from './Tabpanel';
+import { TTabPanelType } from '../state/imageSearchStateTypes';
+import { useTabItemStyles, useTabStyles } from '../styles/tabItemStyles';
 
 const useStyles = makeStyles((theme: Theme) => ({
-	snackBar: {
-		backgroundColor: theme.palette.warning.main,
-	},
-
-	paper: {
-		width: '100vw',
-		maxWidth: '1500px',
+	dialogPaper: {
+		height: '90vh',
+		overflow: 'auto',
 	},
 
 	dialogTitle: {
 		display: 'flex',
 		justifyContent: 'space-between',
-		width: '100%',
-	},
-
-	createNew: {
-		padding: '2rem',
 		width: '100%',
 	},
 
@@ -73,15 +68,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 		fontWeight: theme.typography.fontWeightBold,
 		fontSize: theme.typography.fontSize,
 	},
-
-	dialogActions: {
-		display: 'flex',
-		justifyContent: 'space-between',
-	},
 }));
 
 export const ImageDialog: React.FunctionComponent = () => {
+	// Needed state
 	const styles = useStyles();
+	const tabStyles = useTabStyles();
+	const tabItemStyles = useTabItemStyles();
 
 	const makeDeps = useContext(dependencyContext);
 
@@ -93,12 +86,16 @@ export const ImageDialog: React.FunctionComponent = () => {
 		makeDeps
 	)(initialDialogState, imageDialogReducer);
 
+	const [tabValue, setTabValue] = React.useState<TTabPanelType>('code');
+
 	// we can cast this since dialog will never be open if
 	// imageUnderConfiguration is null
 	const { publicPathPrefix, availableWidths, displayName, breakpoints, _id } =
 		useImageSearchState().imageUnderConfiguration as IDBUpload;
 
 	const imageSearchDispatch = useImageSearchDispatch();
+
+	// Begin handlers
 
 	// Dispatch a payload if updates needed, otherwise
 	// no payload. Notice we convert UIbreakpoints
@@ -142,6 +139,14 @@ export const ImageDialog: React.FunctionComponent = () => {
 
 	const resetStatus = () => dispatch({ type: 'RESET_STATUS' });
 
+	const handleTabChange = (
+		e: React.ChangeEvent<{}>,
+		newVal: TTabPanelType
+	) => {
+		setTabValue(newVal);
+	};
+
+	// Begin effects
 	useEffect(() => {
 		actions.LOAD_BREAKPOINTS(breakpoints);
 	}, []);
@@ -153,8 +158,9 @@ export const ImageDialog: React.FunctionComponent = () => {
 			onClose={handleCloseAttempt}
 			aria-labelledby={`img-dialog-${displayName}`}
 			aria-describedby="alert-dialog-slide-description"
-			keepMounted={false}
+			keepMounted={true}
 			maxWidth="md"
+			classes={{ paper: styles.dialogPaper }}
 		>
 			<DialogTitle
 				disableTypography
@@ -170,68 +176,72 @@ export const ImageDialog: React.FunctionComponent = () => {
 				</IconButton>
 			</DialogTitle>
 
-			<DialogContent dividers>
-				<Grid justifyContent="center" container>
-					<Grid item xs={4}>
+			<DialogContent>
+				<Grid container spacing={4}>
+					<Grid item xs={5} sm={3}>
 						{createSrcset('element')(state.breakpoints)(
 							availableWidths
 						)(publicPathPrefix)}
 					</Grid>
-					<Grid spacing={2} container>
-						<Grid item xs={12}>
-							<Paper
-								elevation={2}
-								id={`embed-code-${displayName}`}
-								square={true}
-								style={{ height: '100%' }}
-							>
-								<Typography variant="h4">
-									Your Breakpoints
-								</Typography>
-								<Typography variant="h4">Defaults</Typography>
-								<List>
-									<NewBreakpointListItem
-										dispatch={dispatch}
-									/>
-									{state.breakpoints.map((bp) => {
-										return (
-											<BreakPointListItem
-												{...bp}
-												dispatch={dispatch}
-												key={bp._id}
-											/>
-										);
-									})}
-									{availableWidths.map(
-										flow(makeDefaultUIBreakpoint, (bp) => (
-											<BreakPointListItem
-												{...bp}
-												dispatch={dispatch}
-												key={bp._id}
-											/>
-										))
-									)}
-								</List>
-								<Typography variant="h4">Custom</Typography>
-							</Paper>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography variant="h4">
-								Paste this code directly into your HTML
-							</Typography>
-							<code
-								data-testid="pasteable-HTML-block"
-								style={{ maxWidth: '100%', width: '100%' }}
-							>
-								{
-									createSrcset('string')(state.breakpoints)(
-										availableWidths
-									)(publicPathPrefix) as string
+					<Grid item xs={7} sm={9}>
+						<List>
+							<ListItemText
+								primary={
+									<span>
+										<strong>Title: </strong>
+										{displayName}
+									</span>
 								}
-							</code>
-						</Grid>
+							/>
+							<ListItemText
+								primary={
+									<span>
+										<strong>Available Widths: </strong>
+										{availableWidths
+											.map((w) => `${w}px`)
+											.join(', ')}
+									</span>
+								}
+							/>
+						</List>
 					</Grid>
 				</Grid>
+				<Box mt={2}>
+					{/* <AppBar position="static"> */}
+					<Tabs
+						value={tabValue}
+						onChange={handleTabChange}
+						aria-label="simple tabs example"
+						classes={tabStyles}
+					>
+						<Tab
+							label="code"
+							{...tabA11yProps(0)}
+							value="code"
+							classes={tabItemStyles}
+						/>
+						<Tab
+							label="breakpoint"
+							{...tabA11yProps(1)}
+							value="breakpoint"
+							classes={tabItemStyles}
+						/>
+					</Tabs>
+					<Tabpanel identifier="breakpoint" activeValue={tabValue}>
+						<BreakpointsTab
+							dispatch={dispatch}
+							dialogState={state}
+							availableWidths={availableWidths}
+						/>
+					</Tabpanel>
+					<Tabpanel identifier="code" activeValue={tabValue}>
+						<PasteableCodeTab
+							breakpoints={state.breakpoints}
+							publicPathPrefix={publicPathPrefix}
+							availableWidths={availableWidths}
+						/>
+					</Tabpanel>
+				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button

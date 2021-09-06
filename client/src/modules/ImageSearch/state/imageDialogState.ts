@@ -1,10 +1,5 @@
-// render a greyed-out item to indicate possibility of creating a new breakpoint
-// beneath that, show all user-defined breakpoints in the order they specify
-// finally, show greyed-out defaults that will always be present
-
 import { none } from 'fp-ts/lib/Option';
 import { Option } from 'fp-ts/lib/Option';
-import { Interface } from 'readline';
 import {
 	ISavedBreakpoint,
 	TBreakpointQueryType,
@@ -13,8 +8,8 @@ import {
 import { IDBUpload } from 'sharedTypes/Upload';
 import { BaseError } from '../../../core/error';
 import { makeNewUIBreakpoint } from '../helpers/makeNewUIBreakpoint';
-
 type TBreakpointFormValidationErr = string | null;
+
 // lightweight way to track errs on input values.  The string is the err message.
 // use a tuple type to keep relationship between err and the form field, since field order
 // shouldn't change
@@ -24,8 +19,7 @@ export type TBreakpointFormValidationErrs = [
 	TBreakpointFormValidationErr,
 	TBreakpointFormValidationErr
 ];
-// BP state needs: built-in BP props to include an _id prop, a kind indicating whether it is 'new', 'default', 'user-defined' (trackable through 'origin' prop?),
-// an 'isUnderEdit" status,
+
 type TBreakPointUIKinds = 'user' | 'default';
 
 export interface IBreakpointUI extends ISavedBreakpoint {

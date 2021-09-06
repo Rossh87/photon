@@ -57,10 +57,18 @@ const Snacktion: React.FunctionComponent<Props> = ({
 		if (status === 'attemptedClose') {
 			return (
 				<>
-					<Button variant="outlined" onClick={handleDiscard}>
+					<Button
+						variant="text"
+						style={{ color: 'white' }}
+						onClick={handleDiscard}
+					>
 						Discard
 					</Button>
-					<Button variant="outlined" onClick={handleSave}>
+					<Button
+						variant="text"
+						style={{ color: 'white' }}
+						onClick={handleSave}
+					>
 						Keep
 					</Button>
 				</>

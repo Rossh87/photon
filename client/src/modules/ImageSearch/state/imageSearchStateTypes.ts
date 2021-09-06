@@ -2,6 +2,8 @@ import { IDBUpload } from 'sharedTypes/Upload';
 import { TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import { BaseError } from '../../../core/error';
 
+export type TTabPanelType = 'breakpoint' | 'code';
+
 export interface IImageSearchState {
 	imageMetadata: IDBUpload[];
 	currentlyActiveImages: IDBUpload[];
