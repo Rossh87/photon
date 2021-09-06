@@ -1,6 +1,7 @@
 import { IAuthState, TAuthActions, IAppMessage } from './authStateTypes';
 import { Reducer } from 'react';
-import { TAuthorizedUserResponse } from '../../../../../sharedTypes/User';
+import { TAuthorizedUserResponse } from 'sharedTypes/User';
+import { handleIncomingMessage } from '../../AppMessages/helpers';
 
 export const defaultState: IAuthState = {
 	user: null,
@@ -46,7 +47,10 @@ export const authReducer: Reducer<IAuthState, TAuthActions> = (
 		case 'ADD_APP_MESSAGE':
 			return {
 				...state,
-				appMessages: [...state.appMessages, action.payload],
+				appMessages: handleIncomingMessage(
+					action.payload,
+					state.appMessages
+				),
 			};
 		case 'REMOVE_APP_MESSAGE':
 			return {

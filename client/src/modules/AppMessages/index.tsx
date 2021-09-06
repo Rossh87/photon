@@ -22,6 +22,7 @@ const AppMessages: FunctionComponent = () => {
 	return pipe(
 		appMessages,
 		fromArray,
+		// This always takes the most recent message
 		OMap((msgs) => msgs[msgs.length - 1]),
 		OFold(constNull, ({ severity, action, message, id }) => (
 			<Alert

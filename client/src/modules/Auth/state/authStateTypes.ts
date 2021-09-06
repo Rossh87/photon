@@ -15,6 +15,7 @@ export interface IAppMessage {
 	id: TMessageID;
 	message: string;
 	severity: TMessageSeverity;
+	allowMultiple: boolean;
 	action?: ReactElement;
 }
 

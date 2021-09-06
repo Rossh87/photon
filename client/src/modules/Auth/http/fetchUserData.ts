@@ -33,7 +33,8 @@ const onSuccess =
 				type: 'ADD_APP_MESSAGE',
 				payload: createAppMessage(
 					'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
-					'info'
+					'info',
+					false
 				),
 			});
 		}
