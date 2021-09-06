@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Dispatch } from 'react';
-import { Button, Snackbar, IconButton } from '@material-ui/core';
+import { Button, Snackbar, IconButton, useTheme } from '@material-ui/core';
 import { getOrElse, Option, chain, map } from 'fp-ts/lib/Option';
 import { BaseError } from '../../../core/error';
 import { TDialogActions, TSnackbarStatus } from '../state/imageDialogState';
@@ -24,6 +24,8 @@ const Snacktion: React.FunctionComponent<Props> = ({
 	resetStatus,
 }) => {
 	const [open, setOpen] = useState(false);
+
+	const theme = useTheme();
 
 	useEffect(() => {
 		let timerID: ReturnType<typeof setTimeout>;
@@ -79,10 +81,10 @@ const Snacktion: React.FunctionComponent<Props> = ({
 
 	const deriveColor = () =>
 		status === 'attemptedClose'
-			? 'orange'
+			? theme.palette.warning.main
 			: status === 'error'
-			? 'red'
-			: 'green';
+			? theme.palette.error.main
+			: theme.palette.success.main;
 
 	return (
 		<Snackbar
