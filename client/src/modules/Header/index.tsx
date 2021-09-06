@@ -3,7 +3,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import HelpIcon from '@material-ui/icons/Help';
-import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
 import RouterLink from '../RouterLink';
@@ -14,6 +13,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import {
+	Hidden,
 	Button,
 	ClickAwayListener,
 	Grow,
@@ -22,6 +22,7 @@ import {
 	MenuList,
 	Paper,
 	Popper,
+	Box,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -50,6 +51,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 	headerButton: {
 		color: theme.palette.common.white,
 		fontWeight: theme.typography.fontWeightBold,
+	},
+
+	appbarCenter: {
+		flexGrow: 1,
 	},
 }));
 
@@ -125,111 +130,83 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 	}, [open]);
 
 	return (
-		<React.Fragment>
-			<AppBar color="primary" position="sticky" elevation={0}>
-				<Toolbar>
-					<Grid
-						container
-						spacing={3}
-						className={classes.appbarGrid}
-						alignItems="center"
+		<AppBar color="primary" position="sticky" elevation={0}>
+			<Toolbar>
+				<Hidden mdUp>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						onClick={onDrawerToggle}
+						edge="start"
 					>
-						<Grid item>
-							<IconButton
-								color="inherit"
-								aria-label="open drawer"
-								onClick={onDrawerToggle}
-								edge="start"
+						<MenuIcon />
+					</IconButton>
+				</Hidden>
+				<Box flexGrow={1} />
+				<Button
+					className={classes.headerButton}
+					onClick={handleLogout}
+					size="large"
+				>
+					Logout
+				</Button>
+				<Hidden xsDown>
+					<Tooltip title="Alerts • No alerts">
+						<IconButton color="inherit">
+							<NotificationsIcon />
+						</IconButton>
+					</Tooltip>
+					<IconButton
+						color="inherit"
+						className={classes.iconButtonAvatar}
+						ref={menuRef}
+						onClick={handleToggle}
+					>
+						{renderProfileImage()}
+					</IconButton>
+					<Popper
+						open={open}
+						anchorEl={menuRef.current}
+						role={undefined}
+						transition
+						disablePortal
+					>
+						{({ TransitionProps, placement }) => (
+							<Grow
+								{...TransitionProps}
+								style={{
+									transformOrigin:
+										placement === 'bottom'
+											? 'center top'
+											: 'center bottom',
+								}}
 							>
-								<MenuIcon />
-							</IconButton>
-						</Grid>
-						<Grid item xs />
-						<Grid item>
-							<Button
-								className={classes.headerButton}
-								onClick={handleLogout}
-								size="large"
-							>
-								Logout
-							</Button>
-						</Grid>
-						<Grid item>
-							<Tooltip title="Alerts • No alerts">
-								<IconButton color="inherit">
-									<NotificationsIcon />
-								</IconButton>
-							</Tooltip>
-						</Grid>
-						<Grid item>
-							<IconButton
-								color="inherit"
-								className={classes.iconButtonAvatar}
-								ref={menuRef}
-								onClick={handleToggle}
-							>
-								{renderProfileImage()}
-							</IconButton>
-							<Popper
-								open={open}
-								anchorEl={menuRef.current}
-								role={undefined}
-								transition
-								disablePortal
-							>
-								{({ TransitionProps, placement }) => (
-									<Grow
-										{...TransitionProps}
-										style={{
-											transformOrigin:
-												placement === 'bottom'
-													? 'center top'
-													: 'center bottom',
-										}}
+								<Paper>
+									<ClickAwayListener
+										onClickAway={handleClose}
 									>
-										<Paper>
-											<ClickAwayListener
-												onClickAway={handleClose}
-											>
-												<MenuList
-													autoFocusItem={open}
-													id="menu-list-grow"
-													onKeyDown={
-														handleListKeyDown
-													}
-												>
-													<RouterLink to="/profile">
-														<MenuItem
-															onClick={
-																handleClose
-															}
-														>
-															Profile
-														</MenuItem>
-													</RouterLink>
-													<MenuItem
-														onClick={handleLogout}
-													>
-														Logout
-													</MenuItem>
-												</MenuList>
-											</ClickAwayListener>
-										</Paper>
-									</Grow>
-								)}
-							</Popper>
-						</Grid>
-					</Grid>
-				</Toolbar>
-			</AppBar>
-			<AppBar
-				component="div"
-				className={classes.secondaryBar}
-				color="primary"
-				position="static"
-				elevation={0}
-			></AppBar>
-		</React.Fragment>
+										<MenuList
+											autoFocusItem={open}
+											id="menu-list-grow"
+											onKeyDown={handleListKeyDown}
+										>
+											<RouterLink to="/profile">
+												<MenuItem onClick={handleClose}>
+													Profile
+												</MenuItem>
+											</RouterLink>
+											<MenuItem onClick={handleLogout}>
+												Logout
+											</MenuItem>
+										</MenuList>
+									</ClickAwayListener>
+								</Paper>
+							</Grow>
+						)}
+					</Popper>
+				</Hidden>
+			</Toolbar>
+		</AppBar>
 	);
 };
 

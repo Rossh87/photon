@@ -38,8 +38,8 @@ import { map as TEMap } from 'fp-ts/TaskEither';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	avatar: {
-		width: '100px',
-		height: '100px',
+		width: '120px',
+		height: '120px',
 		margin: theme.spacing(2),
 		// minWidth: '200px',
 		// minHeight: '200px',
@@ -151,7 +151,7 @@ const Profile: React.FunctionComponent = (props) => {
 			>
 				{renderAvatar()}
 				<Grid item xs={12}>
-					<Divider variant="middle" />
+					{/* <Divider variant="middle" /> */}
 					<List className={classes.list}>
 						{Object.keys(localProfileState).map((stateKey) => (
 							<ProfileListItem

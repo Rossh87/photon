@@ -10,7 +10,7 @@ import CloseOutlined from '@material-ui/icons/CloseOutlined';
 
 const useStyles = makeStyles((theme) => ({
 	alert: {
-		margin: theme.spacing(2, 0),
+		margin: theme.spacing(2, 0, 0, 0),
 	},
 }));
 

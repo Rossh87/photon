@@ -1,8 +1,15 @@
 import * as React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import { CssBaseline, Container, Grid, Paper } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-import Hidden from '@material-ui/core/Hidden';
+import {
+	CssBaseline,
+	Container,
+	Grid,
+	Paper,
+	Box,
+	useMediaQuery,
+	Hidden,
+} from '@material-ui/core';
+import clsx from 'clsx';
 import Navigator from '../Navigator';
 import Header from '../Header';
 import theme from '../theme';
@@ -10,30 +17,36 @@ import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
 import Profile from '../Profile';
 import AppMessages from '../AppMessages';
-
+import { useTheme } from '@material-ui/core/styles';
 import { Switch, Route } from 'react-router-dom';
-import { findLastIndex } from 'fp-ts/lib/Array';
+
+const drawerWidth = 180;
 
 const useStyles = makeStyles({
 	root: {
 		display: 'flex',
 		minHeight: '100vh',
 	},
+
 	app: {
 		flex: 1,
 		display: 'flex',
 		flexDirection: 'column',
 	},
+
 	mainGrid: {
-		padding: theme.spacing(1),
 		display: 'flex',
-		flexDirection: 'column',
+		flexWrap: 'nowrap',
+	},
+
+	marginGrid: {
+		flex: `1 1 ${drawerWidth}px`,
 	},
 
 	drawer: {
 		display: 'grid',
 		alignContent: 'center',
-		width: '250px',
+		width: drawerWidth,
 	},
 
 	drawerPaperProps: {
@@ -42,12 +55,18 @@ const useStyles = makeStyles({
 
 	paper: {
 		padding: theme.spacing(2),
-		height: '80vh',
+		marginTop: theme.spacing(2),
+		minHeight: '80vh',
 	},
 
 	contentGrid: {
-		width: '100%',
-		flexGrow: 1,
+		flex: '0 1.5 1000px',
+		maxWidth: '100vw',
+	},
+
+	mobileExpandedMargin: {
+		flex: `1 3 ${drawerWidth}px`,
+		minWidth: theme.spacing(1),
 	},
 });
 
@@ -55,7 +74,11 @@ const Main: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const [drawerOpen, setDrawerOpen] = React.useState(false);
 
+	const theme = useTheme();
+	const matches = useMediaQuery(theme.breakpoints.down('sm'));
+
 	const handleDrawerToggle = () => {
+		console.log('toggle');
 		setDrawerOpen(!drawerOpen);
 	};
 
@@ -78,10 +101,10 @@ const Main: React.FunctionComponent = () => {
 							alignItems: 'center',
 							justifyContent: 'space-around',
 							marginLeft: '1vw',
+							marginRight: '5vw',
 							borderRadius: '10px',
 						},
 					}}
-					variant="permanent"
 					open={drawerOpen}
 					onClose={() => setDrawerOpen(false)}
 					setDrawerOpen={setDrawerOpen}
@@ -89,23 +112,51 @@ const Main: React.FunctionComponent = () => {
 			</nav>
 
 			<Header onDrawerToggle={handleDrawerToggle} />
-			<Container component="main" maxWidth="md">
-				<AppMessages />
-
-				<Paper className={classes.paper}>
-					<Switch>
-						<Route path="/upload">
-							<Uploader />
-						</Route>
-						<Route path="/image-search">
-							<ImageSearchPage />
-						</Route>
-						<Route path="/profile">
-							<Profile />
-						</Route>
-					</Switch>
-				</Paper>
-			</Container>
+			{/* <Container
+				component="main"
+				maxWidth="lg"
+				className={matches ? classes.containerWithDrawer : ''}
+				fixed
+			> */}
+			<Grid container className={classes.mainGrid}>
+				<Hidden xsDown>
+					<Grid
+						item
+						className={
+							matches
+								? classes.mobileExpandedMargin
+								: classes.marginGrid
+						}
+					></Grid>
+				</Hidden>
+				<Grid item className={classes.contentGrid}>
+					<AppMessages />
+					<Paper className={classes.paper}>
+						<Switch>
+							<Route path="/upload">
+								<Uploader />
+							</Route>
+							<Route path="/image-search">
+								<ImageSearchPage />
+							</Route>
+							<Route path="/profile">
+								<Profile />
+							</Route>
+						</Switch>
+					</Paper>
+				</Grid>
+				<Hidden xsDown>
+					<Grid
+						item
+						className={
+							matches
+								? classes.mobileExpandedMargin
+								: classes.marginGrid
+						}
+					></Grid>
+				</Hidden>
+			</Grid>
+			{/* </Container> */}
 		</ThemeProvider>
 	);
 };

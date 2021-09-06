@@ -13,6 +13,7 @@ import {
 	useImageSearchDispatch,
 	useImageSearchState,
 } from '../state/useImageSearchState';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -45,6 +46,9 @@ const ImageDisplay: React.FunctionComponent = () => {
 	const { currentlyActiveImages, imageUnderConfiguration } =
 		useImageSearchState();
 
+	const theme = useTheme();
+	const matches = useMediaQuery(theme.breakpoints.down('sm'));
+
 	const imageSearchDispatch = useImageSearchDispatch();
 
 	const emptyUI = (
@@ -69,7 +73,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 				aria-label={`open embed code configuration for ${imgProps.displayName}`}
 				// role="button"
 				className={classes.listItem}
-				cols={2}
+				cols={matches ? 3 : 2}
 				rows={1}
 			>
 				<img
@@ -91,7 +95,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 		);
 
 	return (
-		<main className={classes.list}>
+		<div className={classes.list}>
 			<ImageList
 				className={classes.root}
 				gap={10}
@@ -101,7 +105,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 				{renderImages()}
 			</ImageList>
 			{imageUnderConfiguration && <ImageDialog />}
-		</main>
+		</div>
 	);
 };
 

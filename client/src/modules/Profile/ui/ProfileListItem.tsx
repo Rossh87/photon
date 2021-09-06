@@ -57,7 +57,6 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 	const [editing, setEditing] = React.useState(false);
 
 	const [value, setValue] = React.useState(initialValue);
-	console.log(value);
 
 	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
 		setValue(e.target.value);
@@ -114,7 +113,7 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 					</ListItemSecondaryAction>
 				)}
 			</ListItem>
-			<Divider variant="middle" component="li" />
+			{/* <Divider variant="middle" component="li" /> */}
 		</>
 	);
 };

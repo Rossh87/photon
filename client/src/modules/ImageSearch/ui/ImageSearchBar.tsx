@@ -5,9 +5,11 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
+import clsx from 'clsx';
 import React, { useState } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { Hidden, useMediaQuery, useTheme } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { pipe } from 'fp-ts/lib/function';
 import { map, fromPredicate } from 'fp-ts/lib/Option';
@@ -35,6 +37,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 	addUser: {
 		marginRight: theme.spacing(1),
 	},
+
+	searchBarSm: {
+		padding: 0,
+	},
 }));
 
 const ImageSearchBar: React.FunctionComponent = () => {
@@ -43,6 +49,9 @@ const ImageSearchBar: React.FunctionComponent = () => {
 	const imageSearchDispatch = useImageSearchDispatch();
 	const { imageMetadata } = useImageSearchState();
 	const [searchTerm, setSearchTerm] = useState('');
+
+	const theme = useTheme();
+	const matches = useMediaQuery(theme.breakpoints.down('xs'));
 
 	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
 		setSearchTerm(e.target.value);
@@ -73,11 +82,16 @@ const ImageSearchBar: React.FunctionComponent = () => {
 			color="default"
 			elevation={0}
 		>
-			<Toolbar>
+			<Toolbar className={clsx(matches && classes.searchBarSm)}>
 				<Grid container spacing={2} alignItems="center">
-					<Grid item>
-						<SearchIcon className={classes.block} color="inherit" />
-					</Grid>
+					<Hidden xsDown>
+						<Grid item>
+							<SearchIcon
+								className={classes.block}
+								color="inherit"
+							/>
+						</Grid>
+					</Hidden>
 					<Grid item xs>
 						<form
 							className={classes.searchForm}

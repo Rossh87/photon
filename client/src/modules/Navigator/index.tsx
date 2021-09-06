@@ -1,16 +1,9 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
-import { alpha } from '@material-ui/core/styles/colorManipulator';
-import { List, Button, ListItem, IconButton } from '@material-ui/core';
+import { List, Button, ListItem, IconButton, Hidden } from '@material-ui/core';
 import navItems from './navItems';
 import NavItem from './NavItem';
-import RouterLink from '../RouterLink';
-import { useLocation } from 'react-router';
-import BackupIcon from '@material-ui/icons/Backup';
-import { Box } from '@material-ui/core';
-import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
 export const navLinkActiveColor = '#4fc3f7';
 
@@ -45,32 +38,39 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 	const classes = useStyles();
 
 	return (
-		<Drawer {...passThrough} anchor="left">
-			{/* <Box
-				className={clsx(classes.itemCategory)}
-				padding={2}
-				display="grid"
-				justifyContent="center"
-			>
-				<RouterLink to="/">
-					<IconButton>
-						<ExploreIcon
-							fontSize="large"
-							className={classes.navIcon}
-						/>
-					</IconButton>
-				</RouterLink>
-			</Box> */}
-			<List className={classes.navList}>
-				{navItems.map((vals, i) => (
-					<NavItem
-						handleClick={() => setDrawerOpen(false)}
-						{...vals}
-						key={vals.pageName}
-					></NavItem>
-				))}
-			</List>
-		</Drawer>
+		<>
+			<Hidden smDown>
+				<Drawer {...passThrough} anchor="left" variant="permanent">
+					<List className={classes.navList}>
+						{navItems.map((vals, i) => (
+							<NavItem
+								handleClick={() => setDrawerOpen(false)}
+								{...vals}
+								key={vals.pageName}
+							></NavItem>
+						))}
+					</List>
+				</Drawer>
+			</Hidden>
+			<Hidden mdUp>
+				<Drawer
+					{...passThrough}
+					anchor="left"
+					variant="temporary"
+					onClose={() => setDrawerOpen(false)}
+				>
+					<List className={classes.navList}>
+						{navItems.map((vals, i) => (
+							<NavItem
+								handleClick={() => setDrawerOpen(false)}
+								{...vals}
+								key={vals.pageName}
+							></NavItem>
+						))}
+					</List>
+				</Drawer>
+			</Hidden>
+		</>
 	);
 };
 
