@@ -11,16 +11,17 @@ import {
 	TExpressEffect,
 	toEffects,
 	toErrHandlerEffect,
+	toJSONEffect,
 } from '../../../core/expressEffects';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { flow, pipe } from 'fp-ts/lib/function';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
-import { updateUserProfilePreferences } from '../repo/updateUserProfilePreferences';
 import {
 	IUserProfilePreferencesTransportObject,
 	TDBUser,
-} from '../../../../sharedTypes/User';
-import { preferencesToPrefPayload } from '../helpers/preferencesToPrefPayload';
+} from 'sharedTypes/User';
+import { updateProfilePreferences } from '../useCases/updateProfilePreferences';
+import { formatValidationErrs } from '../helpers/formatValidationErrors';
 
 const updateSessionUserEffect =
 	(newPrefs: IUserProfilePreferencesTransportObject): TExpressEffect =>
@@ -31,6 +32,12 @@ const updateSessionUserEffect =
 			userPreferences: { ...newPrefs },
 		} as TDBUser;
 	};
+
+const validationFailureEffects = flow(
+	toEffects,
+	addEffect(setStatusEffect(400)),
+	addAndApplyEffect(flow(formatValidationErrs, toJSONEffect))
+);
 
 const successEffects = flow(
 	toEffects,
@@ -49,12 +56,17 @@ export const updateUserProfilePreferencesController =
 		const { _id } = req.session.user as TDBUser;
 
 		await pipe(
-			preferencesToPrefPayload(req.body, _id as unknown as string),
-			updateUserProfilePreferences,
+			updateProfilePreferences(req.body, _id as unknown as string),
 			RTE.map(() => req.body),
 			RTE.map(successEffects),
-			RTE.mapLeft(standardFailureEffects),
-			RTE.map(runner),
-			RTE.mapLeft(runner)
+			// Handle errs differently based on whether they are validation errs
+			// Or a DB failure error
+			// TODO: this should properly be a true type-guard
+			RTE.mapLeft((err) =>
+				Array.isArray(err)
+					? validationFailureEffects(err)
+					: standardFailureEffects(err)
+			),
+			RTE.bimap(runner, runner)
 		)(deps)();
 	};

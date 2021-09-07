@@ -14,8 +14,11 @@
         "grant": "^5.4.9",
         "io-ts": "^2.2.16",
         "io-ts-reporters": "^2.0.0",
+        "io-ts-types": "^0.5.16",
         "mongodb": "^3.6.4",
-        "morgan": "^1.10.0"
+        "monocle-ts": "^2.3.11",
+        "morgan": "^1.10.0",
+        "newtype-ts": "^0.3.4"
     },
     "scripts": {
         "start:dev": "NODE_ENV=dev node -r $PWD/configs/preDevRun index.ts",

@@ -41,3 +41,24 @@ export type TAuthorizedUserResponse = TUser & { _id: string };
 // extract this to its own type just for clarity in naming
 export interface IUserProfilePreferencesTransportObject
 	extends IUserProfilePreferences {}
+
+export type TProfilePreferenceError = string;
+
+// Prevent object from being empty, since if we're responding
+// with an error code, we expect there to be an error.
+// taken from https://stackoverflow.com/questions/66300983/typescript-partial-but-not-the-full-object-itself
+type AtLeastOne<T> = {
+	[P in keyof T]: {
+		[K in Exclude<keyof T, P>]?: T[P];
+	} &
+		{ [M in P]: T[M] };
+}[keyof T];
+
+// notice we require all properties to be present on
+// this intermediate type
+type _TProfileErrorsTransportObject = {
+	[K in keyof IUserProfilePreferences]-?: TProfilePreferenceError;
+};
+
+export type TProfileErrorsTransportObject =
+	AtLeastOne<_TProfileErrorsTransportObject>;

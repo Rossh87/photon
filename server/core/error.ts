@@ -1,5 +1,3 @@
-import { LeveledLogMethod } from 'winston';
-
 export interface HTTPErrorType {
 	status: number;
 	clientMessage: string;

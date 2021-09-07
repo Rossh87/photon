@@ -4,17 +4,16 @@ import { getCollection, tryUpdateOne } from '../../../core/repo';
 import { pipe } from 'fp-ts/lib/function';
 import { IProfilePrefsUpdateObject } from '../sharedUserTypes';
 import { IAsyncDeps } from '../../../core/asyncDeps';
+import { UserPreferenceProperties } from '../helpers/parseUserProfileData';
 
 // we return the saved user in case we want to send to client or some such
 export const updateUserProfilePreferences =
-	(updatedUser: IProfilePrefsUpdateObject) =>
+	({ preferences, ownerID }: UserPreferenceProperties) =>
 	({ repoClient }: IAsyncDeps) =>
 		pipe(
 			repoClient,
 			getCollection<TDBUser>('users'),
-			tryUpdateOne<TDBUser>({ _id: new ObjectId(updatedUser.profileID) })(
-				{
-					$set: { userPreferences: updatedUser.payload },
-				}
-			)
+			tryUpdateOne<TDBUser>({ _id: new ObjectId(ownerID) })({
+				$set: { userPreferences: preferences },
+			})
 		);
