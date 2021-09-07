@@ -75,7 +75,12 @@ export interface ILocalBreakpointUI {
 // track all user-defined breakpoints, update a user-defined breakpoint, re-order UD breakpoint,
 // delete a UD-breakpoint,
 // and access to user id for updating their breakpoint data
-export type TSnackbarStatus = 'none' | 'attemptedClose' | 'error' | 'success';
+export type TSnackbarStatus =
+	| 'none'
+	| 'attemptedClose'
+	| 'error'
+	| 'success'
+	| 'attemptedDelete';
 
 export interface IDialogState {
 	isSynchronizedWithBackend: boolean;
@@ -137,7 +142,12 @@ interface ResetStatusAction {
 	type: 'RESET_STATUS';
 }
 
+interface DeleteAttemptAction {
+	type: 'DELETE_ATTEMPT';
+}
+
 export type TDialogActions =
+	| DeleteAttemptAction
 	| AddDialogError
 	| ResetStatusAction
 	| ResetErrorAction
@@ -219,6 +229,12 @@ export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
 				...s,
 				snackbarStatus: 'attemptedClose',
 			};
+
+		case 'DELETE_ATTEMPT':
+			return {
+				...s,
+				snackbarStatus: 'attemptedDelete',
+			};
 		case 'RESET_ERROR':
 			return {
 				...s,
@@ -234,6 +250,7 @@ export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
 			return {
 				...s,
 				error: some(a.payload),
+				snackbarStatus: 'error',
 			};
 		default:
 			return s;

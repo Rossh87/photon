@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 
 	deleteButton: {
-		color: theme.palette.warning.main,
+		backgroundColor: theme.palette.error.main,
 		fontWeight: theme.typography.fontWeightBold,
 		fontSize: theme.typography.fontSize,
 	},
@@ -221,7 +221,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 						<Button
 							color="primary"
 							variant="contained"
-							onClick={() => actions.INIT_DELETE(_id)}
+							onClick={() => dispatch({ type: 'DELETE_ATTEMPT' })}
 							className={styles.deleteButton}
 						>
 							Delete
@@ -282,6 +282,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 				error={state.error}
 				resetError={resetError}
 				resetStatus={resetStatus}
+				handleDeletion={() => actions.INIT_DELETE(_id)}
 			/>
 		</Dialog>
 	);

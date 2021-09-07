@@ -14,6 +14,7 @@ interface Props {
 	handleSave: () => void;
 	resetError: () => void;
 	resetStatus: () => void;
+	handleDeletion: () => void;
 }
 const Snacktion: React.FunctionComponent<Props> = ({
 	status,
@@ -22,6 +23,7 @@ const Snacktion: React.FunctionComponent<Props> = ({
 	handleSave,
 	resetError,
 	resetStatus,
+	handleDeletion,
 }) => {
 	const [open, setOpen] = useState(false);
 
@@ -50,6 +52,8 @@ const Snacktion: React.FunctionComponent<Props> = ({
 			  )
 			: status === 'success'
 			? 'Submission successful'
+			: status === 'attemptedDelete'
+			? 'Deletion is permanent, and cannot be undone.  Are you sure?'
 			: '';
 	};
 
@@ -79,6 +83,25 @@ const Snacktion: React.FunctionComponent<Props> = ({
 					<CloseOutlined />
 				</IconButton>
 			);
+		} else if (status === 'attemptedDelete') {
+			return (
+				<>
+					<Button
+						variant="text"
+						style={{ color: 'white' }}
+						onClick={resetStatus}
+					>
+						Abort
+					</Button>
+					<Button
+						variant="text"
+						style={{ color: 'white' }}
+						onClick={handleDeletion}
+					>
+						Delete
+					</Button>
+				</>
+			);
 		} else
 			return (
 				<IconButton onClick={() => setOpen(false)}>
@@ -88,7 +111,9 @@ const Snacktion: React.FunctionComponent<Props> = ({
 	};
 
 	const deriveColor = () =>
-		status === 'attemptedClose'
+		status === 'attemptedDelete'
+			? theme.palette.error.main
+			: status === 'attemptedClose'
 			? theme.palette.warning.main
 			: status === 'error'
 			? theme.palette.error.main
