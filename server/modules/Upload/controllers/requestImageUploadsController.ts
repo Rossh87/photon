@@ -7,6 +7,8 @@ import {
 	setStatusEffect,
 	toJSONEffect,
 	toErrHandlerEffect,
+	setLogFailureMessageEffect,
+	standardFailureEffects,
 } from '../../../core/expressEffects';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { pipe } from 'fp-ts/lib/function';
@@ -25,8 +27,6 @@ const successEffects = flow(
 	addAndApplyEffect(toJSONEffect)
 );
 
-const failureEffects = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
-
 export const requestImageUploadsController =
 	(deps: IAsyncDeps): RequestHandler<any, any, IUploadsRequestPayload> =>
 	async (req, res, next) => {
@@ -41,6 +41,6 @@ export const requestImageUploadsController =
 			RT.of,
 			RTE.chainW(fetchAllUploadURIs),
 			RTE.map(flow(successEffects, runner)),
-			RTE.mapLeft(flow(failureEffects, runner))
+			RTE.mapLeft(flow(standardFailureEffects, runner))
 		)(deps)();
 	};

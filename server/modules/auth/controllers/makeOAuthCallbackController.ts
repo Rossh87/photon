@@ -4,7 +4,9 @@ import {
 	addEffect,
 	clientRootRedirectEffect,
 	runEffects,
+	setLogFailureMessageEffect,
 	setSessionUserEffect,
+	standardFailureEffects,
 	toEffects,
 	toErrHandlerEffect,
 } from '../../../core/expressEffects';
@@ -21,11 +23,6 @@ const oAuthSuccessEffects = flow(
 	addEffect(clientRootRedirectEffect)
 );
 
-const oAuthFailureEffects = flow(
-	toEffects,
-	addAndApplyEffect(toErrHandlerEffect)
-);
-
 export const makeOAuthCallbackController =
 	(config: IOAuthCallbackConfig) =>
 	(deps: IAsyncDeps): RequestHandler =>
@@ -40,7 +37,7 @@ export const makeOAuthCallbackController =
 			RTE.chainW((x) => RTE.fromEither(config.normalizer(x))),
 			RTE.chain(updateOrAddUser),
 			RTE.map(oAuthSuccessEffects),
-			RTE.mapLeft(oAuthFailureEffects),
+			RTE.mapLeft(standardFailureEffects),
 			RTE.map(runner),
 			RTE.mapLeft(runner)
 		)(deps)();

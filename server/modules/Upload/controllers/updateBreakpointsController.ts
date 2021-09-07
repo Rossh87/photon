@@ -5,6 +5,7 @@ import {
 	addAndApplyEffect,
 	toJSONEffect,
 	toErrHandlerEffect,
+	standardFailureEffects,
 } from '../../../core/expressEffects';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { pipe } from 'fp-ts/lib/function';
@@ -15,8 +16,6 @@ import { updateBreakpoints } from '../repo/updateBreakpoints';
 
 const successEffects = flow(toEffects, addAndApplyEffect(toJSONEffect));
 
-const failureEffects = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
-
 export const updateBreakpointsController =
 	(deps: IAsyncDeps): RequestHandler<any, any, IBreakpointTransferObject> =>
 	async (req, res, next) => {
@@ -26,7 +25,7 @@ export const updateBreakpointsController =
 			updateBreakpoints,
 			RTE.map((results) => results.value),
 			RTE.map(successEffects),
-			RTE.mapLeft(failureEffects),
+			RTE.mapLeft(standardFailureEffects),
 			RTE.bimap(runner, runner)
 		)(deps)();
 	};

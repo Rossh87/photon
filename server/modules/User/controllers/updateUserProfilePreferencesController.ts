@@ -7,6 +7,7 @@ import {
 	runEffects,
 	setSessionUserEffect,
 	setStatusEffect,
+	standardFailureEffects,
 	TExpressEffect,
 	toEffects,
 	toErrHandlerEffect,
@@ -38,8 +39,6 @@ const successEffects = flow(
 	addEffect(resEndEffect)
 );
 
-const failureEffects = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
-
 export const updateUserProfilePreferencesController =
 	(
 		deps: IAsyncDeps
@@ -54,7 +53,7 @@ export const updateUserProfilePreferencesController =
 			updateUserProfilePreferences,
 			RTE.map(() => req.body),
 			RTE.map(successEffects),
-			RTE.mapLeft(failureEffects),
+			RTE.mapLeft(standardFailureEffects),
 			RTE.map(runner),
 			RTE.mapLeft(runner)
 		)(deps)();

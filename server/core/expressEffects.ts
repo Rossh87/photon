@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { TDBUser, IUserProfileProperties } from '../../sharedTypes/User';
 import { reverseTwo } from './utils/reverseCurried';
 import { CLIENT_ROOT } from '../CONSTANTS';
+import { BaseError } from './error';
+import { flow } from 'fp-ts/lib/function';
 
 export type TExpressEffectList = Array<TExpressEffect>;
 
@@ -72,6 +74,21 @@ export const toJSONEffect =
 	(data: any): TExpressEffect =>
 	(req: Request, res: Response) =>
 		res.json(data);
+
+export const setLogFailureMessageEffect =
+	(e: BaseError): TExpressEffect =>
+	(req) => {
+		req.failureMessage = e.message;
+	};
+
+// in most or all failure cases, we do the same thing--
+// pass to error handler, and set a message on the 'req'
+// property for our logger.
+export const standardFailureEffects = flow(
+	toEffects,
+	addAndApplyEffect(toErrHandlerEffect),
+	addAndApplyEffect(setLogFailureMessageEffect)
+);
 
 export const resEndEffect: TExpressEffect = (req: Request, res: Response) =>
 	res.end();

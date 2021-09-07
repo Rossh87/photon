@@ -19,6 +19,7 @@ import cors from 'cors';
 import { gcs } from './core/gcs';
 import { makeReadEnv } from './core/readEnv';
 import { errorHandler } from './modules/errorHandler';
+import { getLoggers } from './core/morgan';
 
 // routes
 import { authRoutes } from './modules/auth';
@@ -68,6 +69,17 @@ async function run() {
 	app.use(express.json());
 
 	app.use(grantMiddleWare(grantConfig));
+
+	// add a property to represent failure message that we'll use in logging
+	app.use((req, res, next) => {
+		req.failureMessage = '';
+		next();
+	});
+	const { devLogger, errLogger, accessLogger } = await getLoggers();
+
+	app.use(devLogger());
+	app.use(errLogger());
+	app.use(accessLogger());
 
 	const repoClient = await MongoClient.connect(TEST_DB_URI, {
 		useUnifiedTopology: true,

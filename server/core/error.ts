@@ -1,7 +1,18 @@
+import { LeveledLogMethod } from 'winston';
+
 export interface HTTPErrorType {
 	status: number;
 	clientMessage: string;
 }
+
+// ranked in *descending* order of severity
+export type TLogLevel =
+	| 'error'
+	| 'warn'
+	| 'info'
+	| 'http'
+	| 'verbose'
+	| 'debug';
 
 export class BaseError extends Error {
 	public constructor(

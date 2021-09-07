@@ -8,6 +8,8 @@ import {
 	toErrHandlerEffect,
 	TExpressEffect,
 	resEndEffect,
+	setLogFailureMessageEffect,
+	standardFailureEffects,
 } from '../../../core/expressEffects';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { pipe } from 'fp-ts/lib/function';
@@ -38,8 +40,6 @@ const successEffects = flow(
 	addEffect(resEndEffect)
 );
 
-const failureEffects = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
-
 export const saveUploadMetadataController =
 	(
 		deps: IAsyncDeps
@@ -52,7 +52,7 @@ export const saveUploadMetadataController =
 			attachBreakpointsToMetadata,
 			saveUploadMetadata,
 			RTE.map(successEffects),
-			RTE.mapLeft(failureEffects),
+			RTE.mapLeft(standardFailureEffects),
 			RTE.bimap(runner, runner)
 		)(deps)();
 	};

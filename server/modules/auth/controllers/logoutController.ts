@@ -1,21 +1,15 @@
 import { RequestHandler } from 'express';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 
-export const logoutController: RequestHandler = (req, res) => {
-	// TODO: for now, blow up if logging out fails, since it's a security defect
-	req.session.destroy((e) => {
-		if (e !== undefined) {
-			throw LogoutFailureError.create(e);
-		} else {
-			res.end();
-		}
-	});
+export const logoutController: RequestHandler = (req, res, next) => {
+	req.session.destroy((e) =>
+		e !== undefined ? next(LogoutFailureError.create(e)) : res.end()
+	);
 };
 
 export class LogoutFailureError extends BaseError {
 	static create(e: any) {
-		const devMessage =
-			'Potential security vulnerability--session.destroy failed on logout attempt';
+		const devMessage = `session.destroy failed on logout with the following error: ${e}`;
 		return new LogoutFailureError(devMessage, e);
 	}
 	constructor(devMessage: string, e: any) {

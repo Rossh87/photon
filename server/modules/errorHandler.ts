@@ -9,7 +9,6 @@ export const errorHandler: ErrorRequestHandler = (
 	res: Response,
 	next: NextFunction
 ) => {
-	fs.writeFileSync(path.join(process.cwd(), 'log.json'), JSON.stringify(err));
 	res.status(err.HTTPErrorType.status);
 	res.send(err.HTTPErrorType.clientMessage);
 };

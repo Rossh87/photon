@@ -7,6 +7,8 @@ import {
 	setStatusEffect,
 	toErrHandlerEffect,
 	resEndEffect,
+	setLogFailureMessageEffect,
+	standardFailureEffects,
 } from '../../../core/expressEffects';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { pipe } from 'fp-ts/lib/function';
@@ -22,8 +24,6 @@ const successEffects = flow(
 	addEffect(resEndEffect)
 );
 
-const failureEffects = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
-
 export const deleteUploadController =
 	(
 		deps: IAsyncDeps
@@ -38,7 +38,7 @@ export const deleteUploadController =
 		await pipe(
 			deleteUpload({ idToDelete }, authenticatedID),
 			RTE.map(successEffects),
-			RTE.mapLeft(failureEffects),
+			RTE.mapLeft(standardFailureEffects),
 			RTE.bimap(runner, runner)
 		)(deps)();
 	};

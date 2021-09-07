@@ -7,6 +7,8 @@ import {
 	setStatusEffect,
 	toJSONEffect,
 	toErrHandlerEffect,
+	setLogFailureMessageEffect,
+	standardFailureEffects,
 } from '../../../core/expressEffects';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { pipe } from 'fp-ts/lib/function';
@@ -22,8 +24,6 @@ const successEffects = flow(
 	addAndApplyEffect(toJSONEffect)
 );
 
-const failureEffects = flow(toEffects, addAndApplyEffect(toErrHandlerEffect));
-
 export const dedupeNamesController =
 	(deps: IAsyncDeps): RequestHandler<any, any, TDedupeNamesPayload> =>
 	async (req, res, next) => {
@@ -36,7 +36,7 @@ export const dedupeNamesController =
 		await pipe(
 			getDupeDisplayNames(_id as unknown as string)(displayNames),
 			RTE.map(successEffects),
-			RTE.mapLeft(failureEffects),
+			RTE.mapLeft(standardFailureEffects),
 			RTE.bimap(runner, runner)
 		)(deps)();
 	};
