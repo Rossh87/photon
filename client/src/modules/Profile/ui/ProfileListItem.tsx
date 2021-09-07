@@ -22,20 +22,11 @@ import { MapPropsToHumanLabels } from '../helpers';
 import { IUserFacingProfileProps } from '..';
 
 const useStyles = makeStyles((theme: Theme) => ({
-	root: {
-		width: '100%',
-	},
-	listItemTypo: {
-		// padding: theme.spacing(2.75),
-		paddingRight: theme.spacing(8),
-	},
-
-	listItemInput: {
-		padding: theme.spacing(0.75),
-	},
-
-	typography: {
+	profileText: {
+		textOverflow: 'ellipsis',
 		overflow: 'hidden',
+		whiteSpace: 'nowrap',
+		maxWidth: 600,
 	},
 }));
 
@@ -67,13 +58,11 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 	};
 
 	const typoComponent = (
-		<Typography color="textPrimary" className={classes.typography}>
-			<Box component="span" fontWeight="fontWeightBold">
-				{`${MapPropsToHumanLabels[fieldName]}: `}
+		<Typography color="textPrimary" classes={{ root: classes.profileText }}>
+			<Box component="span" fontWeight="fontWeightBold" pr={1}>
+				{MapPropsToHumanLabels[fieldName]}:
 			</Box>
-			<Box component="span" fontWeight="fontWeightRegular">
-				{initialValue}
-			</Box>
+			{initialValue}
 		</Typography>
 	);
 
@@ -86,7 +75,7 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 				id={`profile-${fieldName}-input`}
 				label={MapPropsToHumanLabels[fieldName]}
 				variant="outlined"
-				fullWidth
+				// fullWidth
 			/>
 		</form>
 	);
@@ -95,11 +84,7 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 
 	return (
 		<>
-			<ListItem
-				className={
-					editing ? classes.listItemInput : classes.listItemTypo
-				}
-			>
+			<ListItem>
 				<ListItemText primary={renderInterior()} />
 				{editable && (
 					<ListItemSecondaryAction>
@@ -113,7 +98,6 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 					</ListItemSecondaryAction>
 				)}
 			</ListItem>
-			{/* <Divider variant="middle" component="li" /> */}
 		</>
 	);
 };

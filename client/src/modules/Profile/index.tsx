@@ -62,7 +62,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 
 	myGrid: {
-		flexGrow: 1,
+		// flexGrow: 1,
+	},
+
+	fixedGrid: {
+		minWidth: '100%',
+		maxWidth: '100%',
 	},
 }));
 
@@ -143,56 +148,38 @@ const Profile: React.FunctionComponent = (props) => {
 
 	return (
 		<>
-			<Grid
-				className={classes.myGrid}
-				container
-				direction="column"
-				alignItems="center"
-			>
-				{renderAvatar()}
-				<Grid item xs={12}>
-					{/* <Divider variant="middle" /> */}
-					<List className={classes.list}>
-						{Object.keys(localProfileState).map((stateKey) => (
-							<ProfileListItem
-								// okay to just use the property name as a key here,
-								// since the contents of this list are never changed/reordered
-								key={stateKey}
-								fieldName={
-									stateKey as keyof IUserFacingProfileProps
-								}
-								initialValue={
-									(localProfileState as any)[stateKey]
-								}
-								handleFieldSubmit={handleFieldSubmit(stateKey)}
-								editable={editables.includes(stateKey)}
-							/>
-						))}
-					</List>
-					<Box
-						display="flex"
-						justifyContent="flex-end"
-						paddingBottom="2rem"
-					>
-						<Button
-							className={classes.cancelButton}
-							variant="outlined"
-							onClick={handleCancel}
-							disabled={buttonDisabilityState}
-						>
-							Cancel
-						</Button>
-						<Button
-							className={classes.saveButton}
-							variant="outlined"
-							onClick={handleSave}
-							disabled={buttonDisabilityState}
-						>
-							Save
-						</Button>
-					</Box>
-				</Grid>
-			</Grid>
+			{renderAvatar()}
+			<List>
+				{Object.keys(localProfileState).map((stateKey) => (
+					<ProfileListItem
+						// okay to just use the property name as a key here,
+						// since the contents of this list are never changed/reordered
+						key={stateKey}
+						fieldName={stateKey as keyof IUserFacingProfileProps}
+						initialValue={(localProfileState as any)[stateKey]}
+						handleFieldSubmit={handleFieldSubmit(stateKey)}
+						editable={editables.includes(stateKey)}
+					/>
+				))}
+			</List>
+			<Box display="flex" justifyContent="flex-end" paddingBottom="2rem">
+				<Button
+					className={classes.cancelButton}
+					variant="outlined"
+					onClick={handleCancel}
+					disabled={buttonDisabilityState}
+				>
+					Cancel
+				</Button>
+				<Button
+					className={classes.saveButton}
+					variant="outlined"
+					onClick={handleSave}
+					disabled={buttonDisabilityState}
+				>
+					Save
+				</Button>
+			</Box>
 		</>
 	);
 };
