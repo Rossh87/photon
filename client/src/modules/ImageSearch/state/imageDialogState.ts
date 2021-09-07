@@ -1,11 +1,11 @@
-import { none } from 'fp-ts/lib/Option';
+import { none, some } from 'fp-ts/lib/Option';
 import { Option } from 'fp-ts/lib/Option';
 import {
 	ISavedBreakpoint,
 	TBreakpointQueryType,
 	TSavedBreakpointslotUnit,
 } from 'sharedTypes/Breakpoint';
-import { IDBUpload } from 'sharedTypes/Upload';
+import { IClientUpload } from 'sharedTypes/Upload';
 import { BaseError } from '../../../core/error';
 import { makeNewUIBreakpoint } from '../helpers/makeNewUIBreakpoint';
 type TBreakpointFormValidationErr = string | null;
@@ -124,6 +124,11 @@ interface UnsavedCloseAttemptAction {
 	type: 'UNSAVED_CLOSE_ATTEMPT';
 }
 
+interface AddDialogError {
+	type: 'ADD_ERROR';
+	payload: BaseError;
+}
+
 interface ResetErrorAction {
 	type: 'RESET_ERROR';
 }
@@ -133,6 +138,7 @@ interface ResetStatusAction {
 }
 
 export type TDialogActions =
+	| AddDialogError
 	| ResetStatusAction
 	| ResetErrorAction
 	| UnsavedCloseAttemptAction
@@ -223,6 +229,11 @@ export const imageDialogReducer: React.Reducer<IDialogState, TDialogActions> = (
 			return {
 				...s,
 				snackbarStatus: 'none' as const,
+			};
+		case 'ADD_ERROR':
+			return {
+				...s,
+				error: some(a.payload),
 			};
 		default:
 			return s;

@@ -7,12 +7,12 @@ import { SYNC_BREAKPOINT_ENDPOINT } from './endpoints';
 import { TImageSearchActions } from '../state/imageSearchStateTypes';
 import { tryCatch, TaskEither } from 'fp-ts/lib/TaskEither';
 import { BaseError } from '../../../core/error';
-import { IBreakpointTransferObject, IDBUpload } from 'sharedTypes/Upload';
+import { IBreakpointTransferObject, IClientUpload } from 'sharedTypes/Upload';
 import { pipe } from 'fp-ts/lib/function';
 import { TDialogActions } from '../state/imageDialogState';
 
 const putUpdated =
-	(data: IBreakpointTransferObject): IHttpCall<IDBUpload> =>
+	(data: IBreakpointTransferObject): IHttpCall<IClientUpload> =>
 	(httpLib) =>
 		httpLib.put(SYNC_BREAKPOINT_ENDPOINT, data, { withCredentials: true });
 

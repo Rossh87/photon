@@ -32,7 +32,7 @@ export const deleteUploadController =
 		const runner = runEffects(req, res, next);
 
 		// safe to cast since we're behind auth gate
-		const authenticatedID = (req.session.user as TDBUser)._id.toHexString();
+		const authenticatedID = req.session.user?._id as unknown as string;
 		const idToDelete = req.params._id;
 
 		await pipe(

@@ -70,8 +70,8 @@ export const deleteUpload = (
 		RTE.chainEitherK(
 			flow(
 				E.fromPredicate(
-					(u) => u._id.toHexString() === authenticatedID,
-					() =>
+					(u) => u.ownerID !== authenticatedID,
+					(e) =>
 						new BaseError(
 							'unauthorizedRequest',
 							HTTPErrorTypes.FORBIDDEN

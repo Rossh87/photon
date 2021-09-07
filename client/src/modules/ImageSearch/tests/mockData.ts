@@ -1,7 +1,7 @@
-import { IDBUpload } from 'sharedTypes/Upload';
+import { IClientUpload } from 'sharedTypes/Upload';
 import { TUIBreakpoints, TUserBreakpointUI } from '../state/imageDialogState';
 
-export const mockImage1: IDBUpload = {
+export const mockImage1: IClientUpload = {
 	_id: 'ak2254',
 	ownerID: 'abc123',
 	displayName: 'A day in the Alps',
@@ -13,7 +13,7 @@ export const mockImage1: IDBUpload = {
 	breakpoints: [],
 };
 
-export const mockImage2: IDBUpload = {
+export const mockImage2: IClientUpload = {
 	_id: '128892',
 	ownerID: 'abc123',
 	displayName: 'Bears everywhere!!',
@@ -25,7 +25,7 @@ export const mockImage2: IDBUpload = {
 	breakpoints: [],
 };
 
-export const mockImage3: IDBUpload = {
+export const mockImage3: IClientUpload = {
 	_id: '128772',
 	ownerID: 'abc123',
 	displayName: 'lotsa cats',
@@ -37,7 +37,7 @@ export const mockImage3: IDBUpload = {
 	breakpoints: [],
 };
 
-export const mockImage4: IDBUpload = {
+export const mockImage4: IClientUpload = {
 	_id: '128796',
 	ownerID: 'abc123',
 	displayName: 'even more cats',

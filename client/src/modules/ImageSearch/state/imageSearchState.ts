@@ -1,5 +1,6 @@
 import { Reducer } from 'react';
 import { applyBreakpointToImages } from '../helpers/applyBreakpointToImages';
+import { deleteImageMetadata } from '../helpers/deleteImageMetadata';
 import {
 	TImageSearchActions,
 	IImageSearchState,
@@ -64,6 +65,15 @@ export const imageSearchReducer: Reducer<
 					imageUnderConfiguration: null,
 				};
 			}
+		case 'DELETE_IMAGE':
+			return {
+				...s,
+				imageUnderConfiguration: null,
+				imageMetadata: deleteImageMetadata(a.payload)(s.imageMetadata),
+				currentlyActiveImages: deleteImageMetadata(a.payload)(
+					s.currentlyActiveImages
+				),
+			};
 
 		default:
 			return s;

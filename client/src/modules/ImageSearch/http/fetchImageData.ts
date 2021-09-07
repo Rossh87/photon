@@ -7,10 +7,10 @@ import { REQUEST_USER_IMG_DATA_ENDPOINT } from './endpoints';
 import { TImageSearchActions } from '../state/imageSearchStateTypes';
 import { tryCatch, TaskEither } from 'fp-ts/lib/TaskEither';
 import { BaseError } from '../../../core/error';
-import { IDBUpload } from 'sharedTypes/Upload';
+import { IClientUpload } from 'sharedTypes/Upload';
 import { pipe } from 'fp-ts/lib/function';
 
-const requestData: IHttpCall<IDBUpload[]> = (httpLib) =>
+const requestData: IHttpCall<IClientUpload[]> = (httpLib) =>
 	httpLib.get(REQUEST_USER_IMG_DATA_ENDPOINT, { withCredentials: true });
 
 export const fetchImageData = (

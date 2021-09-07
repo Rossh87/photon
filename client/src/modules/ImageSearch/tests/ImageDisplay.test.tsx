@@ -8,7 +8,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { mockImageData } from './mockData';
 import ImageDisplay from '../ui/ImageDisplay';
-import { IDBUpload } from 'sharedTypes/Upload';
+import { IClientUpload } from 'sharedTypes/Upload';
 import { makeImageSearchProvider } from '../state/useImageSearchState';
 import { IImageSearchState } from '../state/imageSearchStateTypes';
 import { resetInternals } from 'react-use-fp';

@@ -3,7 +3,7 @@ import { render, screen, act, getAllByLabelText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import ImageDisplay from '../ui/ImageDisplay';
-import { IDBUpload } from 'sharedTypes/Upload';
+import { IClientUpload } from 'sharedTypes/Upload';
 import { makeImageSearchProvider } from '../state/useImageSearchState';
 import { IImageSearchState } from '../state/imageSearchStateTypes';
 import { resetInternals } from 'react-use-fp';

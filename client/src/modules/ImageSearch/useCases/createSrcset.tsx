@@ -84,7 +84,7 @@ const JSXElementFromBreakpoints =
  * SMALLEST "max-width" to LARGEST "max-width".  We want to match smaller screens (and load smaller image) FIRST.
  */
 
-// TODO: this should just accept an IDBUpload
+// TODO: this should just accept an IClientUpload
 export const createSrcset =
 	(creationType: TSrcsetCreationType) =>
 	(userBreakpoints: TUserBreakpointUI[]) =>

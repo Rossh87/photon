@@ -1,12 +1,12 @@
-import { IDBUpload } from 'sharedTypes/Upload';
+import { IClientUpload, TUploadDeletionID } from 'sharedTypes/Upload';
 import { TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import { BaseError } from '../../../core/error';
 
 export type TTabPanelType = 'breakpoint' | 'code';
 
 export interface IImageSearchState {
-	imageMetadata: IDBUpload[];
-	currentlyActiveImages: IDBUpload[];
+	imageMetadata: IClientUpload[];
+	currentlyActiveImages: IClientUpload[];
 	error: BaseError | null;
 	imageUnderConfiguration: TimageUnderConfigurationState;
 }
@@ -20,18 +20,23 @@ interface IFetchImageDataAction {
 	type: 'FETCH_IMG_DATA';
 }
 
-export type TimageUnderConfigurationState = null | IDBUpload;
+interface IDeleteImageAction {
+	type: 'DELETE_IMAGE';
+	payload: TUploadDeletionID;
+}
+
+export type TimageUnderConfigurationState = null | IClientUpload;
 
 // NB the received array CAN BE EMPTY if the user has not uploaded anything yet.  This
 // should not trigger an error state.
 interface IImageDataReceivedAction {
 	type: 'IMG_DATA_RECEIVED';
-	payload: IDBUpload[];
+	payload: IClientUpload[];
 }
 
 export interface ISearchedImagesEmittedAction {
 	type: 'SEARCHED_IMAGES_EMITTED';
-	payload: IDBUpload[];
+	payload: IClientUpload[];
 }
 
 interface IImageSearchErrorAction {
@@ -41,7 +46,7 @@ interface IImageSearchErrorAction {
 
 export interface ISearchData {
 	searchTerm: string;
-	imgData: IDBUpload[];
+	imgData: IClientUpload[];
 }
 
 export interface IInitImageSearchAction {
@@ -55,7 +60,7 @@ export interface IResetSearchAction {
 
 export interface ISetImageUnderConfigurationAction {
 	type: 'SET_IMG_UNDER_CONFIGURATION';
-	payload: IDBUpload;
+	payload: IClientUpload;
 }
 export interface ICloseImageUnderConfiguration {
 	type: 'CLOSE_IMG_UNDER_CONFIGURATION';
@@ -63,6 +68,7 @@ export interface ICloseImageUnderConfiguration {
 }
 
 export type TImageSearchActions =
+	| IDeleteImageAction
 	| IFetchImageDataAction
 	| IImageDataReceivedAction
 	| ISearchedImagesEmittedAction

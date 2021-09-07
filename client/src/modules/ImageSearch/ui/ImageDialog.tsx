@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { Dispatch, useContext, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import { pipe } from 'fp-ts/function';
 import Dialog from '@material-ui/core/Dialog';
@@ -25,13 +25,16 @@ import {
 	useImageSearchDispatch,
 } from '../state/useImageSearchState';
 import { createSrcset } from '../useCases/createSrcset';
-import { IDBUpload } from 'sharedTypes/Upload';
+import { IClientUpload } from 'sharedTypes/Upload';
 import { mapBreakpointsToUI } from '../useCases/mapBreakpointsToUI';
 import { useFPReducer } from 'react-use-fp';
-import dependencyContext from '../../../core/dependencyContext';
+import dependencyContext, {
+	addSecondaryDispatch,
+} from '../../../core/dependencyContext';
 import {
 	initialDialogState,
 	imageDialogReducer,
+	TDialogActions,
 } from '../state/imageDialogState';
 import { synchronizeBreakpoints } from '../useCases/synchronizeBreakpoints';
 import Snacktion from './Snacktion';
@@ -43,6 +46,7 @@ import PasteableCodeTab from './PasteableCodeTab';
 import Tabpanel from './Tabpanel';
 import { TTabPanelType } from '../state/imageSearchStateTypes';
 import { useTabItemStyles, useTabStyles } from '../styles/tabItemStyles';
+import { deleteOneUpload } from '../useCases/deleteUpload';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	dialogPaper: {
@@ -68,6 +72,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 		fontWeight: theme.typography.fontWeightBold,
 		fontSize: theme.typography.fontSize,
 	},
+
+	deleteButton: {
+		color: theme.palette.warning.main,
+		fontWeight: theme.typography.fontWeightBold,
+		fontSize: theme.typography.fontSize,
+	},
 }));
 
 export const ImageDialog: React.FunctionComponent = () => {
@@ -76,24 +86,28 @@ export const ImageDialog: React.FunctionComponent = () => {
 	const tabStyles = useTabStyles();
 	const tabItemStyles = useTabItemStyles();
 
-	const makeDeps = useContext(dependencyContext);
+	// we can cast this since dialog will never be open if
+	// imageUnderConfiguration is null
+	const { publicPathPrefix, availableWidths, displayName, breakpoints, _id } =
+		useImageSearchState().imageUnderConfiguration as IClientUpload;
+
+	const imageSearchDispatch = useImageSearchDispatch();
+
+	// These handlers need access to their own dispatch, and ALSO imageSearchDispatch
+	const makeBaseDepsContext = useContext(dependencyContext);
+	const makeDeps =
+		addSecondaryDispatch(imageSearchDispatch)(makeBaseDepsContext);
 
 	const [state, dispatch, actions] = useFPReducer(
 		{
 			LOAD_BREAKPOINTS: mapBreakpointsToUI,
 			SYNC_BREAKPOINTS: synchronizeBreakpoints,
+			INIT_DELETE: deleteOneUpload,
 		},
 		makeDeps
 	)(initialDialogState, imageDialogReducer);
 
 	const [tabValue, setTabValue] = React.useState<TTabPanelType>('code');
-
-	// we can cast this since dialog will never be open if
-	// imageUnderConfiguration is null
-	const { publicPathPrefix, availableWidths, displayName, breakpoints, _id } =
-		useImageSearchState().imageUnderConfiguration as IDBUpload;
-
-	const imageSearchDispatch = useImageSearchDispatch();
 
 	// Begin handlers
 
@@ -204,6 +218,14 @@ export const ImageDialog: React.FunctionComponent = () => {
 								}
 							/>
 						</List>
+						<Button
+							color="primary"
+							variant="contained"
+							onClick={() => actions.INIT_DELETE(_id)}
+							className={styles.deleteButton}
+						>
+							Delete
+						</Button>
 					</Grid>
 				</Grid>
 				<Box mt={2}>

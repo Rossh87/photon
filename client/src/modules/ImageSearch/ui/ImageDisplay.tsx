@@ -8,7 +8,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import { pipe } from 'fp-ts/lib/function';
 import { fromArray, map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/Option';
-import { IDBUpload } from 'sharedTypes/Upload';
+import { IClientUpload } from 'sharedTypes/Upload';
 import {
 	useImageSearchDispatch,
 	useImageSearchState,
@@ -56,7 +56,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 	);
 
 	const handleClick =
-		(clickedImg: IDBUpload): React.MouseEventHandler =>
+		(clickedImg: IClientUpload): React.MouseEventHandler =>
 		(e) => {
 			e.stopPropagation();
 			imageSearchDispatch({
@@ -66,7 +66,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 		};
 
 	const mapImagesToUI = pipe(
-		(imgProps: IDBUpload) => (
+		(imgProps: IClientUpload) => (
 			<ImageListItem
 				key={imgProps._id}
 				onClick={handleClick(imgProps)}
