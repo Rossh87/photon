@@ -8,7 +8,6 @@ import {
 import { IFetcher } from '../../../core/fetcher';
 import { Request, Response, NextFunction } from 'express';
 import { IGoogleOAuthResponse } from '../sharedAuthTypes';
-import { googleOAuthController } from './googleOAuthController';
 import { MissingOAuthTokenErr } from '../helpers/extractOAuthToken';
 import { dropCollections } from '../../../core/utils/testUtils';
 import { CLIENT_ROOT } from '../../../CONSTANTS';
