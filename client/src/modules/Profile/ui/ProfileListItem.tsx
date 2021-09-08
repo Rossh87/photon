@@ -1,12 +1,6 @@
 import React from 'react';
 import {
-	Paper,
-	Button,
 	TextField,
-	Grid,
-	Avatar,
-	Divider,
-	List,
 	ListItem,
 	ListItemIcon,
 	ListItemText,
@@ -14,12 +8,7 @@ import {
 	Box,
 	makeStyles,
 	Theme,
-	IconButton,
-	ListItemSecondaryAction,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
 import {
 	validationTools,
 	isConfigurableField,
@@ -32,6 +21,7 @@ import {
 } from '../sharedProfileTypes';
 import { fold as BFold } from 'fp-ts/boolean';
 import { fromPredicate, map } from 'fp-ts/Option';
+import ProfileFormActionButton from './ProfileFormActionButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	profileText: {
@@ -39,18 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 		overflow: 'hidden',
 		whiteSpace: 'nowrap',
 		maxWidth: 600,
-	},
-
-	successButton: {
-		color: theme.palette.success.main,
-	},
-
-	clearButton: {
-		color: theme.palette.error.main,
-	},
-
-	editButton: {
-		color: theme.palette.primary.main,
 	},
 }));
 
@@ -139,20 +117,6 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 		</form>
 	);
 
-	const setButtonAction = () =>
-		editing ? (error ? reset : handleSubmit) : () => setEditing(true);
-
-	const setButton = () =>
-		editing ? (
-			error ? (
-				<ClearIcon className={classes.clearButton} />
-			) : (
-				<CheckIcon className={classes.successButton} />
-			)
-		) : (
-			<EditIcon className={classes.editButton} />
-		);
-
 	const renderInterior = () => (editing ? inputComponent : typoComponent);
 
 	return (
@@ -160,15 +124,13 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 			<ListItem>
 				<ListItemText primary={renderInterior()} />
 				{editable && (
-					<ListItemSecondaryAction>
-						<IconButton
-							onClick={setButtonAction()}
-							edge="end"
-							aria-label="delete"
-						>
-							{setButton()}
-						</IconButton>
-					</ListItemSecondaryAction>
+					<ProfileFormActionButton
+						editing={editing}
+						error={error}
+						reset={reset}
+						handleSubmit={handleSubmit}
+						setEditing={setEditing}
+					/>
 				)}
 			</ListItem>
 		</>
