@@ -26,7 +26,7 @@ import {
 	getCollection,
 	tryFindOne,
 } from '../../../core/repo';
-import { ObjectId } from 'bson';
+import { ObjectId } from 'mongodb';
 import { fromNullable } from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/Reader';
 import * as TE from 'fp-ts/TaskEither';

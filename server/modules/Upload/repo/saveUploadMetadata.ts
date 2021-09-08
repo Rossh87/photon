@@ -5,7 +5,7 @@ import { pipe } from 'fp-ts/lib/function';
 import { IDBUpload, TWithoutID } from 'sharedTypes/Upload';
 import { tryCatch } from 'fp-ts/TaskEither';
 import { DBTransactionError } from '../../../core/repo';
-import { ObjectId } from 'bson';
+import { ObjectId } from 'mongodb';
 import { TDBUser } from '../../../../sharedTypes/User';
 
 export const saveUploadMetadata =
