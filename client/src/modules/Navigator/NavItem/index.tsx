@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { alpha } from '@material-ui/core/styles/colorManipulator';
-import { ListItem, IconButton } from '@material-ui/core';
+import { ListItem, IconButton, Tooltip } from '@material-ui/core';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link, useLocation } from 'react-router-dom';
@@ -41,17 +41,17 @@ const NavItem: React.FunctionComponent<
 	return (
 		<Link to={matchesRouterPath} className={classes.navItemLink}>
 			<ListItem onClick={handleClick}>
-				{/* <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
-				<ListItemText>{pageName}</ListItemText> */}
-				<IconButton
-					className={clsx(
-						classes.item,
-						isActive && classes.itemActiveItem
-					)}
-					onClick={handleClick}
-				>
-					{icon}
-				</IconButton>
+				<Tooltip placement="right-end" title={pageName}>
+					<IconButton
+						className={clsx(
+							classes.item,
+							isActive && classes.itemActiveItem
+						)}
+						onClick={handleClick}
+					>
+						{icon}
+					</IconButton>
+				</Tooltip>
 			</ListItem>
 		</Link>
 	);
