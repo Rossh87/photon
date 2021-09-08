@@ -93,8 +93,9 @@ const Profile: React.FunctionComponent = (props) => {
 
 	// begin handlers
 	const handleFieldSubmit =
-		(fieldName: string) => (newValue: string | number) => {
-			setUpdated(true);
+		(fieldName: keyof IUserFacingProfileProps) =>
+		(newValue: string | number) => {
+			if (newValue !== localProfileState[fieldName]) setUpdated(true);
 			setLocalProfileState({
 				...localProfileState,
 				[fieldName]: newValue,
@@ -149,7 +150,9 @@ const Profile: React.FunctionComponent = (props) => {
 						key={stateKey}
 						fieldName={stateKey as keyof IUserFacingProfileProps}
 						initialValue={(localProfileState as any)[stateKey]}
-						handleFieldSubmit={handleFieldSubmit(stateKey)}
+						handleFieldSubmit={handleFieldSubmit(
+							stateKey as keyof IUserFacingProfileProps
+						)}
 						editable={editables.includes(stateKey)}
 					/>
 				))}
