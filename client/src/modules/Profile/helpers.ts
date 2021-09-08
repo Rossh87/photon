@@ -1,10 +1,13 @@
-import { IUserFacingProfileProps } from '.';
 import {
 	IUserProfilePreferences,
 	IUserProfilePreferencesTransportObject,
 	TAuthorizedUserResponse,
 } from 'sharedTypes/User';
 import { bytesToHumanReadableSize } from '../Uploader/useCases/preProcessSelectedFiles/appendMetadata';
+import {
+	IUserFacingProfileProps,
+	TConfigurableProfileProps,
+} from './sharedProfileTypes';
 
 export const extractViewableProps = (
 	user: TAuthorizedUserResponse
@@ -56,3 +59,48 @@ export const userFacingPropsToPreferences = (
 	preferredThumbnailURL:
 		ufp.profileImage.length > 0 ? ufp.profileImage : undefined,
 });
+
+const emailPattern =
+	/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+
+const urlPattern =
+	/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+
+/**
+ * Allows:
+ * - alphanumeric chars (lower and upper)
+ * - number
+ * - dots
+ * - underscores
+ * - from 5 to 30 chars (inclusive at both ends)
+ */
+const displayNamePattern = /^[A-Za-z0-9\-\.]{5,30}$/;
+
+interface IValidationTools {
+	failureMessage: string;
+	pattern: RegExp;
+}
+
+export const validationTools: Record<
+	keyof TConfigurableProfileProps,
+	IValidationTools
+> = {
+	emailAddress: {
+		failureMessage: 'Please enter a valid email',
+		pattern: emailPattern,
+	},
+	profileImage: {
+		failureMessage: 'Please enter a valid URL',
+		pattern: urlPattern,
+	},
+	userName: {
+		failureMessage:
+			"Username must consist of between 5 and 30 alphanumeric characters, or '-' or '.'",
+		pattern: displayNamePattern,
+	},
+};
+
+export const isConfigurableField = (
+	s: string
+): s is keyof TConfigurableProfileProps =>
+	s === 'emailAddress' || s === 'profileImage' || s === 'userName';

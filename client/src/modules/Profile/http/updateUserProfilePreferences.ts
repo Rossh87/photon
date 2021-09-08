@@ -22,9 +22,11 @@ export const updateUserProfilePreferences =
 	(deps: IDependencies<TAuthActions>) =>
 		tryCatch(
 			() => pipe(makeUpdateRequest(newPrefs), deps.http),
-			(e) =>
-				new BaseError(
+			(e) => {
+				console.log(e);
+				return new BaseError(
 					'Attempt to update user profile preferences failed',
 					e
-				)
+				);
+			}
 		);

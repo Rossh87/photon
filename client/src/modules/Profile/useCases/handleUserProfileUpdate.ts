@@ -5,9 +5,9 @@ import { map as EMap, mapLeft as EMapLeft } from 'fp-ts/Either';
 import { TAuthActions } from '../../Auth/state/authStateTypes';
 import { IDependencies } from '../../../core/dependencyContext';
 import { pipe } from 'fp-ts/lib/function';
-import { IUserFacingProfileProps } from '..';
 import { userFacingPropsToPreferences } from '../helpers';
 import { BaseError } from '../../../core/error';
+import { IUserFacingProfileProps } from '../sharedProfileTypes';
 
 export const handleUserProfileUpdate = (newPrefs: IUserFacingProfileProps) =>
 	pipe(

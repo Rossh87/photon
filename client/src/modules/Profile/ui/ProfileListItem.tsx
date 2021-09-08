@@ -18,8 +18,20 @@ import {
 	ListItemSecondaryAction,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { MapPropsToHumanLabels } from '../helpers';
-import { IUserFacingProfileProps } from '..';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+import {
+	validationTools,
+	isConfigurableField,
+	MapPropsToHumanLabels,
+} from '../helpers';
+import { pipe } from 'fp-ts/lib/function';
+import {
+	IUserFacingProfileProps,
+	TConfigurableProfileProps,
+} from '../sharedProfileTypes';
+import { fold as BFold } from 'fp-ts/boolean';
+import { fromPredicate, map } from 'fp-ts/Option';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	profileText: {
@@ -27,6 +39,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 		overflow: 'hidden',
 		whiteSpace: 'nowrap',
 		maxWidth: 600,
+	},
+
+	successButton: {
+		color: theme.palette.success.main,
+	},
+
+	clearButton: {
+		color: theme.palette.error.main,
+	},
+
+	editButton: {
+		color: theme.palette.primary.main,
 	},
 }));
 
@@ -47,14 +71,48 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 
 	const [editing, setEditing] = React.useState(false);
 
+	const [error, setError] = React.useState<string | null>(null);
+
 	const [value, setValue] = React.useState(initialValue);
 
-	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
-		setValue(e.target.value);
-
-	const handleSubmit = () => {
-		handleFieldSubmit(value);
+	const reset = () => {
+		setValue(initialValue);
 		setEditing(false);
+		setError(null);
+	};
+
+	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+		const { value } = e.target;
+
+		if (value === initialValue || value === '') {
+			reset();
+		}
+
+		setValue(value);
+	};
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+
+		return pipe(
+			fieldName,
+			fromPredicate(isConfigurableField),
+			map((field) =>
+				pipe(
+					validationTools[field].pattern.test(
+						value as IUserFacingProfileProps[keyof TConfigurableProfileProps]
+					),
+					BFold(
+						() => setError(validationTools[field].failureMessage),
+						() => {
+							setError(null);
+							handleFieldSubmit(value);
+							setEditing(false);
+						}
+					)
+				)
+			)
+		);
 	};
 
 	const typoComponent = (
@@ -75,10 +133,25 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 				id={`profile-${fieldName}-input`}
 				label={MapPropsToHumanLabels[fieldName]}
 				variant="outlined"
-				// fullWidth
+				error={!!error}
+				helperText={error && error}
 			/>
 		</form>
 	);
+
+	const setButtonAction = () =>
+		editing ? (error ? reset : handleSubmit) : () => setEditing(true);
+
+	const setButton = () =>
+		editing ? (
+			error ? (
+				<ClearIcon className={classes.clearButton} />
+			) : (
+				<CheckIcon className={classes.successButton} />
+			)
+		) : (
+			<EditIcon className={classes.editButton} />
+		);
 
 	const renderInterior = () => (editing ? inputComponent : typoComponent);
 
@@ -89,11 +162,11 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 				{editable && (
 					<ListItemSecondaryAction>
 						<IconButton
-							onClick={() => setEditing(!editing)}
+							onClick={setButtonAction()}
 							edge="end"
 							aria-label="delete"
 						>
-							<EditIcon />
+							{setButton()}
 						</IconButton>
 					</ListItemSecondaryAction>
 				)}

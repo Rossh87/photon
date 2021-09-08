@@ -35,6 +35,7 @@ import DependencyContext from '../../core/dependencyContext';
 import { handleUserProfileUpdate } from './useCases/handleUserProfileUpdate';
 import { chainFirst } from 'fp-ts/Identity';
 import { map as TEMap } from 'fp-ts/TaskEither';
+import { IUserFacingProfileProps } from './sharedProfileTypes';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	avatar: {
@@ -70,15 +71,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 		maxWidth: '100%',
 	},
 }));
-
-export interface IUserFacingProfileProps {
-	emailAddress: string;
-	uniqueUploads: number;
-	uploadUsage: string;
-	accessLevel: TAccessLevel;
-	userName: string;
-	profileImage: string;
-}
 
 const Profile: React.FunctionComponent = (props) => {
 	const classes = useStyles();
@@ -149,7 +141,7 @@ const Profile: React.FunctionComponent = (props) => {
 	return (
 		<>
 			{renderAvatar()}
-			<List>
+			<List dense>
 				{Object.keys(localProfileState).map((stateKey) => (
 					<ProfileListItem
 						// okay to just use the property name as a key here,
