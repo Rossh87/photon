@@ -2,6 +2,7 @@ import {
 	IUserProfilePreferencesTransportObject,
 	TDBUser,
 	TProfileErrorsTransportObject,
+	TSessionUser,
 } from 'sharedTypes/User';
 import { mockUserFromDatabase } from '../../auth/helpers/mockData';
 import { Request, Response, NextFunction } from 'express';
@@ -17,10 +18,7 @@ let repoClient: MongoClient;
 let deps: IAsyncDeps;
 
 beforeAll(async () => {
-	repoClient = await MongoClient.connect(TEST_DB_URI, {
-		useUnifiedTopology: true,
-	});
-
+	repoClient = await MongoClient.connect(TEST_DB_URI);
 	deps = {
 		repoClient,
 	} as IAsyncDeps;
@@ -61,7 +59,7 @@ describe("controller to update user's profile preferences", () => {
 				user: {
 					...mockUser,
 					_id: stringID,
-				} as unknown as TDBUser,
+				} as TSessionUser,
 			},
 			body: newPreferences,
 		} as Request;
@@ -100,7 +98,7 @@ describe("controller to update user's profile preferences", () => {
 		const stringID = mockUser._id.toString();
 		const req = {
 			session: {
-				user: { ...mockUser, _id: stringID } as unknown as TDBUser,
+				user: { ...mockUser, _id: stringID } as TSessionUser,
 			},
 			// Body property must be set to pass validation
 			body: {},
@@ -144,7 +142,7 @@ describe("controller to update user's profile preferences", () => {
 
 		const req = {
 			session: {
-				user: mockUser,
+				user: { ...mockUser, _id: mockUser._id.toHexString() },
 			},
 			body: newPreferences,
 		} as Request;

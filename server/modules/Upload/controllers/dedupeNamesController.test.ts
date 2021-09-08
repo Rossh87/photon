@@ -10,9 +10,7 @@ let repoClient: MongoClient;
 let deps: IAsyncDeps;
 
 beforeAll(async () => {
-	repoClient = await MongoClient.connect(TEST_DB_URI, {
-		useUnifiedTopology: true,
-	});
+	repoClient = await MongoClient.connect(TEST_DB_URI);
 
 	deps = {
 		repoClient,

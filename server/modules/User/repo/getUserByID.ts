@@ -1,6 +1,6 @@
 import { TDBUser, IUserProfileProperties } from 'sharedTypes/User';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
-import { MongoClient, ObjectQuerySelector, Collection } from 'mongodb';
+import { MongoClient, Collection } from 'mongodb';
 import { getCollection, DBReadError } from '../../../core/repo';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
@@ -24,7 +24,7 @@ const findUser: (id: string) => (c: Collection<TDBUser>) => TGetUserByIDResult =
 					.findOne({ OAuthProviderID: id })
 					.then((usr) => (usr ? O.some(usr) : O.none)),
 			(reason) =>
-				DBReadError.create<IUserProfileProperties>(
+				DBReadError.create(
 					c.collectionName,
 					{ OAuthProviderID: id },
 					reason

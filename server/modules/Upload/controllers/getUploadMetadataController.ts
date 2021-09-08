@@ -16,7 +16,7 @@ import { getUploadMetadata } from '../repo/getUploadMetadata';
 import { IUploadsRequestPayload } from 'sharedTypes/Upload';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import { flow } from 'fp-ts/lib/function';
-import { TDBUser } from 'sharedTypes/User';
+import { TDBUser, TSessionUser } from 'sharedTypes/User';
 
 const successEffects = flow(
 	toEffects,
@@ -30,10 +30,10 @@ export const getUploadMetadataController =
 		const runner = runEffects(req, res, next);
 
 		// safe to cast since we're behind auth gate
-		const { _id } = req.session.user as TDBUser;
+		const { _id } = req.session.user as TSessionUser;
 
 		await pipe(
-			_id as unknown as string,
+			_id,
 			getUploadMetadata,
 			RTE.map(successEffects),
 			RTE.mapLeft(standardFailureEffects),

@@ -1,7 +1,7 @@
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { ISavedBreakpoint, TSavedBreakpoints } from './Breakpoint';
 import { ResumableUploadCreationErr } from 'server/modules/Upload/helpers/requestResumableUpload';
-import { ObjectId, ObjectID } from 'bson';
+import { ObjectId } from 'mongodb';
 
 export type TMediaType = 'image/jpeg' | 'image/png';
 
@@ -21,7 +21,7 @@ export interface ICombinedUploadRequestMetadata {
 }
 
 export interface IDBUpload extends ICombinedUploadRequestMetadata {
-	_id: ObjectID;
+	_id: ObjectId;
 	breakpoints: ISavedBreakpoint[];
 }
 

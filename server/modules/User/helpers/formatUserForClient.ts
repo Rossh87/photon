@@ -1,6 +1,13 @@
-import { TDBUser, TAuthorizedUserResponse } from 'sharedTypes/User';
+import { ObjectId } from 'mongodb';
+import {
+	TDBUser,
+	TAuthorizedUserResponse,
+	TSessionUser,
+} from 'sharedTypes/User';
 
-export const formatUserForClient = (u: TDBUser): TAuthorizedUserResponse => ({
+export const formatUserForClient = (
+	u: TSessionUser
+): TAuthorizedUserResponse => ({
 	...u,
-	_id: u._id.toHexString(),
+	createdAt: new ObjectId(u._id).getTimestamp().toJSON(),
 });

@@ -1,5 +1,5 @@
 import { TDBUser } from 'sharedTypes/User';
-import { MongoClient, FilterQuery, UpdateQuery } from 'mongodb';
+import { MongoClient, Filter, UpdateFilter } from 'mongodb';
 import { getCollection, DBError, tryUpdateOne } from '../../../core/repo';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
@@ -22,12 +22,12 @@ export const saveUpdatedUser =
 export const _saveUpdatedUser = reverseTwo(saveUpdatedUser);
 
 // TODO: it may be helpful to abstract these types to reusable types--unclear as of yet
-const getUserFilter = (updatedUser: TDBUser): FilterQuery<TDBUser> => ({
+const getUserFilter = (updatedUser: TDBUser): Filter<TDBUser> => ({
 	OAuthProviderID: updatedUser.OAuthProviderID,
 	OAuthProviderName: updatedUser.OAuthProviderName,
 });
 
-const getUpdateUserQuery: (updatedUser: TDBUser) => UpdateQuery<TDBUser> = (
+const getUpdateUserQuery: (updatedUser: TDBUser) => UpdateFilter<TDBUser> = (
 	updatedUser
 ) => ({
 	$set: updatedUser,

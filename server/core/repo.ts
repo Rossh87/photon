@@ -1,12 +1,15 @@
 import {
 	MongoClient,
-	RootQuerySelector,
+	// RootQuerySelector,
 	Collection,
 	OptionalId,
-	FilterQuery,
-	UpdateQuery,
-	FindOneOptions,
-	WithoutProjection,
+	Filter,
+	UpdateFilter,
+	FindOptions,
+	// FilterQuery,
+	// UpdateQuery,
+	// FindOneOptions,
+	// WithoutProjection,
 } from 'mongodb';
 import { BaseError, HTTPErrorTypes, HTTPErrorType } from './error';
 import * as TE from 'fp-ts/lib/TaskEither';
@@ -28,7 +31,10 @@ export const trySaveOne =
 		TE.tryCatch(
 			pipe(
 				() => c.insertOne(document),
-				T.map((writeResult) => writeResult.ops[0])
+				T.map((writeResult) => ({
+					...document,
+					_id: writeResult.insertedId,
+				}))
 			),
 			(reason) => DBWriteError.create(c.collectionName, document, reason)
 		);
@@ -36,8 +42,8 @@ export const trySaveOne =
 export const _trySaveOne = reverseTwo(trySaveOne);
 
 export const tryUpdateOne =
-	<T>(filter: FilterQuery<T>) =>
-	(updateQuery: UpdateQuery<T>) =>
+	<T>(filter: Filter<T>) =>
+	(updateQuery: UpdateFilter<T>) =>
 	(c: Collection<T>) =>
 		TE.tryCatch(
 			() =>
@@ -48,8 +54,8 @@ export const tryUpdateOne =
 		);
 
 export const tryFindArray =
-	<T, K extends Partial<T> = T>(filter: FilterQuery<T>) =>
-	(options?: FindOneOptions<T>) =>
+	<T, K extends Partial<T> = T>(filter: Filter<T>) =>
+	(options?: FindOptions<T>) =>
 	(c: Collection<T>) =>
 		pipe(
 			options,
@@ -72,8 +78,8 @@ export const tryFindArray =
 		);
 
 export const tryFindOne =
-	<T, K extends Partial<T> = T>(filter: FilterQuery<T>) =>
-	(options?: FindOneOptions<T>) =>
+	<T, K extends Partial<T> = T>(filter: Filter<T>) =>
+	(options?: FindOptions<T>) =>
 	(c: Collection<T>) =>
 		pipe(
 			options,
@@ -113,11 +119,7 @@ export class MongoConnectionError extends BaseError {
 export type DBError = DBReadError | DBWriteError | DBUpdateError;
 
 export class DBReadError extends BaseError {
-	public static create<T extends object>(
-		collection: string,
-		query: RootQuerySelector<T>,
-		raw: any
-	) {
+	public static create(collection: string, query: Filter<any>, raw: any) {
 		const devMessage = `Database read operation failed when querying collection: ${collection} with query: ${JSON.stringify(
 			query
 		)}`;
@@ -131,7 +133,7 @@ export class DBReadError extends BaseError {
 export class DBDeletionError extends BaseError {
 	public static create<T extends object>(
 		collection: string,
-		query: RootQuerySelector<T>,
+		query: Filter<T>,
 		raw: any
 	) {
 		const devMessage = `Deletion from collection: ${collection} with query: ${JSON.stringify(

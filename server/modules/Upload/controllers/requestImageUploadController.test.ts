@@ -14,6 +14,7 @@ import { DBReadError } from '../../../core/repo';
 import { mockUploadsRequestPayload } from '../helpers/mockData';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
 import { MAX_DEMO_UPLOAD_COUNT } from '../../../../sharedTypes/CONSTANTS';
+import { toSessionUser } from '../../../core/utils/toSessionUser';
 
 let mockPayload: IUploadsRequestPayload;
 let mockUser: TDBUser;
@@ -36,7 +37,7 @@ describe('controller to request resumable upload URIs', () => {
 
 		const req = {
 			session: {
-				user: mockUser,
+				user: toSessionUser(mockUser),
 			},
 
 			body: mockPayload,

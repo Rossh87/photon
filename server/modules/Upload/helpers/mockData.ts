@@ -72,7 +72,7 @@ export const mockObjectIDs = Array(4)
 
 export const mockUploadsFromDb: IDBUpload[] = [
 	{
-		_id: mockObjectIDs[0] as unknown as string,
+		_id: mockObjectIDs[0],
 		ownerID: '5678',
 		displayName: 'beach day',
 		mediaType: 'image/jpeg',
@@ -83,7 +83,7 @@ export const mockUploadsFromDb: IDBUpload[] = [
 		breakpoints: mockExistingBreakpoints,
 	},
 	{
-		_id: mockObjectIDs[1] as unknown as string,
+		_id: mockObjectIDs[1],
 		ownerID: '5678',
 		displayName: 'foxes',
 		mediaType: 'image/jpeg',
@@ -94,7 +94,7 @@ export const mockUploadsFromDb: IDBUpload[] = [
 		breakpoints: mockExistingBreakpoints,
 	},
 	{
-		_id: mockObjectIDs[2] as unknown as string,
+		_id: mockObjectIDs[2],
 		ownerID: '1234',
 		displayName: 'cats',
 		mediaType: 'image/jpeg',
@@ -105,7 +105,7 @@ export const mockUploadsFromDb: IDBUpload[] = [
 		breakpoints: mockExistingBreakpoints,
 	},
 	{
-		_id: mockObjectIDs[3] as unknown as string,
+		_id: mockObjectIDs[3],
 		ownerID: '1234',
 		displayName: 'forest in spring',
 		mediaType: 'image/jpeg',

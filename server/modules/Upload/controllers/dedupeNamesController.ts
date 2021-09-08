@@ -15,7 +15,7 @@ import { pipe } from 'fp-ts/lib/function';
 import { TDedupeNamesPayload } from '../sharedUploadTypes';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import { flow } from 'fp-ts/lib/function';
-import { TDBUser } from 'sharedTypes/User';
+import { TDBUser, TSessionUser } from 'sharedTypes/User';
 import { getDupeDisplayNames } from '../repo/getDupeDisplayNames';
 
 const successEffects = flow(
@@ -30,7 +30,7 @@ export const dedupeNamesController =
 		const runner = runEffects(req, res, next);
 
 		// safe to cast since we're behind auth gate
-		const { _id } = req.session.user as TDBUser;
+		const { _id } = req.session.user as TSessionUser;
 		const displayNames = req.body.displayNames;
 
 		await pipe(

@@ -60,9 +60,8 @@ export const mockUserFromGoogleResponse: IUserProfileProperties = {
 	OAuthEmailVerified: true,
 };
 
-export const mockObjectID = ObjectId.createFromTime(Date.now());
+export const mockObjectID = ObjectId.createFromTime(1000);
 
-// note that this user is
 export const mockUserFromDatabase: TDBUser = {
 	_id: mockObjectID,
 	OAuthProviderName: 'google',

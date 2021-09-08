@@ -1,7 +1,4 @@
-import { ICombinedUploadRequestMetadata } from '../sharedUploadTypes';
 import { IAsyncDeps } from '../../../core/asyncDeps';
-import { getCollection, trySaveOne } from '../../../core/repo';
-import { pipe } from 'fp-ts/lib/function';
 import { IDBUpload, TWithoutID } from 'sharedTypes/Upload';
 import { tryCatch } from 'fp-ts/TaskEither';
 import { DBTransactionError } from '../../../core/repo';

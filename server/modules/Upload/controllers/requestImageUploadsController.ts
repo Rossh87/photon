@@ -19,7 +19,7 @@ import * as RT from 'fp-ts/lib/ReaderTask';
 import * as E from 'fp-ts/Either';
 import * as RTE from 'fp-ts/ReaderTaskEither';
 import { flow } from 'fp-ts/lib/function';
-import { TDBUser } from '../../../../sharedTypes/User';
+import { TDBUser, TSessionUser } from '../../../../sharedTypes/User';
 
 const successEffects = flow(
 	toEffects,
@@ -32,7 +32,7 @@ export const requestImageUploadsController =
 	async (req, res, next) => {
 		const runner = runEffects(req, res, next);
 
-		const user = req.session.user as TDBUser;
+		const user = req.session.user as TSessionUser;
 
 		const { uploadRequests } = req.body;
 

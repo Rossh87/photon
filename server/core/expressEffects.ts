@@ -47,7 +47,7 @@ export const runEffects =
 export const setSessionUserEffect =
 	(u: TDBUser): TExpressEffect =>
 	(req: Request, res: Response) => {
-		req.session.user = u;
+		req.session.user = { ...u, _id: u._id.toHexString() };
 	};
 
 export const destroySessionEffect: TExpressEffect = (req, res) =>

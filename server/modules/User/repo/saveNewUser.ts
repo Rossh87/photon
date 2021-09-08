@@ -1,13 +1,6 @@
-import { IUserProfileProperties, TDBUser, TUser } from 'sharedTypes/User';
-import {
-	MongoClient,
-	ObjectQuerySelector,
-	Collection,
-	OptionalId,
-	WithId,
-} from 'mongodb';
+import { IUserProfileProperties, TUser } from 'sharedTypes/User';
+import { MongoClient } from 'mongodb';
 import { getCollection, DBWriteError, trySaveOne } from '../../../core/repo';
-import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
 import { reverseTwo } from '../../../core/utils/reverseCurried';
 

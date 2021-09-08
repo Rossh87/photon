@@ -8,6 +8,7 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { DBReadError } from '../../../core/repo';
+import { toSessionUser } from '../../../core/utils/toSessionUser';
 
 const _mockRequestData1: ICombinedUploadRequestMetadata = {
 	ownerID: 'abc123',
@@ -43,7 +44,7 @@ describe('controller to send saved upload data to client', () => {
 	it('invokes db with correct arguments', async () => {
 		const req = {
 			session: {
-				user: mockUser,
+				user: toSessionUser(mockUser),
 			},
 		} as Request;
 
@@ -75,7 +76,7 @@ describe('controller to send saved upload data to client', () => {
 		);
 
 		expect(mockFind).toHaveBeenCalledWith(
-			{ ownerID: mockObjectID },
+			{ ownerID: mockObjectID.toHexString() },
 			{ sort: { _id: -1 } }
 		);
 
@@ -86,7 +87,7 @@ describe('controller to send saved upload data to client', () => {
 	it('passes errors to error handler', async () => {
 		const req = {
 			session: {
-				user: mockUser,
+				user: toSessionUser(mockUser),
 			},
 		} as Request;
 

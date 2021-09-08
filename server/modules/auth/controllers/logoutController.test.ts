@@ -1,12 +1,6 @@
 import { logoutController, LogoutFailureError } from './logoutController';
 import { Request, Response, NextFunction } from 'express';
 
-const res = {
-	redirect: jest.fn(),
-} as unknown as Response;
-
-const next = jest.fn() as NextFunction;
-
 beforeEach(() => jest.resetAllMocks());
 
 describe('express controller to log a user out', () => {
@@ -21,7 +15,7 @@ describe('express controller to log a user out', () => {
 			end: jest.fn(),
 		} as unknown as Response;
 
-		logoutController(req, res, next);
+		logoutController(req, res, jest.fn());
 
 		expect(req.session.destroy).toHaveBeenCalledTimes(1);
 	});
@@ -37,18 +31,18 @@ describe('express controller to log a user out', () => {
 			end: jest.fn(),
 		} as unknown as Response;
 
-		const runController = () => logoutController(req, res, next);
+		const runController = () => logoutController(req, res, jest.fn());
 
 		expect(runController).not.toThrow();
 		expect(req.session.destroy).toHaveBeenCalledTimes(1);
 	});
 
-	it('throws if session destruction fails', () => {
+	it('passes error to handler if session destruction fails', () => {
 		const failureReason = 'failed';
 
 		const req = {
 			session: {
-				destroy: jest.fn((cb) => cb(new Error(failureReason))),
+				destroy: jest.fn((cb) => cb(failureReason)),
 			},
 		} as unknown as Request;
 
@@ -56,10 +50,12 @@ describe('express controller to log a user out', () => {
 			end: jest.fn(),
 		} as unknown as Response;
 
+		const next = jest.fn();
+
 		const expectedErr = LogoutFailureError.create(failureReason);
 
-		const runController = () => logoutController(req, res, next);
+		logoutController(req, res, next);
 
-		expect(runController).toThrowError(expectedErr);
+		expect(next).toHaveBeenCalledWith(expectedErr);
 	});
 });

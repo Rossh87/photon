@@ -17,9 +17,7 @@ let repoClient: MongoClient;
 let deps: IAsyncDeps;
 
 beforeAll(async () => {
-	repoClient = await MongoClient.connect(TEST_DB_URI, {
-		useUnifiedTopology: true,
-	});
+	repoClient = await MongoClient.connect(TEST_DB_URI);
 
 	deps = {
 		repoClient,
@@ -71,7 +69,9 @@ describe('route controller to update breakpoints associated with an image', () =
 			.collection('uploads')
 			.findOne({ _id: new ObjectId(_id) });
 
-		expect(hopefullyUpdated.breakpoints).toEqual(mockIncomingBreakpoints);
+		expect(hopefullyUpdated && hopefullyUpdated.breakpoints).toEqual(
+			mockIncomingBreakpoints
+		);
 		expect(res.json).toHaveBeenCalledWith(hopefullyUpdated);
 	});
 });

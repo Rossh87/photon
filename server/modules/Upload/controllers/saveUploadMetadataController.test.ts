@@ -5,9 +5,9 @@ import { mockUserFromDatabase } from '../../auth/helpers/mockData';
 import { mockCombinedUploadRequest } from '../helpers/mockData';
 import { Request, Response, NextFunction } from 'express';
 import { IAsyncDeps } from '../../../core/asyncDeps';
-import { MongoClient, ObjectId } from 'mongodb';
-import { DBWriteError } from '../../../core/repo';
+import { MongoClient } from 'mongodb';
 import { TEST_DB_URI } from '../../../CONSTANTS';
+import { toSessionUser } from '../../../core/utils/toSessionUser';
 
 let mockRequestData: ICombinedUploadRequestMetadata;
 let mockUser: TDBUser;
@@ -15,9 +15,7 @@ let repoClient: MongoClient;
 let deps: IAsyncDeps;
 
 beforeAll(async () => {
-	repoClient = await MongoClient.connect(TEST_DB_URI, {
-		useUnifiedTopology: true,
-	});
+	repoClient = await MongoClient.connect(TEST_DB_URI);
 
 	deps = {
 		repoClient,
@@ -47,14 +45,14 @@ beforeEach(async () => {
 });
 
 describe('controller to save info about successful uploads', () => {
-	it.only('persists correct info to db', async () => {
+	it('persists correct info to db', async () => {
 		// we HAVE to set mock request data's ownerID prop to be the same
 		// as that of our mockUser
 		const mockRequest = { ...mockRequestData, ownerID: mockUser._id };
 
 		const req = {
 			session: {
-				user: mockUser,
+				user: toSessionUser(mockUser),
 			},
 			body: mockRequest,
 		} as Request;
@@ -83,7 +81,7 @@ describe('controller to save info about successful uploads', () => {
 		};
 
 		const expectedSessionUser = Object.assign(
-			{ ...mockUser },
+			{ ...toSessionUser(mockUser) },
 			{
 				uploadUsage: 1100,
 				imageCount: 6,

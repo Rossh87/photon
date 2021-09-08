@@ -11,7 +11,7 @@ import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import requiredInEnv from './configs/requiredInEnv';
 import axios from 'axios';
-import { TDBUser } from '../sharedTypes/User';
+import { TDBUser, TSessionUser } from '../sharedTypes/User';
 import { IAsyncDeps } from './core/asyncDeps';
 import { MongoClient } from 'mongodb';
 import { TEST_DB_URI } from './CONSTANTS';
@@ -38,7 +38,7 @@ declare module 'express-session' {
 			response: GrantResponse;
 		};
 
-		user?: TDBUser;
+		user?: TSessionUser;
 	}
 }
 
@@ -81,9 +81,7 @@ async function run() {
 	app.use(errLogger());
 	app.use(accessLogger());
 
-	const repoClient = await MongoClient.connect(TEST_DB_URI, {
-		useUnifiedTopology: true,
-	});
+	const repoClient = await MongoClient.connect(TEST_DB_URI);
 
 	// this will blow up right away if needed env vars are missing
 	const asyncDeps: IAsyncDeps = {

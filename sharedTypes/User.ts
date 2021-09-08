@@ -35,8 +35,11 @@ export type TUser = IUserProfileProperties & IUserServiceUsageProperties;
 // TUser object as recovered from database
 export type TDBUser = TUser & { _id: ObjectId };
 
+// id is automatically serialized by express-session
+export type TSessionUser = TUser & { _id: string };
+
 // type for data shape that will be sent to client on authorization
-export type TAuthorizedUserResponse = TUser & { _id: string };
+export type TAuthorizedUserResponse = TSessionUser & { createdAt: string };
 
 // extract this to its own type just for clarity in naming
 export interface IUserProfilePreferencesTransportObject

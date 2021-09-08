@@ -30,12 +30,7 @@ const mockAxios = {
 	}),
 };
 
-beforeAll(
-	async () =>
-		(repoClient = await MongoClient.connect(TEST_DB_URI, {
-			useUnifiedTopology: true,
-		}))
-);
+beforeAll(async () => (repoClient = await MongoClient.connect(TEST_DB_URI)));
 
 // cleanup changes to mock data between tests
 beforeEach(() => (googleResponse = Object.assign({}, mockGoogleOAuthResponse)));

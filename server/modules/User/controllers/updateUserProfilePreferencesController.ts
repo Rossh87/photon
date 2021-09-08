@@ -19,6 +19,7 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import {
 	IUserProfilePreferencesTransportObject,
 	TDBUser,
+	TSessionUser,
 } from 'sharedTypes/User';
 import { updateProfilePreferences } from '../useCases/updateProfilePreferences';
 import { formatValidationErrs } from '../helpers/formatValidationErrors';
@@ -30,7 +31,7 @@ const updateSessionUserEffect =
 		req.session.user = {
 			...req.session.user,
 			userPreferences: { ...newPrefs },
-		} as TDBUser;
+		} as TSessionUser;
 	};
 
 const validationFailureEffects = flow(
@@ -53,7 +54,7 @@ export const updateUserProfilePreferencesController =
 	async (req, res, next) => {
 		const runner = runEffects(req, res, next);
 
-		const { _id } = req.session.user as TDBUser;
+		const { _id } = req.session.user as TSessionUser;
 
 		await pipe(
 			updateProfilePreferences(req.body, _id as unknown as string),
