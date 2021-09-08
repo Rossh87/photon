@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	avatar: {
 		width: '120px',
 		height: '120px',
-		margin: theme.spacing(2),
+		margin: theme.spacing(2, 'auto'),
 		// minWidth: '200px',
 		// minHeight: '200px',
 		// maxHeight: '300px',
@@ -149,7 +149,11 @@ const Profile: React.FunctionComponent = (props) => {
 						// since the contents of this list are never changed/reordered
 						key={stateKey}
 						fieldName={stateKey as keyof IUserFacingProfileProps}
-						initialValue={(localProfileState as any)[stateKey]}
+						initialValue={
+							localProfileState[
+								stateKey as keyof IUserFacingProfileProps
+							]
+						}
 						handleFieldSubmit={handleFieldSubmit(
 							stateKey as keyof IUserFacingProfileProps
 						)}

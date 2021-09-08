@@ -21,6 +21,7 @@ export const mockUser: TAuthorizedUserResponse = {
 	imageCount: 2,
 	uploadUsage: 102466,
 	accessLevel: 'demo',
+	createdAt: new Date().toJSON(),
 };
 
 // mockImageData includes some stubbed-out props that would normally be

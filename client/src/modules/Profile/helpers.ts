@@ -3,6 +3,7 @@ import {
 	IUserProfilePreferencesTransportObject,
 	TAuthorizedUserResponse,
 } from 'sharedTypes/User';
+import { formatJoinDate } from '../../core/date';
 import { bytesToHumanReadableSize } from '../Uploader/useCases/preProcessSelectedFiles/appendMetadata';
 import {
 	IUserFacingProfileProps,
@@ -37,6 +38,7 @@ export const extractViewableProps = (
 		uniqueUploads: user.imageCount,
 		accessLevel: user.accessLevel,
 		uploadUsage: bytesToHumanReadableSize(user.uploadUsage),
+		joined: formatJoinDate(user.createdAt),
 	};
 };
 
@@ -47,6 +49,7 @@ export enum MapPropsToHumanLabels {
 	uniqueUploads = 'Unique Uploads',
 	accessLevel = 'Access Level',
 	uploadUsage = 'Total Upload Usage',
+	joined = 'Joined',
 }
 
 // TODO: this is pretty janky, going back and forth between empty string

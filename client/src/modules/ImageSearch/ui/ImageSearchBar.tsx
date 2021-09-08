@@ -111,16 +111,14 @@ const ImageSearchBar: React.FunctionComponent = () => {
 						</form>
 					</Grid>
 					<Grid item>
-						<Tooltip title="Search">
-							<Button
-								type="submit"
-								form="imgSearchBar"
-								variant="contained"
-								className={classes.addUser}
-							>
-								Search
-							</Button>
-						</Tooltip>
+						<Button
+							type="submit"
+							form="imgSearchBar"
+							variant="contained"
+							className={classes.addUser}
+						>
+							Search
+						</Button>
 						<Tooltip title="Reset">
 							<IconButton
 								onClick={() =>

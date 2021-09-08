@@ -7,6 +7,7 @@ export interface IUserFacingProfileProps {
 	accessLevel: TAccessLevel;
 	userName: string;
 	profileImage: string;
+	joined: string;
 }
 
 export type TConfigurableProfileProps = Pick<
