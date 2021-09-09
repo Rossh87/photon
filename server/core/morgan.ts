@@ -3,12 +3,13 @@ import * as fsp from 'fs/promises';
 import fs from 'fs';
 import path from 'path';
 import { RequestHandler } from 'express';
+import { BaseError } from './error';
 
 // let the compiler know we'll be monkey-patching
 // the Request object
 declare module 'http' {
 	interface IncomingMessage {
-		failureMessage: string;
+		failureMessage: BaseError;
 	}
 }
 
@@ -40,7 +41,11 @@ const getWriteStream = (fileName: string) =>
 
 export const getLoggers = async () => {
 	// this is Apache common log output with custom err message added.
-	morgan.token('failureMessage', (req) => req.failureMessage);
+	morgan.token(
+		'failureMessage',
+		(req) =>
+			`\nFailureMessage: ${req.failureMessage.message}\nReason: ${req.failureMessage.raw}`
+	);
 	const formatString =
 		':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :failureMessage';
 

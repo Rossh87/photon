@@ -78,7 +78,7 @@ export const toJSONEffect =
 export const setLogFailureMessageEffect =
 	(e: BaseError): TExpressEffect =>
 	(req) => {
-		req.failureMessage = e.message;
+		req.failureMessage = e;
 	};
 
 // in most or all failure cases, we do the same thing--

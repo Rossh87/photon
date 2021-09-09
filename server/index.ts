@@ -25,6 +25,7 @@ import { getLoggers } from './core/morgan';
 import { authRoutes } from './modules/auth';
 import { uploadRoutes } from './modules/Upload';
 import { userRoutes } from './modules/User';
+import { BaseError } from './core/error';
 
 // initialize needed objects
 const app = express();
@@ -72,7 +73,7 @@ async function run() {
 
 	// add a property to represent failure message that we'll use in logging
 	app.use((req, res, next) => {
-		req.failureMessage = '';
+		req.failureMessage = { message: '', raw: '' } as BaseError;
 		next();
 	});
 	const { devLogger, errLogger, accessLogger } = await getLoggers();
