@@ -3,6 +3,7 @@ import { IAsyncDeps } from '../../../core/asyncDeps';
 import { DBReadError, getCollection, tryFindArray } from '../../../core/repo';
 import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/TaskEither';
+import { ObjectId } from 'mongodb';
 
 export const getUploadMetadata = (ownerID: string) => (deps: IAsyncDeps) =>
 	pipe(
@@ -13,13 +14,13 @@ export const getUploadMetadata = (ownerID: string) => (deps: IAsyncDeps) =>
 				() =>
 					c
 						.aggregate([
-							{ $match: { _id: ownerID } },
+							{ $match: { ownerID: ownerID } },
 							{ $sort: { _id: -1 } },
 							{
 								$set: {
 									addedOn: {
 										$toDate: {
-											$getField: { field: '_id' },
+											$getField: '_id',
 										},
 									},
 								},

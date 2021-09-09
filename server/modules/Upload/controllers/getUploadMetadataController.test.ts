@@ -9,6 +9,9 @@ import { Request, Response, NextFunction } from 'express';
 import { IAsyncDeps } from '../../../core/asyncDeps';
 import { DBReadError } from '../../../core/repo';
 import { toSessionUser } from '../../../core/utils/toSessionUser';
+import { MongoClient } from 'mongodb';
+import { TEST_DB_URI } from '../../../CONSTANTS';
+import { mockObjectIDs, mockUploadsFromDb } from '../helpers/mockData';
 
 const _mockRequestData1: ICombinedUploadRequestMetadata = {
 	ownerID: 'abc123',
@@ -40,50 +43,35 @@ beforeEach(() => {
 	mockUser = Object.assign({}, mockUserFromDatabase);
 });
 
+let repoClient: MongoClient;
+let deps: IAsyncDeps;
+
+beforeAll(async () => {
+	repoClient = await MongoClient.connect(TEST_DB_URI);
+
+	deps = {
+		repoClient,
+	} as IAsyncDeps;
+
+	const db = repoClient.db('photon').collection('uploads');
+
+	await db.insertMany(mockUploadsFromDb);
+});
+
+// cleanup changes to database between tests
+afterEach(async () => {
+	const db = repoClient.db('photon').collection('uploads');
+	await db.drop();
+	await db.insertMany(mockUploadsFromDb);
+});
+
+// clear db for next test suite and close db connection
+afterAll(async () => {
+	await repoClient.db('photon').collection('uploads').drop();
+	await repoClient.close();
+});
+
 describe('controller to send saved upload data to client', () => {
-	it('invokes db with correct arguments', async () => {
-		const req = {
-			session: {
-				user: toSessionUser(mockUser),
-			},
-		} as Request;
-
-		const res = {
-			status: jest.fn(),
-			json: jest.fn(),
-		} as unknown as Response;
-
-		const responseData = [mockRequestData1, mockRequestData2];
-
-		const mockFind = jest.fn((query, options) => ({
-			toArray: () => Promise.resolve(responseData),
-		}));
-
-		const deps = {
-			repoClient: {
-				db: (s: string) => ({
-					collection: (t: string) => ({
-						find: mockFind,
-					}),
-				}),
-			},
-		} as unknown as IAsyncDeps;
-
-		await getUploadMetadataController(deps)(
-			req,
-			res,
-			jest.fn() as NextFunction
-		);
-
-		expect(mockFind).toHaveBeenCalledWith(
-			{ ownerID: mockObjectID.toHexString() },
-			{ sort: { _id: -1 } }
-		);
-
-		expect(res.status).toHaveBeenCalledWith(200);
-		expect(res.json).toHaveBeenCalledWith(responseData);
-	});
-
 	it('passes errors to error handler', async () => {
 		const req = {
 			session: {
@@ -95,7 +83,7 @@ describe('controller to send saved upload data to client', () => {
 
 		const expectedErr = DBReadError.create(
 			'uploads',
-			{ ownerID: mockObjectID.toHexString() },
+			{},
 			'some failure reason'
 		);
 
@@ -105,7 +93,7 @@ describe('controller to send saved upload data to client', () => {
 			repoClient: {
 				db: (s: string) => ({
 					collection: (t: string) => ({
-						find: () => ({
+						aggregate: () => ({
 							toArray: failedRead,
 						}),
 						collectionName: 'uploads',
@@ -117,5 +105,32 @@ describe('controller to send saved upload data to client', () => {
 		await getUploadMetadataController(deps)(req, {} as Response, mockNext);
 
 		expect(mockNext).toHaveBeenCalledWith(expectedErr);
+	});
+
+	describe('retrieval aggregation query', () => {
+		it('adds an "addedOn" property', async () => {
+			const req = {
+				session: {
+					user: {
+						_id: '0472',
+					},
+				},
+			} as unknown as Request;
+
+			const res = {
+				status: jest.fn(),
+				json: jest.fn(),
+			} as unknown as Response;
+
+			// note 'deps' here is from global scope, with real db access
+			await getUploadMetadataController(deps)(req, res, jest.fn());
+
+			const expectedResponse = {
+				...mockUploadsFromDb[0],
+				_id: mockObjectIDs[0],
+				addedOn: mockObjectIDs[0].getTimestamp(),
+			};
+			expect(res.json).toHaveBeenCalledWith([expectedResponse]);
+		});
 	});
 });

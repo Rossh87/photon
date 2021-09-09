@@ -73,7 +73,7 @@ export const mockObjectIDs = Array(4)
 export const mockUploadsFromDb: IDBUpload[] = [
 	{
 		_id: mockObjectIDs[0],
-		ownerID: '5678',
+		ownerID: '0472',
 		displayName: 'beach day',
 		mediaType: 'image/jpeg',
 		sizeInBytes: 40956,
