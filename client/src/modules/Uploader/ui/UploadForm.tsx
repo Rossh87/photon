@@ -4,9 +4,7 @@ import {
 	TSelectedFilesState,
 } from '../state/uploadStateTypes';
 import clsx from 'clsx';
-import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
-import { InputLabel } from '@material-ui/core';
 import { pipe } from 'fp-ts/lib/function';
 import { map, fromNullable, Applicative, fold } from 'fp-ts/lib/Option';
 import { sequenceT } from 'fp-ts/lib/Apply';
@@ -62,7 +60,6 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 			e.target.files = null;
 			e.target.value = '';
 		};
-		console.log('changed!!');
 		pipe(
 			sequenceT(Applicative)(
 				fromNullable(e.target.files),
@@ -110,7 +107,7 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 				disableUnderline={true}
 			></Input> */}
 
-			<label htmlFor="file-selection-input">
+			<label htmlFor="file-selection-input" id="file-slection-input">
 				<input
 					className={classes.hiddenInput}
 					accept={acceptedExtensions.join(',')}
@@ -118,6 +115,8 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 					multiple
 					type="file"
 					onChange={handleFileChange}
+					aria-labelledby="file-selection-input"
+					aria-label="select files"
 				/>
 				<Button
 					className={classes.button}
@@ -126,7 +125,7 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 					color="primary"
 					component="span"
 				>
-					SELECT FILES
+					select files
 				</Button>
 			</label>
 			<Button

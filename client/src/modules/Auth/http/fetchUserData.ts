@@ -40,6 +40,7 @@ const onSuccess =
 						kind: 'simple',
 						handler: () => dispatch({ type: 'REMOVE_APP_MESSAGE' }),
 					},
+					displayTrackingProp: 'demoMessageViewed',
 				},
 			});
 		}

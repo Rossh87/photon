@@ -25,7 +25,8 @@ import { resetInternals } from 'react-use-fp';
 const mockAuthState: IAuthState = {
 	user: mockUser,
 	errors: [],
-	status: 'authorized',
+	appMessage: null,
+	demoMessageViewed: true,
 };
 
 let authState: IAuthState;
@@ -53,8 +54,8 @@ describe('Uploader component when files are submitted', () => {
 			</DependencyContext.Provider>
 		);
 
-		const input = screen.getByLabelText('Select Files');
-		const submitButton = screen.getByText('Submit!');
+		const input = screen.getByLabelText(/select files/i);
+		const submitButton = screen.getByRole('button', { name: /submit/i });
 
 		await act(async () =>
 			simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
@@ -97,8 +98,8 @@ describe('Uploader component when files are submitted', () => {
 			</DependencyContext.Provider>
 		);
 
-		const input = screen.getByLabelText('Select Files');
-		const submitButton = screen.getByText('Submit!');
+		const input = screen.getByLabelText(/select files/i);
+		const submitButton = screen.getByRole('button', { name: /submit/i });
 
 		await act(async () => simulateTwoFilesInput(input));
 
@@ -143,9 +144,9 @@ describe('Uploader component when files are submitted', () => {
 			</DependencyContext.Provider>
 		);
 
-		const input = screen.getByLabelText('Select Files');
+		const input = screen.getByLabelText(/select files/i);
 
-		const submitButton = screen.getByText('Submit!');
+		const submitButton = screen.getByRole('button', { name: /submit/i });
 
 		await act(async () => simulateTwoFilesInput(input));
 

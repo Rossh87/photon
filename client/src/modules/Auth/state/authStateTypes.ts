@@ -14,13 +14,13 @@ export interface IMessageHandlerSpec {
 }
 
 export interface IAdvancedMessageAction {
-	kind: TMessageActionKind;
+	kind: 'advanced';
 	proceed: IMessageHandlerSpec;
 	abort: IMessageHandlerSpec;
 }
 
 export interface ISimpleMessageAction {
-	kind: TMessageActionKind;
+	kind: 'simple';
 	handler: (...args: any[]) => void;
 }
 
@@ -33,6 +33,7 @@ export interface IAppMessage {
 	severity: TMessageSeverity;
 	action: IAdvancedMessageAction | ISimpleMessageAction;
 	timeout?: number;
+	displayTrackingProp?: keyof IDisplayTrackingProps;
 }
 
 export type TSingleNoticeMessage = IAppMessage & {
@@ -57,7 +58,6 @@ export interface IAuthState extends IDisplayTrackingProps {
 	user: TUserState;
 	errors: TAppErrors;
 	appMessage: TAppMessageState;
-	demoMessageViewed: boolean;
 }
 
 export interface IAuthAction<T> {

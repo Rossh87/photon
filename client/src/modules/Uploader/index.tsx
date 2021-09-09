@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { uploadReducer } from './state/uploadReducer';
 import { TPreprocessArgs, TUpdateDisplayNameArgs } from './domain/domainTypes';
 import {
@@ -12,7 +12,7 @@ import DependencyContext, { IDependencies } from '../../core/dependencyContext';
 import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
 import { useFPReducer } from 'react-use-fp';
-import { useAuthState } from '../Auth/state/useAuthState';
+import { useAuthDispatch, useAuthState } from '../Auth/state/useAuthState';
 import { Paper, Snackbar, IconButton } from '@material-ui/core';
 import { CloseOutlined } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
@@ -42,7 +42,14 @@ const Uploader: React.FunctionComponent = () => {
 		componentLevelError: none,
 	};
 
-	const makeDependencies = React.useContext(DependencyContext);
+	const authDispatch = useAuthDispatch();
+
+	const makeBaseDependencies = React.useContext(DependencyContext);
+
+	const makeDependencies = (baseDispatch: Dispatch<TUploaderActions>) => ({
+		...makeBaseDependencies(baseDispatch),
+		authDispatch,
+	});
 
 	const [uploadState, uploadDispatch, actions] = useFPReducer(
 		{

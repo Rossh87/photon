@@ -2,7 +2,7 @@ import React from 'react';
 import Uploader from '../index';
 import { AuthStateContext } from '../../Auth/state/useAuthState';
 import { IAuthState } from '../../Auth/state/authStateTypes';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act, waitFor, logRoles } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { mockUser } from './mockData';
@@ -24,11 +24,13 @@ import {
 import { resetInternals } from 'react-use-fp';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { MAX_DEMO_UPLOAD_COUNT } from 'sharedTypes/CONSTANTS';
+import AppMessage from '../../AppMessage';
 
 const mockAuthState: IAuthState = {
 	user: mockUser,
 	errors: [],
-	status: 'authorized',
+	appMessage: null,
+	demoMessageViewed: false,
 };
 
 let authState: IAuthState;
@@ -56,7 +58,7 @@ describe('Uploader component', () => {
 			</DependencyContext.Provider>
 		);
 
-		const input = screen.getByLabelText('Select Files');
+		const input = screen.getByLabelText(/select files/i);
 
 		await act(async () => simulateTwoFilesInput(input));
 
@@ -84,7 +86,7 @@ describe('Uploader component', () => {
 			</DependencyContext.Provider>
 		);
 
-		const input = screen.getByLabelText('Select Files');
+		const input = screen.getByLabelText(/select files/i);
 
 		await act(async () =>
 			simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
@@ -123,7 +125,7 @@ describe('Uploader component', () => {
 			</DependencyContext.Provider>
 		);
 
-		const input = screen.getByLabelText('Select Files');
+		const input = screen.getByLabelText(/select files/i);
 
 		await act(async () =>
 			simulateInvalidFileInput(getOversizeImageFile)('invalidSelection')(
@@ -157,7 +159,7 @@ describe('Uploader component', () => {
 				</DependencyContext.Provider>
 			);
 
-			const fileInput = screen.getByLabelText('Select Files');
+			const fileInput = screen.getByLabelText(/select files/i);
 
 			await act(async () => simulateTwoFilesInput(fileInput));
 
@@ -198,7 +200,7 @@ describe('Uploader component', () => {
 				</DependencyContext.Provider>
 			);
 
-			const fileInput = screen.getByLabelText('Select Files');
+			const fileInput = screen.getByLabelText(/select files/i);
 
 			await act(async () => simulateTwoFilesInput(fileInput));
 
@@ -239,7 +241,7 @@ describe('Uploader component', () => {
 				</DependencyContext.Provider>
 			);
 
-			const fileInput = screen.getByLabelText('Select Files');
+			const fileInput = screen.getByLabelText(/select files/i);
 
 			await act(async () => simulateTwoFilesInput(fileInput));
 
@@ -275,7 +277,7 @@ describe('Uploader component', () => {
 				</DependencyContext.Provider>
 			);
 
-			const fileInput = screen.getByLabelText('Select Files');
+			const fileInput = screen.getByLabelText(/select files/i);
 
 			await act(async () => simulateTwoFilesInput(fileInput));
 
@@ -315,7 +317,7 @@ describe('Uploader component', () => {
 				</DependencyContext.Provider>
 			);
 
-			const fileInput = screen.getByLabelText('Select Files');
+			const fileInput = screen.getByLabelText(/select files/i);
 
 			await act(async () =>
 				simulateInvalidFileInput(getOversizeImageFile)(
@@ -370,7 +372,7 @@ describe('Uploader component', () => {
 				</DependencyContext.Provider>
 			);
 
-			const fileInput = screen.getByLabelText('Select Files');
+			const fileInput = screen.getByLabelText(/select files/i);
 
 			await act(async () => simulateTwoFilesInput(fileInput));
 
@@ -417,23 +419,22 @@ describe('Uploader component', () => {
 			(authState.user as TAuthorizedUserResponse).imageCount =
 				MAX_DEMO_UPLOAD_COUNT - 1;
 
-			render(
+			const { container } = render(
 				<DependencyContext.Provider value={mockDeps}>
 					<AuthStateContext.Provider value={authState}>
+						<AppMessage />
 						<Uploader />
 					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
 			);
 
-			const fileInput = screen.getByLabelText(
-				'Select Files'
-			) as HTMLInputElement;
+			const fileInput = screen.getByLabelText(/select files/i);
 
 			simulateTwoFilesInput(fileInput);
 
-			await screen.findByText('while app is in demo mode', {
-				exact: false,
-			});
+			const msg = await screen.findByRole('alert');
+
+			expect(msg).toHaveTextContent('upload');
 
 			const closeErrButton = screen.getByRole('button', {
 				name: 'close-upload-component-err',
@@ -441,11 +442,7 @@ describe('Uploader component', () => {
 
 			userEvent.click(closeErrButton);
 
-			expect(
-				screen.queryByText('while app is in demo mode', {
-					exact: false,
-				})
-			).not.toBeInTheDocument();
+			expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 		});
 	});
 });

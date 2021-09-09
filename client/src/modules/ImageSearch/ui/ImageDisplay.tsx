@@ -4,9 +4,9 @@ import ImageList from '@material-ui/core/ImageList';
 import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import ImageListItem from '@material-ui/core/ImageListItem';
 import ImageDialog from './ImageDialog';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { pipe } from 'fp-ts/lib/function';
-import { fromArray, map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { pipe } from 'fp-ts/function';
+import { fromArray, map as NEAMap } from 'fp-ts/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/Option';
 import { IClientUpload } from 'sharedTypes/Upload';
 import {
@@ -15,7 +15,7 @@ import {
 } from '../state/useImageSearchState';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		padding: theme.spacing(2),
 		display: 'flex',

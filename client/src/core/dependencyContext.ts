@@ -16,9 +16,7 @@ export interface IDependencies<A> {
 	imageReducer: TImageResizer;
 }
 
-export type WithSecondaryDispach<A, D> = IDependencies<A> & {
-	secondaryDispatch: Dispatch<D>;
-};
+export type WithAddedDependencies<A, D> = IDependencies<A> & D;
 
 export interface IDispatchInjector<T> {
 	(d: Dispatch<T>): IDependencies<T>;

@@ -10,29 +10,57 @@ import { IBreakpointSubmissionObject } from '../domain/imageSearchTypes';
 import { map as ArrMap } from 'fp-ts/Array';
 import { deleteUpload } from '../http/deleteUpload';
 import { ask } from 'fp-ts/ReaderTaskEither';
-import { WithSecondaryDispach } from '../../../core/dependencyContext';
+import { WithAddedDependencies } from '../../../core/dependencyContext';
 import { chain as RTChain, asks as RTAsks } from 'fp-ts/ReaderTask';
 import * as E from 'fp-ts/Either';
 import * as RTE from 'fp-ts/ReaderTaskEither';
 import { TImageSearchActions } from '../state/imageSearchStateTypes';
+import { Dispatch } from 'react';
+import { TAuthActions } from '../../Auth/state/authStateTypes';
 
 export const deleteOneUpload: PayloadFPReader<
 	TDialogActions,
 	TUploadDeletionID,
-	WithSecondaryDispach<TDialogActions, TImageSearchActions>
+	WithAddedDependencies<
+		TDialogActions,
+		{
+			imageSearchDispatch: Dispatch<TImageSearchActions>;
+			authDispatch: Dispatch<TAuthActions>;
+		}
+	>
 > = (id: TUploadDeletionID) =>
 	pipe(
 		id,
 		deleteUpload,
 		RTChain((result) =>
-			RTAsks(({ dispatch, secondaryDispatch }) =>
+			RTAsks(({ authDispatch, imageSearchDispatch }) =>
 				pipe(
 					result,
-					E.map(() =>
-						secondaryDispatch({ type: 'DELETE_IMAGE', payload: id })
-					),
+					E.map(() => {
+						imageSearchDispatch({
+							type: 'DELETE_IMAGE',
+							payload: id,
+						});
+						authDispatch({ type: 'REMOVE_APP_MESSAGE' });
+					}),
 					E.mapLeft((e) =>
-						dispatch({ type: 'ADD_ERROR', payload: e })
+						authDispatch({
+							type: 'ADD_APP_MESSAGE',
+							payload: {
+								messageKind: 'repeat',
+								eventName: 'Attempt to delete upload failed',
+								displayMessage: e.message,
+								severity: 'error',
+								action: {
+									kind: 'simple',
+									handler: () =>
+										authDispatch({
+											type: 'REMOVE_APP_MESSAGE',
+										}),
+								},
+								timeout: 10000,
+							},
+						})
 					)
 				)
 			)

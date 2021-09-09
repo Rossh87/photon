@@ -8,7 +8,6 @@ export const simulateTwoFilesInput = (targetElement: HTMLElement) => {
 		getTestJPEGFile('testImage2', 'med'),
 	];
 	const mockFileList = createMockFileList(...files);
-
 	fireEvent.change(targetElement, { target: { files: mockFileList } });
 };
 

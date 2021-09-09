@@ -7,16 +7,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import {
-	ListItemText,
-	Typography,
-	IconButton,
-	List,
-	Tabs,
-	AppBar,
-	Tab,
-	Box,
-} from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
@@ -28,15 +25,12 @@ import { createSrcset } from '../useCases/createSrcset';
 import { IClientUpload } from 'sharedTypes/Upload';
 import { mapBreakpointsToUI } from '../useCases/mapBreakpointsToUI';
 import { useFPReducer } from 'react-use-fp';
-import dependencyContext, {
-	addSecondaryDispatch,
-} from '../../../core/dependencyContext';
+import dependencyContext from '../../../core/dependencyContext';
 import {
 	initialDialogState,
 	imageDialogReducer,
 } from '../state/imageDialogState';
 import { synchronizeBreakpoints } from '../useCases/synchronizeBreakpoints';
-import Snacktion from './Snacktion';
 import { breakpointUIToBreakpoint } from '../helpers/breakpointMappers';
 import { map as ArrMap } from 'fp-ts/Array';
 import { tabA11yProps } from '../helpers/tabA11yProps';
@@ -46,6 +40,8 @@ import Tabpanel from './Tabpanel';
 import { TTabPanelType } from '../state/imageSearchStateTypes';
 import { useTabItemStyles, useTabStyles } from '../styles/tabItemStyles';
 import { deleteOneUpload } from '../useCases/deleteUpload';
+import { useAuthDispatch } from '../../Auth/state/useAuthState';
+import { TDialogActions } from '../state/imageDialogStateTypes';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	dialogPaper: {
@@ -91,12 +87,15 @@ export const ImageDialog: React.FunctionComponent = () => {
 		useImageSearchState().imageUnderConfiguration as IClientUpload;
 
 	const imageSearchDispatch = useImageSearchDispatch();
+	const authDispatch = useAuthDispatch();
 
 	// These handlers need access to their own dispatch, and ALSO imageSearchDispatch
 	const makeBaseDepsContext = useContext(dependencyContext);
-	const makeDeps =
-		addSecondaryDispatch(imageSearchDispatch)(makeBaseDepsContext);
-
+	const makeDeps = (d: Dispatch<TDialogActions>) => ({
+		...makeBaseDepsContext(d),
+		imageSearchDispatch,
+		authDispatch,
+	});
 	const [state, dispatch, actions] = useFPReducer(
 		{
 			LOAD_BREAKPOINTS: mapBreakpointsToUI,
@@ -110,10 +109,8 @@ export const ImageDialog: React.FunctionComponent = () => {
 
 	// Begin handlers
 
-	// Dispatch a payload if updates needed, otherwise
-	// no payload. Notice we convert UIbreakpoints
-	// saved locally to their 'sparse' format for the IMageSearch parent
-	// component.
+	// updates client app state if there have been any
+	// updates persisted to database since dialog was opened
 	const handleDiscard = () => {
 		if (state.hasUpdated) {
 			const saveableBPs = pipe(
@@ -141,20 +138,59 @@ export const ImageDialog: React.FunctionComponent = () => {
 			  });
 
 	const handleUnsavedClose = () =>
-		dispatch({ type: 'UNSAVED_CLOSE_ATTEMPT' });
+		authDispatch({
+			type: 'ADD_APP_MESSAGE',
+			payload: {
+				messageKind: 'repeat',
+				eventName: 'unsaved Dialog close attempt',
+				displayMessage:
+					'Are you sure you want to discard without saving?',
+				severity: 'warning',
+				action: {
+					kind: 'advanced',
+					proceed: {
+						buttonText: 'discard',
+						handler: function () {
+							handleDiscard();
+							authDispatch({ type: 'REMOVE_APP_MESSAGE' });
+						},
+					},
+					abort: {
+						buttonText: 'save',
+						handler: handleSave,
+					},
+				},
+				timeout: 10000,
+			},
+		});
 
 	const handleCloseAttempt = () =>
 		state.isSynchronizedWithBackend
 			? handleDiscard()
 			: handleUnsavedClose();
 
-	const resetError = () => {
-		dispatch({ type: 'RESET_ERROR' });
-	};
-
-	const resetStatus = () => {
-		dispatch({ type: 'RESET_STATUS' });
-	};
+	const handleDeleteAttempt = () =>
+		authDispatch({
+			type: 'ADD_APP_MESSAGE',
+			payload: {
+				messageKind: 'repeat',
+				eventName: 'upload deletion attempt',
+				displayMessage: 'This action is irreversible--please be sure.',
+				severity: 'error',
+				action: {
+					kind: 'advanced',
+					proceed: {
+						buttonText: 'delete',
+						handler: () => actions.INIT_DELETE(_id),
+					},
+					abort: {
+						buttonText: 'go back',
+						handler: () =>
+							authDispatch({ type: 'REMOVE_APP_MESSAGE' }),
+					},
+				},
+			},
+		});
 
 	const handleTabChange = (
 		e: React.ChangeEvent<{}>,
@@ -188,7 +224,10 @@ export const ImageDialog: React.FunctionComponent = () => {
 				<Typography variant="h6">
 					{`Embed code for ${displayName}`}
 				</Typography>
-				<IconButton aria-label="close" onClick={handleCloseAttempt}>
+				<IconButton
+					aria-label="close-dialog"
+					onClick={handleCloseAttempt}
+				>
 					<CloseOutlined />
 				</IconButton>
 			</DialogTitle>
@@ -224,7 +263,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 						<Button
 							color="primary"
 							variant="contained"
-							onClick={() => dispatch({ type: 'DELETE_ATTEMPT' })}
+							onClick={handleDeleteAttempt}
 							className={styles.deleteButton}
 						>
 							Delete
@@ -278,7 +317,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 					Save
 				</Button>
 			</DialogActions>
-			<Snacktion
+			{/* <Snacktion
 				status={state.snackbarStatus}
 				handleDiscard={handleDiscard}
 				handleSave={handleSave}
@@ -286,7 +325,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 				resetError={resetError}
 				resetStatus={resetStatus}
 				handleDeletion={() => actions.INIT_DELETE(_id)}
-			/>
+			/> */}
 		</Dialog>
 	);
 };

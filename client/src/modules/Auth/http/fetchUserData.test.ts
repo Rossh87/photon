@@ -1,7 +1,11 @@
 import { _fetchUserData } from './fetchUserData';
 import { AxiosInstance } from 'axios';
 import { AuthError } from '../domain/AuthError';
-import { IAddAppMessageAction, TAuthActions } from '../state/authStateTypes';
+import {
+	IAddAppMessageAction,
+	TAuthActions,
+	TSingleNoticeMessage,
+} from '../state/authStateTypes';
 
 describe('user data fetching functiong', () => {
 	it('dispatches correct actions for success', async () => {
@@ -45,12 +49,16 @@ describe('user data fetching functiong', () => {
 					kind: 'simple',
 					handler: () => dispatch({ type: 'REMOVE_APP_MESSAGE' }),
 				},
+				displayTrackingProp: 'demoMessageViewed',
 			},
 		};
 
+		// Convert to string to get around inequality of nested functions.
 		await _fetchUserData(mockAxios)(dispatch);
 
-		expect(actions[1] as IAddAppMessageAction).toEqual(expectedMessage);
+		expect(JSON.stringify(actions[1])).toEqual(
+			JSON.stringify(expectedMessage)
+		);
 	});
 
 	it('dispatches correct error on request failure', async () => {

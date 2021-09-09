@@ -4,17 +4,17 @@ import {
 	act,
 	getAllByLabelText,
 	waitFor,
+	logDOM,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockImageData } from './mockData';
 import ImageDisplay from '../ui/ImageDisplay';
-import { IClientUpload } from 'sharedTypes/Upload';
 import { makeImageSearchProvider } from '../state/useImageSearchState';
 import { IImageSearchState } from '../state/imageSearchStateTypes';
 import { resetInternals } from 'react-use-fp';
 import { mockImage4 } from './mockData';
 import { renderDisplayWithFullDeps } from './imageDisplayTestUtils';
-import { delay } from 'fp-ts/lib/Task';
+import { delay } from 'fp-ts/Task';
 
 const _mockState: IImageSearchState = {
 	imageMetadata: [...mockImageData],
@@ -117,74 +117,59 @@ describe('The ImageDisplay component', () => {
 					],
 				},
 			};
+			const promise = new Promise<any>((res, rej) => {
+				setTimeout(() => {
+					res(mockResponseData);
+				}, 300);
+			});
+
 			const httpMock = {
-				put: jest.fn(() => {
-					return new Promise<any>((res, rej) => {
-						setTimeout(() => {
-							res(mockResponseData);
-						}, 300);
-					});
-				}),
+				put: jest.fn(() => promise),
 			};
 
-			renderDisplayWithFullDeps(mockState, httpMock);
+			const {
+				createBreakpointEdit,
+				saveAllDialogChanges,
+				getDialogCloseButton,
+				openBreakpointsTab,
+				commitBreakpointEdit,
+			} = renderDisplayWithFullDeps(mockState, httpMock);
 
-			// open the image
-			const thumbnail = screen.getByText('even more cats');
-			userEvent.click(thumbnail);
+			openBreakpointsTab();
 
 			// verify the UI
 			const breakpointItems = screen.getAllByRole('listitem');
-			expect(breakpointItems.length).toEqual(6);
+			expect(breakpointItems.length).toEqual(5);
 
 			// these changes are irrelevant, just need to trigger a save
-			desyncDialogComponent();
+			// so that mock http data should be populated in app state
+			createBreakpointEdit();
+			commitBreakpointEdit();
 
-			// trigger save
-			const saveButton = screen.getByRole('button', { name: 'Save' });
-			userEvent.click(saveButton);
+			// // // trigger save
+			saveAllDialogChanges();
 
 			const x = delay(1000)(() => Promise.resolve());
 			await x();
+
 			// close the dialog
-			const closeButton = screen.getByRole('button', { name: 'close' });
-			userEvent.click(closeButton);
+			userEvent.click(getDialogCloseButton());
 
 			// re-open dialog
-			userEvent.click(thumbnail);
+			userEvent.click(
+				screen.getByText('even more cats', { exact: false })
+			);
+
+			openBreakpointsTab();
+
+			const expectedLength =
+				mockResponseData.data.breakpoints.length +
+				(mockState.imageUnderConfiguration?.availableWidths
+					.length as number);
 
 			// make sure new breakpoint UI is in the dom
 			const bps = await screen.getAllByRole('listitem');
-			expect(bps.length).toEqual(8);
+			expect(bps.length).toEqual(expectedLength);
 		}, 20000);
 	});
-
-	it('does not show unsaved updates when reopened', async () => {
-		renderDisplayWithFullDeps(mockState, {});
-
-		// open the image
-		const thumbnail = screen.getByText('even more cats');
-		userEvent.click(thumbnail);
-
-		// verify the UI
-		const breakpointItems = screen.getAllByRole('listitem');
-		expect(breakpointItems.length).toEqual(6);
-
-		desyncDialogComponent();
-
-		// close the dialog
-		const closeButton = screen.getByRole('button', { name: 'close' });
-		userEvent.click(closeButton);
-
-		// confirm the close in snackbar
-		const reallyClose = screen.getByRole('button', { name: 'Discard' });
-		userEvent.click(reallyClose);
-
-		// re-open dialog
-		userEvent.click(thumbnail);
-
-		// make sure new breakpoint UI is in the dom
-		const bps = await screen.getAllByRole('listitem');
-		expect(bps.length).toEqual(6);
-	}, 20000);
 });

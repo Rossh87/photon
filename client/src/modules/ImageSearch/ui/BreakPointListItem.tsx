@@ -145,7 +145,9 @@ const BreakPointListItem: React.FunctionComponent<
 		dispatch({ type: 'DELETE_BREAKPOINT', payload: _id });
 
 	const renderControls = () => {
-		if (origin === 'default') return null;
+		if (origin === 'default') {
+			return null;
+		}
 
 		if (!isExpanded && !bpState.editing) {
 			return (
@@ -154,12 +156,14 @@ const BreakPointListItem: React.FunctionComponent<
 						className={classes.deleteButton}
 						variant="outlined"
 						onClick={handleDelete}
+						data-testid="bp-delete"
 					>
 						Delete
 					</Button>
 					<Button
 						variant="outlined"
 						onClick={() => setExpanded(true)}
+						data-testid="bp-edit"
 					>
 						Edit
 					</Button>
@@ -172,6 +176,7 @@ const BreakPointListItem: React.FunctionComponent<
 					onClick={() => {
 						setExpanded(false);
 					}}
+					data-testid="bp-close"
 				>
 					Close
 				</Button>
@@ -183,6 +188,7 @@ const BreakPointListItem: React.FunctionComponent<
 						variant="outlined"
 						className={classes.deleteButton}
 						onClick={discardEdits}
+						data-testid="bp-discard"
 					>
 						Discard
 					</Button>
@@ -190,6 +196,7 @@ const BreakPointListItem: React.FunctionComponent<
 						variant="outlined"
 						className={classes.keepButton}
 						onClick={submitEdits}
+						data-testid="bp-keep"
 					>
 						Keep
 					</Button>
@@ -206,7 +213,7 @@ const BreakPointListItem: React.FunctionComponent<
 			disableGutters={true}
 		>
 			<Accordion expanded={bpState.editing || isExpanded}>
-				<AccordionSummary aria-label="Expand">
+				<AccordionSummary>
 					<ListItemAvatar>
 						<Avatar>
 							<SettingsIcon />

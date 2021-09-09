@@ -33,7 +33,7 @@ const NewBreakpointListItem: React.FunctionComponent<INewBreakpointItemProps> =
 			dispatch({ type: 'CREATE_NEW_BREAKPOINT' });
 		};
 		return (
-			<ListItem onClick={handleClick} dense disableGutters={true}>
+			<ListItem button onClick={handleClick} dense disableGutters={true}>
 				<Accordion style={{ width: '100%' }} expanded={false}>
 					<AccordionSummary aria-label="Expand">
 						<ListItemAvatar>

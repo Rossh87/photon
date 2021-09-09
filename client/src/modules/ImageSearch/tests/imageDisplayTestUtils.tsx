@@ -11,6 +11,10 @@ import DependencyContext, {
 	createDependenciesObject,
 } from '../../../core/dependencyContext';
 import ImageDisplay from '../ui/ImageDisplay';
+import AppMessage from '../../AppMessage';
+import { AuthStateContext } from '../../Auth/state/useAuthState';
+import { mockUser } from '../../Uploader/tests/mockData';
+import { IAuthState } from '../../Auth/state/authStateTypes';
 
 // GETTERS: helpers that return an element, and are responsible for
 // manipulating component state up to the point that the needed element
@@ -24,7 +28,7 @@ const getBreakpointDiscardButton = () => {
 const getBreakpointKeepButton = () => {
 	createBreakpointEdit();
 
-	return screen.getByRole('button', { name: /keep/i });
+	return screen.getAllByTestId('bp-keep')[0];
 };
 
 const getBreakpointCreationButton = () => {
@@ -36,11 +40,11 @@ const getBreakpointCreationButton = () => {
 const getGeneratedHTML = () => {
 	openResponsiveHTMLTab();
 
-	return screen.getByTestId('pasteable-HTML-block');
+	return screen.getByTestId('pasteable-HTML-block').innerHTML;
 };
 
 const getDialogCloseButton = () =>
-	screen.getByRole('button', { name: /close/i });
+	screen.getByRole('button', { name: /close-dialog/i });
 
 // this helper does NOT perform state manipulation needed
 // to ensure it's in the document
@@ -49,11 +53,8 @@ const irresponsibleGetSnackbar = async () => {
 
 	const assertOnTextContent = (text: string) =>
 		expect(sb).toHaveTextContent(text);
-	const getKeep = () => within(sb).getByRole('button', { name: /keep/i });
-	const getDiscard = () =>
-		within(sb).getByRole('button', { name: /discard/i });
-	const getClose = () =>
-		within(sb).getByRole('button', { name: /close-snackbar/i });
+	const getAbort = () => within(sb).getByTestId('snackbar-abort');
+	const getProceed = () => within(sb).getByTestId('snackbar-proceed');
 	const getElement = () => sb;
 	const recheckForElementAsQuery = () =>
 		screen.queryByTestId('dialog-snackbar');
@@ -61,9 +62,8 @@ const irresponsibleGetSnackbar = async () => {
 
 	return {
 		assertOnTextContent,
-		getKeep,
-		getDiscard,
-		getClose,
+		getAbort,
+		getProceed,
 		getElement,
 		recheckForElementAsQuery,
 		recheckForElement,
@@ -71,7 +71,7 @@ const irresponsibleGetSnackbar = async () => {
 };
 
 const irresponsibleQuerySnackbar = () =>
-	screen.queryByTestId('dialog-snackbar');
+	screen.queryByTestId('app-message-snackbar');
 
 // INTERACTORS: helpers that describe/simulate a user interaction
 const openBreakpointsTab = () =>
@@ -97,7 +97,7 @@ const createBreakpointEdit = () => {
 	openBreakpointsTab();
 
 	// open editing form
-	const editButton = screen.getAllByRole('button', { name: /edit/i })[0];
+	const editButton = screen.getAllByTestId('bp-edit')[0];
 	userEvent.click(editButton);
 
 	// make some change
@@ -109,7 +109,6 @@ const createBreakpointEdit = () => {
 // commit edits to a breakpoint.
 const commitBreakpointEdit = () => {
 	const keepButton = getBreakpointKeepButton();
-
 	userEvent.click(keepButton);
 };
 
@@ -134,13 +133,22 @@ export const renderDisplayWithFullDeps = (
 	httpMock: any
 ) => {
 	const makeDeps = createDependenciesObject(httpMock)(jest.fn);
-	const MockProvider = makeImageSearchProvider(mockState);
+	const MockImageSearchProvider = makeImageSearchProvider(mockState);
+	const mockAuthState: IAuthState = {
+		user: mockUser,
+		appMessage: null,
+		errors: [],
+		demoMessageViewed: true,
+	};
 
 	render(
 		<DependencyContext.Provider value={makeDeps}>
-			<MockProvider>
-				<ImageDisplay />
-			</MockProvider>
+			<AuthStateContext.Provider value={mockAuthState}>
+				<MockImageSearchProvider>
+					<AppMessage />
+					<ImageDisplay />
+				</MockImageSearchProvider>
+			</AuthStateContext.Provider>
 		</DependencyContext.Provider>
 	);
 
@@ -162,7 +170,7 @@ export const renderDialogWithFullDeps = (
 	httpMock: any
 ) => {
 	const makeDeps = createDependenciesObject(httpMock)(jest.fn);
-	render(
+	const rendered = render(
 		<DependencyContext.Provider value={makeDeps}>
 			<ImageSearchStateContext.Provider value={mockState}>
 				<ImageDialog></ImageDialog>
@@ -170,5 +178,5 @@ export const renderDialogWithFullDeps = (
 		</DependencyContext.Provider>
 	);
 
-	return tools;
+	return { ...tools, ...rendered };
 };
