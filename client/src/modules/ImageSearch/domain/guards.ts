@@ -4,7 +4,7 @@ import {
 	IBreakpointUI,
 	TDefaultBreakpointUI,
 	TUserBreakpointUI,
-} from '../state/imageDialogState';
+} from '../state/imageDialogStateTypes';
 
 export const isUserBreakpoint: Refinement<IBreakpointUI, TUserBreakpointUI> =
 	function (b): b is TUserBreakpointUI {

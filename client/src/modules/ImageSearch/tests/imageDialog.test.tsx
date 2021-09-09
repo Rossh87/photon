@@ -13,13 +13,8 @@ import { resetInternals } from 'react-use-fp';
 import { mockImage4, mockImage3, mockImageData } from './mockData';
 import { ImageSearchStateContext } from '../state/useImageSearchState';
 import ImageDialog from '../ui/ImageDialog';
-import DependencyContext, {
-	createDependenciesObject,
-} from '../../../core/dependencyContext';
-import { IBreakpointTransferObject, IClientUpload } from 'sharedTypes/Upload';
-import { AxiosResponse } from 'axios';
+import { IBreakpointTransferObject } from 'sharedTypes/Upload';
 import {
-	desyncDialogComponent,
 	renderDialogWithBreakpoints,
 	renderDialogWithFullDeps,
 } from './imageDisplayTestUtils';
@@ -146,7 +141,7 @@ describe('The ImageDialog component', () => {
 			expect(warningSnackbar).not.toBeInTheDocument();
 		});
 
-		it('shows err message when updating breakpoints with server fails', async () => {
+		it.only('shows err message when updating breakpoints with server fails', async () => {
 			let submittedData: IBreakpointTransferObject;
 
 			const httpMock = {
@@ -156,25 +151,27 @@ describe('The ImageDialog component', () => {
 					return new Promise<void>((res, rej) => {
 						setTimeout(() => {
 							rej('some kind of server problem');
-						}, 300);
+						}, 100);
 					});
 				}),
 			};
 
-			renderDialogWithFullDeps(mockState, httpMock);
+			const {
+				commitBreakpointEdit,
+				saveAllDialogChanges,
+				irresponsibleGetSnackbar,
+			} = renderDialogWithFullDeps(mockState, httpMock);
 
-			desyncDialogComponent();
+			commitBreakpointEdit();
+			saveAllDialogChanges();
 
-			// trigger the err
-			const saveButton = screen.getByRole('button', { name: 'Save' });
-			userEvent.click(saveButton);
-
-			// verify the UI
-			const errSnackbar = await screen.findByText(
-				'Attempt to update image breakpoint data failed',
-				{ exact: false }
-			);
-			expect(errSnackbar).toBeInTheDocument();
+			const {
+				getElement,
+				getClose,
+				assertOnTextContent,
+				recheckForElementAsQuery,
+				recheckForElement,
+			} = await irresponsibleGetSnackbar();
 
 			// verify the sent data
 			//@ts-ignore
@@ -199,25 +196,22 @@ describe('The ImageDialog component', () => {
 				],
 			});
 
-			// ensure we can close the err snackbar
-			const closeSnackbarButton = screen.getByRole('button', {
-				name: 'close-snackbar',
-			});
-			userEvent.click(closeSnackbarButton);
-			expect(
-				screen.queryByText(
-					'Attempt to update image breakpoint data failed',
-					{ exact: false }
-				)
-			).not.toBeInTheDocument();
+			// ensure we've displayed err message
+			assertOnTextContent(
+				'Attempt to update image breakpoint data failed'
+			);
+
+			// ensure we can close the err message
+			userEvent.click(getClose());
+			expect(recheckForElementAsQuery()).not.toBeInTheDocument();
 
 			// now ensure the err snackbar will REOPEN if another problem surfaces
-			userEvent.click(saveButton);
-			const snackedAgain = await screen.findByText(
-				'Attempt to update image breakpoint data failed',
-				{ exact: false }
+			commitBreakpointEdit();
+			saveAllDialogChanges();
+			const secondSB = await recheckForElement();
+			secondSB.assertOnTextContent(
+				'Attempt to update image breakpoint data failed'
 			);
-			expect(snackedAgain).toBeInTheDocument();
 		}, 20000);
 	}),
 		it('shows success message when updating breakpoints with server succeeds', async () => {
@@ -232,28 +226,25 @@ describe('The ImageDialog component', () => {
 				}),
 			};
 
-			renderDialogWithFullDeps(mockState, httpMock);
+			const {
+				commitBreakpointEdit,
+				saveAllDialogChanges,
+				irresponsibleGetSnackbar,
+			} = renderDialogWithFullDeps(mockState, httpMock);
 
-			desyncDialogComponent();
+			commitBreakpointEdit();
 
-			// trigger save
-			const saveButton = screen.getByRole('button', { name: 'Save' });
-			userEvent.click(saveButton);
+			saveAllDialogChanges();
 
-			// verify the UI
-			const successSnackbar = await screen.findByText(
-				'submission successful',
-				{ exact: false }
+			const successSnackbar = await irresponsibleGetSnackbar();
+
+			expect(successSnackbar.innerHTML).toHaveTextContent(
+				'Submission successful'
 			);
-			expect(successSnackbar).toBeInTheDocument();
 
 			// ensure snackbar times out on its own
 			await waitForElementToBeRemoved(successSnackbar, {
 				timeout: 4000,
 			});
-
-			expect(
-				screen.queryByText('submission successful', { exact: false })
-			).not.toBeInTheDocument();
-		}, 20000);
+		});
 });

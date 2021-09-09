@@ -7,7 +7,7 @@ import {
 	makeDefaultUIBreakpoint,
 	makeDefaultUIBreakpoints,
 } from '../helpers/makeDefaultUIBreakpoints';
-import { IDialogState, TDialogActions } from '../state/imageDialogState';
+import { IDialogState, TDialogActions } from '../state/imageDialogStateTypes';
 import BreakPointListItem from './BreakPointListItem';
 import NewBreakpointListItem from './NewBreakpointListItem';
 

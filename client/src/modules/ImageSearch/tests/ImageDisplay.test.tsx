@@ -13,10 +13,7 @@ import { makeImageSearchProvider } from '../state/useImageSearchState';
 import { IImageSearchState } from '../state/imageSearchStateTypes';
 import { resetInternals } from 'react-use-fp';
 import { mockImage4 } from './mockData';
-import {
-	desyncDialogComponent,
-	renderDisplayWithFullDeps,
-} from './imageDisplayTestUtils';
+import { renderDisplayWithFullDeps } from './imageDisplayTestUtils';
 import { delay } from 'fp-ts/lib/Task';
 
 const _mockState: IImageSearchState = {

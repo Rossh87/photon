@@ -1,13 +1,12 @@
 import { IAuthState, TAuthActions, IAppMessage } from './authStateTypes';
 import { Reducer } from 'react';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';
-import { handleIncomingMessage } from '../../AppMessages/helpers';
+import { handleIncomingMessage } from '../helpers/handleIncomingMessage';
 
 export const defaultState: IAuthState = {
 	user: null,
 	errors: [],
-	status: 'fresh',
-	appMessages: [],
+	appMessage: null,
 	// this can be false for all users, since
 	// profile data handler checks the access level
 	// of the user before dispatching the 'demo mode'
@@ -55,9 +54,7 @@ export const authReducer: Reducer<IAuthState, TAuthActions> = (
 		case 'REMOVE_APP_MESSAGE':
 			return {
 				...state,
-				appMessages: state.appMessages.filter(
-					(msg) => msg.id !== action.payload
-				),
+				appMessage: null,
 			};
 	}
 };

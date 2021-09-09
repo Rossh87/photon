@@ -1,13 +1,12 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import * as TE from 'fp-ts/lib/TaskEither';
-import { pipe } from 'fp-ts/lib/pipeable';
+import { pipe } from 'fp-ts/function';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { TAuthActions } from '../state/authStateTypes';
 import { IDispatcher } from '../../../core/sharedClientTypes';
 import { AuthError } from '../domain/AuthError';
 import { AUTH_API_ENDPOINT } from '../../../CONSTANTS';
 import { Dispatch } from 'react';
-import { createAppMessage } from '../../AppMessages/helpers';
 
 const attemptToFetchUserData = (
 	fetcher: AxiosInstance
@@ -31,12 +30,17 @@ const onSuccess =
 		if (user.accessLevel === 'demo') {
 			dispatch({
 				type: 'ADD_APP_MESSAGE',
-				payload: createAppMessage(
-					'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
-					'info',
-					false,
-					'demo'
-				),
+				payload: {
+					messageKind: 'singleNotice',
+					eventName: 'user profile data received',
+					displayMessage:
+						'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
+					severity: 'info',
+					action: {
+						kind: 'simple',
+						handler: () => dispatch({ type: 'REMOVE_APP_MESSAGE' }),
+					},
+				},
 			});
 		}
 		dispatch({ type: 'ADD_USER', payload: user });

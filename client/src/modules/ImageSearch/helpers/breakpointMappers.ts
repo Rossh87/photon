@@ -6,7 +6,7 @@ import {
 	TBreakpointFormValidationErrs,
 	TDialogActions,
 	TUserBreakpointUI,
-} from '../state/imageDialogState';
+} from '../state/imageDialogStateTypes';
 import { map as ArrMap } from 'fp-ts/Array';
 
 // map database breakpoint structure to the structure
@@ -21,7 +21,7 @@ export const breakpointToBreakpointUI = (
 			null,
 			null,
 			null,
-		] as TBreakpointFormValidationErrs,
+		] as unknown as TBreakpointFormValidationErrs,
 		origin: 'user' as const,
 	});
 

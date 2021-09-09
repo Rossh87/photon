@@ -9,7 +9,7 @@ import { tryCatch, TaskEither } from 'fp-ts/lib/TaskEither';
 import { BaseError } from '../../../core/error';
 import { IBreakpointTransferObject, IClientUpload } from 'sharedTypes/Upload';
 import { pipe } from 'fp-ts/lib/function';
-import { TDialogActions } from '../state/imageDialogState';
+import { TDialogActions } from '../state/imageDialogStateTypes';
 
 const putUpdated =
 	(data: IBreakpointTransferObject): IHttpCall<IClientUpload> =>

@@ -1,5 +1,8 @@
 import { IClientUpload } from 'sharedTypes/Upload';
-import { TUIBreakpoints, TUserBreakpointUI } from '../state/imageDialogState';
+import {
+	TUIBreakpoints,
+	TUserBreakpointUI,
+} from '../state/imageDialogStateTypes';
 
 export const mockImage1: IClientUpload = {
 	_id: 'ak2254',
@@ -72,7 +75,7 @@ export const mockBreakpointData: TUserBreakpointUI = {
 	_id: '1234',
 	origin: 'user',
 	editing: false,
-	validationErrs: [null, null, null, null],
+	validationErrs: [null, null, null, null] as any,
 };
 
 export const mockImageData = [mockImage1, mockImage2, mockImage3, mockImage4];

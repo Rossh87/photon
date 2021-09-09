@@ -1,7 +1,7 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 import { TAvailableImageWidths } from '../../../../../sharedTypes/Upload';
-import { TUserBreakpointUI } from '../state/imageDialogState';
+import { TUserBreakpointUI } from '../state/imageDialogStateTypes';
 import { createSrcset } from '../useCases/createSrcset';
 
 const useStyles = makeStyles((theme) => ({

@@ -1,6 +1,6 @@
 import { pipe } from 'fp-ts/lib/function';
 import { PayloadFPReader } from 'react-use-fp';
-import { TDialogActions } from '../state/imageDialogState';
+import { TDialogActions } from '../state/imageDialogStateTypes';
 import { IBreakpointTransferObject } from 'sharedTypes/Upload';
 import {
 	breakpointUIToBreakpoint,

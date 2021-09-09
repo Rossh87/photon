@@ -1,4 +1,7 @@
-import { ILocalBreakpointUI, IBreakpointUI } from '../state/imageDialogState';
+import {
+	ILocalBreakpointUI,
+	IBreakpointUI,
+} from '../state/imageDialogStateTypes';
 
 export const formatBPStateForDispatch = (
 	bpState: ILocalBreakpointUI

@@ -16,8 +16,8 @@ import theme from '../theme';
 import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
 import Profile from '../Profile';
-import AppMessages from '../AppMessages';
 import { useTheme } from '@material-ui/core/styles';
+import AppMessage from '../AppMessage';
 import { Switch, Route } from 'react-router-dom';
 
 const drawerWidth = 180;
@@ -130,7 +130,7 @@ const Main: React.FunctionComponent = () => {
 					></Grid>
 				</Hidden>
 				<Grid item className={classes.contentGrid}>
-					<AppMessages />
+					<AppMessage />
 					<Paper className={classes.paper}>
 						<Switch>
 							<Route path="/upload">

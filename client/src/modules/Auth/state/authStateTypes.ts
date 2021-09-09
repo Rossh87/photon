@@ -1,54 +1,64 @@
-import { TUserState } from '../domain/authDomainTypes';
 import {
 	IUserProfilePreferences,
 	TAuthorizedUserResponse,
 } from 'sharedTypes/User';
-import { AuthError } from '../domain/AuthError';
 import { BaseError } from '../../../core/error';
-import { ReactElement } from 'react';
 
 export type TMessageSeverity = 'error' | 'warning' | 'info' | 'success';
 
-// TODO: type other than 'demo' only exists for testing
-// purposes ATM
-export type TAppMessageKind = 'demo' | 'other';
+export type TMessageActionKind = 'simple' | 'advanced';
 
-export type TMessageID = string;
-
-export interface IAppMessage {
-	id: TMessageID;
-	message: string;
-	severity: TMessageSeverity;
-	allowMultiple: boolean;
-	action?: ReactElement;
-	kind: TAppMessageKind;
+export interface IMessageHandlerSpec {
+	buttonText: string;
+	handler: (...args: any[]) => void;
 }
 
-export type TDemoModeMessage = IAppMessage & {
-	kind: 'demo';
+export interface IAdvancedMessageAction {
+	kind: TMessageActionKind;
+	proceed: IMessageHandlerSpec;
+	abort: IMessageHandlerSpec;
+}
+
+export interface ISimpleMessageAction {
+	kind: TMessageActionKind;
+	handler: (...args: any[]) => void;
+}
+
+export type TMessageKind = 'singleNotice' | 'repeat';
+
+export interface IAppMessage {
+	messageKind: TMessageKind;
+	eventName: string;
+	displayMessage: string;
+	severity: TMessageSeverity;
+	action: IAdvancedMessageAction | ISimpleMessageAction;
+	timeout?: number;
+}
+
+export type TSingleNoticeMessage = IAppMessage & {
+	messageKind: 'singleNotice';
+	displayTrackingProp: keyof IDisplayTrackingProps;
 };
 
 export type TAppErrors = BaseError[];
 
-export type TAppMessages = IAppMessage[];
+export type TUserState = TAuthorizedUserResponse | null;
 
-// NB: demoMessageViewed is not persisted
-// with the user's data--it will be re-triggered
+export type TAppMessageState = IAppMessage | null;
+
+// NB: display tracking props are not persisted
+// with the user's data--they will be re-triggered
 // every time user logs into app
-export interface IAuthState {
-	user: TUserState;
-	errors: TAppErrors;
-	status: TAuthStatus;
-	appMessages: TAppMessages;
+export interface IDisplayTrackingProps {
 	demoMessageViewed: boolean;
 }
 
-export type TAuthStatus =
-	| 'fresh'
-	| 'pending'
-	| 'authorized'
-	| 'loggedOut'
-	| 'failed';
+export interface IAuthState extends IDisplayTrackingProps {
+	user: TUserState;
+	errors: TAppErrors;
+	appMessage: TAppMessageState;
+	demoMessageViewed: boolean;
+}
 
 export interface IAuthAction<T> {
 	type: string;
@@ -83,7 +93,6 @@ export interface IAddAppMessageAction {
 
 export interface IRemoveAppMessage {
 	type: 'REMOVE_APP_MESSAGE';
-	payload: string;
 }
 
 export type TAuthActions =

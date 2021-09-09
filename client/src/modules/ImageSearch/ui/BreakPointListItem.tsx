@@ -25,7 +25,7 @@ import {
 	ILocalBreakpointUI,
 	TDialogActions,
 	TUserBreakpointUI,
-} from '../state/imageDialogState';
+} from '../state/imageDialogStateTypes';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -67,7 +67,7 @@ const BreakPointListItem: React.FunctionComponent<
 		editing: false,
 		_id: '1234',
 		origin: 'user',
-		validationErrs: [null, null, null, null],
+		validationErrs: [null, null, null, null] as any,
 	});
 
 	React.useEffect(() => {
@@ -81,7 +81,7 @@ const BreakPointListItem: React.FunctionComponent<
 				editing,
 				_id,
 				origin,
-				validationErrs: [null, null, null, null],
+				validationErrs: [null, null, null, null] as any,
 			})
 		);
 	}, [props]);
@@ -120,7 +120,7 @@ const BreakPointListItem: React.FunctionComponent<
 				editing: false,
 				_id,
 				origin,
-				validationErrs: [null, null, null, null],
+				validationErrs: [null, null, null, null] as any,
 			})
 		);
 	};
@@ -136,7 +136,7 @@ const BreakPointListItem: React.FunctionComponent<
 				editing: false,
 				_id,
 				origin,
-				validationErrs: [null, null, null, null],
+				validationErrs: [null, null, null, null] as any,
 			})
 		);
 	};

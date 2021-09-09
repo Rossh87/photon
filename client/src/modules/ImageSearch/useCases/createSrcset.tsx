@@ -12,7 +12,7 @@ import {
 	TNewBreakpointUI,
 	TUIBreakpoints,
 	TUserBreakpointUI,
-} from '../state/imageDialogState';
+} from '../state/imageDialogStateTypes';
 import { makeDefaultUIBreakpoints } from '../helpers/makeDefaultUIBreakpoints';
 
 // NB that the following functions can accept *either* ISavedBreakpoint or TBreakpointUI, since the latter

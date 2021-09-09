@@ -1,4 +1,7 @@
-import { TNewBreakpointUI, TUserBreakpointUI } from '../state/imageDialogState';
+import {
+	TNewBreakpointUI,
+	TUserBreakpointUI,
+} from '../state/imageDialogStateTypes';
 import { nanoid } from 'nanoid';
 
 // editing is open whenever we create a new breakpoint
@@ -10,5 +13,5 @@ export const makeNewUIBreakpoint = (): TUserBreakpointUI => ({
 	slotUnit: 'vw',
 	origin: 'user',
 	editing: true,
-	validationErrs: [null, null, null, null],
+	validationErrs: [null, null, null, null] as any,
 });

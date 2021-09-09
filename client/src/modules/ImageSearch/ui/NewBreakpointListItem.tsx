@@ -19,7 +19,7 @@ import {
 	IBreakpointUI,
 	TDialogActions,
 	TUserBreakpointUI,
-} from '../state/imageDialogState';
+} from '../state/imageDialogStateTypes';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 interface INewBreakpointItemProps {

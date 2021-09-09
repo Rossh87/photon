@@ -1,11 +1,31 @@
 import React, { useEffect, useState, Dispatch } from 'react';
-import { Button, Snackbar, IconButton, useTheme } from '@material-ui/core';
+import {
+	Button,
+	Snackbar,
+	IconButton,
+	useTheme,
+	makeStyles,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { getOrElse, Option, chain, map } from 'fp-ts/lib/Option';
 import { BaseError } from '../../../core/error';
-import { TDialogActions, TSnackbarStatus } from '../state/imageDialogState';
-import { lookup } from 'fp-ts/lib/Record';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { CloseOutlined } from '@material-ui/icons';
+import { TSnackbarStatus } from '../state/imageDialogStateTypes';
+
+const useStyles = makeStyles((theme) => ({
+	errMessage: {
+		backgroundColor: theme.palette.error.main,
+	},
+
+	warningMessage: {
+		backgroundColor: theme.palette.warning.main,
+	},
+
+	successMessage: {
+		backgroundColor: theme.palette.success.main,
+	},
+}));
 
 interface Props {
 	status: TSnackbarStatus;
@@ -25,14 +45,9 @@ const Snacktion: React.FunctionComponent<Props> = ({
 	resetStatus,
 	handleDeletion,
 }) => {
-	const [open, setOpen] = useState(false);
-
-	const theme = useTheme();
-
+	const classes = useStyles();
 	useEffect(() => {
 		let timerID: ReturnType<typeof setTimeout>;
-
-		setOpen(status !== 'none');
 
 		if (status === 'success') {
 			timerID = setTimeout(() => resetStatus(), 2000);
@@ -41,6 +56,15 @@ const Snacktion: React.FunctionComponent<Props> = ({
 		return () => clearTimeout(timerID);
 	}, [status]);
 
+	type SevMap = { [K in TSnackbarStatus]: string };
+
+	const statusToSeverityMap: SevMap = {
+		attemptedClose: 'warning',
+		error: 'error',
+		success: 'success',
+		attemptedDelete: 'error',
+		none: 'info',
+	};
 	const renderMessage = () => {
 		return status === 'attemptedClose'
 			? 'Are you sure you want to close without saving?'
@@ -104,33 +128,29 @@ const Snacktion: React.FunctionComponent<Props> = ({
 			);
 		} else
 			return (
-				<IconButton onClick={() => setOpen(false)}>
+				<IconButton onClick={resetStatus}>
 					<CloseOutlined />
 				</IconButton>
 			);
 	};
 
-	const deriveColor = () =>
-		status === 'attemptedDelete'
-			? theme.palette.error.main
+	const deriveClassName = () =>
+		status === 'attemptedDelete' || status === 'error'
+			? classes.errMessage
 			: status === 'attemptedClose'
-			? theme.palette.warning.main
-			: status === 'error'
-			? theme.palette.error.main
-			: theme.palette.success.main;
+			? classes.warningMessage
+			: classes.successMessage;
 
 	return (
 		<Snackbar
-			open={open}
+			open={status !== 'none'}
 			anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-			ContentProps={{
-				style: {
-					backgroundColor: deriveColor(),
-				},
-			}}
-			message={renderMessage()}
-			action={renderAction()}
-		></Snackbar>
+			data-testid="dialog-snackbar"
+		>
+			<Alert severity="warning" action={renderAction()}>
+				{renderMessage()}
+			</Alert>
+		</Snackbar>
 	);
 };
 

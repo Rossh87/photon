@@ -34,7 +34,6 @@ import dependencyContext, {
 import {
 	initialDialogState,
 	imageDialogReducer,
-	TDialogActions,
 } from '../state/imageDialogState';
 import { synchronizeBreakpoints } from '../useCases/synchronizeBreakpoints';
 import Snacktion from './Snacktion';
@@ -149,9 +148,13 @@ export const ImageDialog: React.FunctionComponent = () => {
 			? handleDiscard()
 			: handleUnsavedClose();
 
-	const resetError = () => dispatch({ type: 'RESET_ERROR' });
+	const resetError = () => {
+		dispatch({ type: 'RESET_ERROR' });
+	};
 
-	const resetStatus = () => dispatch({ type: 'RESET_STATUS' });
+	const resetStatus = () => {
+		dispatch({ type: 'RESET_STATUS' });
+	};
 
 	const handleTabChange = (
 		e: React.ChangeEvent<{}>,

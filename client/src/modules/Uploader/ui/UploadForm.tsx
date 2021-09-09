@@ -12,7 +12,7 @@ import { map, fromNullable, Applicative, fold } from 'fp-ts/lib/Option';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { makeStyles } from '@material-ui/styles';
 import theme from '../../theme';
-import { TUserState } from '../../Auth/domain/authDomainTypes';
+import { TUserState } from '../../Auth/state/authStateTypes';
 
 const useStyles = makeStyles({
 	fileForm: {

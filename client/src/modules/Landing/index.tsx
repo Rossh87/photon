@@ -1,8 +1,8 @@
 import React from 'react';
-import { TUserState } from '../Auth/domain/authDomainTypes';
 import Login from '../Login';
 import { useAuthState } from '../Auth/state/useAuthState';
 import Main from '../Main';
+import { TUserState } from '../Auth/state/authStateTypes';
 
 const Landing: React.FunctionComponent = () => {
 	const authState = useAuthState();

@@ -1,9 +1,7 @@
 import { _fetchUserData } from './fetchUserData';
 import { AxiosInstance } from 'axios';
 import { AuthError } from '../domain/AuthError';
-import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { IAddAppMessageAction, TAuthActions } from '../state/authStateTypes';
-import { createAppMessage } from '../../AppMessages/helpers';
 
 describe('user data fetching functiong', () => {
 	it('dispatches correct actions for success', async () => {
@@ -11,6 +9,7 @@ describe('user data fetching functiong', () => {
 		const user = {
 			name: 'tim',
 			age: 20,
+			accessLevel: 'demo',
 		};
 		const dispatch = (action: any) => actions.push(action);
 		const mockAxios = {
@@ -34,18 +33,24 @@ describe('user data fetching functiong', () => {
 			get: jest.fn(() => Promise.resolve({ data: user })),
 		} as unknown as AxiosInstance;
 
-		const expectedMessage = createAppMessage(
-			'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
-			'info',
-			false,
-			'demo'
-		);
+		const expectedMessage = {
+			type: 'ADD_APP_MESSAGE',
+			payload: {
+				messageKind: 'singleNotice',
+				eventName: 'user profile data received',
+				displayMessage:
+					'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
+				severity: 'info',
+				action: {
+					kind: 'simple',
+					handler: () => dispatch({ type: 'REMOVE_APP_MESSAGE' }),
+				},
+			},
+		};
 
 		await _fetchUserData(mockAxios)(dispatch);
 
-		expect((actions[1] as IAddAppMessageAction).payload.message).toEqual(
-			expectedMessage.message
-		);
+		expect(actions[1] as IAddAppMessageAction).toEqual(expectedMessage);
 	});
 
 	it('dispatches correct error on request failure', async () => {

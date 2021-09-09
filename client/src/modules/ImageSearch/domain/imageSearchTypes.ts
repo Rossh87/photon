@@ -1,4 +1,4 @@
-import { TUIBreakpoints } from '../state/imageDialogState';
+import { TUIBreakpoints } from '../state/imageDialogStateTypes';
 
 export interface IBreakpointSubmissionObject {
 	imageID: string;

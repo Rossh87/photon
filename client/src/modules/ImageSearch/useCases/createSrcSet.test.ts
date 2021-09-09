@@ -7,7 +7,7 @@ import { TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import { createSrcset, mergeBreakpoints } from './createSrcset';
 import { makeDefaultUIBreakpoints } from '../helpers/makeDefaultUIBreakpoints';
 import { breakpointToBreakpointUI } from '../helpers/breakpointMappers';
-import { TUserBreakpointUI } from '../state/imageDialogState';
+import { TUserBreakpointUI } from '../state/imageDialogStateTypes';
 
 describe("helper function 'mergeBreakpoints'", () => {
 	it('returns a merged array with all user-defined breakpoints included first', () => {
@@ -90,7 +90,7 @@ describe('createSrcSet', () => {
 				_id: '1234',
 				editing: false,
 				origin: 'user',
-				validationErrs: [null, null, null, null],
+				validationErrs: [null, null, null, null] as any,
 			},
 		];
 
@@ -118,7 +118,7 @@ describe('createSrcSet', () => {
 				slotUnit: 'px',
 				editing: false,
 				origin: 'user',
-				validationErrs: [null, null, null, null],
+				validationErrs: [null, null, null, null] as any,
 				_id: '1234',
 			},
 		];

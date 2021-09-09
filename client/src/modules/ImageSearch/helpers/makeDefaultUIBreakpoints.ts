@@ -2,7 +2,7 @@ import { pipe, flow } from 'fp-ts/lib/function';
 import { nanoid } from 'nanoid';
 import { map as ArrMap, sort, concatW } from 'fp-ts/Array';
 import { Ord as NumOrd } from 'fp-ts/number';
-import { TDefaultBreakpointUI } from '../state/imageDialogState';
+import { TDefaultBreakpointUI } from '../state/imageDialogStateTypes';
 
 const sortAscending = pipe(NumOrd, sort);
 
@@ -18,7 +18,7 @@ export const makeDefaultUIBreakpoint = (
 	slotUnit: 'vw',
 	origin: 'default',
 	editing: false,
-	validationErrs: [null, null, null, null],
+	validationErrs: [null, null, null, null] as any,
 });
 
 export const makeDefaultUIBreakpoints = flow(

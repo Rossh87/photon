@@ -14,7 +14,10 @@ import { mockBreakpointData, mockImage3, mockImageData } from './mockData';
 import { ImageSearchStateContext } from '../state/useImageSearchState';
 import ImageDialog from '../ui/ImageDialog';
 import BreakPointListItem from '../ui/BreakPointListItem';
-import { IBreakpointUI, TUserBreakpointUI } from '../state/imageDialogState';
+import {
+	IBreakpointUI,
+	TUserBreakpointUI,
+} from '../state/imageDialogStateTypes';
 
 // creating a new breakpoint:
 // 1. generate a UID for bp--only needs to be unique amongst its siblings
