@@ -4,6 +4,8 @@ import {
 	TUserBreakpointUI,
 } from '../state/imageDialogStateTypes';
 
+const addedString = new Date().toISOString();
+
 export const mockImage1: IClientUpload = {
 	_id: 'ak2254',
 	ownerID: 'abc123',
@@ -14,6 +16,7 @@ export const mockImage1: IClientUpload = {
 	availableWidths: [250, 700, 1120],
 	publicPathPrefix: 'www.google-bucket/photon/A-day-in-the-alps',
 	breakpoints: [],
+	addedOn: addedString,
 };
 
 export const mockImage2: IClientUpload = {
@@ -26,6 +29,7 @@ export const mockImage2: IClientUpload = {
 	availableWidths: [250, 700, 1200],
 	publicPathPrefix: 'www.google-bucket/photon/bears-everywhere!!',
 	breakpoints: [],
+	addedOn: addedString,
 };
 
 export const mockImage3: IClientUpload = {
@@ -38,6 +42,7 @@ export const mockImage3: IClientUpload = {
 	availableWidths: [250, 700, 1200],
 	publicPathPrefix: 'www.google-bucket/photon/lotsa-cats',
 	breakpoints: [],
+	addedOn: addedString,
 };
 
 export const mockImage4: IClientUpload = {
@@ -49,6 +54,7 @@ export const mockImage4: IClientUpload = {
 	integrityHash: ['kk231', 'y838', 'ab882'],
 	availableWidths: [250, 700, 1200],
 	publicPathPrefix: 'www.google-bucket/photon/even-more-cat',
+	addedOn: addedString,
 	breakpoints: [
 		{
 			queryType: 'min',

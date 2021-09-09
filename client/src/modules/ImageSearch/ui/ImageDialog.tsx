@@ -42,6 +42,7 @@ import { useTabItemStyles, useTabStyles } from '../styles/tabItemStyles';
 import { deleteOneUpload } from '../useCases/deleteUpload';
 import { useAuthDispatch } from '../../Auth/state/useAuthState';
 import { TDialogActions } from '../state/imageDialogStateTypes';
+import { formatJoinDate } from '../../../core/date';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	dialogPaper: {
@@ -83,8 +84,14 @@ export const ImageDialog: React.FunctionComponent = () => {
 
 	// we can cast this since dialog will never be open if
 	// imageUnderConfiguration is null
-	const { publicPathPrefix, availableWidths, displayName, breakpoints, _id } =
-		useImageSearchState().imageUnderConfiguration as IClientUpload;
+	const {
+		publicPathPrefix,
+		availableWidths,
+		displayName,
+		breakpoints,
+		_id,
+		addedOn,
+	} = useImageSearchState().imageUnderConfiguration as IClientUpload;
 
 	const imageSearchDispatch = useImageSearchDispatch();
 	const authDispatch = useAuthDispatch();
@@ -256,6 +263,14 @@ export const ImageDialog: React.FunctionComponent = () => {
 										{availableWidths
 											.map((w) => `${w}px`)
 											.join(', ')}
+									</span>
+								}
+							/>
+							<ListItemText
+								primary={
+									<span>
+										<strong>Added On: </strong>
+										{formatJoinDate(addedOn)}
 									</span>
 								}
 							/>

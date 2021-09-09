@@ -25,7 +25,12 @@ export interface IDBUpload extends ICombinedUploadRequestMetadata {
 	breakpoints: ISavedBreakpoint[];
 }
 
-export type IClientUpload = Omit<IDBUpload, '_id'> & { _id: string };
+export type TISODateString = string;
+
+export type IClientUpload = Omit<IDBUpload, '_id'> & {
+	_id: string;
+	addedOn: TISODateString;
+};
 
 export interface IUploadRequestMetadata {
 	ownerID: string;
