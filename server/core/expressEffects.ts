@@ -1,9 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { TDBUser, IUserProfileProperties } from '../../sharedTypes/User';
+import {
+	TDBUser,
+	IUserProfileProperties,
+	TSessionUser,
+} from '../../sharedTypes/User';
 import { reverseTwo } from './utils/reverseCurried';
 import { CLIENT_ROOT } from '../CONSTANTS';
 import { BaseError } from './error';
 import { flow } from 'fp-ts/lib/function';
+import { isSessionUser } from '../modules/auth/domain/guards';
 
 export type TExpressEffectList = Array<TExpressEffect>;
 
@@ -45,9 +50,12 @@ export const runEffects =
 		a[1].forEach((effect) => effect(req, res, next));
 
 export const setSessionUserEffect =
-	(u: TDBUser): TExpressEffect =>
+	(u: TDBUser | TSessionUser): TExpressEffect =>
 	(req: Request, res: Response) => {
-		req.session.user = { ...u, _id: u._id.toHexString() };
+		req.session.user = {
+			...u,
+			_id: isSessionUser(u) ? u._id : u._id.toHexString(),
+		};
 	};
 
 export const destroySessionEffect: TExpressEffect = (req, res) =>

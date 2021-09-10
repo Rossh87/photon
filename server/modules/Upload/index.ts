@@ -23,7 +23,7 @@ export const uploadRoutes = (deps: IAsyncDeps): Router => {
 
 	router.put('/syncbreakpoints', authGate, updateBreakpointsController(deps));
 
-	router.delete('/:_id', authGate, deleteUploadController(deps));
+	router.delete('/:id', authGate, deleteUploadController(deps));
 
 	return router;
 };

@@ -22,7 +22,6 @@ const mos = [
 export const formatJoinDate = (dateString: string) => {
 	// dateString comes from Mongo ObjectId, so it's
 	// reasonably safe to assume it will be valid...right?
-	console.log('incoming string: ', dateString);
 	const d = new Date(dateString);
 
 	const month = mos[d.getMonth()];

@@ -3,6 +3,7 @@ import { PayloadFPReader } from 'react-use-fp';
 import { TDialogActions } from '../state/imageDialogStateTypes';
 import {
 	IBreakpointTransferObject,
+	IUploadDeletionPayload,
 	TUploadDeletionID,
 } from 'sharedTypes/Upload';
 import { breakpointUIToBreakpoint } from '../helpers/breakpointMappers';
@@ -20,7 +21,7 @@ import { TAuthActions } from '../../Auth/state/authStateTypes';
 
 export const deleteOneUpload: PayloadFPReader<
 	TDialogActions,
-	TUploadDeletionID,
+	IUploadDeletionPayload,
 	WithAddedDependencies<
 		TDialogActions,
 		{
@@ -28,9 +29,9 @@ export const deleteOneUpload: PayloadFPReader<
 			authDispatch: Dispatch<TAuthActions>;
 		}
 	>
-> = (id: TUploadDeletionID) =>
+> = (toDelete) =>
 	pipe(
-		id,
+		toDelete,
 		deleteUpload,
 		RTChain((result) =>
 			RTAsks(({ authDispatch, imageSearchDispatch }) =>
@@ -39,7 +40,7 @@ export const deleteOneUpload: PayloadFPReader<
 					E.map(() => {
 						imageSearchDispatch({
 							type: 'DELETE_IMAGE',
-							payload: id,
+							payload: toDelete.idToDelete,
 						});
 						authDispatch({ type: 'REMOVE_APP_MESSAGE' });
 					}),

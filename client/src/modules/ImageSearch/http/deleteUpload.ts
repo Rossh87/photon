@@ -10,16 +10,21 @@ import { pipe } from 'fp-ts/lib/function';
 import { TDialogActions } from '../state/imageDialogStateTypes';
 import { TImageSearchActions } from '../state/imageSearchStateTypes';
 import { Dispatch } from 'react';
+import { IUploadDeletionPayload } from '../../../../../sharedTypes/Upload';
 
 const requestDeletion =
-	(idToDelete: string): IHttpCall<void> =>
+	({
+		idToDelete,
+		updatedImageCount,
+	}: IUploadDeletionPayload): IHttpCall<void> =>
 	(httpLib) =>
 		httpLib.delete(DELETE_UPLOAD_ENDPOINT(idToDelete), {
 			withCredentials: true,
+			params: { updatedImageCount },
 		});
 
 export const deleteUpload =
-	(idToDelete: string) =>
+	(toDelete: IUploadDeletionPayload) =>
 	(
 		deps: WithAddedDependencies<
 			TDialogActions,
@@ -27,10 +32,10 @@ export const deleteUpload =
 		>
 	) =>
 		tryCatch(
-			() => pipe(requestDeletion(idToDelete), deps.http),
+			() => pipe(requestDeletion(toDelete), deps.http),
 			(e) =>
 				new BaseError(
-					`Attempt to delete image ${idToDelete} failed.`,
+					`Attempt to delete image ${toDelete.idToDelete} failed.`,
 					e
 				)
 		);

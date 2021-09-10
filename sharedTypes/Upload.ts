@@ -67,6 +67,9 @@ export interface IBreakpointTransferObject {
 
 export type TUploadDeletionID = string;
 
+// We include the new image count on delete payload
+// to make delete request idempotent, at least on our server
 export interface IUploadDeletionPayload {
 	idToDelete: TUploadDeletionID;
+	updatedImageCount: number;
 }

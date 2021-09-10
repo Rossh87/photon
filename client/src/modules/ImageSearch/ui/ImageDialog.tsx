@@ -40,7 +40,7 @@ import Tabpanel from './Tabpanel';
 import { TTabPanelType } from '../state/imageSearchStateTypes';
 import { useTabItemStyles, useTabStyles } from '../styles/tabItemStyles';
 import { deleteOneUpload } from '../useCases/deleteUpload';
-import { useAuthDispatch } from '../../Auth/state/useAuthState';
+import { useAuthDispatch, useAuthState } from '../../Auth/state/useAuthState';
 import { TDialogActions } from '../state/imageDialogStateTypes';
 import { formatJoinDate } from '../../../core/date';
 
@@ -95,6 +95,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 
 	const imageSearchDispatch = useImageSearchDispatch();
 	const authDispatch = useAuthDispatch();
+	const { user } = useAuthState();
 
 	// These handlers need access to their own dispatch, and ALSO imageSearchDispatch
 	const makeBaseDepsContext = useContext(dependencyContext);
@@ -188,7 +189,12 @@ export const ImageDialog: React.FunctionComponent = () => {
 					kind: 'advanced',
 					proceed: {
 						buttonText: 'delete',
-						handler: () => actions.INIT_DELETE(_id),
+						handler: () =>
+							actions.INIT_DELETE({
+								updatedImageCount:
+									(user?.imageCount as number) - 1,
+								idToDelete: _id,
+							}),
 					},
 					abort: {
 						buttonText: 'go back',

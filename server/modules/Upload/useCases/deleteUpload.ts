@@ -32,6 +32,9 @@ import * as R from 'fp-ts/Reader';
 import * as TE from 'fp-ts/TaskEither';
 import * as E from 'fp-ts/Either';
 import * as A from 'fp-ts/Array';
+import { TDBUser } from '../../../../sharedTypes/User';
+import * as O from 'fp-ts/Option';
+import { gcsFileNamesFromUpload } from '../../../core/utils/gcsFileNamesFromUpload';
 
 export const deleteUpload = (
 	toDelete: IUploadDeletionPayload,
@@ -45,6 +48,8 @@ export const deleteUpload = (
 			R.asks(({ repoClient }) => {
 				const coll = getCollection<IDBUpload>('uploads')(repoClient);
 
+				console.log(p);
+
 				return TE.tryCatch(
 					() => coll.findOne({ _id: new ObjectId(p.idToDelete) }),
 					(e) =>
@@ -57,7 +62,8 @@ export const deleteUpload = (
 			})
 		),
 
-		// verify document is not null
+		// verify document is not null.
+		// This will also short-circuit duplicate request, which is a plus
 		RTE.chainOptionK(
 			() =>
 				new BaseError(
@@ -74,7 +80,8 @@ export const deleteUpload = (
 					(e) =>
 						new BaseError(
 							'unauthorizedRequest',
-							HTTPErrorTypes.FORBIDDEN
+							HTTPErrorTypes.FORBIDDEN,
+							e
 						)
 				)
 			)
@@ -84,18 +91,85 @@ export const deleteUpload = (
 		// TODO: querying collection twice could be streamlined with 'DO' notation
 		RTE.chainFirst((upload) =>
 			R.asks((deps) => {
-				const coll = getCollection<IDBUpload>('uploads')(
+				const uploadCollection = getCollection<IDBUpload>('uploads')(
+					deps.repoClient
+				);
+				const userCollection = getCollection<TDBUser>('users')(
 					deps.repoClient
 				);
 
-				return TE.tryCatch(
-					() => coll.deleteOne({ _id: upload._id }),
+				const removeUpload = TE.tryCatch(
+					() => uploadCollection.deleteOne({ _id: upload._id }),
 					(e) =>
 						DBDeletionError.create(
 							'uploads',
 							{ _id: upload._id },
 							e
 						)
+				);
+
+				const updateUserState = TE.tryCatch(
+					() =>
+						userCollection.findOneAndUpdate(
+							{ _id: new ObjectId(authenticatedID) },
+							{ $set: { imageCount: toDelete.updatedImageCount } }
+						),
+					(e) =>
+						DBDeletionError.create(
+							'uploads',
+							{ _id: upload._id },
+							e
+						)
+				);
+
+				const verifyIncomingImageCount = pipe(
+					TE.tryCatch(
+						() =>
+							userCollection.findOne({
+								_id: new ObjectId(authenticatedID),
+							}),
+						(e) =>
+							DBReadError.create(
+								'users',
+								{ _id: authenticatedID },
+								e
+							)
+					),
+					TE.chain(
+						flow(
+							O.fromNullable,
+							TE.fromOption(
+								() =>
+									new BaseError(
+										'Database user information was unable to be recovered for delete request',
+										HTTPErrorTypes.MISSING_OR_CONFLICTED_RESOURCE
+									)
+							)
+						)
+					),
+					TE.chain(
+						TE.fromPredicate(
+							(usr) =>
+								usr.imageCount - 1 ===
+								toDelete.updatedImageCount,
+							(e) =>
+								new BaseError(
+									'User image count from incoming upload delete request inconsistent with existing records',
+									HTTPErrorTypes.MISSING_OR_CONFLICTED_RESOURCE,
+									e
+								)
+						)
+					)
+				);
+
+				return pipe(
+					// double-check we're not corrupting user metadata with bad
+					// data from client
+					verifyIncomingImageCount,
+					// update user metadata
+					TE.chain(() => updateUserState),
+					// perform actual document deletion
+					TE.chain(() => removeUpload)
 				);
 			})
 		),
@@ -106,14 +180,9 @@ export const deleteUpload = (
 		RTE.chainTaskEitherK(({ upload, deps }) => {
 			const bucketName = deps.readEnv('GOOGLE_STORAGE_BUCKET_NAME');
 
-			const { ownerID, displayName, availableWidths } = upload;
-
-			const genFileName = (width: number) =>
-				`${ownerID}/${displayName}/${width.toString()}`;
-
 			const bucket = deps.gcs.bucket(bucketName);
 
-			const processOne = flow(genFileName, (name) =>
+			const processOne = (name: string) =>
 				TE.tryCatch(
 					() => bucket.file(name).delete(),
 					(e) =>
@@ -122,12 +191,13 @@ export const deleteUpload = (
 							HTTPErrorTypes.INTERNAL_SERVER_ERROR,
 							e
 						)
-				)
-			);
+				);
+
 			// TODO: this will lead to 'hanging' documents on GCS storage
 			// if some file delete requests succeed and others fail
 			return pipe(
-				availableWidths,
+				upload,
+				gcsFileNamesFromUpload,
 				A.map(processOne),
 				A.sequence(TE.ApplicativePar)
 			);
