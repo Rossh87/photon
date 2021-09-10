@@ -1,9 +1,6 @@
 // User info from database will include a 'joined on'
 // property that is output of Date.toJSON.  Here we format
 // it for display before storing it in app state.
-
-import { pipe } from 'fp-ts/lib/function';
-
 const mos = [
 	'January',
 	'February',
@@ -25,7 +22,6 @@ export const formatJoinDate = (dateString: string) => {
 	const d = new Date(dateString);
 
 	const month = mos[d.getMonth()];
-	console.log('month: ', month);
 	const date = d.getDate();
 	const year = d.getFullYear();
 

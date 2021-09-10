@@ -81,8 +81,19 @@ const Profile: React.FunctionComponent = (props) => {
 	// state setup
 	const user = useAuthState().user as TAuthorizedUserResponse;
 
+	const currStateProps = extractViewableProps(user);
+
 	const [localProfileState, setLocalProfileState] =
-		React.useState<IUserFacingProfileProps>(extractViewableProps(user));
+		React.useState<IUserFacingProfileProps>(currStateProps);
+
+	// TODO: hideous.  You should be ashamed.
+	Object.keys(localProfileState).some(
+		(key) =>
+			localProfileState[key as keyof IUserFacingProfileProps] !==
+			currStateProps[key as keyof IUserFacingProfileProps]
+	)
+		? setLocalProfileState(currStateProps)
+		: (() => {})();
 
 	const [hasUpdated, setUpdated] = React.useState(false);
 
@@ -143,6 +154,7 @@ const Profile: React.FunctionComponent = (props) => {
 		<>
 			{renderAvatar()}
 			<List dense>
+				<li>Real count: {user.imageCount}</li>
 				{Object.keys(localProfileState).map((stateKey) => (
 					<ProfileListItem
 						// okay to just use the property name as a key here,
