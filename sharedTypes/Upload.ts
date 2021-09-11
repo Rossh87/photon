@@ -3,7 +3,7 @@ import { ISavedBreakpoint, TSavedBreakpoints } from './Breakpoint';
 import { ResumableUploadCreationErr } from 'server/modules/Upload/helpers/requestResumableUpload';
 import { ObjectId } from 'mongodb';
 
-export type TMediaType = 'image/jpeg' | 'image/png';
+export type TMediaType = 'image/jpeg' | 'image/png' | 'image/webp';
 
 export type TPrimaryColor = string;
 
