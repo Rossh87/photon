@@ -46,7 +46,6 @@ export const imageConfigurationReducer: React.Reducer<
 						return a.payload;
 
 					case 'IMAGE_CONFIG/CLOSE_IMAGE_UNDER_CONFIGURATION':
-						console.log('hit!!');
 						return defaultState;
 
 					case 'IMAGE_CONFIG/CREATE_NEW_BREAKPOINT':

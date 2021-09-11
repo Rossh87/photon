@@ -55,7 +55,6 @@ const ImageDisplay: React.FunctionComponent = () => {
 	const handleClick =
 		(clickedImg: IClientUpload): React.MouseEventHandler =>
 		(e) => {
-			console.log(clickedImg);
 			e.stopPropagation();
 			dispatch({
 				type: 'IMAGE_CONFIG/SET_IMAGE_UNDER_CONFIGURATION',

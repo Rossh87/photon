@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEventHandler, useRef } from 'react';
 import {
 	Paper,
 	Button,
@@ -76,51 +76,71 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }));
 
+export type DisplayValueSource = 'appState' | 'formState';
+
 const Profile: React.FunctionComponent = (props) => {
+	// hack for dealing with UI flicker
+	const timerIDS = useRef<ReturnType<typeof setTimeout>[]>([]);
+
 	const classes = useStyles();
 
 	const appDispatch = useAppDispatch();
-	const dependencies = React.useContext(DependencyContext)(appDispatch);
 
 	// state setup
 	const user = useAppState().user as TAuthorizedUserResponse;
 
 	const actions = useAppActions();
 
-	const currStateProps = extractViewableProps(user);
+	// Always display values from HERE, not from localProfileState
+	const currentStateFromProps = extractViewableProps(user);
 
+	// This is ONLY for tracking form values--this data is never displayed except in
+	// open input fields
 	const [localProfileState, setLocalProfileState] =
-		React.useState<IUserFacingProfileProps>(currStateProps);
+		React.useState<IUserFacingProfileProps>(currentStateFromProps);
 
-	const [hasUpdated, setUpdated] = React.useState(false);
+	const [displayValueSource, setDisplayValueSource] =
+		React.useState<DisplayValueSource>('appState');
 
-	const buttonDisabilityState = !hasUpdated;
+	const handleChange =
+		(
+			key: keyof typeof localProfileState
+		): ChangeEventHandler<HTMLInputElement> =>
+		(e) => {
+			setLocalProfileState((prev) => ({
+				...prev,
+				[key]: e.target.value,
+			}));
+		};
+
+	const buttonDisabilityState = displayValueSource === 'appState';
 
 	// hard-code the props that user can edit for now...
 	const editables = ['profileImage', 'emailAddress', 'userName'];
 
-	// begin handlers
-	const handleFieldSubmit =
-		(fieldName: keyof IUserFacingProfileProps) =>
-		(newValue: string | number) => {
-			if (newValue !== localProfileState[fieldName]) setUpdated(true);
-			setLocalProfileState({
-				...localProfileState,
-				[fieldName]: newValue,
-			});
-		};
+	const handleFieldSubmit = () => setDisplayValueSource('formState');
+
+	const handleFieldReset = (key: keyof IUserFacingProfileProps) =>
+		setLocalProfileState({
+			...localProfileState,
+			[key]: currentStateFromProps[key],
+		});
 
 	const handleCancel = () =>
 		pipe(
 			user,
-			chainFirst(() => setUpdated(false)),
+			chainFirst(() => setDisplayValueSource('appState')),
 			extractViewableProps,
 			setLocalProfileState
 		);
 
 	const handleSave = () => {
 		actions.UPDATE_PROFILE_PREFS(localProfileState);
-		setUpdated(false);
+		// small delay to give promise that sets new preferences in application
+		// state time to resolve before we switch back to displaying that value
+		timerIDS.current.push(
+			setTimeout(() => setDisplayValueSource('appState'), 250)
+		);
 	};
 
 	const renderAvatar = () =>
@@ -143,27 +163,30 @@ const Profile: React.FunctionComponent = (props) => {
 	// refresh user's data whenever this component mounts
 	React.useEffect(() => {
 		fetchUserData(appDispatch);
+		return () => timerIDS.current.forEach((timer) => clearTimeout(timer));
 	}, []);
 
 	return (
 		<>
 			{renderAvatar()}
 			<List dense>
-				{Object.keys(localProfileState).map((stateKey) => (
+				{(
+					Object.keys(currentStateFromProps) as [
+						keyof IUserFacingProfileProps
+					]
+				).map((stateKey) => (
 					<ProfileListItem
 						// okay to just use the property name as a key here,
 						// since the contents of this list are never changed/reordered
 						key={stateKey}
-						fieldName={stateKey as keyof IUserFacingProfileProps}
-						initialValue={
-							localProfileState[
-								stateKey as keyof IUserFacingProfileProps
-							]
-						}
-						handleFieldSubmit={handleFieldSubmit(
-							stateKey as keyof IUserFacingProfileProps
-						)}
+						fieldName={stateKey}
+						actualValue={currentStateFromProps[stateKey]}
+						provisionalValue={localProfileState[stateKey]}
+						handleChange={handleChange(stateKey)}
+						handleFieldSubmit={handleFieldSubmit}
 						editable={editables.includes(stateKey)}
+						displaySource={displayValueSource}
+						handleFieldReset={handleFieldReset}
 					/>
 				))}
 			</List>

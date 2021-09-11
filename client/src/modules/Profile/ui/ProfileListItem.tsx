@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 import {
 	TextField,
 	ListItem,
@@ -22,6 +22,7 @@ import {
 import { fold as BFold } from 'fp-ts/boolean';
 import { fromPredicate, map } from 'fp-ts/Option';
 import ProfileFormActionButton from './ProfileFormActionButton';
+import { DisplayValueSource } from '..';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	profileText: {
@@ -34,16 +35,24 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface ProfileItemProps {
 	fieldName: keyof IUserFacingProfileProps;
-	initialValue: string | number;
 	handleFieldSubmit: (a: string | number) => void;
+	handleChange: ChangeEventHandler<HTMLInputElement>;
+	provisionalValue: string | number;
+	actualValue: string | number;
+	displaySource: DisplayValueSource;
 	editable: boolean;
+	handleFieldReset: (k: keyof IUserFacingProfileProps) => void;
 }
 
 const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 	fieldName,
-	initialValue,
+	handleChange,
 	handleFieldSubmit,
+	provisionalValue,
+	actualValue,
+	displaySource,
 	editable,
+	handleFieldReset,
 }) => {
 	const classes = useStyles();
 
@@ -51,23 +60,19 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 
 	const [error, setError] = React.useState<string | null>(null);
 
-	const [value, setValue] = React.useState(initialValue);
-
 	const reset = () => {
-		setValue(initialValue);
 		setEditing(false);
 		setError(null);
+		handleFieldReset(fieldName);
 	};
 
-	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-		const { value } = e.target;
+	// const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+	// 	if (value === '') {
+	// 		return handleChange({target: {value: actualValue}});
+	// 	}
 
-		if (value === initialValue || value === '') {
-			reset();
-		}
-
-		setValue(value);
-	};
+	// 	return handleChange(value)
+	// };
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -78,14 +83,14 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 			map((field) =>
 				pipe(
 					validationTools[field].pattern.test(
-						value as IUserFacingProfileProps[keyof TConfigurableProfileProps]
+						provisionalValue as IUserFacingProfileProps[keyof TConfigurableProfileProps]
 					),
 					BFold(
 						() => setError(validationTools[field].failureMessage),
 						() => {
 							setError(null);
-							handleFieldSubmit(value);
 							setEditing(false);
+							handleFieldSubmit(provisionalValue);
 						}
 					)
 				)
@@ -98,7 +103,7 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 			<Box component="span" fontWeight="fontWeightBold" pr={1}>
 				{MapPropsToHumanLabels[fieldName]}:
 			</Box>
-			{initialValue}
+			{displaySource === 'formState' ? provisionalValue : actualValue}
 		</Typography>
 	);
 
@@ -106,7 +111,7 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 		<form onSubmit={handleSubmit}>
 			<TextField
 				size="small"
-				value={value}
+				value={provisionalValue}
 				onChange={handleChange}
 				id={`profile-${fieldName}-input`}
 				label={MapPropsToHumanLabels[fieldName]}

@@ -48,7 +48,10 @@ const useCases = {
 export const AppActionsContext: React.Context<ActionCreators<typeof useCases>> =
 	React.createContext((() => {}) as any);
 
-const AppProvider: React.FunctionComponent = ({ children }) => {
+const AppProvider: React.FunctionComponent<{ mockState?: IAppState }> = ({
+	children,
+	mockState,
+}) => {
 	const makeDeps = useContext(DependencyContext);
 	const [reducer, initState] = combineReducers({
 		user: [authReducer, defaultAuthState],
@@ -61,7 +64,7 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
 		],
 	}) as [Reducer<IAppState, TAppAction>, IAppState];
 	const [state, dispatch, actions] = useFPReducer({ ...useCases }, makeDeps)(
-		initState,
+		mockState ? mockState : initState,
 		reducer
 	);
 	return (

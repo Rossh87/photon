@@ -8,9 +8,14 @@ export const defaultState: TUserState = null;
 
 export const authReducer: Reducer<
 	TUserState,
-	TAuthActions | IUploadSuccessAction | IDeleteImageAction
+	| TAuthActions
+	| IUploadSuccessAction
+	| IDeleteImageAction
+	| { type: 'AUTH/TEST_ACTION' }
 > = (state, action) => {
 	switch (action.type) {
+		case 'AUTH/TEST_ACTION':
+			return { ...(state as TAuthorizedUserResponse), imageCount: 10000 };
 		case 'AUTH/INCREASE_IMAGE_COUNT':
 			return {
 				...(state as TAuthorizedUserResponse),
@@ -35,7 +40,7 @@ export const authReducer: Reducer<
 
 		case 'AUTH/UPDATE_PROFILE_ACTION':
 			return state
-				? { ...state, profilePreferences: action.payload }
+				? { ...state, userPreferences: { ...action.payload } }
 				: state;
 		default:
 			return state;

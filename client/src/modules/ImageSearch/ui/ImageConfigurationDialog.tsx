@@ -71,7 +71,7 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 	const tabItemStyles = useTabItemStyles();
 
 	const appDispatch = useAppDispatch();
-	const { user, images, imageUnderConfiguration } = useAppState();
+	const { user, imageUnderConfiguration } = useAppState();
 	const actions = useAppActions();
 
 	// Aight to cast here since this won't be open if IUC is null
@@ -166,6 +166,9 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 		setTabValue(newVal);
 	};
 
+	// this prevents console notices from trying to render UI with invalid
+	// dummy data that populates application state while dialog is closed
+
 	return (
 		<Dialog
 			open={open}
@@ -177,117 +180,126 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 			maxWidth="md"
 			classes={{ paper: styles.dialogPaper }}
 		>
-			<DialogTitle
-				disableTypography
-				id={`img-dialog-${displayName}`}
-				style={{ width: '100%' }}
-				className={styles.dialogTitle}
-			>
-				<Typography variant="h6">
-					{`Embed code for ${displayName}`}
-				</Typography>
-				<IconButton
-					aria-label="close-dialog"
-					onClick={handleCloseAttempt}
-				>
-					<CloseOutlined />
-				</IconButton>
-			</DialogTitle>
+			{open && (
+				<>
+					<DialogTitle
+						disableTypography
+						id={`img-dialog-${displayName}`}
+						style={{ width: '100%' }}
+						className={styles.dialogTitle}
+					>
+						<Typography variant="h6">
+							{`Embed code for ${displayName}`}
+						</Typography>
+						<IconButton
+							aria-label="close-dialog"
+							onClick={handleCloseAttempt}
+						>
+							<CloseOutlined />
+						</IconButton>
+					</DialogTitle>
 
-			<DialogContent>
-				<Grid container spacing={4}>
-					<Grid item xs={5} sm={3}>
-						{createSrcset('element')(breakpoints)(availableWidths)(
-							publicPathPrefix
-						)}
-					</Grid>
-					<Grid item xs={7} sm={9}>
-						<List>
-							<ListItemText
-								primary={
-									<span>
-										<strong>Title: </strong>
-										{displayName}
-									</span>
-								}
-							/>
-							<ListItemText
-								primary={
-									<span>
-										<strong>Available Widths: </strong>
-										{availableWidths
-											.map((w) => `${w}px`)
-											.join(', ')}
-									</span>
-								}
-							/>
-							<ListItemText
-								primary={
-									<span>
-										<strong>Added On: </strong>
-										{formatJoinDate(addedOn)}
-									</span>
-								}
-							/>
-						</List>
+					<DialogContent>
+						<Grid container spacing={4}>
+							<Grid item xs={5} sm={3}>
+								{createSrcset('element')(breakpoints)(
+									availableWidths
+								)(publicPathPrefix)}
+							</Grid>
+							<Grid item xs={7} sm={9}>
+								<List>
+									<ListItemText
+										primary={
+											<span>
+												<strong>Title: </strong>
+												{displayName}
+											</span>
+										}
+									/>
+									<ListItemText
+										primary={
+											<span>
+												<strong>
+													Available Widths:{' '}
+												</strong>
+												{availableWidths
+													.map((w) => `${w}px`)
+													.join(', ')}
+											</span>
+										}
+									/>
+									<ListItemText
+										primary={
+											<span>
+												<strong>Added On: </strong>
+												{formatJoinDate(addedOn)}
+											</span>
+										}
+									/>
+								</List>
+								<Button
+									color="primary"
+									variant="contained"
+									onClick={handleDeleteAttempt}
+									className={styles.deleteButton}
+								>
+									Delete
+								</Button>
+							</Grid>
+						</Grid>
+						<Box mt={2}>
+							{/* <AppBar position="static"> */}
+							<Tabs
+								value={tabValue}
+								onChange={handleTabChange}
+								aria-label="simple tabs example"
+								classes={tabStyles}
+							>
+								<Tab
+									label="code"
+									{...tabA11yProps(0)}
+									value="code"
+									classes={tabItemStyles}
+								/>
+								<Tab
+									label="breakpoint"
+									{...tabA11yProps(1)}
+									value="breakpoint"
+									classes={tabItemStyles}
+								/>
+							</Tabs>
+							<Tabpanel
+								identifier="breakpoint"
+								activeValue={tabValue}
+							>
+								<BreakpointsTab
+									dialogState={
+										imageUnderConfiguration as IConfigurableImage
+									}
+									availableWidths={availableWidths}
+								/>
+							</Tabpanel>
+							<Tabpanel identifier="code" activeValue={tabValue}>
+								<PasteableCodeTab
+									publicPathPrefix={publicPathPrefix}
+									availableWidths={availableWidths}
+									breakpoints={breakpoints}
+								/>
+							</Tabpanel>
+						</Box>
+					</DialogContent>
+					<DialogActions>
 						<Button
 							color="primary"
-							variant="contained"
-							onClick={handleDeleteAttempt}
-							className={styles.deleteButton}
+							size="large"
+							onClick={handleBreakpointSave}
+							disabled={isSynchronizedWithBackend}
 						>
-							Delete
+							Save
 						</Button>
-					</Grid>
-				</Grid>
-				<Box mt={2}>
-					{/* <AppBar position="static"> */}
-					<Tabs
-						value={tabValue}
-						onChange={handleTabChange}
-						aria-label="simple tabs example"
-						classes={tabStyles}
-					>
-						<Tab
-							label="code"
-							{...tabA11yProps(0)}
-							value="code"
-							classes={tabItemStyles}
-						/>
-						<Tab
-							label="breakpoint"
-							{...tabA11yProps(1)}
-							value="breakpoint"
-							classes={tabItemStyles}
-						/>
-					</Tabs>
-					<Tabpanel identifier="breakpoint" activeValue={tabValue}>
-						<BreakpointsTab
-							dialogState={
-								imageUnderConfiguration as IConfigurableImage
-							}
-							availableWidths={availableWidths}
-						/>
-					</Tabpanel>
-					<Tabpanel identifier="code" activeValue={tabValue}>
-						<PasteableCodeTab
-							publicPathPrefix={publicPathPrefix}
-							availableWidths={availableWidths}
-							breakpoints={breakpoints}
-						/>
-					</Tabpanel>
-				</Box>
-			</DialogContent>
-			<DialogActions>
-				<Button
-					color="primary"
-					size="large"
-					onClick={handleBreakpointSave}
-					disabled={isSynchronizedWithBackend}
-				>
-					Save
-				</Button>
-			</DialogActions>
+					</DialogActions>
+				</>
+			)}
 		</Dialog>
 	);
 };
