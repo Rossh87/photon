@@ -2,7 +2,7 @@ import { IClientUpload } from 'sharedTypes/Upload';
 import {
 	TUIBreakpoints,
 	TUserBreakpointUI,
-} from '../state/imageDialogStateTypes';
+} from '../state/imageConfigurationStateTypes';
 
 const addedString = new Date().toISOString();
 
@@ -75,13 +75,12 @@ export const mockImage4: IClientUpload = {
 
 export const mockBreakpointData: TUserBreakpointUI = {
 	queryType: 'min',
-	mediaWidth: 800,
-	slotWidth: 200,
+	mediaWidth: '800',
+	slotWidth: '200',
 	slotUnit: 'px',
 	_id: '1234',
 	origin: 'user',
 	editing: false,
-	validationErrs: [null, null, null, null] as any,
 };
 
 export const mockImageData = [mockImage1, mockImage2, mockImage3, mockImage4];

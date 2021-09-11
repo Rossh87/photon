@@ -5,7 +5,6 @@ import {
 } from '../domain/domainTypes';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { map as NEAmap } from 'fp-ts/lib/NonEmptyArray';
-import { TUploaderActions } from '../state/uploadStateTypes';
 
 import { tryCatch } from 'fp-ts/TaskEither';
 import {
@@ -20,6 +19,7 @@ import {
 import { DEDUPLICATION_ENDPOINT } from './endpoints';
 import { BaseError } from '../../../core/error';
 import { isLeft, Either } from 'fp-ts/lib/Either';
+import { TAppAction } from '../../appState/appStateTypes';
 
 const displayNameFromEither = (e: Either<IImageWithErrors, IImage>) =>
 	isLeft(e) ? e.left.displayName : e.right.displayName;
@@ -39,8 +39,7 @@ const requestDupes =
 // this optimistically extracts displayName and checks for its uniqueness, even
 // if the image file in question has errs
 export const getDupeDisplayNames =
-	(imageFiles: TAllUploadedImages) =>
-	(deps: IDependencies<TUploaderActions>) =>
+	(imageFiles: TAllUploadedImages) => (deps: IDependencies<TAppAction>) =>
 		tryCatch(
 			() =>
 				pipe(

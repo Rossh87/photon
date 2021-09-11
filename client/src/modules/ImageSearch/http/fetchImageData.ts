@@ -19,11 +19,14 @@ export const fetchImageData = (
 	tryCatch(
 		() =>
 			pipe(requestData, deps.http, extractResponseData).then((data) =>
-				deps.dispatch({ type: 'IMG_DATA_RECEIVED', payload: data })
+				deps.dispatch({
+					type: 'IMAGES/IMG_DATA_RECEIVED',
+					payload: data,
+				})
 			),
 		(e) =>
 			deps.dispatch({
-				type: 'IMG_SEARCH_ERR',
+				type: 'IMAGES/IMG_SEARCH_ERR',
 				payload: new BaseError(
 					"http request for user's uploaded img data failed",
 					e

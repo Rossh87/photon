@@ -1,6 +1,6 @@
 import React from 'react';
-import { AuthStateContext } from '../../Auth/state/useAuthState';
-import { IAuthState } from '../../Auth/state/authStateTypes';
+import { AuthStateContext } from '../../Auth/state/useAppState';
+import { TAuthState } from '../../Auth/state/appStateTypes';
 import Uploader from '../index';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -22,17 +22,17 @@ import {
 } from '../../../testUtils';
 import { resetInternals } from 'react-use-fp';
 
-const mockAuthState: IAuthState = {
+const mockAuthState: TAuthState = {
 	user: mockUser,
 	errors: [],
 	appMessage: null,
 	demoMessageViewed: true,
 };
 
-let authState: IAuthState;
+let appState: TAuthState;
 
 beforeEach(() => {
-	authState = Object.assign({}, mockAuthState);
+	appState = Object.assign({}, mockAuthState);
 	resetInternals();
 });
 
@@ -48,7 +48,7 @@ describe('Uploader component when files are submitted', () => {
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
+				<AuthStateContext.Provider value={appState}>
 					<Uploader />
 				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
@@ -92,7 +92,7 @@ describe('Uploader component when files are submitted', () => {
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
+				<AuthStateContext.Provider value={appState}>
 					<Uploader />
 				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
@@ -138,7 +138,7 @@ describe('Uploader component when files are submitted', () => {
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
+				<AuthStateContext.Provider value={appState}>
 					<Uploader />
 				</AuthStateContext.Provider>
 			</DependencyContext.Provider>

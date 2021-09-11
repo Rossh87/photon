@@ -13,8 +13,8 @@ import {
 	NonEmptyArray,
 	mapWithIndex as NEAMapWithIdx,
 } from 'fp-ts/lib/NonEmptyArray';
-import { TUploaderActions } from '../../state/uploadStateTypes';
 import { uploadOneImageToGCS } from '../../http/uploadOneImageToGCS';
+import { TAppAction } from '../../../appState/appStateTypes';
 
 const leftIfHasErrors = (res: IUploadsResponsePayload) =>
 	(res.failures && res.failures.length) ||
@@ -30,7 +30,7 @@ const leftIfHasErrors = (res: IUploadsResponsePayload) =>
 export const uploadToGCS =
 	(images: IResizingData) =>
 	(response: IUploadsResponsePayload) =>
-	(deps: IDependencies<TUploaderActions>) =>
+	(deps: IDependencies<TAppAction>) =>
 		pipe(
 			response,
 			leftIfHasErrors,

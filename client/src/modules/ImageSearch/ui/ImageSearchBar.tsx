@@ -13,10 +13,7 @@ import { Hidden, useMediaQuery, useTheme } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { pipe } from 'fp-ts/lib/function';
 import { map, fromPredicate } from 'fp-ts/lib/Option';
-import {
-	useImageSearchDispatch,
-	useImageSearchState,
-} from '../state/useImageSearchState';
+import { useAppDispatch, useAppState } from '../../appState/useAppState';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	searchBar: {
@@ -46,8 +43,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 const ImageSearchBar: React.FunctionComponent = () => {
 	const classes = useStyles();
 
-	const imageSearchDispatch = useImageSearchDispatch();
-	const { imageMetadata } = useImageSearchState();
+	const appDispatch = useAppDispatch();
+	const { images } = useAppState();
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const theme = useTheme();
@@ -63,11 +60,11 @@ const ImageSearchBar: React.FunctionComponent = () => {
 			searchTerm,
 			fromPredicate((searchTerm) => searchTerm.length > 0),
 			map((searchTerm) =>
-				imageSearchDispatch({
-					type: 'INIT_IMG_SEARCH',
+				appDispatch({
+					type: 'IMAGES/INIT_IMG_SEARCH',
 					payload: {
 						searchTerm,
-						imgData: imageMetadata,
+						imgData: images.imageMetadata,
 					},
 				})
 			),
@@ -122,8 +119,8 @@ const ImageSearchBar: React.FunctionComponent = () => {
 						<Tooltip title="Reset">
 							<IconButton
 								onClick={() =>
-									imageSearchDispatch({
-										type: 'RESET_SEARCH',
+									appDispatch({
+										type: 'IMAGES/RESET_SEARCH',
 									})
 								}
 								data-testid="reset-search-icon"

@@ -3,7 +3,7 @@ import {
 	IAppMessage,
 	ISimpleMessageAction,
 	TSingleNoticeMessage,
-} from './authStateTypes';
+} from './appMetaTypes';
 
 export const isAdvancedMessageAction = (
 	a: IAdvancedMessageAction | ISimpleMessageAction

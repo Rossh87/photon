@@ -7,6 +7,7 @@ import { THTTPRunner, IDependencies } from '../../../core/dependencyContext';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { TUploaderActions } from '../state/uploadStateTypes';
 import { local } from 'fp-ts/lib/ReaderTaskEither';
+import { TAppAction } from '../../appState/appStateTypes';
 
 const saveUploadData =
 	(imgData: ICombinedUploadRequestMetadata) => (httpLib: IHTTPLib) =>
@@ -27,5 +28,5 @@ export const _saveSuccessfulUpload =
 
 export const saveSuccessfulUpload = flow(
 	_saveSuccessfulUpload,
-	local<IDependencies<TUploaderActions>, THTTPRunner>((deps) => deps.http)
+	local<IDependencies<TAppAction>, THTTPRunner>((deps) => deps.http)
 );

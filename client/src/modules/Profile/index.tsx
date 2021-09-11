@@ -17,7 +17,6 @@ import {
 	IconButton,
 	ListItemSecondaryAction,
 } from '@material-ui/core';
-import { useAuthDispatch, useAuthState } from '../Auth/state/useAuthState';
 import EditIcon from '@material-ui/icons/Edit';
 import { bytesToHumanReadableSize } from '../Uploader/useCases/preProcessSelectedFiles/appendMetadata';
 import {
@@ -36,6 +35,11 @@ import { handleUserProfileUpdate } from './useCases/handleUserProfileUpdate';
 import { chainFirst } from 'fp-ts/Identity';
 import { map as TEMap } from 'fp-ts/TaskEither';
 import { IUserFacingProfileProps } from './sharedProfileTypes';
+import {
+	useAppActions,
+	useAppDispatch,
+	useAppState,
+} from '../appState/useAppState';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	avatar: {
@@ -75,25 +79,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Profile: React.FunctionComponent = (props) => {
 	const classes = useStyles();
 
-	const authDispatch = useAuthDispatch();
-	const dependencies = React.useContext(DependencyContext)(authDispatch);
+	const appDispatch = useAppDispatch();
+	const dependencies = React.useContext(DependencyContext)(appDispatch);
 
 	// state setup
-	const user = useAuthState().user as TAuthorizedUserResponse;
+	const user = useAppState().user as TAuthorizedUserResponse;
+
+	const actions = useAppActions();
 
 	const currStateProps = extractViewableProps(user);
 
 	const [localProfileState, setLocalProfileState] =
 		React.useState<IUserFacingProfileProps>(currStateProps);
-
-	// TODO: hideous.  You should be ashamed.
-	Object.keys(localProfileState).some(
-		(key) =>
-			localProfileState[key as keyof IUserFacingProfileProps] !==
-			currStateProps[key as keyof IUserFacingProfileProps]
-	)
-		? setLocalProfileState(currStateProps)
-		: (() => {})();
 
 	const [hasUpdated, setUpdated] = React.useState(false);
 
@@ -121,12 +118,10 @@ const Profile: React.FunctionComponent = (props) => {
 			setLocalProfileState
 		);
 
-	const handleSave = () =>
-		pipe(
-			dependencies,
-			handleUserProfileUpdate(localProfileState),
-			TEMap(() => setUpdated(false))
-		)();
+	const handleSave = () => {
+		actions.UPDATE_PROFILE_PREFS(localProfileState);
+		setUpdated(false);
+	};
 
 	const renderAvatar = () =>
 		pipe(
@@ -147,14 +142,13 @@ const Profile: React.FunctionComponent = (props) => {
 
 	// refresh user's data whenever this component mounts
 	React.useEffect(() => {
-		fetchUserData(authDispatch);
+		fetchUserData(appDispatch);
 	}, []);
 
 	return (
 		<>
 			{renderAvatar()}
 			<List dense>
-				<li>Real count: {user.imageCount}</li>
 				{Object.keys(localProfileState).map((stateKey) => (
 					<ProfileListItem
 						// okay to just use the property name as a key here,

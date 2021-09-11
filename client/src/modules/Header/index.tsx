@@ -27,12 +27,12 @@ import {
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import axios from 'axios';
-import { useAuthDispatch, useAuthState } from '../Auth/state/useAuthState';
 import { useHistory } from 'react-router';
 import { pipe } from 'fp-ts/lib/function';
 import { TAuthorizedUserResponse } from '../../../../sharedTypes/User';
 import { getProfileURL } from './helpers';
 import { fold } from 'fp-ts/Option';
+import { useAppDispatch, useAppState } from '../appState/useAppState';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -69,13 +69,13 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 
 	const history = useHistory();
 
-	const authState = useAuthState();
-	const authDispatch = useAuthDispatch();
+	const appState = useAppState();
+	const appDispatch = useAppDispatch();
 
 	const handleLogout = () => {
 		axios
 			.get('http://localhost:8000/auth/logout', { withCredentials: true })
-			.then(() => authDispatch({ type: 'LOGOUT_USER' }))
+			.then(() => appDispatch({ type: 'AUTH/LOGOUT_USER' }))
 			.then(() => history.push('/'))
 			.catch((e) => console.log(e));
 	};
@@ -90,7 +90,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 
 	const renderProfileImage = () =>
 		pipe(
-			authState.user as TAuthorizedUserResponse,
+			appState.user as TAuthorizedUserResponse,
 			getProfileURL,
 			fold(renderPlaceholderIcon, renderAvatar)
 		);

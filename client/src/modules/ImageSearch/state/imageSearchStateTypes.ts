@@ -4,11 +4,14 @@ import { BaseError } from '../../../core/error';
 
 export type TTabPanelType = 'breakpoint' | 'code';
 
+export interface ISearchData {
+	searchTerm: string;
+	imgData: IClientUpload[];
+}
+
 export interface IImageSearchState {
 	imageMetadata: IClientUpload[];
 	currentlyActiveImages: IClientUpload[];
-	error: BaseError | null;
-	imageUnderConfiguration: TimageUnderConfigurationState;
 }
 
 export interface IBreakpointUpdateTransferObject {
@@ -17,54 +20,38 @@ export interface IBreakpointUpdateTransferObject {
 }
 
 interface IFetchImageDataAction {
-	type: 'FETCH_IMG_DATA';
+	type: 'IMAGES/FETCH_IMG_DATA';
 }
 
-interface IDeleteImageAction {
-	type: 'DELETE_IMAGE';
+export interface IDeleteImageAction {
+	type: 'IMAGES/DELETE_IMAGE';
 	payload: TUploadDeletionID;
 }
-
-export type TimageUnderConfigurationState = null | IClientUpload;
 
 // NB the received array CAN BE EMPTY if the user has not uploaded anything yet.  This
 // should not trigger an error state.
 interface IImageDataReceivedAction {
-	type: 'IMG_DATA_RECEIVED';
+	type: 'IMAGES/IMG_DATA_RECEIVED';
 	payload: IClientUpload[];
 }
 
 export interface ISearchedImagesEmittedAction {
-	type: 'SEARCHED_IMAGES_EMITTED';
+	type: 'IMAGES/SEARCHED_IMAGES_EMITTED';
 	payload: IClientUpload[];
 }
 
 interface IImageSearchErrorAction {
-	type: 'IMG_SEARCH_ERR';
+	type: 'IMAGES/IMG_SEARCH_ERR';
 	payload: BaseError;
 }
 
-export interface ISearchData {
-	searchTerm: string;
-	imgData: IClientUpload[];
-}
-
 export interface IInitImageSearchAction {
-	type: 'INIT_IMG_SEARCH';
+	type: 'IMAGES/INIT_IMG_SEARCH';
 	payload: ISearchData;
 }
 
 export interface IResetSearchAction {
-	type: 'RESET_SEARCH';
-}
-
-export interface ISetImageUnderConfigurationAction {
-	type: 'SET_IMG_UNDER_CONFIGURATION';
-	payload: IClientUpload;
-}
-export interface ICloseImageUnderConfiguration {
-	type: 'CLOSE_IMG_UNDER_CONFIGURATION';
-	payload?: IBreakpointUpdateTransferObject;
+	type: 'IMAGES/RESET_SEARCH';
 }
 
 export type TImageSearchActions =
@@ -74,6 +61,4 @@ export type TImageSearchActions =
 	| ISearchedImagesEmittedAction
 	| IImageSearchErrorAction
 	| IInitImageSearchAction
-	| IResetSearchAction
-	| ISetImageUnderConfigurationAction
-	| ICloseImageUnderConfiguration;
+	| IResetSearchAction;

@@ -6,14 +6,12 @@ import { TAvailableImageWidths } from 'sharedTypes/Upload';
 import { Ord as NumOrd } from 'fp-ts/number';
 import { fromPredicate, map as OMap, getOrElseW } from 'fp-ts/Option';
 import {
-	IBreakpointUI,
-	ILocalBreakpointUI,
+	TBreakpointUI,
 	TDefaultBreakpointUI,
-	TNewBreakpointUI,
 	TUIBreakpoints,
 	TUserBreakpointUI,
-} from '../state/imageDialogStateTypes';
-import { makeDefaultUIBreakpoints } from '../helpers/makeDefaultUIBreakpoints';
+} from '../state/imageConfigurationStateTypes';
+import { makeDefaultBreakpoints } from '../helpers/makeDefaultUIBreakpoints';
 
 // NB that the following functions can accept *either* ISavedBreakpoint or TBreakpointUI, since the latter
 // extends the former.
@@ -35,7 +33,7 @@ export const sizeFromBreakpoint = ({
 	queryType,
 	slotUnit,
 	mediaWidth,
-}: ISavedBreakpoint | Omit<ISavedBreakpoint, '_id'> | ILocalBreakpointUI) =>
+}: ISavedBreakpoint) =>
 	`(${queryType}-width: ${mediaWidth}px) ${slotWidth}${slotUnit}`;
 
 const sizesFromBreakpoints = (bps: TSavedBreakpoints): string =>
@@ -47,8 +45,8 @@ const sizesFromBreakpoints = (bps: TSavedBreakpoints): string =>
 
 // all user-defined breakpoints FIRST, then default breakpoints
 export const mergeBreakpoints =
-	(ubp: TUserBreakpointUI[]) =>
-	(dbp: TDefaultBreakpointUI[]): TUIBreakpoints =>
+	(ubp: TSavedBreakpoints) =>
+	(dbp: TSavedBreakpoints): TSavedBreakpoints =>
 		concatW(dbp)(ubp);
 
 // TODO: need to get a flow set up for adding alt text to images
@@ -87,12 +85,12 @@ const JSXElementFromBreakpoints =
 // TODO: this should just accept an IClientUpload
 export const createSrcset =
 	(creationType: TSrcsetCreationType) =>
-	(userBreakpoints: TUserBreakpointUI[]) =>
+	(userBreakpoints: TSavedBreakpoints) =>
 	(availableWidths: TAvailableImageWidths) =>
 	(publicPath: string) =>
 		pipe(
 			availableWidths,
-			makeDefaultUIBreakpoints,
+			makeDefaultBreakpoints,
 			pipe(userBreakpoints, mergeBreakpoints),
 			(x) =>
 				pipe(

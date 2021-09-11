@@ -44,62 +44,62 @@ export interface IFileAction<T> {
 }
 
 export interface IProcessFilesAction extends IFileAction<TSelectedFilesState> {
-	type: 'PROCESS_FILES';
+	type: 'UPLOADER/PROCESS_FILES';
 }
 
 export interface IFilesChangedAction extends IFileAction<TPreprocessArgs> {
-	type: 'FILES_CHANGED';
+	type: 'UPLOADER/FILES_CHANGED';
 }
 
 export interface IFilesSelectedAction
 	extends IFileAction<TPreprocessingResults> {
-	type: 'FILES_SELECTED';
+	type: 'UPLOADER/FILES_SELECTED';
 }
 
 export interface IUnselectFileAction extends IFileAction<string> {
-	type: 'UNSELECT_FILE';
+	type: 'UPLOADER/UNSELECT_FILE';
 }
 
 export interface IInvalidFileSelectionAction
 	extends IFileAction<TPreprocessErrors> {
-	type: 'INVALID_FILE_SELECTIONS';
+	type: 'UPLOADER/INVALID_FILE_SELECTIONS';
 }
 
 export interface IUpdateFileAction extends IFileAction<IUpdateFileData> {
-	type: 'UPDATE_FILE';
+	type: 'UPLOADER/UPDATE_FILE';
 }
 
 export interface IUnselectAllAction extends IFileAction<null> {
-	type: 'UNSELECT_ALL';
+	type: 'UPLOADER/UNSELECT_ALL';
 }
 
 export interface IInitUploadAction extends IFileAction<string> {
-	type: 'INIT_UPLOAD';
+	type: 'UPLOADER/INIT_UPLOAD';
 }
 
 export interface IImagesEmittedAction extends IFileAction<IResizingData> {
-	type: 'IMAGES_EMITTED';
+	type: 'UPLOADER/IMAGES_EMITTED';
 }
 
 export interface IUploadSuccessAction extends IFileAction<string> {
-	type: 'UPLOAD_SUCCESS';
+	type: 'UPLOADER/UPLOAD_SUCCESS';
 }
 
 export interface IUploadFailedAction extends IFileAction<IUploadFailureData> {
-	type: 'UPLOAD_FAILED';
+	type: 'UPLOADER/UPLOAD_FAILED';
 }
 
 export interface IUploadComponentErr extends IFileAction<BaseError> {
-	type: 'UPLOAD_COMPONENT_ERR';
+	type: 'UPLOADER/UPLOAD_COMPONENT_ERR';
 }
 
 export interface IInitDisplayNameUpdateAction
 	extends IFileAction<TUpdateDisplayNameArgs> {
-	type: 'INIT_NAME_UPDATE';
+	type: 'UPLOADER/INIT_NAME_UPDATE';
 }
 
 export interface IClearComponentErrAction {
-	type: 'CLEAR_COMPONENT_ERR';
+	type: 'UPLOADER/CLEAR_UPLOAD_COMPONENT_ERR';
 }
 
 export type TUploaderActions =

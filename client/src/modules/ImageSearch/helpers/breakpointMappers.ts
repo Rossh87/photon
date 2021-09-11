@@ -1,39 +1,30 @@
-import { flow, pipe } from 'fp-ts/lib/function';
-import { PayloadFPReader } from 'react-use-fp';
-import { ISavedBreakpoint, TSavedBreakpoints } from 'sharedTypes/Breakpoint';
+import { ISavedBreakpoint } from 'sharedTypes/Breakpoint';
 import {
-	IBreakpointUI,
-	TBreakpointFormValidationErrs,
-	TDialogActions,
+	TBreakpointUI,
 	TUserBreakpointUI,
-} from '../state/imageDialogStateTypes';
-import { map as ArrMap } from 'fp-ts/Array';
+} from '../state/imageConfigurationStateTypes';
 
-// map database breakpoint structure to the structure
-// needed by our UI components
+// Breakpoint update form needs supplementary properties for tracking its edit state.
+// This adds them.
 export const breakpointToBreakpointUI = (
 	a: ISavedBreakpoint
 ): TUserBreakpointUI =>
-	Object.assign(a, {
+	Object.assign({}, a, {
 		editing: false,
-		validationErrs: [
-			null,
-			null,
-			null,
-			null,
-		] as unknown as TBreakpointFormValidationErrs,
 		origin: 'user' as const,
+		mediaWidth: a.mediaWidth.toString(),
+		slotWidth: a.slotWidth.toString(),
 	});
 
 // map UI breakpoint structure to the structure needed by
-// database
-export const breakpointUIToBreakpoint = (a: IBreakpointUI): ISavedBreakpoint =>
+// main application state--in other words, it reverses the above
+export const breakpointUIToBreakpoint = (a: TBreakpointUI): ISavedBreakpoint =>
 	Object.assign(
 		{},
 		{
+			mediaWidth: parseInt(a.mediaWidth),
+			slotWidth: parseInt(a.slotWidth),
 			queryType: a.queryType,
-			mediaWidth: a.mediaWidth,
-			slotWidth: a.slotWidth,
 			slotUnit: a.slotUnit,
 			_id: a._id,
 		}

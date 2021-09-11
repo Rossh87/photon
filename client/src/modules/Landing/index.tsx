@@ -1,16 +1,16 @@
 import React from 'react';
-import Login from '../Login';
-import { useAuthState } from '../Auth/state/useAuthState';
-import Main from '../Main';
+import { useAppState } from '../appState/useAppState';
 import { TUserState } from '../Auth/state/authStateTypes';
+import Login from '../Login';
+import Main from '../Main';
 
 const Landing: React.FunctionComponent = () => {
-	const authState = useAuthState();
+	const appState = useAppState();
 
 	const renderChild: (u: TUserState) => React.ReactElement = (u) =>
 		u ? <Main /> : <Login />;
 
-	return <React.Fragment>{renderChild(authState.user)}</React.Fragment>;
+	return <React.Fragment>{renderChild(appState.user)}</React.Fragment>;
 };
 
 export default Landing;

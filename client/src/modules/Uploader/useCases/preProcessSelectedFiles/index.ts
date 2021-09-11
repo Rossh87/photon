@@ -14,11 +14,8 @@ import { chain as RTChain, asks as RTAsks, of as RTOf } from 'fp-ts/ReaderTask';
 import { fold as EFold, map as EMap, mapLeft as EMapLeft } from 'fp-ts/Either';
 import { checkAvailableUploads } from './checkAvailableUploads';
 import { PayloadFPReader } from 'react-use-fp';
-import { TUploaderActions } from '../../state/uploadStateTypes';
 import { IDependencies } from '../../../../core/dependencyContext';
-import { TAuthActions } from '../../../Auth/state/authStateTypes';
-import { Dispatch } from 'react';
-import { emitBasicErrMessage } from '../../../Auth/state/useAuthState';
+import { TAppAction } from '../../../appState/appStateTypes';
 
 // Calling code ensures FileList isn't empty.  This function just converts
 // FileList to a normal array and asserts that it's NonEmpty
@@ -40,9 +37,9 @@ const unwrapEither = EFold<IImageWithErrors, IImage, IImageWithErrors | IImage>(
 );
 
 export const preprocessImages: PayloadFPReader<
-	TUploaderActions,
+	TAppAction,
 	TPreprocessArgs,
-	IDependencies<TUploaderActions> & { authDispatch: Dispatch<TAuthActions> }
+	IDependencies<TAppAction>
 > = flow(
 	checkAvailableUploads,
 	EMap(toArray),
@@ -56,17 +53,17 @@ export const preprocessImages: PayloadFPReader<
 				f,
 				EMap((f) => {
 					deps.dispatch({
-						type: 'FILES_SELECTED',
+						type: 'UPLOADER/FILES_SELECTED',
 						payload: f,
 					});
 				}),
 				EMapLeft((e) => {
 					deps.dispatch({
-						type: 'UPLOAD_COMPONENT_ERR',
+						type: 'UPLOADER/UPLOAD_COMPONENT_ERR',
 						payload: e,
 					});
-					deps.authDispatch({
-						type: 'ADD_APP_MESSAGE',
+					deps.dispatch({
+						type: 'META/ADD_APP_MESSAGE',
 						payload: {
 							messageKind: 'repeat',
 							eventName: 'likely async failure',
@@ -75,8 +72,8 @@ export const preprocessImages: PayloadFPReader<
 							action: {
 								kind: 'simple',
 								handler: () =>
-									deps.authDispatch({
-										type: 'REMOVE_APP_MESSAGE',
+									deps.dispatch({
+										type: 'META/REMOVE_APP_MESSAGE',
 									}),
 							},
 							timeout: 3000,

@@ -29,7 +29,7 @@ const dispatchFiltered =
 	(filtered: IClientUpload[]) =>
 	({ dispatch }: DispatchDependency<TImageSearchActions>): IO<void> =>
 	() =>
-		dispatch({ type: 'SEARCHED_IMAGES_EMITTED', payload: filtered });
+		dispatch({ type: 'IMAGES/SEARCHED_IMAGES_EMITTED', payload: filtered });
 
 export const getSearchResults: PayloadFPReader<
 	TImageSearchActions,

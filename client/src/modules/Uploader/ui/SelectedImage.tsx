@@ -30,12 +30,12 @@ const useStyles = makeStyles((theme) => ({
 
 interface ISelectedImageProps {
 	imageFile: TPreprocessingResult;
-	uploadDispatch: Dispatch<TUploaderActions>;
+	dispatch: Dispatch<TUploaderActions>;
 }
 
 const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 	imageFile,
-	uploadDispatch,
+	dispatch,
 }) => {
 	// state stuff
 	const [isExpanded, setExpanded] = React.useState<boolean>(false);
@@ -63,7 +63,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 
 	const removeFileListItem = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		uploadDispatch({ type: 'UNSELECT_FILE', payload: displayName });
+		dispatch({ type: 'UPLOADER/UNSELECT_FILE', payload: displayName });
 	};
 
 	const removeIfSuccess = () => {
@@ -72,8 +72,8 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 		if (status === 'success') {
 			const timerID = setTimeout(
 				() =>
-					uploadDispatch({
-						type: 'UNSELECT_FILE',
+					dispatch({
+						type: 'UPLOADER/UNSELECT_FILE',
 						payload: displayName,
 					}),
 				1000
@@ -84,7 +84,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 		return cancel;
 	};
 
-	React.useEffect(removeIfSuccess, [status, displayName, uploadDispatch]);
+	React.useEffect(removeIfSuccess, [status, displayName, dispatch]);
 
 	return (
 		<ListItem dense>
@@ -119,7 +119,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 					<FileUpdateForm
 						closeAccordion={closeAccordion}
 						imageFile={imageFile}
-						uploadDispatch={uploadDispatch}
+						dispatch={dispatch}
 					/>
 				</AccordionDetails>
 			</Accordion>

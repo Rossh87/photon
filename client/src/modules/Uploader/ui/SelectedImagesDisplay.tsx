@@ -33,7 +33,7 @@ const SelectedImagesDisplay: React.FunctionComponent<IDisplayProps> = ({
 		imageFiles.map((f) => (
 			<SelectedImage
 				imageFile={f}
-				uploadDispatch={uploadDispatch}
+				dispatch={uploadDispatch}
 				key={f.displayName}
 			/>
 		));

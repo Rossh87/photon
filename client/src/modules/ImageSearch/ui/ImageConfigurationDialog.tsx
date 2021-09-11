@@ -17,32 +17,20 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import CloseOutlined from '@material-ui/icons/CloseOutlined';
-import {
-	useImageSearchState,
-	useImageSearchDispatch,
-} from '../state/useImageSearchState';
 import { createSrcset } from '../useCases/createSrcset';
-import { IClientUpload } from 'sharedTypes/Upload';
-import { mapBreakpointsToUI } from '../useCases/mapBreakpointsToUI';
-import { useFPReducer } from 'react-use-fp';
-import dependencyContext from '../../../core/dependencyContext';
-import {
-	initialDialogState,
-	imageDialogReducer,
-} from '../state/imageDialogState';
-import { synchronizeBreakpoints } from '../useCases/synchronizeBreakpoints';
-import { breakpointUIToBreakpoint } from '../helpers/breakpointMappers';
-import { map as ArrMap } from 'fp-ts/Array';
 import { tabA11yProps } from '../helpers/tabA11yProps';
 import BreakpointsTab from './BreakpointsTab';
 import PasteableCodeTab from './PasteableCodeTab';
 import Tabpanel from './Tabpanel';
 import { TTabPanelType } from '../state/imageSearchStateTypes';
 import { useTabItemStyles, useTabStyles } from '../styles/tabItemStyles';
-import { deleteOneUpload } from '../useCases/deleteUpload';
-import { useAuthDispatch, useAuthState } from '../../Auth/state/useAuthState';
-import { TDialogActions } from '../state/imageDialogStateTypes';
+import { IConfigurableImage } from '../state/imageConfigurationStateTypes';
 import { formatJoinDate } from '../../../core/date';
+import {
+	useAppActions,
+	useAppDispatch,
+	useAppState,
+} from '../../appState/useAppState';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	dialogPaper: {
@@ -76,14 +64,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }));
 
-export const ImageDialog: React.FunctionComponent = () => {
+export const ImageConfigurationDialog: React.FunctionComponent = () => {
 	// Needed state
 	const styles = useStyles();
 	const tabStyles = useTabStyles();
 	const tabItemStyles = useTabItemStyles();
 
-	// we can cast this since dialog will never be open if
-	// imageUnderConfiguration is null
+	const appDispatch = useAppDispatch();
+	const { user, images, imageUnderConfiguration } = useAppState();
+	const actions = useAppActions();
+
+	// Aight to cast here since this won't be open if IUC is null
 	const {
 		publicPathPrefix,
 		availableWidths,
@@ -91,63 +82,28 @@ export const ImageDialog: React.FunctionComponent = () => {
 		breakpoints,
 		_id,
 		addedOn,
-	} = useImageSearchState().imageUnderConfiguration as IClientUpload;
-
-	const imageSearchDispatch = useImageSearchDispatch();
-	const authDispatch = useAuthDispatch();
-	const { user } = useAuthState();
-
-	// These handlers need access to their own dispatch, and ALSO imageSearchDispatch
-	const makeBaseDepsContext = useContext(dependencyContext);
-	const makeDeps = (d: Dispatch<TDialogActions>) => ({
-		...makeBaseDepsContext(d),
-		imageSearchDispatch,
-		authDispatch,
-	});
-	const [state, dispatch, actions] = useFPReducer(
-		{
-			LOAD_BREAKPOINTS: mapBreakpointsToUI,
-			SYNC_BREAKPOINTS: synchronizeBreakpoints,
-			INIT_DELETE: deleteOneUpload,
-		},
-		makeDeps
-	)(initialDialogState, imageDialogReducer);
+		isSynchronizedWithBackend,
+		open,
+	} = imageUnderConfiguration as IConfigurableImage;
 
 	const [tabValue, setTabValue] = React.useState<TTabPanelType>('code');
 
-	// Begin handlers
-
 	// updates client app state if there have been any
 	// updates persisted to database since dialog was opened
-	const handleDiscard = () => {
-		if (state.hasUpdated) {
-			const saveableBPs = pipe(
-				state.breakpoints,
-				ArrMap(breakpointUIToBreakpoint)
-			);
+	const handleDiscard = () =>
+		appDispatch({ type: 'IMAGE_CONFIG/CLOSE_IMAGE_UNDER_CONFIGURATION' });
 
-			imageSearchDispatch({
-				type: 'CLOSE_IMG_UNDER_CONFIGURATION',
-				payload: { imageID: _id, breakpoints: saveableBPs },
-			});
-		} else {
-			imageSearchDispatch({
-				type: 'CLOSE_IMG_UNDER_CONFIGURATION',
-			});
-		}
-	};
-
-	const handleSave = () =>
-		state.isSynchronizedWithBackend
+	const handleBreakpointSave = () =>
+		isSynchronizedWithBackend
 			? null
 			: actions.SYNC_BREAKPOINTS({
 					imageID: _id,
-					breakpoints: state.breakpoints,
+					breakpoints: breakpoints,
 			  });
 
 	const handleUnsavedClose = () =>
-		authDispatch({
-			type: 'ADD_APP_MESSAGE',
+		appDispatch({
+			type: 'META/ADD_APP_MESSAGE',
 			payload: {
 				messageKind: 'repeat',
 				eventName: 'unsaved Dialog close attempt',
@@ -160,12 +116,12 @@ export const ImageDialog: React.FunctionComponent = () => {
 						buttonText: 'discard',
 						handler: function () {
 							handleDiscard();
-							authDispatch({ type: 'REMOVE_APP_MESSAGE' });
+							appDispatch({ type: 'META/REMOVE_APP_MESSAGE' });
 						},
 					},
 					abort: {
 						buttonText: 'save',
-						handler: handleSave,
+						handler: handleBreakpointSave,
 					},
 				},
 				timeout: 10000,
@@ -173,13 +129,11 @@ export const ImageDialog: React.FunctionComponent = () => {
 		});
 
 	const handleCloseAttempt = () =>
-		state.isSynchronizedWithBackend
-			? handleDiscard()
-			: handleUnsavedClose();
+		isSynchronizedWithBackend ? handleDiscard() : handleUnsavedClose();
 
 	const handleDeleteAttempt = () =>
-		authDispatch({
-			type: 'ADD_APP_MESSAGE',
+		appDispatch({
+			type: 'META/ADD_APP_MESSAGE',
 			payload: {
 				messageKind: 'repeat',
 				eventName: 'upload deletion attempt',
@@ -190,7 +144,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 					proceed: {
 						buttonText: 'delete',
 						handler: () =>
-							actions.INIT_DELETE({
+							actions.INIT_UPLOAD_DELETION({
 								updatedImageCount:
 									(user?.imageCount as number) - 1,
 								idToDelete: _id,
@@ -199,7 +153,7 @@ export const ImageDialog: React.FunctionComponent = () => {
 					abort: {
 						buttonText: 'go back',
 						handler: () =>
-							authDispatch({ type: 'REMOVE_APP_MESSAGE' }),
+							appDispatch({ type: 'META/REMOVE_APP_MESSAGE' }),
 					},
 				},
 			},
@@ -212,14 +166,9 @@ export const ImageDialog: React.FunctionComponent = () => {
 		setTabValue(newVal);
 	};
 
-	// Begin effects
-	useEffect(() => {
-		actions.LOAD_BREAKPOINTS(breakpoints);
-	}, []);
-
 	return (
 		<Dialog
-			open={true}
+			open={open}
 			TransitionComponent={Transition}
 			onClose={handleCloseAttempt}
 			aria-labelledby={`img-dialog-${displayName}`}
@@ -248,9 +197,9 @@ export const ImageDialog: React.FunctionComponent = () => {
 			<DialogContent>
 				<Grid container spacing={4}>
 					<Grid item xs={5} sm={3}>
-						{createSrcset('element')(state.breakpoints)(
-							availableWidths
-						)(publicPathPrefix)}
+						{createSrcset('element')(breakpoints)(availableWidths)(
+							publicPathPrefix
+						)}
 					</Grid>
 					<Grid item xs={7} sm={9}>
 						<List>
@@ -314,44 +263,36 @@ export const ImageDialog: React.FunctionComponent = () => {
 					</Tabs>
 					<Tabpanel identifier="breakpoint" activeValue={tabValue}>
 						<BreakpointsTab
-							dispatch={dispatch}
-							dialogState={state}
+							dialogState={
+								imageUnderConfiguration as IConfigurableImage
+							}
 							availableWidths={availableWidths}
 						/>
 					</Tabpanel>
 					<Tabpanel identifier="code" activeValue={tabValue}>
 						<PasteableCodeTab
-							breakpoints={state.breakpoints}
 							publicPathPrefix={publicPathPrefix}
 							availableWidths={availableWidths}
+							breakpoints={breakpoints}
 						/>
 					</Tabpanel>
 				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button
-					variant="outlined"
-					onClick={handleSave}
-					className={styles.submitButton}
-					disabled={state.isSynchronizedWithBackend}
+					color="primary"
+					size="large"
+					onClick={handleBreakpointSave}
+					disabled={isSynchronizedWithBackend}
 				>
 					Save
 				</Button>
 			</DialogActions>
-			{/* <Snacktion
-				status={state.snackbarStatus}
-				handleDiscard={handleDiscard}
-				handleSave={handleSave}
-				error={state.error}
-				resetError={resetError}
-				resetStatus={resetStatus}
-				handleDeletion={() => actions.INIT_DELETE(_id)}
-			/> */}
 		</Dialog>
 	);
 };
 
-export default ImageDialog;
+export default ImageConfigurationDialog;
 
 const Transition = React.forwardRef(function Transition(
 	props: TransitionProps & { children?: React.ReactElement<any, any> },

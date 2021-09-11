@@ -18,3 +18,4 @@ export const UPLOAD_WIDTHS: NonEmptyArray<
 	'tiny' | 'small' | 'medium' | 'large'
 > = ['tiny', 'small', 'medium', 'large'];
 export const IMAGE_UPLOAD_QUALITY = 0.75;
+export const DEFAULT_APP_MESSAGE_TIMEOUT = 3000;

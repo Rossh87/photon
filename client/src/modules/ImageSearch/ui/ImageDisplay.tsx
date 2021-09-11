@@ -3,17 +3,15 @@ import Typography from '@material-ui/core/Typography';
 import ImageList from '@material-ui/core/ImageList';
 import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import ImageListItem from '@material-ui/core/ImageListItem';
-import ImageDialog from './ImageDialog';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { pipe } from 'fp-ts/function';
 import { fromArray, map as NEAMap } from 'fp-ts/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/Option';
 import { IClientUpload } from 'sharedTypes/Upload';
-import {
-	useImageSearchDispatch,
-	useImageSearchState,
-} from '../state/useImageSearchState';
 import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useAppDispatch, useAppState } from '../../appState/useAppState';
+import { clientUploadToConfigurable } from '../helpers/clientUploadToConfigurable';
+import ImageConfigurationDialog from './ImageConfigurationDialog';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -43,13 +41,12 @@ const useStyles = makeStyles((theme) => ({
 const ImageDisplay: React.FunctionComponent = () => {
 	const classes = useStyles();
 
-	const { currentlyActiveImages, imageUnderConfiguration } =
-		useImageSearchState();
+	const { images } = useAppState();
 
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
-	const imageSearchDispatch = useImageSearchDispatch();
+	const dispatch = useAppDispatch();
 
 	const emptyUI = (
 		<Typography color="textSecondary">No results found!</Typography>
@@ -58,10 +55,11 @@ const ImageDisplay: React.FunctionComponent = () => {
 	const handleClick =
 		(clickedImg: IClientUpload): React.MouseEventHandler =>
 		(e) => {
+			console.log(clickedImg);
 			e.stopPropagation();
-			imageSearchDispatch({
-				type: 'SET_IMG_UNDER_CONFIGURATION',
-				payload: clickedImg,
+			dispatch({
+				type: 'IMAGE_CONFIG/SET_IMAGE_UNDER_CONFIGURATION',
+				payload: clientUploadToConfigurable(clickedImg),
 			});
 		};
 
@@ -71,7 +69,6 @@ const ImageDisplay: React.FunctionComponent = () => {
 				key={imgProps._id}
 				onClick={handleClick(imgProps)}
 				aria-label={`open embed code configuration for ${imgProps.displayName}`}
-				// role="button"
 				className={classes.listItem}
 				cols={matches ? 3 : 2}
 				rows={1}
@@ -88,7 +85,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 
 	const renderImages = () =>
 		pipe(
-			currentlyActiveImages,
+			images.currentlyActiveImages,
 			fromArray,
 			OMap(mapImagesToUI),
 			getOrElseW(() => emptyUI)
@@ -104,7 +101,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 			>
 				{renderImages()}
 			</ImageList>
-			{imageUnderConfiguration && <ImageDialog />}
+			<ImageConfigurationDialog />
 		</div>
 	);
 };

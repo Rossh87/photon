@@ -1,11 +1,7 @@
 import { _fetchUserData } from './fetchUserData';
 import { AxiosInstance } from 'axios';
 import { AuthError } from '../domain/AuthError';
-import {
-	IAddAppMessageAction,
-	TAuthActions,
-	TSingleNoticeMessage,
-} from '../state/authStateTypes';
+import { TAuthActions } from '../state/authStateTypes';
 
 describe('user data fetching functiong', () => {
 	it('dispatches correct actions for success', async () => {
@@ -38,7 +34,7 @@ describe('user data fetching functiong', () => {
 		} as unknown as AxiosInstance;
 
 		const expectedMessage = {
-			type: 'ADD_APP_MESSAGE',
+			type: 'META/ADD_APP_MESSAGE',
 			payload: {
 				messageKind: 'singleNotice',
 				eventName: 'user profile data received',
@@ -47,7 +43,8 @@ describe('user data fetching functiong', () => {
 				severity: 'info',
 				action: {
 					kind: 'simple',
-					handler: () => dispatch({ type: 'REMOVE_APP_MESSAGE' }),
+					handler: () =>
+						dispatch({ type: 'META/REMOVE_APP_MESSAGE' }),
 				},
 				displayTrackingProp: 'demoMessageViewed',
 			},
@@ -69,7 +66,7 @@ describe('user data fetching functiong', () => {
 		} as unknown as AxiosInstance;
 
 		const expectedAction: TAuthActions = {
-			type: 'ADD_AUTH_ERR',
+			type: 'AUTH/ADD_AUTH_ERR',
 			payload: AuthError.create(failureReason),
 		};
 

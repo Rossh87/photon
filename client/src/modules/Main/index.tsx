@@ -17,7 +17,7 @@ import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
 import Profile from '../Profile';
 import { useTheme } from '@material-ui/core/styles';
-import AppMessage from '../AppMessage';
+import AppMessage from '../appMeta';
 import { Switch, Route } from 'react-router-dom';
 
 const drawerWidth = 180;
@@ -78,7 +78,6 @@ const Main: React.FunctionComponent = () => {
 	const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
 	const handleDrawerToggle = () => {
-		console.log('toggle');
 		setDrawerOpen(!drawerOpen);
 	};
 

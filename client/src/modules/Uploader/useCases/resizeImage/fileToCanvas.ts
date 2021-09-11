@@ -28,10 +28,8 @@ const loadDataURL = (f: IImage) =>
 		});
 
 		try {
-			console.log('beginning URL read...');
 			reader.readAsDataURL(f);
 		} catch (e) {
-			console.log('Data url err is:', e);
 			rej(e);
 		}
 	});

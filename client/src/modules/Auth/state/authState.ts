@@ -1,60 +1,43 @@
-import { IAuthState, TAuthActions, IAppMessage } from './authStateTypes';
 import { Reducer } from 'react';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';
-import { handleIncomingMessage } from '../helpers/handleIncomingMessage';
+import { IDeleteImageAction } from '../../ImageSearch/state/imageSearchStateTypes';
+import { IUploadSuccessAction } from '../../Uploader/state/uploadStateTypes';
+import { TUserState, TAuthActions } from './authStateTypes';
 
-export const defaultState: IAuthState = {
-	user: null,
-	errors: [],
-	appMessage: null,
-	// this can be false for all users, since
-	// profile data handler checks the access level
-	// of the user before dispatching the 'demo mode'
-	// message.
-	demoMessageViewed: false,
-};
+export const defaultState: TUserState = null;
 
-export const authReducer: Reducer<IAuthState, TAuthActions> = (
-	state,
-	action
-) => {
+export const authReducer: Reducer<
+	TUserState,
+	TAuthActions | IUploadSuccessAction | IDeleteImageAction
+> = (state, action) => {
 	switch (action.type) {
-		case 'ADD_USER':
-			return { ...state, user: action.payload, status: 'authorized' };
-
-		case 'LOGOUT_USER':
+		case 'AUTH/INCREASE_IMAGE_COUNT':
 			return {
-				...defaultState,
-				user: null,
-				status: 'loggedOut',
+				...(state as TAuthorizedUserResponse),
+				imageCount:
+					(state as TAuthorizedUserResponse).imageCount +
+					action.payload,
 			};
 
-		case 'ADD_AUTH_ERR':
+		case 'IMAGES/DELETE_IMAGE':
 			return {
-				...state,
-				errors: [...state.errors, action.payload],
-				status: 'failed',
+				...(state as TAuthorizedUserResponse),
+				imageCount: (state as TAuthorizedUserResponse).imageCount - 1,
 			};
 
-		case 'UPDATE_PROFILE_ACTION':
+		case 'AUTH/ADD_USER':
 			return {
-				...state,
-				user: {
-					...(state.user as TAuthorizedUserResponse),
-					userPreferences: action.payload,
-				},
+				...action.payload,
 			};
 
-		case 'AUTH_REQUEST_INITIATED':
-			return { ...state, status: 'pending' };
+		case 'AUTH/LOGOUT_USER':
+			return null;
 
-		case 'ADD_APP_MESSAGE':
-			return handleIncomingMessage(state, action.payload);
-
-		case 'REMOVE_APP_MESSAGE':
-			return {
-				...state,
-				appMessage: null,
-			};
+		case 'AUTH/UPDATE_PROFILE_ACTION':
+			return state
+				? { ...state, profilePreferences: action.payload }
+				: state;
+		default:
+			return state;
 	}
 };

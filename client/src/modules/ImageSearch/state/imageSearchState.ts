@@ -1,6 +1,7 @@
 import { Reducer } from 'react';
 import { applyBreakpointToImages } from '../helpers/applyBreakpointToImages';
 import { deleteImageMetadata } from '../helpers/deleteImageMetadata';
+import { SyncSuccessAction } from './imageConfigurationStateTypes';
 import {
 	TImageSearchActions,
 	IImageSearchState,
@@ -9,16 +10,31 @@ import {
 export const defaultState: IImageSearchState = {
 	imageMetadata: [],
 	currentlyActiveImages: [],
-	error: null,
-	imageUnderConfiguration: null,
 };
 
 export const imageSearchReducer: Reducer<
 	IImageSearchState,
-	TImageSearchActions
+	TImageSearchActions | SyncSuccessAction
 > = (s, a) => {
 	switch (a.type) {
-		case 'IMG_DATA_RECEIVED':
+		// actions that hit multiple dispatchers:
+		case 'IMAGE_CONFIG/BREAKPOINT_SYNC_SUCCESS':
+			return {
+				...s,
+				imageMetadata: s.imageMetadata.map((img) =>
+					img._id === a.payload.imageID
+						? { ...img, breakpoints: a.payload.breakpoints }
+						: img
+				),
+				currentlyActiveImages: s.currentlyActiveImages.map((img) =>
+					img._id === a.payload.imageID
+						? { ...img, breakpoints: a.payload.breakpoints }
+						: img
+				),
+			};
+
+		// Regular cases
+		case 'IMAGES/IMG_DATA_RECEIVED':
 			// on initial load, all received images are also selected
 			return {
 				...s,
@@ -26,49 +42,42 @@ export const imageSearchReducer: Reducer<
 				currentlyActiveImages: a.payload,
 			};
 
-		case 'SEARCHED_IMAGES_EMITTED':
+		case 'IMAGES/SEARCHED_IMAGES_EMITTED':
 			return {
 				...s,
 				currentlyActiveImages: a.payload,
 			};
 
-		case 'IMG_SEARCH_ERR':
+		case 'IMAGES/IMG_SEARCH_ERR':
 			return {
 				...s,
 				error: a.payload,
 			};
 
-		case 'RESET_SEARCH':
+		case 'IMAGES/RESET_SEARCH':
 			return {
 				...s,
 				currentlyActiveImages: s.imageMetadata,
 			};
 
-		case 'SET_IMG_UNDER_CONFIGURATION':
+		// case 'IMAGES/CLOSE_IMG_UNDER_CONFIGURATION':
+		// 	if (a.payload) {
+		// 		const updater = applyBreakpointToImages(a.payload);
+		// 		return {
+		// 			...s,
+		// 			imageUnderConfiguration: null,
+		// 			imageMetadata: updater(s.imageMetadata),
+		// 			currentlyActiveImages: updater(s.currentlyActiveImages),
+		// 		};
+		// 	} else {
+		// 		return {
+		// 			...s,
+		// 			imageUnderConfiguration: null,
+		// 		};
+		// 	}
+		case 'IMAGES/DELETE_IMAGE':
 			return {
 				...s,
-				imageUnderConfiguration: a.payload,
-			};
-
-		case 'CLOSE_IMG_UNDER_CONFIGURATION':
-			if (a.payload) {
-				const updater = applyBreakpointToImages(a.payload);
-				return {
-					...s,
-					imageUnderConfiguration: null,
-					imageMetadata: updater(s.imageMetadata),
-					currentlyActiveImages: updater(s.currentlyActiveImages),
-				};
-			} else {
-				return {
-					...s,
-					imageUnderConfiguration: null,
-				};
-			}
-		case 'DELETE_IMAGE':
-			return {
-				...s,
-				imageUnderConfiguration: null,
 				imageMetadata: deleteImageMetadata(a.payload)(s.imageMetadata),
 				currentlyActiveImages: deleteImageMetadata(a.payload)(
 					s.currentlyActiveImages

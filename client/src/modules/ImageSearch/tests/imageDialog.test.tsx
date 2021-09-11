@@ -25,7 +25,7 @@ beforeEach(() => {
 	mockState.imageUnderConfiguration = Object.assign({}, mockImage4);
 });
 
-describe('The ImageDialog component', () => {
+describe('The ImageConfigurationDialog component', () => {
 	it('generates correct number of each kind of breakpoint child', async () => {
 		const { openBreakpointsTab, getBreakpointCreationButton } =
 			renderDialogWithBreakpoints(mockState);

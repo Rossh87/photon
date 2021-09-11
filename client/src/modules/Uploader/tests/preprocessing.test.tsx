@@ -1,7 +1,7 @@
 import React from 'react';
 import Uploader from '../index';
-import { AuthStateContext } from '../../Auth/state/useAuthState';
-import { IAuthState } from '../../Auth/state/authStateTypes';
+import { AuthStateContext } from '../../Auth/state/useAppState';
+import { TAuthState } from '../../Auth/state/appStateTypes';
 import { render, screen, act, waitFor, logRoles } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
@@ -24,19 +24,19 @@ import {
 import { resetInternals } from 'react-use-fp';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { MAX_DEMO_UPLOAD_COUNT } from 'sharedTypes/CONSTANTS';
-import AppMessage from '../../AppMessage';
+import AppMessage from '../../appMeta';
 
-const mockAuthState: IAuthState = {
+const mockAuthState: TAuthState = {
 	user: mockUser,
 	errors: [],
 	appMessage: null,
 	demoMessageViewed: false,
 };
 
-let authState: IAuthState;
+let appState: TAuthState;
 
 beforeEach(() => {
-	authState = Object.assign({}, mockAuthState);
+	appState = Object.assign({}, mockAuthState);
 	resetInternals();
 });
 
@@ -52,7 +52,7 @@ describe('Uploader component', () => {
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
+				<AuthStateContext.Provider value={appState}>
 					<Uploader />
 				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
@@ -80,7 +80,7 @@ describe('Uploader component', () => {
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
+				<AuthStateContext.Provider value={appState}>
 					<Uploader />
 				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
@@ -119,7 +119,7 @@ describe('Uploader component', () => {
 
 		render(
 			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={authState}>
+				<AuthStateContext.Provider value={appState}>
 					<Uploader />
 				</AuthStateContext.Provider>
 			</DependencyContext.Provider>
@@ -153,7 +153,7 @@ describe('Uploader component', () => {
 
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={authState}>
+					<AuthStateContext.Provider value={appState}>
 						<Uploader />
 					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
@@ -194,7 +194,7 @@ describe('Uploader component', () => {
 
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={authState}>
+					<AuthStateContext.Provider value={appState}>
 						<Uploader />
 					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
@@ -235,7 +235,7 @@ describe('Uploader component', () => {
 
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={authState}>
+					<AuthStateContext.Provider value={appState}>
 						<Uploader />
 					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
@@ -271,7 +271,7 @@ describe('Uploader component', () => {
 
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={authState}>
+					<AuthStateContext.Provider value={appState}>
 						<Uploader />
 					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
@@ -311,7 +311,7 @@ describe('Uploader component', () => {
 
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={authState}>
+					<AuthStateContext.Provider value={appState}>
 						<Uploader />
 					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
@@ -366,7 +366,7 @@ describe('Uploader component', () => {
 
 			render(
 				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={authState}>
+					<AuthStateContext.Provider value={appState}>
 						<Uploader />
 					</AuthStateContext.Provider>
 				</DependencyContext.Provider>
@@ -416,12 +416,12 @@ describe('Uploader component', () => {
 			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
 
 			// simulate user with all their demo-mode uploads used up
-			(authState.user as TAuthorizedUserResponse).imageCount =
+			(appState.user as TAuthorizedUserResponse).imageCount =
 				MAX_DEMO_UPLOAD_COUNT - 1;
 
 			const { container } = render(
 				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={authState}>
+					<AuthStateContext.Provider value={appState}>
 						<AppMessage />
 						<Uploader />
 					</AuthStateContext.Provider>

@@ -11,6 +11,7 @@ import { sequenceT } from 'fp-ts/lib/Apply';
 import { makeStyles } from '@material-ui/styles';
 import theme from '../../theme';
 import { TUserState } from '../../Auth/state/authStateTypes';
+import { useAppActions } from '../../appState/useAppState';
 
 const useStyles = makeStyles({
 	fileForm: {
@@ -38,7 +39,7 @@ const useStyles = makeStyles({
 });
 
 interface IProps {
-	uploadDispatch: Dispatch<TUploaderActions>;
+	dispatch: Dispatch<TUploaderActions>;
 	acceptedExtensions: Array<string>;
 	submitIsDisabled: boolean;
 	user: TUserState;
@@ -49,10 +50,11 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 	user,
 	acceptedExtensions,
 	submitIsDisabled,
-	uploadDispatch,
 	selectedFiles,
 }) => {
 	const classes = useStyles();
+
+	const actions = useAppActions();
 
 	// does nothing if ownerID or FileList is nullable
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,9 +67,7 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 				fromNullable(e.target.files),
 				fromNullable(user)
 			),
-			map((fileListArgs) =>
-				uploadDispatch({ type: 'FILES_CHANGED', payload: fileListArgs })
-			),
+			map(actions.FILES_CHANGED),
 			// We reset the native file input after every change, whether
 			// it passes pre-processing or not.
 			// This keeps the native file input from getting out-of-sync
@@ -79,10 +79,7 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		uploadDispatch({
-			type: 'PROCESS_FILES',
-			payload: selectedFiles,
-		});
+		actions.PROCESS_FILES(selectedFiles);
 	};
 
 	return (

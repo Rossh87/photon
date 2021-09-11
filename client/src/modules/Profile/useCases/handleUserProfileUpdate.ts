@@ -2,18 +2,22 @@ import { updateUserProfilePreferences } from '../http/updateUserProfilePreferenc
 import { map, of, chainFirst } from 'fp-ts/ReaderTaskEither';
 import { asks as RTAsks, chain as RTChain } from 'fp-ts/ReaderTask';
 import { map as EMap, mapLeft as EMapLeft } from 'fp-ts/Either';
-import { TAuthActions } from '../../Auth/state/authStateTypes';
 import { IDependencies } from '../../../core/dependencyContext';
 import { pipe } from 'fp-ts/lib/function';
 import { userFacingPropsToPreferences } from '../helpers';
 import { BaseError } from '../../../core/error';
 import { IUserFacingProfileProps } from '../sharedProfileTypes';
+import { TAppAction } from '../../appState/appStateTypes';
+import { DEFAULT_APP_MESSAGE_TIMEOUT } from '../../../CONSTANTS';
+import { PayloadFPReader } from 'react-use-fp';
 
-export const handleUserProfileUpdate = (newPrefs: IUserFacingProfileProps) =>
+export const handleUserProfileUpdate: PayloadFPReader<
+	TAppAction,
+	IUserFacingProfileProps,
+	IDependencies<TAppAction>
+> = (newPrefs) =>
 	pipe(
-		of<IDependencies<TAuthActions>, BaseError, IUserFacingProfileProps>(
-			newPrefs
-		),
+		of(newPrefs),
 		map(userFacingPropsToPreferences),
 		chainFirst(updateUserProfilePreferences),
 		RTChain((e) =>
@@ -21,10 +25,30 @@ export const handleUserProfileUpdate = (newPrefs: IUserFacingProfileProps) =>
 				pipe(
 					e,
 					EMap((a) =>
-						dispatch({ type: 'UPDATE_PROFILE_ACTION', payload: a })
+						dispatch({
+							type: 'AUTH/UPDATE_PROFILE_ACTION',
+							payload: a,
+						})
 					),
 					EMapLeft((e) =>
-						dispatch({ type: 'ADD_AUTH_ERR', payload: e })
+						dispatch({
+							type: 'META/ADD_APP_MESSAGE',
+							payload: {
+								messageKind: 'repeat',
+								eventName:
+									'request to update user profile props rejected',
+								displayMessage: e.message,
+								severity: 'warning',
+								action: {
+									handler: () =>
+										dispatch({
+											type: 'META/REMOVE_APP_MESSAGE',
+										}),
+									kind: 'simple',
+								},
+								timeout: DEFAULT_APP_MESSAGE_TIMEOUT,
+							},
+						})
 					)
 				)
 			)

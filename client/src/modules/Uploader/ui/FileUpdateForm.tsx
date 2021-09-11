@@ -4,16 +4,17 @@ import TextField from '@material-ui/core/TextField';
 import { fromPredicate, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/function';
 import { TPreprocessingResult } from '../domain/domainTypes';
+import { useAppActions } from '../../appState/useAppState';
 
 interface IFileUpdateFormProps {
-	uploadDispatch: Dispatch<TUploaderActions>;
+	dispatch: Dispatch<TUploaderActions>;
 	closeAccordion: () => void;
 	imageFile: TPreprocessingResult;
 }
 
 const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 	closeAccordion,
-	uploadDispatch,
+	dispatch,
 	imageFile,
 }) => {
 	const [inputState, setInputState] = React.useState<string>('');
@@ -21,11 +22,10 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setInputState(e.target.value);
 
+	const actions = useAppActions();
+
 	const setNewDisplayName = () =>
-		uploadDispatch({
-			type: 'INIT_NAME_UPDATE',
-			payload: [imageFile, inputState],
-		});
+		actions.INIT_NAME_UPDATE([imageFile, inputState]);
 
 	const resetFileNameInput = () => setInputState('');
 

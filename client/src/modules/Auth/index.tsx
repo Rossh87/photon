@@ -1,19 +1,14 @@
 import React, { useEffect } from 'react';
 import { fetchUserData } from './http/fetchUserData';
-import {useAuthDispatch} from './state/useAuthState';
+import { useAppDispatch } from '../appState/useAppState';
+const AuthManager: React.FunctionComponent = ({ children }) => {
+	const appDispatch = useAppDispatch();
 
-const AuthManager: React.FunctionComponent = ({children}) => {
-    const authDispatch = useAuthDispatch();
+	useEffect(() => {
+		fetchUserData(appDispatch);
+	}, []);
 
-    useEffect(() => {
-        fetchUserData(authDispatch);
-    }, []);
-
-    return (
-        <div>
-            {children}
-        </div>
-    )
+	return <div>{children}</div>;
 };
 
 export default AuthManager;

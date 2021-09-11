@@ -1,32 +1,32 @@
-import React, { Dispatch } from 'react';
-import {
-	formatBPPropsForLocal,
-	formatBPStateForDispatch,
-} from '../helpers/formatBPStateForDispatch';
-import {
-	ListItem,
-	ListItemSecondaryAction,
-	ListItemText,
-	AccordionSummary,
-	AccordionDetails,
-	TextField,
-	Button,
-	makeStyles,
-	Theme,
-} from '@material-ui/core';
+import React, { Dispatch, useState } from 'react';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Accordion from '@material-ui/core/Accordion';
 import { sizeFromBreakpoint } from '../useCases/createSrcset';
 import { ChangeEventHandler } from 'react';
 import SettingsIcon from '@material-ui/icons/Settings';
+import { TBreakpointUI } from '../state/imageConfigurationStateTypes';
+import { useAppDispatch } from '../../appState/useAppState';
 import {
-	IBreakpointUI,
-	ILocalBreakpointUI,
-	TDialogActions,
-	TUserBreakpointUI,
-} from '../state/imageDialogStateTypes';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+	breakpointToBreakpointUI,
+	breakpointUIToBreakpoint,
+} from '../helpers/breakpointMappers';
+import { ISavedBreakpoint } from '../../../../../sharedTypes/Breakpoint';
+import EditIcon from '@material-ui/icons/Edit';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { Close } from '@material-ui/icons';
+import RestoreIcon from '@material-ui/icons/Restore';
 
 const useStyles = makeStyles((theme: Theme) => {
 	return {
@@ -37,63 +37,50 @@ const useStyles = makeStyles((theme: Theme) => {
 		keepButton: {
 			color: theme.palette.success.main,
 		},
+
+		successButton: {
+			color: theme.palette.success.main,
+		},
+
+		clearButton: {
+			color: theme.palette.error.main,
+		},
+
+		editButton: {
+			color: theme.palette.primary.main,
+		},
+
+		closeButton: {
+			color: theme.palette.common.black,
+		},
 	};
 });
 
-const BreakPointListItem: React.FunctionComponent<
-	IBreakpointUI & { dispatch: Dispatch<TDialogActions> }
-> = (props) => {
+const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint> = (
+	props
+) => {
 	const classes = useStyles();
 
-	const {
-		mediaWidth,
-		slotUnit,
-		slotWidth,
-		queryType,
-		editing,
-		_id,
-		origin,
-		dispatch,
-	} = props;
+	// INCOMING props.  These are what render initial UI, and will be sync'ed
+	// every render
+	const propState = breakpointToBreakpointUI(props);
+
+	// LOCAL component state.  These are what track form fields.
+	const [formState, setFormState] = useState<TBreakpointUI>({ ...propState });
+
+	const dispatch = useAppDispatch();
 
 	const [isExpanded, setExpanded] = React.useState(false);
 
-	// state to track user's edits
-	const [bpState, setBPState] = React.useState<ILocalBreakpointUI>({
-		mediaWidth: '10',
-		slotUnit: 'px',
-		slotWidth: '10',
-		queryType: 'max',
-		editing: false,
-		_id: '1234',
-		origin: 'user',
-		validationErrs: [null, null, null, null] as any,
-	});
-
-	React.useEffect(() => {
-		// This essentially serves as a reset whenever we update props by submitting changes
-		setBPState(
-			formatBPPropsForLocal({
-				mediaWidth,
-				slotUnit,
-				slotWidth,
-				queryType,
-				editing,
-				_id,
-				origin,
-				validationErrs: [null, null, null, null] as any,
-			})
-		);
-	}, [props]);
-
 	const handleChange =
-		(key: keyof typeof bpState): ChangeEventHandler<HTMLInputElement> =>
-		(e) =>
-			setBPState((prev) => ({
-				...bpState,
+		(key: keyof typeof propState): ChangeEventHandler<HTMLInputElement> =>
+		(e) => {
+			setFormState((prev) => ({
+				...prev,
 				editing: prev.editing || prev[key] !== e.target.value,
 				[key]: e.target.value,
 			}));
+		};
 
 	const handleSubmit = () => {
 		setExpanded(false);
@@ -101,105 +88,72 @@ const BreakPointListItem: React.FunctionComponent<
 
 	const submitEdits = () => {
 		setExpanded(false);
-		const stateToDispatch = {
-			...formatBPStateForDispatch(bpState),
-			editing: false,
-		};
-
+		setFormState({ ...formState, editing: false });
 		dispatch({
-			type: 'UPDATE_ONE_BREAKPOINT',
-			payload: stateToDispatch as TUserBreakpointUI,
+			type: 'IMAGE_CONFIG/UPDATE_ONE_BREAKPOINT',
+			payload: breakpointUIToBreakpoint(formState),
 		});
-
-		setBPState(
-			formatBPPropsForLocal({
-				mediaWidth,
-				slotUnit,
-				slotWidth,
-				queryType,
-				editing: false,
-				_id,
-				origin,
-				validationErrs: [null, null, null, null] as any,
-			})
-		);
 	};
 
 	const discardEdits = () => {
 		setExpanded(false);
-		setBPState(
-			formatBPPropsForLocal({
-				mediaWidth,
-				slotUnit,
-				slotWidth,
-				queryType,
-				editing: false,
-				_id,
-				origin,
-				validationErrs: [null, null, null, null] as any,
-			})
-		);
+		setFormState(propState);
 	};
 
 	const handleDelete = () =>
-		dispatch({ type: 'DELETE_BREAKPOINT', payload: _id });
+		dispatch({
+			type: 'IMAGE_CONFIG/DELETE_BREAKPOINT',
+			payload: propState._id,
+		});
 
 	const renderControls = () => {
 		if (origin === 'default') {
 			return null;
 		}
 
-		if (!isExpanded && !bpState.editing) {
+		if (!isExpanded && !formState.editing) {
 			return (
 				<>
-					<Button
-						className={classes.deleteButton}
-						variant="outlined"
-						onClick={handleDelete}
-						data-testid="bp-delete"
-					>
-						Delete
-					</Button>
-					<Button
-						variant="outlined"
+					<IconButton onClick={handleDelete} data-testid="bp-delete">
+						<DeleteIcon />
+					</IconButton>
+					<IconButton
 						onClick={() => setExpanded(true)}
 						data-testid="bp-edit"
+						className={classes.editButton}
 					>
-						Edit
-					</Button>
+						<EditIcon />
+					</IconButton>
 				</>
 			);
-		} else if (isExpanded && !bpState.editing) {
+		} else if (isExpanded && !formState.editing) {
 			return (
-				<Button
-					variant="outlined"
+				<IconButton
 					onClick={() => {
 						setExpanded(false);
 					}}
 					data-testid="bp-close"
+					className={classes.closeButton}
 				>
-					Close
-				</Button>
+					<Close />
+				</IconButton>
 			);
 		} else {
 			return (
 				<>
-					<Button
-						variant="outlined"
-						className={classes.deleteButton}
+					<IconButton
 						onClick={discardEdits}
 						data-testid="bp-discard"
+						// className={classes.clearButton}
 					>
-						Discard
-					</Button>
-					<Button
-						variant="outlined"
-						className={classes.keepButton}
+						<RestoreIcon />
+					</IconButton>
+					<IconButton
 						onClick={submitEdits}
-						data-testid="bp-keep"
+						className={classes.keepButton}
 					>
-						Keep
-					</Button>
+						<CheckIcon />
+					</IconButton>
 				</>
 			);
 		}
@@ -212,7 +166,7 @@ const BreakPointListItem: React.FunctionComponent<
 			dense
 			disableGutters={true}
 		>
-			<Accordion expanded={bpState.editing || isExpanded}>
+			<Accordion expanded={isExpanded || formState.editing}>
 				<AccordionSummary>
 					<ListItemAvatar>
 						<Avatar>
@@ -220,7 +174,9 @@ const BreakPointListItem: React.FunctionComponent<
 						</Avatar>
 					</ListItemAvatar>
 					<ListItemText
-						primary={sizeFromBreakpoint(bpState)}
+						primary={sizeFromBreakpoint(
+							breakpointUIToBreakpoint(formState)
+						)}
 						secondary={
 							origin === 'default' ? 'Generated by default' : null
 						}
@@ -235,17 +191,17 @@ const BreakPointListItem: React.FunctionComponent<
 					 */}
 					<form onSubmit={handleSubmit}>
 						<TextField
-							value={bpState.queryType}
+							value={formState.queryType}
 							onChange={handleChange('queryType')}
 							select
 							label="query type"
-							id={`queryType-input-${bpState._id}`}
+							id={`queryType-input-${formState._id}`}
 						>
 							<option value="min">min-width</option>
 							<option value="max">max-width</option>
 						</TextField>
 						<TextField
-							value={bpState.mediaWidth}
+							value={formState.mediaWidth}
 							onChange={handleChange('mediaWidth')}
 							inputProps={{
 								inputMode: 'numeric',
@@ -254,14 +210,14 @@ const BreakPointListItem: React.FunctionComponent<
 							}}
 							label="media width"
 							name="mediaWidth"
-							id={`mediaWidth-input-${bpState._id}`}
-							data-testid={`mediaWidth-input-${bpState._id}`}
+							id={`mediaWidth-input-${formState._id}`}
+							data-testid={`mediaWidth-input-${formState._id}`}
 						>
 							<option value="min">max-width</option>
 							<option value="max">min-width</option>
 						</TextField>
 						<TextField
-							value={bpState.slotWidth}
+							value={formState.slotWidth}
 							onChange={handleChange('slotWidth')}
 							inputProps={{
 								inputMode: 'numeric',
@@ -270,15 +226,15 @@ const BreakPointListItem: React.FunctionComponent<
 							}}
 							label="slot width"
 							name="slotWidth"
-							id={`slotWidth-input-${bpState._id}`}
+							id={`slotWidth-input-${formState._id}`}
 						/>
 						<TextField
-							value={bpState.slotUnit}
+							value={formState.slotUnit}
 							onChange={handleChange('slotUnit')}
 							select
 							label="slot unit"
 							name="slotUnit"
-							id={`slotUnit-input-${bpState._id}`}
+							id={`slotUnit-input-${formState._id}`}
 						>
 							<option value="vw">vw</option>
 							<option value="px">px</option>

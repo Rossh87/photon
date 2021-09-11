@@ -1,7 +1,8 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
+import { TSavedBreakpoints } from '../../../../../sharedTypes/Breakpoint';
 import { TAvailableImageWidths } from '../../../../../sharedTypes/Upload';
-import { TUserBreakpointUI } from '../state/imageDialogStateTypes';
+import { TUserBreakpointUI } from '../state/imageConfigurationStateTypes';
 import { createSrcset } from '../useCases/createSrcset';
 
 const useStyles = makeStyles((theme) => ({
@@ -12,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface CodeDisplayProps {
-	breakpoints: TUserBreakpointUI[];
+	breakpoints: TSavedBreakpoints;
 	availableWidths: TAvailableImageWidths;
 	publicPathPrefix: string;
 }

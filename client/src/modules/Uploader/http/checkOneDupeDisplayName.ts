@@ -13,6 +13,7 @@ import {
 } from 'server/modules/Upload/sharedUploadTypes';
 import { DEDUPLICATION_ENDPOINT } from './endpoints';
 import { BaseError } from '../../../core/error';
+import { TAppAction } from '../../appState/appStateTypes';
 
 // TODO: this code would ideally be merged with ./getDupeDisplayNames.ts
 const toPayload: (newName: string) => TDedupeNamesPayload = (n) => ({
@@ -27,7 +28,7 @@ const requestDupes =
 		});
 
 export const checkOneDupeDisplayName =
-	(newName: string) => (deps: IDependencies<TUploaderActions>) =>
+	(newName: string) => (deps: IDependencies<TAppAction>) =>
 		tryCatch(
 			() =>
 				pipe(

@@ -12,7 +12,7 @@ import { map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
 import { pipe, flow } from 'fp-ts/lib/function';
 import { BaseError } from '../../../core/error';
 import { local } from 'fp-ts/lib/ReaderTaskEither';
-import { TUploaderActions } from '../state/uploadStateTypes';
+import { TAppAction } from '../../appState/appStateTypes';
 
 const toMetadata: (x: IResizingData) => IUploadsRequestPayload = (x) => {
 	return pipe(
@@ -43,5 +43,5 @@ export const _requestUploadURIs =
 
 export const requestUploadURIs = flow(
 	_requestUploadURIs,
-	local<IDependencies<TUploaderActions>, THTTPRunner>((deps) => deps.http)
+	local<IDependencies<TAppAction>, THTTPRunner>((deps) => deps.http)
 );

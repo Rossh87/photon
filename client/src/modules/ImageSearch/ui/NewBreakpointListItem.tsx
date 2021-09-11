@@ -16,21 +16,24 @@ import Accordion from '@material-ui/core/Accordion';
 import { sizeFromBreakpoint } from '../useCases/createSrcset';
 import { ChangeEventHandler } from 'react';
 import {
-	IBreakpointUI,
-	TDialogActions,
+	TBreakpointUI,
+	TImageConfigurationActions,
 	TUserBreakpointUI,
-} from '../state/imageDialogStateTypes';
+} from '../state/imageConfigurationStateTypes';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { useAppDispatch } from '../../appState/useAppState';
 
 interface INewBreakpointItemProps {
-	dispatch: Dispatch<TDialogActions>;
+	dispatch: Dispatch<TImageConfigurationActions>;
 }
 
 const NewBreakpointListItem: React.FunctionComponent<INewBreakpointItemProps> =
-	({ dispatch }) => {
+	() => {
+		const dispatch = useAppDispatch();
+
 		const handleClick: React.MouseEventHandler = (e) => {
 			e.preventDefault();
-			dispatch({ type: 'CREATE_NEW_BREAKPOINT' });
+			dispatch({ type: 'IMAGE_CONFIG/CREATE_NEW_BREAKPOINT' });
 		};
 		return (
 			<ListItem button onClick={handleClick} dense disableGutters={true}>

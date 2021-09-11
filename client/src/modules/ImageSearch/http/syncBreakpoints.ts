@@ -9,7 +9,7 @@ import { tryCatch, TaskEither } from 'fp-ts/lib/TaskEither';
 import { BaseError } from '../../../core/error';
 import { IBreakpointTransferObject, IClientUpload } from 'sharedTypes/Upload';
 import { pipe } from 'fp-ts/lib/function';
-import { TDialogActions } from '../state/imageDialogStateTypes';
+import { TAppAction } from '../../appState/appStateTypes';
 
 const putUpdated =
 	(data: IBreakpointTransferObject): IHttpCall<IClientUpload> =>
@@ -17,8 +17,7 @@ const putUpdated =
 		httpLib.put(SYNC_BREAKPOINT_ENDPOINT, data, { withCredentials: true });
 
 export const syncBreakpoints =
-	(data: IBreakpointTransferObject) =>
-	(deps: IDependencies<TDialogActions>) =>
+	(data: IBreakpointTransferObject) => (deps: IDependencies<TAppAction>) =>
 		tryCatch(
 			() => pipe(data, putUpdated, deps.http, extractResponseData),
 			(e) =>

@@ -7,8 +7,9 @@ import {
 import { UPDATE_PROFILE_PREFERENCES_ENDPOINT } from './endpoints';
 import { tryCatch } from 'fp-ts/TaskEither';
 import { pipe } from 'fp-ts/lib/function';
-import { TAuthActions } from '../../Auth/state/authStateTypes';
 import { BaseError } from '../../../core/error';
+import { TAuthActions } from '../../Auth/state/authStateTypes';
+import { TAppAction } from '../../appState/appStateTypes';
 
 const makeUpdateRequest =
 	(newPrefs: IUserProfilePreferencesTransportObject): IHttpCall<void> =>
@@ -19,11 +20,10 @@ const makeUpdateRequest =
 
 export const updateUserProfilePreferences =
 	(newPrefs: IUserProfilePreferencesTransportObject) =>
-	(deps: IDependencies<TAuthActions>) =>
+	(deps: IDependencies<TAppAction>) =>
 		tryCatch(
 			() => pipe(makeUpdateRequest(newPrefs), deps.http),
 			(e) => {
-				console.log(e);
 				return new BaseError(
 					'Attempt to update user profile preferences failed',
 					e

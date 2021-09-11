@@ -3,25 +3,12 @@ import React, { useEffect } from 'react';
 import ImageDisplay from './ui/ImageDisplay';
 import ImageSearchBar from './ui/ImageSearchBar';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import ImageSearchProvider, {
-	useImageSearchDispatch,
-} from './state/useImageSearchState';
+import { useAppActions } from '../appState/useAppState';
 
-const useStyles = makeStyles((theme: Theme) => ({
-	paper: {
-		// maxWidth: 936,
-		// margin: 'auto',
-		// overflow: 'hidden',
-		padding: theme.spacing(2),
-	},
-}));
+export const ImageSearchPage: React.FunctionComponent = (props) => {
+	const actions = useAppActions();
 
-export const _ImageSearch: React.FunctionComponent = (props) => {
-	const classes = useStyles();
-
-	const imageSearchDispatch = useImageSearchDispatch();
-
-	useEffect(() => imageSearchDispatch({ type: 'FETCH_IMG_DATA' }), []);
+	useEffect(() => actions.FETCH_IMG_DATA(), []);
 
 	return (
 		<>
@@ -30,13 +17,5 @@ export const _ImageSearch: React.FunctionComponent = (props) => {
 		</>
 	);
 };
-
-// export component wrapped with Provider separately so that we can
-// easily furnish mock contexts in tests
-const ImageSearchPage: React.FunctionComponent = (props) => (
-	<ImageSearchProvider>
-		<_ImageSearch />
-	</ImageSearchProvider>
-);
 
 export default ImageSearchPage;

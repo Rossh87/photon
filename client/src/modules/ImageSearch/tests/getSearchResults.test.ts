@@ -19,7 +19,7 @@ describe('searching users image data', () => {
 		};
 
 		const expected: ISearchedImagesEmittedAction = {
-			type: 'SEARCHED_IMAGES_EMITTED',
+			type: 'IMAGES/SEARCHED_IMAGES_EMITTED',
 			payload: [Object.assign({}, mockImage1)],
 		};
 
@@ -40,7 +40,7 @@ describe('searching users image data', () => {
 		};
 
 		const expected: ISearchedImagesEmittedAction = {
-			type: 'SEARCHED_IMAGES_EMITTED',
+			type: 'IMAGES/SEARCHED_IMAGES_EMITTED',
 			payload: [Object.assign({}, mockImage1)],
 		};
 
@@ -61,7 +61,7 @@ describe('searching users image data', () => {
 		};
 
 		const expected: ISearchedImagesEmittedAction = {
-			type: 'SEARCHED_IMAGES_EMITTED',
+			type: 'IMAGES/SEARCHED_IMAGES_EMITTED',
 			payload: [
 				Object.assign({}, mockImage3),
 				Object.assign({}, mockImage4),

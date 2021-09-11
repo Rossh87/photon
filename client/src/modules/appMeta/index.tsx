@@ -1,10 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import {
-	IAdvancedMessageAction,
-	IAppMessage,
-	ISimpleMessageAction,
-	TAppMessageState,
-} from '../Auth/state/authStateTypes';
+import { ISimpleMessageAction, IAdvancedMessageAction } from './appMetaTypes';
 import {
 	Button,
 	IconButton,
@@ -14,8 +9,8 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { CloseOutlined } from '@material-ui/icons';
-import { isAdvancedMessageAction } from '../Auth/state/guards';
-import { useAuthDispatch, useAuthState } from '../Auth/state/useAuthState';
+import { isAdvancedMessageAction } from './guards';
+import { useAppState, useAppDispatch } from '../appState/useAppState';
 
 const useStyles = makeStyles((theme) => ({
 	actionButton: {
@@ -30,8 +25,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AppMessage: FunctionComponent = () => {
-	const { appMessage } = useAuthState();
-	const authDispatch = useAuthDispatch();
+	const { appMeta } = useAppState();
+	const appMessage = appMeta.appMessage;
+	const appDispatch = useAppDispatch();
 	const classes = useStyles();
 
 	const renderSimpleAction = (a: ISimpleMessageAction) => (
@@ -72,7 +68,7 @@ const AppMessage: FunctionComponent = () => {
 			anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
 			data-testid="app-message-snackbar"
 			autoHideDuration={appMessage.timeout}
-			onClose={() => authDispatch({ type: 'REMOVE_APP_MESSAGE' })}
+			onClose={() => appDispatch({ type: 'META/REMOVE_APP_MESSAGE' })}
 			classes={{ root: classes.alert }}
 		>
 			<Alert

@@ -2,16 +2,16 @@ import { fold as BFold } from 'fp-ts/lib/boolean';
 import { pipe } from 'fp-ts/lib/function';
 import {
 	IAppMessage,
-	IAuthState,
+	TAppMetaState,
 	TSingleNoticeMessage,
-} from '../state/authStateTypes';
-import { isSingleNoticeMessage } from '../state/guards';
+} from './appMetaTypes';
+import { isSingleNoticeMessage } from './guards';
 import { fromPredicate, fold as OFold } from 'fp-ts/lib/Option';
 
 const handleSingleNotice =
-	(currState: IAuthState) =>
-	(message: TSingleNoticeMessage): IAuthState =>
-		pipe(
+	(currState: TAppMetaState) =>
+	(message: TSingleNoticeMessage): TAppMetaState => {
+		return pipe(
 			currState[message.displayTrackingProp],
 			BFold(
 				() => ({
@@ -22,13 +22,14 @@ const handleSingleNotice =
 				() => ({ ...currState })
 			)
 		);
+	};
 
 // if incoming message is single-notice and user has already viewed, it
 // don't display it.  Otherwise, display and update relevant user props
 export const handleIncomingMessage = (
-	currState: IAuthState,
+	currState: TAppMetaState,
 	message: IAppMessage
-): IAuthState =>
+): TAppMetaState =>
 	pipe(
 		message,
 		fromPredicate(isSingleNoticeMessage),

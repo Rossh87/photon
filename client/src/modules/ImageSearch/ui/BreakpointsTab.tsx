@@ -1,19 +1,13 @@
 import { List, makeStyles } from '@material-ui/core';
-import { TabPanel } from '@material-ui/lab';
-import { flow } from 'fp-ts/lib/function';
-import React, { Dispatch, FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react';
 import { TAvailableImageWidths } from '../../../../../sharedTypes/Upload';
-import {
-	makeDefaultUIBreakpoint,
-	makeDefaultUIBreakpoints,
-} from '../helpers/makeDefaultUIBreakpoints';
-import { IDialogState, TDialogActions } from '../state/imageDialogStateTypes';
+import { useAppDispatch } from '../../appState/useAppState';
+import { IImageConfigurationState } from '../state/imageConfigurationStateTypes';
 import BreakPointListItem from './BreakPointListItem';
 import NewBreakpointListItem from './NewBreakpointListItem';
 
 interface BreakpointDisplayProps {
-	dispatch: Dispatch<TDialogActions>;
-	dialogState: IDialogState;
+	dialogState: IImageConfigurationState;
 	availableWidths: TAvailableImageWidths;
 }
 
@@ -25,32 +19,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BreakpointsTab: FunctionComponent<BreakpointDisplayProps> = ({
-	dispatch,
 	dialogState,
 	availableWidths,
 }) => {
+	const dispatch = useAppDispatch();
+
 	const classes = useStyles();
 	return (
 		<List className={classes.list}>
 			<NewBreakpointListItem dispatch={dispatch} />
 			{dialogState.breakpoints.map((bp) => {
-				return (
-					<BreakPointListItem
-						{...bp}
-						dispatch={dispatch}
-						key={bp._id}
-					/>
-				);
+				return <BreakPointListItem {...bp} key={bp._id} />;
 			})}
-			{availableWidths.map(
-				flow(makeDefaultUIBreakpoint, (bp) => (
-					<BreakPointListItem
-						{...bp}
-						dispatch={dispatch}
-						key={bp._id}
-					/>
-				))
-			)}
 		</List>
 	);
 };

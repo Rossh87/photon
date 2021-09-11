@@ -14,9 +14,9 @@ TypeScript error in /home/ross/Desktop/dev/photon/client/src/modules/Landing/ind
 Type '{ user: TUserState; }' is not assignable to type 'IntrinsicAttributes & { children?: ReactNode; }'.
   Property 'user' does not exist on type 'IntrinsicAttributes & { children?: ReactNode; }'.  TS2322
 
-    11 |     const authState = useAuthState();
+    11 |     const appState = useAppState();
     12 | 
-  > 13 |     const renderChild: (u: TUserState) => React.ReactElement = (u) => u ? <Uploader user={authState.user} /> : <Login />
+  > 13 |     const renderChild: (u: TUserState) => React.ReactElement = (u) => u ? <Uploader user={appState.user} /> : <Login />
        |                                                                                     ^
     14 | 
     15 |     return(
@@ -34,8 +34,8 @@ src/modules/Auth/index.tsx
   Line 1:28:  'useReducer' is defined but never used                                                                           @typescript-eslint/no-unused-vars
   Line 2:8:   'App' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
   Line 4:8:   'AuthProvider' is defined but never used                                                                         @typescript-eslint/no-unused-vars
-  Line 4:40:  'useAuthState' is defined but never used                                                                         @typescript-eslint/no-unused-vars
-  Line 11:8:  React Hook useEffect has a missing dependency: 'authDispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 4:40:  'useAppState' is defined but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 11:8:  React Hook useEffect has a missing dependency: 'appDispatch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 src/modules/Content/index.tsx
   Line 2:8:   'AppBar' is defined but never used            @typescript-eslint/no-unused-vars
