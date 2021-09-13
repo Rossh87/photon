@@ -1,8 +1,9 @@
 import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
-import { List, Button, ListItem, IconButton, Hidden } from '@material-ui/core';
-import navItems from '../Header/navItems';
+import List from '@material-ui/core/List';
+import Hidden from '@material-ui/core/Hidden';
+import navItems from '../navItems';
 import NavItem from './NavItem';
 
 export const navLinkActiveColor = '#4fc3f7';
@@ -38,9 +39,30 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 	const classes = useStyles();
 
 	return (
-		<>
+		<nav>
 			<Hidden smDown>
-				<Drawer {...passThrough} anchor="left" variant="permanent">
+				<Drawer
+					PaperProps={{
+						style: {
+							boxShadow:
+								'0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)',
+							backgroundColor: 'white',
+							border: 'none',
+							width: '100px',
+							height: '350px',
+							marginTop: '157px',
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'center',
+							justifyContent: 'space-around',
+							marginLeft: '1vw',
+							marginRight: '5vw',
+							borderRadius: '10px',
+						},
+					}}
+					anchor="left"
+					variant="permanent"
+				>
 					<List className={classes.navList}>
 						{navItems.map((vals, i) => (
 							<NavItem
@@ -70,7 +92,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 					</List>
 				</Drawer>
 			</Hidden>
-		</>
+		</nav>
 	);
 };
 

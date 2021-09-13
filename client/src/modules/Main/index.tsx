@@ -1,17 +1,6 @@
 import * as React from 'react';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import {
-	CssBaseline,
-	Container,
-	Grid,
-	Paper,
-	Box,
-	useMediaQuery,
-	Hidden,
-} from '@material-ui/core';
-import clsx from 'clsx';
-import Navigator from '../Navigator';
-import Header from '../Header';
+import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Paper, useMediaQuery, Hidden } from '@material-ui/core';
 import theme from '../theme';
 import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
@@ -72,51 +61,12 @@ const useStyles = makeStyles({
 
 const Main: React.FunctionComponent = () => {
 	const classes = useStyles();
-	const [drawerOpen, setDrawerOpen] = React.useState(false);
 
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
-	const handleDrawerToggle = () => {
-		setDrawerOpen(!drawerOpen);
-	};
-
 	return (
-		<ThemeProvider theme={theme}>
-			<CssBaseline />
-			<nav>
-				<Navigator
-					PaperProps={{
-						style: {
-							boxShadow:
-								'0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)',
-							backgroundColor: 'white',
-							border: 'none',
-							width: '100px',
-							height: '350px',
-							marginTop: '157px',
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-							justifyContent: 'space-around',
-							marginLeft: '1vw',
-							marginRight: '5vw',
-							borderRadius: '10px',
-						},
-					}}
-					open={drawerOpen}
-					onClose={() => setDrawerOpen(false)}
-					setDrawerOpen={setDrawerOpen}
-				/>
-			</nav>
-
-			<Header onDrawerToggle={handleDrawerToggle} />
-			{/* <Container
-				component="main"
-				maxWidth="lg"
-				className={matches ? classes.containerWithDrawer : ''}
-				fixed
-			> */}
+		<div>
 			<Grid container className={classes.mainGrid}>
 				<Hidden xsDown>
 					<Grid
@@ -155,8 +105,7 @@ const Main: React.FunctionComponent = () => {
 					></Grid>
 				</Hidden>
 			</Grid>
-			{/* </Container> */}
-		</ThemeProvider>
+		</div>
 	);
 };
 

@@ -31,8 +31,14 @@ function Copyright() {
 }
 
 const useStyles = makeStyles((theme) => ({
+	background: {
+		// background: 'rgb(255,255,255)',
+		background:
+			'linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(193,180,224,1) 52%, rgba(81,45,168,1) 79%)',
+	},
+
 	paper: {
-		marginTop: theme.spacing(8),
+		// marginTop: theme.spacing(8),
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
@@ -62,42 +68,52 @@ export default function SignIn() {
 	const classes = useStyles();
 
 	return (
-		<Container component="main" maxWidth="sm">
-			<CssBaseline />
-			<Paper className={classes.paper}>
-				<Grid
-					container
-					direction="column"
-					alignItems="center"
-					justifyContent="center"
-				>
-					<Avatar className={classes.avatar}>
-						<LockOutlinedIcon />
-					</Avatar>
-					<Typography component="h1" variant="h5">
-						Sign In
-					</Typography>
-				</Grid>
-				<Grid
-					container
-					direction="column"
-					alignItems="center"
-					className={classes.buttonGrid}
-					spacing={3}
-				>
-					<Grid item>
-						<a
-							className={classes.anchor}
-							href={GOOGLE_OAUTH_ENDPOINT}
+		<Box className={classes.background} width="100vw" minHeight="100vh">
+			<Box width="50%">
+				<Container component="main" maxWidth="sm">
+					<CssBaseline />
+					<Paper className={classes.paper}>
+						<Grid
+							container
+							direction="column"
+							alignItems="center"
+							justifyContent="center"
 						>
-							<GoogleButton />
-						</a>
-					</Grid>
-					<Grid item>
-						<GithubOAuthButton />
-					</Grid>
-				</Grid>
-				{/* <Grid container>
+							<Avatar className={classes.avatar}>
+								<LockOutlinedIcon />
+							</Avatar>
+							<Typography component="h1" variant="h5">
+								Sign In
+							</Typography>
+						</Grid>
+						<Grid
+							container
+							direction="column"
+							alignItems="center"
+							className={classes.buttonGrid}
+							spacing={3}
+						>
+							<TextField
+								variant="outlined"
+								placeholder="Email"
+							></TextField>
+							<TextField
+								variant="outlined"
+								placeholder="Password"
+							></TextField>
+							<Grid item>
+								<a
+									className={classes.anchor}
+									href={GOOGLE_OAUTH_ENDPOINT}
+								>
+									<GoogleButton />
+								</a>
+							</Grid>
+							<Grid item>
+								<GithubOAuthButton />
+							</Grid>
+						</Grid>
+						{/* <Grid container>
 						<Grid item xs>
 							<Link href="#" variant="body2">
 								Forgot password?
@@ -109,10 +125,13 @@ export default function SignIn() {
 							</Link>
 						</Grid>
 					</Grid> */}
-			</Paper>
-			{/* <Box mt={8}>
+					</Paper>
+					{/* <Box mt={8}>
 				<Copyright />
 			</Box> */}
-		</Container>
+				</Container>
+			</Box>
+			<Box width="50%"></Box>
+		</Box>
 	);
 }
