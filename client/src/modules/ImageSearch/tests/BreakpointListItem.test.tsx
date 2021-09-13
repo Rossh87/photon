@@ -1,45 +1,27 @@
-import BreakPointListIte from '../ui/BreakPointListItem';
 import { render, screen, act, getAllByLabelText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import ImageDisplay from '../ui/ImageDisplay';
-import { IClientUpload } from 'sharedTypes/Upload';
-import { makeImageSearchProvider } from '../state/useImageSearchState';
-import { IImageSearchState } from '../state/imageSearchStateTypes';
-import { resetInternals } from 'react-use-fp';
-import DependencyContext, {
-	createDependenciesObject,
-} from '../../../core/dependencyContext';
-import { mockBreakpointData, mockImage3, mockImageData } from './mockData';
-import { ImageSearchStateContext } from '../state/useImageSearchState';
-import ImageConfigurationDialog from '../ui/ImageConfigurationDialog';
 import BreakPointListItem from '../ui/BreakPointListItem';
-import {
-	TBreakpointUI,
-	TUserBreakpointUI,
-} from '../state/imageConfigurationStateTypes';
+import { ISavedBreakpoint } from '../../../../../sharedTypes/Breakpoint';
+import { AppDispatchContext } from '../../appState/useAppState';
 
-// creating a new breakpoint:
-// 1. generate a UID for bp--only needs to be unique amongst its siblings
-// 2. populate with defaults.  'editing' status is true, accordion UI is open
-// 3. accordion cannot be closed while bp is in editing mode
-// 4. submit the updates by clicking button at right side of UI.  At this point,
-// embed code should update
-// 5. The new element needs a prop to know if it's new or not.  If it's new, discarding
-// should remove it from the UI.  If it's an edit, discarding keeps it in the UI with unmodified values
-
-let mockBP: TUserBreakpointUI;
+let mockBP: ISavedBreakpoint = {
+	queryType: 'max',
+	mediaWidth: 200,
+	slotWidth: 700,
+	slotUnit: 'px',
+	_id: '12345',
+};
 
 beforeEach(() => {
-	mockBP = Object.assign({}, mockBreakpointData);
+	mockBP = Object.assign({}, mockBP);
 });
 
-const renderWithData = (fn?: (a: any) => void) =>
-	render(<BreakPointListItem dispatch={fn || jest.fn()} {...mockBP} />);
+const renderBP = () => render(<BreakPointListItem {...mockBP} />);
 
 describe('BreakpointListItem component', () => {
 	it('displays interactive inputs when "edit" button is clicked', () => {
-		renderWithData();
+		renderBP();
 
 		const editButton = screen.getByRole('button', { name: 'Edit' });
 
@@ -51,7 +33,7 @@ describe('BreakpointListItem component', () => {
 	});
 
 	it('displays correct buttons when component is in different states', () => {
-		renderWithData();
+		renderBP();
 
 		// open editing menu
 		const editButton = screen.getByRole('button', { name: 'Edit' });
@@ -74,8 +56,12 @@ describe('BreakpointListItem component', () => {
 	it('submits accurate data when "Keep" is clicked', async () => {
 		const dispatched: any[] = [];
 		const mockDispatch = (a: any) => dispatched.push(a);
-		renderWithData(mockDispatch);
 
+		render(
+			<AppDispatchContext.Provider value={mockDispatch}>
+				<BreakPointListItem {...mockBP} />
+			</AppDispatchContext.Provider>
+		);
 		// open editing menu
 		const editButton = screen.getByRole('button', { name: 'Edit' });
 		userEvent.click(editButton);

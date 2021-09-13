@@ -1,13 +1,15 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { IImageSearchState } from '../state/imageSearchStateTypes';
 import ImageConfigurationDialog from '../ui/ImageConfigurationDialog';
-import DependencyContext, {
-	createDependenciesObject,
-} from '../../../core/dependencyContext';
-import ImageDisplay from '../ui/ImageDisplay';
 import AppMessage from '../../appMeta';
+import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';
+import mockAppState, {
+	getPopulatedImageUnderConfig,
+} from '../../../testUtils/mockState';
+import { IImageConfigurationState } from '../state/imageConfigurationStateTypes';
+import ImageDisplay from '../ui/ImageDisplay';
+
 // GETTERS: helpers that return an element, and are responsible for
 // manipulating component state up to the point that the needed element
 // is available
@@ -120,54 +122,46 @@ const tools = {
 	irresponsibleGetSnackbar,
 };
 
-export const renderDisplayWithFullDeps = (
-	mockState: IImageSearchState,
-	httpMock: any
-) => {
-	const makeDeps = createDependenciesObject(httpMock)(jest.fn);
-	const MockImageSearchProvider = makeImageSearchProvider(mockState);
-	const mockAuthState: TAuthState = {
-		user: mockUser,
-		appMessage: null,
-		errors: [],
-		demoMessageViewed: true,
-	};
-
-	render(
-		<DependencyContext.Provider value={makeDeps}>
-			<AuthStateContext.Provider value={mockAuthState}>
-				<MockImageSearchProvider>
-					<AppMessage />
-					<ImageDisplay />
-				</MockImageSearchProvider>
-			</AuthStateContext.Provider>
-		</DependencyContext.Provider>
+export const renderDisplayWithFullDeps = () => {
+	const rendered = render(
+		<WithMockAppState>
+			<ImageDisplay />
+		</WithMockAppState>
 	);
 
-	return tools;
+	return { tools, ...rendered };
 };
 
-export const renderDialogWithBreakpoints = (mockState: IImageSearchState) => {
-	render(
-		<ImageSearchStateContext.Provider value={mockState}>
+export const renderDialogWithBreakpoints = () => {
+	const populatedImageUnderConfiguration = getPopulatedImageUnderConfig();
+
+	const rendered = render(
+		<WithMockAppState
+			mockState={{
+				...mockAppState,
+				imageUnderConfiguration: populatedImageUnderConfiguration,
+			}}
+		>
 			<ImageConfigurationDialog></ImageConfigurationDialog>
-		</ImageSearchStateContext.Provider>
+		</WithMockAppState>
 	);
 
-	return tools;
+	return { tools, ...rendered };
 };
 
 export const renderDialogWithFullDeps = (
-	mockState: IImageSearchState,
+	mockState: IImageConfigurationState,
 	httpMock: any
 ) => {
-	const makeDeps = createDependenciesObject(httpMock)(jest.fn);
 	const rendered = render(
-		<DependencyContext.Provider value={makeDeps}>
-			<ImageSearchStateContext.Provider value={mockState}>
-				<ImageConfigurationDialog></ImageConfigurationDialog>
-			</ImageSearchStateContext.Provider>
-		</DependencyContext.Provider>
+		<WithMockAppState
+			mockState={{
+				...mockAppState,
+				imageUnderConfiguration: mockState,
+			}}
+		>
+			<ImageConfigurationDialog></ImageConfigurationDialog>
+		</WithMockAppState>
 	);
 
 	return { ...tools, ...rendered };
