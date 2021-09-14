@@ -45,9 +45,9 @@ const sizesFromBreakpoints = (bps: TSavedBreakpoints): string =>
 
 // all user-defined breakpoints FIRST, then default breakpoints
 export const mergeBreakpoints =
-	(ubp: TSavedBreakpoints) =>
-	(dbp: TSavedBreakpoints): TSavedBreakpoints =>
-		concatW(dbp)(ubp);
+	(userDefinedBreakpoints: TSavedBreakpoints) =>
+	(defaultBreakpoints: TSavedBreakpoints): TSavedBreakpoints =>
+		concatW(defaultBreakpoints)(userDefinedBreakpoints);
 
 // TODO: need to get a flow set up for adding alt text to images
 const HTMLStringFromBreakpoints =

@@ -1,6 +1,3 @@
-import React from 'react';
-import { AuthStateContext } from '../../Auth/state/useAppState';
-import { TAuthState } from '../../Auth/state/appStateTypes';
 import Uploader from '../index';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -21,18 +18,9 @@ import {
 	simulateInvalidFileInput,
 } from '../../../testUtils';
 import { resetInternals } from 'react-use-fp';
-
-const mockAuthState: TAuthState = {
-	user: mockUser,
-	errors: [],
-	appMessage: null,
-	demoMessageViewed: true,
-};
-
-let appState: TAuthState;
+import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';
 
 beforeEach(() => {
-	appState = Object.assign({}, mockAuthState);
 	resetInternals();
 });
 
@@ -42,16 +30,10 @@ describe('Uploader component when files are submitted', () => {
 			post: jest.fn(() => Promise.resolve({ data: [] })),
 		} as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer;
-
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={appState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
+			<WithMockAppState mockFetcher={mockAxios}>
+				<Uploader />
+			</WithMockAppState>
 		);
 
 		const input = screen.getByLabelText(/select files/i);
@@ -86,16 +68,10 @@ describe('Uploader component when files are submitted', () => {
 			post: jest.fn(() => Promise.resolve({ data: [mockDupeResponse] })),
 		} as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer;
-
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={appState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
+			<WithMockAppState mockFetcher={mockAxios}>
+				<Uploader />
+			</WithMockAppState>
 		);
 
 		const input = screen.getByLabelText(/select files/i);
@@ -134,14 +110,10 @@ describe('Uploader component when files are submitted', () => {
 			() => mockResizingData
 		) as unknown as TImageResizer;
 
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={appState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
+			<WithMockAppState mockFetcher={mockAxios} mockImgLib={mockResizer}>
+				<Uploader />
+			</WithMockAppState>
 		);
 
 		const input = screen.getByLabelText(/select files/i);

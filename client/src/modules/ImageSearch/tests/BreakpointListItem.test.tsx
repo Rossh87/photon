@@ -17,13 +17,13 @@ beforeEach(() => {
 	mockBP = Object.assign({}, mockBP);
 });
 
-const renderBP = () => render(<BreakPointListItem {...mockBP} />);
+const renderBP = () => render(<BreakPointListItem {...mockBP} position={1} />);
 
 describe('BreakpointListItem component', () => {
 	it('displays interactive inputs when "edit" button is clicked', () => {
 		renderBP();
 
-		const editButton = screen.getByRole('button', { name: 'Edit' });
+		const editButton = screen.getByLabelText('edit-breakpoint-1');
 
 		userEvent.click(editButton);
 
@@ -36,21 +36,20 @@ describe('BreakpointListItem component', () => {
 		renderBP();
 
 		// open editing menu
-		const editButton = screen.getByRole('button', { name: 'Edit' });
+		const editButton = screen.getByLabelText('edit-breakpoint-1');
 		userEvent.click(editButton);
 
 		// No edits, so close button is displayed
-		const closeButton = screen.getByRole('button', { name: 'Close' });
-		expect(closeButton).toBeInTheDocument();
+		const closeButton = screen.getByLabelText('close-breakpoint-1');
 
 		// Now make an edit
 		const queryWidthInput = screen.getByLabelText('media width');
 		userEvent.type(queryWidthInput, '222');
 
-		const discardButton = screen.getByRole('button', { name: 'Discard' });
-		const keepButton = screen.getByRole('button', { name: 'Keep' });
-		expect(discardButton).toBeInTheDocument();
-		expect(keepButton).toBeInTheDocument();
+		const discardButton = screen.getByLabelText(
+			'discard-breakpoint-edits-1'
+		);
+		const keepButton = screen.getByLabelText('keep-breakpoint-edits-1');
 	});
 
 	it('submits accurate data when "Keep" is clicked', async () => {
@@ -59,11 +58,11 @@ describe('BreakpointListItem component', () => {
 
 		render(
 			<AppDispatchContext.Provider value={mockDispatch}>
-				<BreakPointListItem {...mockBP} />
+				<BreakPointListItem {...mockBP} position={1} />
 			</AppDispatchContext.Provider>
 		);
 		// open editing menu
-		const editButton = screen.getByRole('button', { name: 'Edit' });
+		const editButton = screen.getByLabelText('edit-breakpoint-1');
 		userEvent.click(editButton);
 
 		// edit
@@ -71,14 +70,16 @@ describe('BreakpointListItem component', () => {
 		userEvent.clear(queryWidthInput);
 		userEvent.type(queryWidthInput, '22');
 
-		const keepButton = screen.getByRole('button', { name: 'Keep' });
+		const keepButton = screen.getByLabelText('keep-breakpoint-edits-1');
 		userEvent.click(keepButton);
 
-		const expectedData = Object.assign({}, mockBP, {
-			editing: false,
-			mediaWidth: 22,
-		});
+		const expectedAction = {
+			type: 'IMAGE_CONFIG/UPDATE_ONE_BREAKPOINT',
+			payload: Object.assign({}, mockBP, {
+				mediaWidth: 22,
+			}),
+		};
 
-		expect(dispatched[0].payload).toEqual(expectedData);
+		expect(dispatched[0]).toEqual(expectedAction);
 	});
 });

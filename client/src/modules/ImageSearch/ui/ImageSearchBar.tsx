@@ -13,7 +13,11 @@ import { Hidden, useMediaQuery, useTheme } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { pipe } from 'fp-ts/lib/function';
 import { map, fromPredicate } from 'fp-ts/lib/Option';
-import { useAppDispatch, useAppState } from '../../appState/useAppState';
+import {
+	useAppActions,
+	useAppDispatch,
+	useAppState,
+} from '../../appState/useAppState';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	searchBar: {
@@ -44,6 +48,7 @@ const ImageSearchBar: React.FunctionComponent = () => {
 	const classes = useStyles();
 
 	const appDispatch = useAppDispatch();
+	const actions = useAppActions();
 	const { images } = useAppState();
 	const [searchTerm, setSearchTerm] = useState('');
 
@@ -59,15 +64,11 @@ const ImageSearchBar: React.FunctionComponent = () => {
 		pipe(
 			searchTerm,
 			fromPredicate((searchTerm) => searchTerm.length > 0),
-			map((searchTerm) =>
-				appDispatch({
-					type: 'IMAGES/INIT_IMG_SEARCH',
-					payload: {
-						searchTerm,
-						imgData: images.imageMetadata,
-					},
-				})
-			),
+			map((searchTerm) => ({
+				searchTerm,
+				imgData: images.imageMetadata,
+			})),
+			map(actions.INIT_IMG_SEARCH),
 			map(() => setSearchTerm(''))
 		);
 	};
@@ -123,7 +124,7 @@ const ImageSearchBar: React.FunctionComponent = () => {
 										type: 'IMAGES/RESET_SEARCH',
 									})
 								}
-								data-testid="reset-search-icon"
+								aria-label="reset-image-search"
 							>
 								<RefreshIcon
 									className={classes.block}

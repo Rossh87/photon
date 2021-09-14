@@ -17,7 +17,7 @@ import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
 import Profile from '../Profile';
 import { useTheme } from '@material-ui/core/styles';
-import AppMessage from '../appMeta';
+import AppMessage from '../AppMessage';
 import { Switch, Route } from 'react-router-dom';
 
 const drawerWidth = 180;

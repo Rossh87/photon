@@ -2,13 +2,15 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import ImageConfigurationDialog from '../ui/ImageConfigurationDialog';
-import AppMessage from '../../appMeta';
 import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';
 import mockAppState, {
+	getMockCurrentlyActiveImages,
+	getMockImageDataOfType,
 	getPopulatedImageUnderConfig,
 } from '../../../testUtils/mockState';
 import { IImageConfigurationState } from '../state/imageConfigurationStateTypes';
 import ImageDisplay from '../ui/ImageDisplay';
+import { IHTTPLib } from '../../../core/dependencyContext';
 
 // GETTERS: helpers that return an element, and are responsible for
 // manipulating component state up to the point that the needed element
@@ -122,14 +124,21 @@ const tools = {
 	irresponsibleGetSnackbar,
 };
 
-export const renderDisplayWithFullDeps = () => {
+export const renderDisplayWithFullDeps = (mockFetcher?: IHTTPLib) => {
 	const rendered = render(
-		<WithMockAppState>
+		<WithMockAppState mockFetcher={mockFetcher}>
 			<ImageDisplay />
 		</WithMockAppState>
 	);
 
-	return { tools, ...rendered };
+	// open an image that has active breakpoints
+	const underConfiguration = getMockImageDataOfType('withBreakpoints');
+
+	const initialBreakpoints = underConfiguration.breakpoints;
+
+	userEvent.click(screen.getByText(underConfiguration.displayName));
+
+	return { initialBreakpoints, underConfiguration, ...tools, ...rendered };
 };
 
 export const renderDialogWithBreakpoints = () => {

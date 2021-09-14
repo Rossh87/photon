@@ -56,14 +56,20 @@ const useStyles = makeStyles((theme: Theme) => {
 	};
 });
 
-const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint> = (
-	props
-) => {
+interface Props {
+	// use this to distinguish controls in aria labels
+	position: number;
+}
+
+const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
+	position,
+	...savedBP
+}) => {
 	const classes = useStyles();
 
 	// INCOMING props.  These are what render initial UI, and will be sync'ed
 	// every render
-	const propState = breakpointToBreakpointUI(props);
+	const propState = breakpointToBreakpointUI(savedBP);
 
 	// LOCAL component state.  These are what track form fields.
 	const [formState, setFormState] = useState<TBreakpointUI>({ ...propState });
@@ -114,13 +120,18 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint> = (
 		if (!isExpanded && !formState.editing) {
 			return (
 				<>
-					<IconButton onClick={handleDelete} data-testid="bp-delete">
+					<IconButton
+						onClick={handleDelete}
+						data-testid="bp-delete"
+						aria-label={`delete-breakpoint-${position}`}
+					>
 						<DeleteIcon />
 					</IconButton>
 					<IconButton
 						onClick={() => setExpanded(true)}
 						data-testid="bp-edit"
 						className={classes.editButton}
+						aria-label={`edit-breakpoint-${position}`}
 					>
 						<EditIcon />
 					</IconButton>
@@ -134,6 +145,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint> = (
 					}}
 					data-testid="bp-close"
 					className={classes.closeButton}
+					aria-label={`close-breakpoint-${position}`}
 				>
 					<Close />
 				</IconButton>
@@ -145,12 +157,15 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint> = (
 						onClick={discardEdits}
 						data-testid="bp-discard"
 						// className={classes.clearButton}
+						aria-label={`discard-breakpoint-edits-${position}`}
 					>
 						<RestoreIcon />
 					</IconButton>
 					<IconButton
 						onClick={submitEdits}
 						className={classes.keepButton}
+						data-testid="bp-keep"
+						aria-label={`keep-breakpoint-edits-${position}`}
 					>
 						<CheckIcon />
 					</IconButton>

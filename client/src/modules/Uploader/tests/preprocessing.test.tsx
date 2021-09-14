@@ -1,7 +1,5 @@
 import React from 'react';
 import Uploader from '../index';
-import { AuthStateContext } from '../../Auth/state/useAppState';
-import { TAuthState } from '../../Auth/state/appStateTypes';
 import { render, screen, act, waitFor, logRoles } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
@@ -24,21 +22,12 @@ import {
 import { resetInternals } from 'react-use-fp';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { MAX_DEMO_UPLOAD_COUNT } from 'sharedTypes/CONSTANTS';
-import AppMessage from '../../appMeta';
+import AppMessage from '../../AppMessage';
+import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';
+import mockAppState from '../../../testUtils/mockState';
+import { IAppState } from '../../appState/appStateTypes';
 
-const mockAuthState: TAuthState = {
-	user: mockUser,
-	errors: [],
-	appMessage: null,
-	demoMessageViewed: false,
-};
-
-let appState: TAuthState;
-
-beforeEach(() => {
-	appState = Object.assign({}, mockAuthState);
-	resetInternals();
-});
+beforeEach(() => resetInternals());
 
 describe('Uploader component', () => {
 	it('displays 1 child for each input file', async () => {
@@ -46,16 +35,10 @@ describe('Uploader component', () => {
 			post: jest.fn(() => Promise.resolve({ data: [] })),
 		} as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer;
-
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={appState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
+			<WithMockAppState mockFetcher={mockAxios}>
+				<Uploader />
+			</WithMockAppState>
 		);
 
 		const input = screen.getByLabelText(/select files/i);
@@ -74,16 +57,10 @@ describe('Uploader component', () => {
 			post: jest.fn(() => Promise.resolve({ data: [] })),
 		} as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer;
-
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={appState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
+			<WithMockAppState mockFetcher={mockAxios}>
+				<Uploader />
+			</WithMockAppState>
 		);
 
 		const input = screen.getByLabelText(/select files/i);
@@ -113,16 +90,10 @@ describe('Uploader component', () => {
 			post: jest.fn(() => Promise.resolve({ data: [] })),
 		} as unknown as IHTTPLib;
 
-		const mockResizer = jest.fn() as TImageResizer;
-
-		const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 		render(
-			<DependencyContext.Provider value={mockDeps}>
-				<AuthStateContext.Provider value={appState}>
-					<Uploader />
-				</AuthStateContext.Provider>
-			</DependencyContext.Provider>
+			<WithMockAppState mockFetcher={mockAxios}>
+				<Uploader />
+			</WithMockAppState>
 		);
 
 		const input = screen.getByLabelText(/select files/i);
@@ -147,16 +118,10 @@ describe('Uploader component', () => {
 				post: jest.fn(() => Promise.resolve({ data: [] })),
 			} as unknown as IHTTPLib;
 
-			const mockResizer = jest.fn() as TImageResizer;
-
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 			render(
-				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={appState}>
-						<Uploader />
-					</AuthStateContext.Provider>
-				</DependencyContext.Provider>
+				<WithMockAppState mockFetcher={mockAxios}>
+					<Uploader />
+				</WithMockAppState>
 			);
 
 			const fileInput = screen.getByLabelText(/select files/i);
@@ -188,18 +153,11 @@ describe('Uploader component', () => {
 				post: jest.fn(() => Promise.resolve({ data: [] })),
 			} as unknown as IHTTPLib;
 
-			const mockResizer = jest.fn() as TImageResizer;
-
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 			render(
-				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={appState}>
-						<Uploader />
-					</AuthStateContext.Provider>
-				</DependencyContext.Provider>
+				<WithMockAppState mockFetcher={mockAxios}>
+					<Uploader />
+				</WithMockAppState>
 			);
-
 			const fileInput = screen.getByLabelText(/select files/i);
 
 			await act(async () => simulateTwoFilesInput(fileInput));
@@ -229,16 +187,10 @@ describe('Uploader component', () => {
 				post: jest.fn(() => Promise.resolve({ data: [] })),
 			} as unknown as IHTTPLib;
 
-			const mockResizer = jest.fn() as TImageResizer;
-
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 			render(
-				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={appState}>
-						<Uploader />
-					</AuthStateContext.Provider>
-				</DependencyContext.Provider>
+				<WithMockAppState mockFetcher={mockAxios}>
+					<Uploader />
+				</WithMockAppState>
 			);
 
 			const fileInput = screen.getByLabelText(/select files/i);
@@ -265,16 +217,10 @@ describe('Uploader component', () => {
 				),
 			} as unknown as IHTTPLib;
 
-			const mockResizer = jest.fn() as TImageResizer;
-
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 			render(
-				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={appState}>
-						<Uploader />
-					</AuthStateContext.Provider>
-				</DependencyContext.Provider>
+				<WithMockAppState mockFetcher={mockAxios}>
+					<Uploader />
+				</WithMockAppState>
 			);
 
 			const fileInput = screen.getByLabelText(/select files/i);
@@ -305,16 +251,10 @@ describe('Uploader component', () => {
 				),
 			} as unknown as IHTTPLib;
 
-			const mockResizer = jest.fn() as TImageResizer;
-
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 			render(
-				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={appState}>
-						<Uploader />
-					</AuthStateContext.Provider>
-				</DependencyContext.Provider>
+				<WithMockAppState mockFetcher={mockAxios}>
+					<Uploader />
+				</WithMockAppState>
 			);
 
 			const fileInput = screen.getByLabelText(/select files/i);
@@ -360,16 +300,10 @@ describe('Uploader component', () => {
 				),
 			} as unknown as IHTTPLib;
 
-			const mockResizer = jest.fn() as TImageResizer;
-
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 			render(
-				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={appState}>
-						<Uploader />
-					</AuthStateContext.Provider>
-				</DependencyContext.Provider>
+				<WithMockAppState mockFetcher={mockAxios}>
+					<Uploader />
+				</WithMockAppState>
 			);
 
 			const fileInput = screen.getByLabelText(/select files/i);
@@ -408,24 +342,21 @@ describe('Uploader component', () => {
 
 	describe('when number of submitted files is too large for demo mode', () => {
 		it('displays a flash error message', async () => {
-			// these mocks should never be called
-			const mockAxios = jest.fn() as unknown as IHTTPLib;
-
-			const mockResizer = jest.fn() as TImageResizer;
-
-			const mockDeps = createDependenciesObject(mockAxios)(mockResizer);
-
 			// simulate user with all their demo-mode uploads used up
-			(appState.user as TAuthorizedUserResponse).imageCount =
-				MAX_DEMO_UPLOAD_COUNT - 1;
+			const usedUpAppState: IAppState = {
+				...mockAppState,
+				user: {
+					...(mockAppState.user as TAuthorizedUserResponse),
+					imageCount: MAX_DEMO_UPLOAD_COUNT - 1,
+					accessLevel: 'demo',
+				},
+			};
 
-			const { container } = render(
-				<DependencyContext.Provider value={mockDeps}>
-					<AuthStateContext.Provider value={appState}>
-						<AppMessage />
-						<Uploader />
-					</AuthStateContext.Provider>
-				</DependencyContext.Provider>
+			render(
+				<WithMockAppState mockState={usedUpAppState}>
+					<AppMessage />
+					<Uploader />
+				</WithMockAppState>
 			);
 
 			const fileInput = screen.getByLabelText(/select files/i);
@@ -434,11 +365,9 @@ describe('Uploader component', () => {
 
 			const msg = await screen.findByRole('alert');
 
-			expect(msg).toHaveTextContent('upload');
+			expect(msg).toHaveTextContent('uploads');
 
-			const closeErrButton = screen.getByRole('button', {
-				name: 'close-upload-component-err',
-			});
+			const closeErrButton = screen.getByLabelText('close-message');
 
 			userEvent.click(closeErrButton);
 

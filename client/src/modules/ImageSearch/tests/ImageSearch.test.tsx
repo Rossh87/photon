@@ -6,6 +6,8 @@ import { mockImageData } from './mockData';
 import DependencyContext from '../../../core/dependencyContext';
 import { REQUEST_USER_IMG_DATA_ENDPOINT } from '../http/endpoints';
 import { resetInternals } from 'react-use-fp';
+import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';
+import { IHTTPLib } from '../../../core/sharedClientTypes';
 
 beforeEach(() => resetInternals());
 
@@ -26,41 +28,41 @@ const renderComponentWithMockFetch = (http: any) =>
 describe('The ImageSearch component', () => {
 	describe('intial image loading', () => {
 		it('requests data from correct URL on mount', async () => {
-			const httpMock = {
-				get: jest.fn(
-					() =>
-						new Promise((res) =>
-							res({
-								data: mockImageData,
-							})
-						)
-				),
-			};
+			const mockAxios = {
+				get: jest.fn().mockResolvedValue({
+					data: mockImageData,
+				}),
+			} as unknown as IHTTPLib;
 
 			await act(async () => {
-				renderComponentWithMockFetch(httpMock);
+				render(
+					<WithMockAppState mockFetcher={mockAxios}>
+						<ImageSearch />
+					</WithMockAppState>
+				);
+				return;
 			});
 
-			expect(httpMock.get).toHaveBeenCalledWith(
+			expect(mockAxios.get).toHaveBeenCalledWith(
 				REQUEST_USER_IMG_DATA_ENDPOINT,
 				{ withCredentials: true }
 			);
 		});
 
 		it('displays one image card for each image data loaded', async () => {
-			const httpMock = {
-				get: jest.fn(
-					() =>
-						new Promise((res) =>
-							res({
-								data: mockImageData,
-							})
-						)
-				),
-			};
+			const mockAxios = {
+				get: jest.fn().mockResolvedValue({
+					data: mockImageData,
+				}),
+			} as unknown as IHTTPLib;
 
 			await act(async () => {
-				renderComponentWithMockFetch(httpMock);
+				render(
+					<WithMockAppState mockFetcher={mockAxios}>
+						<ImageSearch />
+					</WithMockAppState>
+				);
+				return;
 			});
 
 			const firstImage = screen.getAllByRole('img');
@@ -73,19 +75,19 @@ describe('The ImageSearch component', () => {
 
 	describe('searching for images', () => {
 		it('chooses correct subset of images for given search term', async () => {
-			const httpMock = {
-				get: jest.fn(
-					() =>
-						new Promise((res) =>
-							res({
-								data: mockImageData,
-							})
-						)
-				),
-			};
+			const mockAxios = {
+				get: jest.fn().mockResolvedValue({
+					data: mockImageData,
+				}),
+			} as unknown as IHTTPLib;
 
 			await act(async () => {
-				renderComponentWithMockFetch(httpMock);
+				render(
+					<WithMockAppState mockFetcher={mockAxios}>
+						<ImageSearch />
+					</WithMockAppState>
+				);
+				return;
 			});
 
 			const searchInput = screen.getByRole('textbox');
@@ -98,19 +100,19 @@ describe('The ImageSearch component', () => {
 		});
 
 		it('displays a "not found" message if there are no search results', async () => {
-			const httpMock = {
-				get: jest.fn(
-					() =>
-						new Promise((res) =>
-							res({
-								data: mockImageData,
-							})
-						)
-				),
-			};
+			const mockAxios = {
+				get: jest.fn().mockResolvedValue({
+					data: mockImageData,
+				}),
+			} as unknown as IHTTPLib;
 
 			await act(async () => {
-				renderComponentWithMockFetch(httpMock);
+				render(
+					<WithMockAppState mockFetcher={mockAxios}>
+						<ImageSearch />
+					</WithMockAppState>
+				);
+				return;
 			});
 
 			const searchInput = screen.getByRole('textbox');
@@ -118,9 +120,9 @@ describe('The ImageSearch component', () => {
 			userEvent.type(searchInput, "doesn't match anything{enter}");
 
 			// verify that no images are displayed
-			const activeImages = expect(() =>
-				screen.getAllByRole('img')
-			).toThrow();
+			const activeImages = screen.queryAllByRole('img');
+
+			expect(activeImages.length).toBe(0);
 
 			// verify the no results message is onscreen.  If 'getByText'
 			// doesn't find anything, test will fail.
@@ -128,23 +130,23 @@ describe('The ImageSearch component', () => {
 		});
 
 		it('can be reset to displaying all images', async () => {
-			const httpMock = {
-				get: jest.fn(
-					() =>
-						new Promise((res) =>
-							res({
-								data: mockImageData,
-							})
-						)
-				),
-			};
+			const mockAxios = {
+				get: jest.fn().mockResolvedValue({
+					data: mockImageData,
+				}),
+			} as unknown as IHTTPLib;
 
 			await act(async () => {
-				renderComponentWithMockFetch(httpMock);
+				render(
+					<WithMockAppState mockFetcher={mockAxios}>
+						<ImageSearch />
+					</WithMockAppState>
+				);
+				return;
 			});
 
 			const searchInput = screen.getByRole('textbox');
-			const resetButton = screen.getByTestId('reset-search-icon');
+			const resetButton = screen.getByLabelText('reset-image-search');
 
 			userEvent.type(searchInput, 'bear{enter}');
 
@@ -159,29 +161,6 @@ describe('The ImageSearch component', () => {
 			// verify all images are now displayed
 			displayedImages = screen.getAllByRole('img');
 			expect(displayedImages.length).toEqual(4);
-		});
-	});
-
-	describe('clicking the card for an uploaded image', () => {
-		it('links to the ImageEmbed component', async () => {
-			const httpMock = {
-				get: jest.fn(
-					() =>
-						new Promise((res) =>
-							res({
-								data: mockImageData,
-							})
-						)
-				),
-			};
-
-			await act(async () => {
-				renderComponentWithMockFetch(httpMock);
-			});
-
-			const img = screen.getByText('lotsa cats', { exact: false });
-
-			userEvent.click(img);
 		});
 	});
 });

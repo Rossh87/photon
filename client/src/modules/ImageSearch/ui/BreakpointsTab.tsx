@@ -28,8 +28,8 @@ const BreakpointsTab: FunctionComponent<BreakpointDisplayProps> = ({
 	return (
 		<List className={classes.list}>
 			<NewBreakpointListItem dispatch={dispatch} />
-			{dialogState.breakpoints.map((bp) => {
-				return <BreakPointListItem {...bp} key={bp._id} />;
+			{dialogState.breakpoints.map((bp, i) => {
+				return <BreakPointListItem {...bp} key={bp._id} position={i} />;
 			})}
 		</List>
 	);
