@@ -9,14 +9,20 @@ import { getMockUserID } from './mockUser';
 type BaseImage = Omit<IClientUpload, '_id' | 'ownerID' | 'addedOn'>;
 
 // valid bson timestamps from newest to oldest
-const imageCreationTimes = Array.of(4).map((_, i) =>
-	new ObjectID(Date.now() - 5000 * i).getTimestamp().toString()
-);
-
+const imageCreationTimes = Array(4)
+	.fill(null)
+	.map((_, i) =>
+		new ObjectID(Date.now() - 5000 * i).getTimestamp().toString()
+	);
+// console.log('times:', imageCreationTimes);
 // valid bson ids for Upload objects
-const imageIds = Array.of(4).map(() => new ObjectID().toHexString());
+const imageIds = Array(4)
+	.fill(null)
+	.map(() => new ObjectID().toHexString());
 
-const breakpointIDs = Array.of(2).map((_) => nanoid());
+const breakpointIDs = Array(2)
+	.fill(null)
+	.map((_) => nanoid());
 
 const zipMocks = (
 	userId: string,
