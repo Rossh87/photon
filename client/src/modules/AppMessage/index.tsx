@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { ISimpleMessageAction, IAdvancedMessageAction } from './appMetaTypes';
 import {
 	Button,
 	IconButton,
@@ -9,8 +8,12 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { CloseOutlined } from '@material-ui/icons';
-import { isAdvancedMessageAction } from './guards';
 import { useAppState, useAppDispatch } from '../appState/useAppState';
+import {
+	IAdvancedMessageAction,
+	ISimpleMessageAction,
+} from '../appMeta/appMetaTypes';
+import { isAdvancedMessageAction } from '../appMeta/guards';
 
 const useStyles = makeStyles((theme) => ({
 	actionButton: {
@@ -31,7 +34,7 @@ const AppMessage: FunctionComponent = () => {
 	const classes = useStyles();
 
 	const renderSimpleAction = (a: ISimpleMessageAction) => (
-		<IconButton aria-label="close-snackbar" onClick={a.handler}>
+		<IconButton aria-label="close-message" onClick={a.handler}>
 			<CloseOutlined />
 		</IconButton>
 	);
