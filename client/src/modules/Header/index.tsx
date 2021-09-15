@@ -13,15 +13,13 @@ const Header: FunctionComponent = (props) => {
 
 	const { user } = useAppState();
 
-	return (
+	return user ? (
 		<>
 			<Navigator setDrawerOpen={setDrawerOpen}></Navigator>
-			{user ? (
-				<LossyAppBar onDrawerToggle={handleDrawerToggle}></LossyAppBar>
-			) : (
-				<LoginBar />
-			)}
+			<LossyAppBar onDrawerToggle={handleDrawerToggle}></LossyAppBar>
 		</>
+	) : (
+		<LoginBar />
 	);
 };
 

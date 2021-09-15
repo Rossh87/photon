@@ -12,13 +12,13 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { GITHUB_OAUTH_ENDPOINT, GOOGLE_OAUTH_ENDPOINT } from '../../CONSTANTS';
+import {
+	GITHUB_OAUTH_ENDPOINT,
+	GOOGLE_OAUTH_ENDPOINT,
+} from '../../../CONSTANTS';
 import GoogleButton from 'react-google-button';
-import GithubOAuthButton from '../GithubOAuthButton';
 import { Paper } from '@material-ui/core';
-import LandingContent from './ui/LandingContent';
-import SignupForm from './ui/SignupForm';
-import LoginBar from '../Header/ui/LoginBar';
+import GithubOAuthButton from '../../GithubOAuthButton';
 
 const useStyles = makeStyles((theme) => ({
 	background: {
@@ -54,25 +54,47 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function SignIn() {
+const SignupForm: React.FunctionComponent = (props) => {
 	const classes = useStyles();
 
 	return (
-		<Box
-			className={classes.background}
-			display="flex"
-			width="100vw"
-			minHeight="100vh"
-		>
-			<Box>
-				<LoginBar />
-			</Box>
-			<Box width="50%">
-				<LandingContent />
-			</Box>
-			<Box width="50%">
-				<SignupForm></SignupForm>
-			</Box>
-		</Box>
+		<div>
+			<Grid
+				container
+				direction="column"
+				alignItems="center"
+				justifyContent="center"
+			>
+				<Avatar className={classes.avatar}>
+					<LockOutlinedIcon />
+				</Avatar>
+				<Typography component="h1" variant="h5">
+					Sign Up
+				</Typography>
+			</Grid>
+			<Grid
+				container
+				direction="column"
+				alignItems="center"
+				className={classes.buttonGrid}
+				spacing={3}
+			>
+				<TextField variant="outlined" placeholder="Email"></TextField>
+				<TextField
+					variant="outlined"
+					placeholder="Password"
+				></TextField>
+				<Grid item>
+					<a className={classes.anchor} href={GOOGLE_OAUTH_ENDPOINT}>
+						<GoogleButton />
+					</a>
+				</Grid>
+				<Grid item>
+					<GithubOAuthButton />
+				</Grid>
+			</Grid>
+		</div>
 	);
-}
+};
+
+export default SignupForm;

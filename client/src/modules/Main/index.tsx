@@ -8,7 +8,7 @@ import Profile from '../Profile';
 import { useTheme } from '@material-ui/core/styles';
 import AppMessage from '../AppMessage';
 import { Switch, Route } from 'react-router-dom';
-
+import LossyAppBar from '../Header/ui/LossyAppBar';
 const drawerWidth = 180;
 
 const useStyles = makeStyles({
@@ -65,8 +65,14 @@ const Main: React.FunctionComponent = () => {
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
+	const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+	const handleDrawerToggle = () => {
+		setDrawerOpen(!drawerOpen);
+	};
+
 	return (
-		<div>
+		<LossyAppBar onDrawerToggle={handleDrawerToggle}>
 			<Grid container className={classes.mainGrid}>
 				<Hidden xsDown>
 					<Grid
@@ -105,7 +111,7 @@ const Main: React.FunctionComponent = () => {
 					></Grid>
 				</Hidden>
 			</Grid>
-		</div>
+		</LossyAppBar>
 	);
 };
 

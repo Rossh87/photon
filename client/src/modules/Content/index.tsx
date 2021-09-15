@@ -7,14 +7,7 @@ import Login from '../Login';
 const Content: FunctionComponent = (props) => {
 	const { user } = useAppState();
 
-	const renderContent = () => (user ? <Main /> : <Login />);
-
-	return (
-		<>
-			<Header />
-			{renderContent()}
-		</>
-	);
+	return user ? <Main /> : <Content />;
 };
 
 export default Content;

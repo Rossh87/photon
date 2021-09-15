@@ -48,13 +48,22 @@ const useStyles = makeStyles((theme: Theme) => ({
 	appbarCenter: {
 		flexGrow: 1,
 	},
+
+	loginBar: {
+		backgroundColor: 'transparent',
+	},
 }));
 
 const Header: React.FunctionComponent = (props) => {
 	const classes = useStyles();
 
 	return (
-		<AppBar color="primary" position="sticky" elevation={0}>
+		<AppBar
+			className={classes.loginBar}
+			color="primary"
+			position="sticky"
+			elevation={0}
+		>
 			<Toolbar>
 				<Box flexGrow={1} />
 				<Button className={classes.headerButton} size="large">

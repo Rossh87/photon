@@ -18,18 +18,17 @@ import Content from '../Content';
 
 const App: React.FunctionComponent = (props) => {
 	return (
-		<DependencyContext.Provider value={liveDependencies}>
-			<AppProvider>
-				<ThemeProvider theme={theme}>
-					<CssBaseline />
-					<Router>
-						<AuthManager>
+		<CssBaseline>
+			<DependencyContext.Provider value={liveDependencies}>
+				<AppProvider>
+					<AuthManager>
+						<Router>
 							<Content />
-						</AuthManager>
-					</Router>
-				</ThemeProvider>
-			</AppProvider>
-		</DependencyContext.Provider>
+						</Router>
+					</AuthManager>
+				</AppProvider>
+			</DependencyContext.Provider>
+		</CssBaseline>
 	);
 };
 
