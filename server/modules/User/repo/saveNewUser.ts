@@ -14,7 +14,7 @@ export const saveNewUser =
 		);
 
 // add app-specific properties to user object here.
-const prepNewUserForSave = (u: IUserProfileProperties): TUser =>
+export const prepNewUserForSave = (u: IUserProfileProperties): TUser =>
 	Object.assign({}, u, {
 		registeredDomains: [],
 		imageCount: 0,

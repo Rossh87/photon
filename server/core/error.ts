@@ -16,7 +16,8 @@ export class BaseError extends Error {
 	public constructor(
 		public readonly message: string,
 		public readonly HTTPErrorType: HTTPErrorType,
-		public readonly raw?: any
+		public readonly raw?: any,
+		public readonly clientMessage?: string
 	) {
 		super(message);
 		this.HTTPErrorType = HTTPErrorType;

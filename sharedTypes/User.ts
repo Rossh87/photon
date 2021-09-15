@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
+import { TLocalSignupRequest } from '../server/modules/auth/sharedAuthTypes';
 
-export type TOAuthProvider = 'google' | 'github';
+export type TIdentityProvider = 'google' | 'github' | 'local';
 export type TAccessLevel = 'demo' | 'admin' | 'full';
 
 export interface IUserServiceUsageProperties {
@@ -17,15 +18,20 @@ export interface IUserProfilePreferences {
 }
 
 export interface IUserProfileProperties {
-	OAuthProviderName: TOAuthProvider;
-	OAuthProviderID: string;
+	identityProvider: TIdentityProvider;
+	// For local account, this will be the same as unique
+	// database ID of User record
+	identityProviderID: string;
 	thumbnailURL?: string;
+	// For local account, this will default to email handle,
+	// i.e. [handle]@domain.com
 	displayName: string;
 	familyName?: string;
 	givenName?: string;
-	OAuthEmail: string;
-	OAuthEmailVerified?: boolean;
+	registeredEmail: string;
+	registeredEmailVerified?: boolean;
 	userPreferences?: IUserProfilePreferences;
+	passwordHash?: string;
 }
 
 // TUser represents combination of normalized OAuth data and properties
@@ -35,8 +41,10 @@ export type TUser = IUserProfileProperties & IUserServiceUsageProperties;
 // TUser object as recovered from database
 export type TDBUser = TUser & { _id: ObjectId };
 
-// id is automatically serialized by express-session
-export type TSessionUser = TUser & { _id: string };
+// id is automatically serialized by express-session. Note we
+// strip the password hash from session user, since it ends up
+// being sent to the client
+export type TSessionUser = Omit<TUser, 'passwordHash'> & { _id: string };
 
 // type for data shape that will be sent to client on authorization
 export type TAuthorizedUserResponse = TSessionUser & { createdAt: string };
@@ -65,3 +73,7 @@ type _TProfileErrorsTransportObject = {
 
 export type TProfileErrorsTransportObject =
 	AtLeastOne<_TProfileErrorsTransportObject>;
+
+export interface ILocalSignupRequestPayload {
+	signupRequest: TLocalSignupRequest;
+}

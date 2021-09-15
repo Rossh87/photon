@@ -9,40 +9,40 @@ import * as O from 'fp-ts/Option';
 type DecodedGHResponse = t.TypeOf<typeof GithubOAuthResponse>;
 
 const ghResponseToProfileProps = (
-	ghr: DecodedGHResponse
+    ghr: DecodedGHResponse
 ): IUserProfileProperties => {
-	const names = getNamesFromUsername(ghr.name);
+    const names = getNamesFromUsername(ghr.name);
 
-	return {
-		OAuthProviderName: 'github' as const,
-		OAuthProviderID: ghr.id.toString(),
-		thumbnailURL: ghr.avatar_url,
-		displayName: ghr.login,
-		familyName: names[1],
-		givenName: names[0],
-		OAuthEmail: ghr.email,
-		OAuthEmailVerified: false,
-	};
+    return {
+        identityProvider: 'github' as const,
+        identityProviderID: ghr.id.toString(),
+        thumbnailURL: ghr.avatar_url,
+        displayName: ghr.login,
+        familyName: names[1],
+        givenName: names[0],
+        registeredEmail: ghr.email,
+        registeredEmailVerified: false,
+    };
 };
 
 const getNamesFromUsername = (username?: string) =>
-	pipe(
-		username,
-		O.fromNullable,
-		O.map((name) => name.split(' ')),
-		O.map((names) =>
-			names.length > 1
-				? [names[0], names[names.length - 1]]
-				: [...names, '']
-		),
-		// if we don't have a name property, we define its value as an empty string,
-		// ie a 'default' value
-		O.getOrElse(() => ['', ''])
-	);
+    pipe(
+        username,
+        O.fromNullable,
+        O.map((name) => name.split(' ')),
+        O.map((names) =>
+            names.length > 1
+                ? [names[0], names[names.length - 1]]
+                : [...names, '']
+        ),
+        // if we don't have a name property, we define its value as an empty string,
+        // ie a 'default' value
+        O.getOrElse(() => ['', ''])
+    );
 
 export const normalizeGithubResponse = (ghResponse: unknown) =>
-	pipe(
-		GithubOAuthResponse.decode(ghResponse),
-		E.map(ghResponseToProfileProps),
-		E.mapLeft((e) => OAuthDataNormalizationError.create(e, ghResponse))
-	);
+    pipe(
+        GithubOAuthResponse.decode(ghResponse),
+        E.map(ghResponseToProfileProps),
+        E.mapLeft((e) => OAuthDataNormalizationError.create(e, ghResponse))
+    );

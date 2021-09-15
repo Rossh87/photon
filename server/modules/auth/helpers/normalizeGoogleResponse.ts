@@ -1,11 +1,11 @@
 import {
-	IGoogleOAuthResponse,
-	IGooglePhotosObject,
-	IGoogleNamesObject,
-	IGoogleEmailsObject,
-	TGoogleOAuthSubData,
-	GoogleOAuthResponse,
-	GoogleMetadataObject,
+    IGoogleOAuthResponse,
+    IGooglePhotosObject,
+    IGoogleNamesObject,
+    IGoogleEmailsObject,
+    TGoogleOAuthSubData,
+    GoogleOAuthResponse,
+    GoogleMetadataObject,
 } from '../sharedAuthTypes';
 import { IUserProfileProperties } from 'sharedTypes/User';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
@@ -19,32 +19,32 @@ type DecodedGoogleResponse = t.TypeOf<typeof GoogleOAuthResponse>;
 type GoogleMetaData = t.TypeOf<typeof GoogleMetadataObject>;
 
 const getPrimary = <T extends { metadata: GoogleMetaData }>(as: Array<T>) =>
-	as.filter((o) => o.metadata.primary === true)[0];
+    as.filter((o) => o.metadata.primary === true)[0];
 
 const googleResponseToProfileProps = (
-	res: DecodedGoogleResponse
+    res: DecodedGoogleResponse
 ): IUserProfileProperties => {
-	const { displayName, familyName, givenName } = getPrimary(res.names);
-	const emailData = getPrimary(res.emailAddresses);
-	const photoURL = res.photos && getPrimary(res.photos);
-	const OAuthProviderID = res.resourceName.split('/')[1];
+    const { displayName, familyName, givenName } = getPrimary(res.names);
+    const emailData = getPrimary(res.emailAddresses);
+    const photoURL = res.photos && getPrimary(res.photos);
+    const identityProviderID = res.resourceName.split('/')[1];
 
-	return {
-		OAuthProviderName: 'google',
-		OAuthProviderID,
-		thumbnailURL: photoURL?.url,
-		displayName: displayName,
-		familyName,
-		givenName,
-		OAuthEmail: emailData.value,
-		OAuthEmailVerified: emailData.metadata.verified,
-	};
+    return {
+        identityProvider: 'google',
+        identityProviderID,
+        thumbnailURL: photoURL?.url,
+        displayName: displayName,
+        familyName,
+        givenName,
+        registeredEmail: emailData.value,
+        registeredEmailVerified: emailData.metadata.verified,
+    };
 };
 
 export const normalizeGoogleResponse = (res: unknown) =>
-	pipe(
-		res,
-		GoogleOAuthResponse.decode,
-		E.map(googleResponseToProfileProps),
-		E.mapLeft((e) => OAuthDataNormalizationError.create(e, res))
-	);
+    pipe(
+        res,
+        GoogleOAuthResponse.decode,
+        E.map(googleResponseToProfileProps),
+        E.mapLeft((e) => OAuthDataNormalizationError.create(e, res))
+    );

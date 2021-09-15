@@ -1,8 +1,5 @@
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { IUserProfileProperties } from '../../../../sharedTypes/User';
 import { BaseError, HTTPErrorTypes } from '../../../core/error';
-import { IGoogleOAuthResponse } from '../sharedAuthTypes';
-import { Errors, Validation } from 'io-ts';
+import { Errors } from 'io-ts';
 import { formatValidationErrors } from 'io-ts-reporters';
 
 export class OAuthDataNormalizationError extends BaseError {

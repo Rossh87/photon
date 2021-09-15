@@ -10,26 +10,26 @@ import { reverseTwo } from '../../../core/utils/reverseCurried';
 export type TGetUserByIDResult = TE.TaskEither<DBReadError, O.Option<TDBUser>>;
 
 export const getUserByOAuthID: (
-	id: string
+    id: string
 ) => (
-	repoClient: MongoClient
+    repoClient: MongoClient
 ) => TE.TaskEither<DBReadError, O.Option<TDBUser>> = (id) => (repoClient) =>
-	pipe(repoClient, getCollection<TDBUser>('users'), findUser(id));
+    pipe(repoClient, getCollection<TDBUser>('users'), findUser(id));
 
 const findUser: (id: string) => (c: Collection<TDBUser>) => TGetUserByIDResult =
-	(id) => (c) =>
-		TE.tryCatch(
-			() =>
-				c
-					.findOne({ OAuthProviderID: id })
-					.then((usr) => (usr ? O.some(usr) : O.none)),
-			(reason) =>
-				DBReadError.create(
-					c.collectionName,
-					{ OAuthProviderID: id },
-					reason
-				)
-		);
+    (id) => (c) =>
+        TE.tryCatch(
+            () =>
+                c
+                    .findOne({ identityProviderID: id })
+                    .then((usr) => (usr ? O.some(usr) : O.none)),
+            (reason) =>
+                DBReadError.create(
+                    c.collectionName,
+                    { identityProviderID: id },
+                    reason
+                )
+        );
 
 // export with args reversed for convenience
 export const _getUserByOAuthID = reverseTwo(getUserByOAuthID);
