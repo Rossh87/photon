@@ -9,27 +9,27 @@ import { OAuthDataRequestError } from '../domain/OAuthDataRequestError';
 import { IOAuthCallbackConfig } from '../controllers/oAuthCallbackConfigs';
 
 export type TGoogleRequestResult = TE.TaskEither<
-	OAuthDataRequestError,
-	IGoogleOAuthResponse
+    OAuthDataRequestError,
+    IGoogleOAuthResponse
 >;
 
 export const requestOAuthData =
-	(config: IOAuthCallbackConfig) =>
-	(
-		token: string
-	): ReaderTaskEither<IAsyncDeps, OAuthDataRequestError, unknown> =>
-	(asyncDeps) => {
-		const requestUserData = () =>
-			asyncDeps.fetcher.get(config.tokenExchangeEndpoint, {
-				headers: {
-					Authorization: 'Bearer ' + token,
-				},
-			});
+    (config: IOAuthCallbackConfig) =>
+    (
+        token: string
+    ): ReaderTaskEither<IAsyncDeps, OAuthDataRequestError, unknown> =>
+    (asyncDeps) => {
+        const requestUserData = () =>
+            asyncDeps.fetcher.get(config.tokenExchangeEndpoint, {
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                },
+            });
 
-		return pipe(
-			TE.tryCatch(requestUserData, (e) =>
-				OAuthDataRequestError.create(config.OAuthProviderName, e)
-			),
-			TE.map((d) => d.data)
-		);
-	};
+        return pipe(
+            TE.tryCatch(requestUserData, (e) =>
+                OAuthDataRequestError.create(config.identityProvider, e)
+            ),
+            TE.map((d) => d.data)
+        );
+    };
