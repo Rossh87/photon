@@ -5,7 +5,6 @@ import {
 	THTTPRunner,
 	IDependencies,
 } from '../../../core/dependencyContext';
-import { TUploaderActions } from '../state/uploadStateTypes';
 import { BaseError } from '../../../core/error';
 import { IUploadableBlob } from '../domain/domainTypes';
 import { local } from 'fp-ts/lib/ReaderTaskEither';

@@ -1,24 +1,15 @@
 import React, { Dispatch } from 'react';
 import {
 	ListItem,
-	ListItemSecondaryAction,
 	ListItemText,
-	IconButton,
 	AccordionSummary,
 	AccordionDetails,
-	TextField,
 } from '@material-ui/core';
-import { ArrowDropDownCircleOutlined } from '@material-ui/icons';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
 import Accordion from '@material-ui/core/Accordion';
-import { sizeFromBreakpoint } from '../useCases/createSrcset';
-import { ChangeEventHandler } from 'react';
 import {
-	TBreakpointUI,
 	TImageConfigurationActions,
-	TUserBreakpointUI,
 } from '../state/imageConfigurationStateTypes';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useAppDispatch } from '../../appState/useAppState';

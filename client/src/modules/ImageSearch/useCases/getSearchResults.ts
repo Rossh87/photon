@@ -5,7 +5,6 @@ import {
 } from '../state/imageSearchStateTypes';
 import { PayloadFPReader } from 'react-use-fp';
 import { filter } from 'fp-ts/lib/Array';
-import { Dispatch } from 'react';
 import { IO } from 'fp-ts/lib/IO';
 import { of as ROf, map as RMap, chain as RChain } from 'fp-ts/lib/Reader';
 import { IClientUpload } from 'sharedTypes/Upload';

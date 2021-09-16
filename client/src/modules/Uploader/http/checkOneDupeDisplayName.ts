@@ -1,5 +1,4 @@
 import { pipe } from 'fp-ts/lib/function';
-import { TUploaderActions } from '../state/uploadStateTypes';
 
 import { tryCatch } from 'fp-ts/TaskEither';
 import {

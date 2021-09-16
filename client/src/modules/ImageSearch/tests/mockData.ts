@@ -1,6 +1,5 @@
 import { IClientUpload } from 'sharedTypes/Upload';
 import {
-	TUIBreakpoints,
 	TUserBreakpointUI,
 } from '../state/imageConfigurationStateTypes';
 

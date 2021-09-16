@@ -7,18 +7,13 @@ import { uploadToGCS } from './uploadToGCS';
 import {
 	bind as RTEBind,
 	bindTo as RTEBindTo,
-	fold as RTEFold,
 	chain as RTEChain,
 	chainFirst as RTEChainFirst,
-	map as RTEMap,
-	mapLeft as RTEMapLeft,
 	orElseFirstW,
 	asks,
 } from 'fp-ts/lib/ReaderTaskEither';
 import { doResize } from './doResize';
 import { foldImageDataForRecall } from './foldImageDataForRecall';
-import { dispatchUploadSuccesses } from './dispatchUploadSuccesses';
-import { dispatchUploadFailure } from './dispatchUploadFailure';
 import { dispatchInitUpload } from './dispatchInitUpload';
 import {
 	chain as RChain,

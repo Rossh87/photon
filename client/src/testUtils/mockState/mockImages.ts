@@ -1,6 +1,6 @@
 import ObjectID from 'bson-objectid';
 import { identity, pipe } from 'fp-ts/lib/function';
-import { fold, fromPredicate, map, some } from 'fp-ts/lib/Option';
+import { fold, fromPredicate, map } from 'fp-ts/lib/Option';
 import { nanoid } from 'nanoid';
 import { IClientUpload } from '../../../../sharedTypes/Upload';
 import { IImageSearchState } from '../../modules/ImageSearch/state/imageSearchStateTypes';

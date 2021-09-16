@@ -1,8 +1,6 @@
 import { BaseError } from '../../../core/error';
 import {
 	ISavedBreakpoint,
-	TBreakpointQueryType,
-	TSavedBreakpointslotUnit,
 } from 'sharedTypes/Breakpoint';
 import { Option } from 'fp-ts/Option';
 import { IClientUpload } from 'sharedTypes/Upload';

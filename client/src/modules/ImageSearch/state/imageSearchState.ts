@@ -1,5 +1,4 @@
 import { Reducer } from 'react';
-import { applyBreakpointToImages } from '../helpers/applyBreakpointToImages';
 import { deleteImageMetadata } from '../helpers/deleteImageMetadata';
 import { SyncSuccessAction } from './imageConfigurationStateTypes';
 import {

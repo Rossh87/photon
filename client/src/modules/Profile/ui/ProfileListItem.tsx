@@ -2,18 +2,13 @@ import React, { ChangeEventHandler } from 'react';
 import {
 	TextField,
 	ListItem,
-	ListItemIcon,
 	ListItemText,
 	Typography,
 	Box,
 	makeStyles,
 	Theme,
 } from '@material-ui/core';
-import {
-	validationTools,
-	isConfigurableField,
-	MapPropsToHumanLabels,
-} from '../helpers';
+import { isConfigurableField, MapPropsToHumanLabels } from '../helpers';
 import { pipe } from 'fp-ts/lib/function';
 import {
 	IUserFacingProfileProps,
@@ -23,6 +18,7 @@ import { fold as BFold } from 'fp-ts/boolean';
 import { fromPredicate, map } from 'fp-ts/Option';
 import ProfileFormActionButton from './ProfileFormActionButton';
 import { DisplayValueSource } from '..';
+import { validationTools } from '../../../core/validationTools';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	profileText: {
@@ -65,14 +61,6 @@ const ProfileListItem: React.FunctionComponent<ProfileItemProps> = ({
 		setError(null);
 		handleFieldReset(fieldName);
 	};
-
-	// const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-	// 	if (value === '') {
-	// 		return handleChange({target: {value: actualValue}});
-	// 	}
-
-	// 	return handleChange(value)
-	// };
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();

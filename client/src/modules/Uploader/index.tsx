@@ -1,15 +1,8 @@
 import React from 'react';
 import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import { CloseOutlined } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 import { canProcess } from './state/reducerUtils/canProcess';
-import { map as OMap, foldW as OFoldW } from 'fp-ts/Option';
-import { pipe } from 'fp-ts/lib/function';
-import { constVoid } from 'fp-ts/lib/function';
-import { identity } from 'fp-ts/lib/function';
 import { useAppDispatch, useAppState } from '../appState/useAppState';
 
 const useStyles = makeStyles({

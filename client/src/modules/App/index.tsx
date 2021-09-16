@@ -4,16 +4,13 @@
  *  */
 
 import React from 'react';
-import Landing from '../Landing';
 import AuthManager from '../Auth';
 import AppProvider from '../appState/useAppState';
-import Header from '../Header';
 import DependencyContext, {
 	liveDependencies,
 } from '../../core/dependencyContext';
 import { BrowserRouter as Router } from 'react-router-dom';
-import theme from '../theme';
-import { CssBaseline, ThemeProvider } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 import Content from '../Content';
 
 const App: React.FunctionComponent = (props) => {

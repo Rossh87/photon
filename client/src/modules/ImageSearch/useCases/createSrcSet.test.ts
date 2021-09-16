@@ -1,14 +1,10 @@
 import React from 'react';
 import { map } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/function';
-import { ap } from 'fp-ts/lib/Identity';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import { createSrcset, mergeBreakpoints } from './createSrcset';
-import { breakpointToBreakpointUI } from '../helpers/breakpointMappers';
-import { TUserBreakpointUI } from '../state/imageConfigurationStateTypes';
 import {
-	makeDefaultBreakpoint,
 	makeDefaultBreakpoints,
 } from '../helpers/makeDefaultUIBreakpoints';
 

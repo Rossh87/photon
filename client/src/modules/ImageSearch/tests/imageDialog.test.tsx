@@ -1,15 +1,9 @@
-import { logRoles, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { IImageSearchState } from '../state/imageSearchStateTypes';
-import { resetInternals } from 'react-use-fp';
-import { mockImage4, mockImage3, mockImageData } from './mockData';
-import {
-	renderDialogWithBreakpoints,
-	renderDialogWithFullDeps,
-} from './imageDisplayTestUtils';
+
+
 import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';
-import ImageConfigurationDialog from '../ui/ImageConfigurationDialog';
 import { getMockImageDataOfType } from '../../../testUtils/mockState';
 import ImageDisplay from '../ui/ImageDisplay';
 

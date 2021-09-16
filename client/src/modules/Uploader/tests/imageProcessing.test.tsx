@@ -1,10 +1,9 @@
 import Uploader from '../index';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { mockUser, mockResizingData } from './mockData';
+import { mockResizingData } from './mockData';
 import { getOversizeImageFile } from '../../../testUtils/imageUtils';
-import DependencyContext, {
-	createDependenciesObject,
+import {
 	TImageResizer,
 } from '../../../core/dependencyContext';
 import {

@@ -2,7 +2,6 @@ import { Box, makeStyles, Typography } from '@material-ui/core';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { TSavedBreakpoints } from '../../../../../sharedTypes/Breakpoint';
 import { TAvailableImageWidths } from '../../../../../sharedTypes/Upload';
-import { TUserBreakpointUI } from '../state/imageConfigurationStateTypes';
 import { createSrcset } from '../useCases/createSrcset';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';

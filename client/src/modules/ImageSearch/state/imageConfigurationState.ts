@@ -1,9 +1,7 @@
-import { FastfoodOutlined } from '@material-ui/icons';
 import { pipe } from 'fp-ts/lib/function';
-import { fromNullable, none, some, fold } from 'fp-ts/lib/Option';
+import { fromNullable, none, fold } from 'fp-ts/lib/Option';
 import { makeNewUIBreakpoint } from '../helpers/makeNewUIBreakpoint';
 import {
-	IConfigurableImage,
 	IImageConfigurationState,
 	TImageConfigurationActions,
 } from './imageConfigurationStateTypes';

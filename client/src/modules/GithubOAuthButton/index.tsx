@@ -29,7 +29,14 @@ const useStyles = makeStyles((theme) => ({
 		height: theme.spacing(4),
 	},
 }));
-const GithubOAuthButton: React.FunctionComponent = (props) => {
+
+interface GithubButtonProps {
+	label: string;
+}
+
+const GithubOAuthButton: React.FunctionComponent<GithubButtonProps> = ({
+	label,
+}) => {
 	const classes = useStyles();
 
 	return (
@@ -41,7 +48,7 @@ const GithubOAuthButton: React.FunctionComponent = (props) => {
 				label: classes.label,
 			}}
 		>
-			Sign in with Github
+			{`${label} with Github`}
 		</Button>
 	);
 };

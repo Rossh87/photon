@@ -1,16 +1,10 @@
-import { pipe, flow } from 'fp-ts/lib/function';
-import { nanoid } from 'nanoid';
+import { pipe } from 'fp-ts/lib/function';
 import { ISavedBreakpoint, TSavedBreakpoints } from 'sharedTypes/Breakpoint';
-import { map as ArrMap, sort, concatW } from 'fp-ts/Array';
+import { concatW } from 'fp-ts/Array';
 import { TAvailableImageWidths } from 'sharedTypes/Upload';
-import { Ord as NumOrd } from 'fp-ts/number';
 import { fromPredicate, map as OMap, getOrElseW } from 'fp-ts/Option';
-import {
-	TBreakpointUI,
-	TDefaultBreakpointUI,
-	TUIBreakpoints,
-	TUserBreakpointUI,
-} from '../state/imageConfigurationStateTypes';
+
+
 import { makeDefaultBreakpoints } from '../helpers/makeDefaultUIBreakpoints';
 
 // NB that the following functions can accept *either* ISavedBreakpoint or TBreakpointUI, since the latter

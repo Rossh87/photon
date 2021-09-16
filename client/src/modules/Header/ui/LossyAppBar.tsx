@@ -25,6 +25,7 @@ import { TAuthorizedUserResponse } from '../../../../../sharedTypes/User';
 import { getProfileURL } from '../helpers';
 import { useAppDispatch, useAppState } from '../../appState/useAppState';
 import RouterLink from '../../RouterLink';
+import Badge from './Badge';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -124,6 +125,9 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 	return (
 		<AppBar color="primary" position="sticky" elevation={0}>
 			<Toolbar>
+				<Hidden xsDown>
+					<Badge />
+				</Hidden>
 				<Hidden mdUp>
 					<IconButton
 						color="inherit"

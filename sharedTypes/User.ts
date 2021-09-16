@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb';
-import { TLocalSignupRequest } from '../server/modules/auth/sharedAuthTypes';
 
 export type TIdentityProvider = 'google' | 'github' | 'local';
 export type TAccessLevel = 'demo' | 'admin' | 'full';
@@ -74,6 +73,7 @@ type _TProfileErrorsTransportObject = {
 export type TProfileErrorsTransportObject =
 	AtLeastOne<_TProfileErrorsTransportObject>;
 
-export interface ILocalSignupRequestPayload {
-	signupRequest: TLocalSignupRequest;
+export interface ILocalUserCredentials {
+	registeredEmailAddress: string;
+	password: string;
 }

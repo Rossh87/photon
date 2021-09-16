@@ -1,10 +1,8 @@
-import { render, screen, act } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { mockImageData } from './mockData';
 import ImageDisplay from '../ui/ImageDisplay';
 import { IImageSearchState } from '../state/imageSearchStateTypes';
 import { resetInternals } from 'react-use-fp';
-import { mockImage4 } from './mockData';
 import { renderDisplayWithFullDeps } from './imageDisplayTestUtils';
 import { delay } from 'fp-ts/Task';
 import { renderWithDefaultState } from '../../../testUtils/renderWithMockAppState';

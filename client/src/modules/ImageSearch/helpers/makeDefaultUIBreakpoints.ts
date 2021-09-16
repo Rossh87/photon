@@ -1,8 +1,7 @@
 import { pipe, flow } from 'fp-ts/lib/function';
 import { nanoid } from 'nanoid';
-import { map as ArrMap, sort, concatW } from 'fp-ts/Array';
+import { map as ArrMap, sort } from 'fp-ts/Array';
 import { Ord as NumOrd } from 'fp-ts/number';
-import { TDefaultBreakpointUI } from '../state/imageConfigurationStateTypes';
 import { ISavedBreakpoint } from '../../../../../sharedTypes/Breakpoint';
 
 const sortAscending = pipe(NumOrd, sort);

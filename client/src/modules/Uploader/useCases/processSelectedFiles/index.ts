@@ -1,17 +1,13 @@
 import { processOneImage } from './processOneImage';
 import { TSelectedFilesState } from '../../state/uploadStateTypes';
 import { IDependencies } from '../../../../core/dependencyContext';
-import { flow, pipe } from 'fp-ts/lib/function';
-import { sequenceArray } from 'fp-ts/lib/ReaderTask';
+import { pipe } from 'fp-ts/lib/function';
 import { map as NEAMap, fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/lib/Option';
-import { ReaderTask } from 'fp-ts/lib/ReaderTask';
 import { fromIO } from 'fp-ts/lib/Task';
 import { BaseError } from '../../../../core/error';
 import {
-	map as RTEMap,
 	asks,
-	ask,
 	chain as RTEChain,
 	sequenceArray as RTESequence,
 } from 'fp-ts/ReaderTaskEither';

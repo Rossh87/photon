@@ -1,9 +1,8 @@
-import { flow, pipe } from 'fp-ts/lib/function';
+import { pipe } from 'fp-ts/lib/function';
 import { PayloadFPReader } from 'react-use-fp';
 import { TImageConfigurationActions } from '../state/imageConfigurationStateTypes';
 import { IUploadDeletionPayload } from 'sharedTypes/Upload';
 import { deleteUpload } from '../http/deleteUpload';
-import { ask } from 'fp-ts/ReaderTaskEither';
 import { IDependencies } from '../../../core/dependencyContext';
 import { chain as RTChain, asks as RTAsks } from 'fp-ts/ReaderTask';
 import * as E from 'fp-ts/Either';

@@ -1,13 +1,10 @@
 import React from 'react';
 import Uploader from '../index';
-import { render, screen, act, waitFor, logRoles } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import { mockUser } from './mockData';
 import { getOversizeImageFile } from '../../../testUtils/imageUtils';
-import DependencyContext, {
-	createDependenciesObject,
-	TImageResizer,
+import {
 	IHTTPLib,
 } from '../../../core/dependencyContext';
 import {
@@ -17,7 +14,6 @@ import {
 import {
 	simulateTwoFilesInput,
 	simulateInvalidFileInput,
-	simulateSingleFileInput,
 } from '../../../testUtils';
 import { resetInternals } from 'react-use-fp';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';

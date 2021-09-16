@@ -5,7 +5,6 @@ import { map as EMap, mapLeft as EMapLeft } from 'fp-ts/Either';
 import { IDependencies } from '../../../core/dependencyContext';
 import { pipe } from 'fp-ts/lib/function';
 import { userFacingPropsToPreferences } from '../helpers';
-import { BaseError } from '../../../core/error';
 import { IUserFacingProfileProps } from '../sharedProfileTypes';
 import { TAppAction } from '../../appState/appStateTypes';
 import { DEFAULT_APP_MESSAGE_TIMEOUT } from '../../../CONSTANTS';

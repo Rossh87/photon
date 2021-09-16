@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
-import { List, Button, ListItem, IconButton, Hidden } from '@material-ui/core';
+import { List, Hidden } from '@material-ui/core';
 import navItems from '../Header/navItems';
 import NavItem from './NavItem';
 

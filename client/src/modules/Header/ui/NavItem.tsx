@@ -1,10 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { alpha } from '@material-ui/core/styles/colorManipulator';
 import { ListItem, IconButton, Tooltip } from '@material-ui/core';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import { Link, useLocation } from 'react-router-dom';
 import { INavItemData } from '../navItems';
 

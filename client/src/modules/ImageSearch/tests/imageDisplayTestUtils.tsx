@@ -4,7 +4,6 @@ import '@testing-library/jest-dom';
 import ImageConfigurationDialog from '../ui/ImageConfigurationDialog';
 import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';
 import mockAppState, {
-	getMockCurrentlyActiveImages,
 	getMockImageDataOfType,
 	getPopulatedImageUnderConfig,
 } from '../../../testUtils/mockState';

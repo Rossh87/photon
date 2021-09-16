@@ -1,8 +1,5 @@
 import { TPreprocessArgs } from '../../domain/domainTypes';
 import {
-	fold as EFold,
-	map as EMap,
-	mapLeft as EMapLeft,
 	fromPredicate,
 } from 'fp-ts/Either';
 import { MAX_DEMO_UPLOAD_COUNT } from 'sharedTypes/CONSTANTS';

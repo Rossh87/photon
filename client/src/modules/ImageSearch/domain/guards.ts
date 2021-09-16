@@ -1,5 +1,4 @@
 import { Refinement } from 'fp-ts/Refinement';
-import { ISavedBreakpoint } from 'sharedTypes/Breakpoint';
 import {
 	TBreakpointUI,
 	TDefaultBreakpointUI,

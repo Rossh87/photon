@@ -1,39 +1,22 @@
 import React, { ChangeEventHandler, useRef } from 'react';
 import {
-	Paper,
 	Button,
-	TextField,
-	Grid,
 	Avatar,
-	Divider,
 	List,
-	ListItem,
-	ListItemIcon,
-	ListItemText,
-	Typography,
 	makeStyles,
 	Theme,
 	Box,
-	IconButton,
-	ListItemSecondaryAction,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import { bytesToHumanReadableSize } from '../Uploader/useCases/preProcessSelectedFiles/appendMetadata';
 import {
-	IUserProfilePreferences,
-	TAccessLevel,
 	TAuthorizedUserResponse,
 } from '../../../../sharedTypes/User';
 import { pipe } from 'fp-ts/lib/function';
-import { fromNullable, map, getOrElse, alt, fold } from 'fp-ts/lib/Option';
+import { fromNullable, alt, fold } from 'fp-ts/lib/Option';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { fetchUserData } from '../Auth/http/fetchUserData';
 import ProfileListItem from './ui/ProfileListItem';
-import { extractViewableProps, userFacingPropsToPreferences } from './helpers';
-import DependencyContext from '../../core/dependencyContext';
-import { handleUserProfileUpdate } from './useCases/handleUserProfileUpdate';
+import { extractViewableProps } from './helpers';
 import { chainFirst } from 'fp-ts/Identity';
-import { map as TEMap } from 'fp-ts/TaskEither';
 import { IUserFacingProfileProps } from './sharedProfileTypes';
 import {
 	useAppActions,

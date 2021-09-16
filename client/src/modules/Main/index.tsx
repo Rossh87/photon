@@ -9,6 +9,7 @@ import { useTheme } from '@material-ui/core/styles';
 import AppMessage from '../AppMessage';
 import { Switch, Route } from 'react-router-dom';
 import LossyAppBar from '../Header/ui/LossyAppBar';
+import Header from '../Header';
 const drawerWidth = 180;
 
 const useStyles = makeStyles({
@@ -65,14 +66,9 @@ const Main: React.FunctionComponent = () => {
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
-	const [drawerOpen, setDrawerOpen] = React.useState(false);
-
-	const handleDrawerToggle = () => {
-		setDrawerOpen(!drawerOpen);
-	};
-
 	return (
-		<LossyAppBar onDrawerToggle={handleDrawerToggle}>
+		<>
+			<Header />
 			<Grid container className={classes.mainGrid}>
 				<Hidden xsDown>
 					<Grid
@@ -88,13 +84,13 @@ const Main: React.FunctionComponent = () => {
 					<AppMessage />
 					<Paper className={classes.paper}>
 						<Switch>
-							<Route path="/upload">
+							<Route exact path="/upload">
 								<Uploader />
 							</Route>
-							<Route path="/image-search">
+							<Route exact path="/image-search">
 								<ImageSearchPage />
 							</Route>
-							<Route path="/profile">
+							<Route exact path="/profile">
 								<Profile />
 							</Route>
 						</Switch>
@@ -111,7 +107,7 @@ const Main: React.FunctionComponent = () => {
 					></Grid>
 				</Hidden>
 			</Grid>
-		</LossyAppBar>
+		</>
 	);
 };
 

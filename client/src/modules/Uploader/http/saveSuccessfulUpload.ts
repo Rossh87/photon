@@ -5,7 +5,6 @@ import { BaseError } from '../../../core/error';
 import { IHTTPLib } from '../../../core/sharedClientTypes';
 import { THTTPRunner, IDependencies } from '../../../core/dependencyContext';
 import { pipe, flow } from 'fp-ts/lib/function';
-import { TUploaderActions } from '../state/uploadStateTypes';
 import { local } from 'fp-ts/lib/ReaderTaskEither';
 import { TAppAction } from '../../appState/appStateTypes';
 

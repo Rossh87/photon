@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/function';
-import { fromNullable, map, alt } from 'fp-ts/lib/Option';
+import { fromNullable, alt } from 'fp-ts/lib/Option';
 import { TAuthorizedUserResponse } from '../../../../sharedTypes/User';
 
 // First look in preferences property; if nothing there,

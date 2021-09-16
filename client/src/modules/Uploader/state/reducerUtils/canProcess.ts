@@ -1,6 +1,6 @@
 import { pipe } from 'fp-ts/lib/function';
 import { fromArray } from 'fp-ts/lib/NonEmptyArray';
-import { IImageUploadState, TSelectedFilesState } from '../uploadStateTypes';
+import { IImageUploadState } from '../uploadStateTypes';
 import { map as OMap, getOrElseW, isNone } from 'fp-ts/Option';
 import { TPreprocessingResults } from '../../domain/domainTypes';
 

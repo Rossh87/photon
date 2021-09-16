@@ -4,8 +4,7 @@ import {
 	IHttpCall,
 } from '../../../core/dependencyContext';
 import { SYNC_BREAKPOINT_ENDPOINT } from './endpoints';
-import { TImageSearchActions } from '../state/imageSearchStateTypes';
-import { tryCatch, TaskEither } from 'fp-ts/lib/TaskEither';
+import { tryCatch } from 'fp-ts/lib/TaskEither';
 import { BaseError } from '../../../core/error';
 import { IBreakpointTransferObject, IClientUpload } from 'sharedTypes/Upload';
 import { pipe } from 'fp-ts/lib/function';

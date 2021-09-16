@@ -1,16 +1,64 @@
-import React from 'react';
-import { useAppState } from '../appState/useAppState';
-import { TUserState } from '../Auth/state/authStateTypes';
-import Login from '../Login';
-import Main from '../Main';
+import React, { useState } from 'react';
+import Box from '@material-ui/core/Box';
+import { makeStyles } from '@material-ui/core/styles';
+import LandingContent from './ui/LandingContent';
+import CredentialsForm from './ui/CredentialsForm';
+import LoginBar from '../Header/ui/LoginBar';
+import { TFormMode } from './sharedLandingTypes';
+import Container from '@material-ui/core/Container';
+import Header from '../Header';
 
-const Landing: React.FunctionComponent = () => {
-	const appState = useAppState();
+const useStyles = makeStyles((theme) => ({
+	background: {
+		background: 'rgb(255,255,255)',
+		height: '100vh',
+	},
 
-	const renderChild: (u: TUserState) => React.ReactElement = (u) =>
-		u ? <Main /> : <Login />;
+	form: {
+		width: '100%', // Fix IE 11 issue.
+		marginTop: theme.spacing(1),
+	},
 
-	return <React.Fragment>{renderChild(appState.user)}</React.Fragment>;
-};
+	anchor: {
+		textDecoration: 'none',
+		color: 'inherit',
+	},
 
-export default Landing;
+	container: {
+		paddingTop: theme.spacing(2),
+	},
+}));
+
+export default function Landing() {
+	const classes = useStyles();
+
+	const [formMode, setFormMode] = useState<TFormMode>('signup');
+
+	const renderSignup = () => (
+		<>
+			<Box flexBasis="30%">
+				<LandingContent />
+			</Box>
+			<Box flexBasis="30%">
+				<CredentialsForm formMode={formMode} />
+			</Box>
+		</>
+	);
+
+	const renderSignin = () => (
+		<Box flexBasis="30%">
+			<CredentialsForm formMode={formMode} />
+		</Box>
+	);
+
+	return (
+		<div className={classes.background}>
+			<Header landingMode={formMode} setLandingMode={setFormMode} />
+			<Container className={classes.container} maxWidth="lg">
+				<Box display="flex" justifyContent="space-around">
+					{formMode === 'signup' ? renderSignup() : renderSignin()}
+				</Box>
+			</Container>
+		</div>
+	);
+}
