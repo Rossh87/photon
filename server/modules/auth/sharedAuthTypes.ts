@@ -5,6 +5,9 @@ import * as t from 'io-ts';
 import { withMessage } from 'io-ts-types';
 import { IUserProfileProperties } from '../../../sharedTypes/User';
 import { EmailAddress } from '../User/helpers/parseUserPreferences';
+import * as A from 'fp-ts/Array';
+import * as B from 'fp-ts/boolean';
+import { ap } from 'fp-ts/lib/Identity';
 
 const MetadataSourceObject = t.type({
 	type: t.string,

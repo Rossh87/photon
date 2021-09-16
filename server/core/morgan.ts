@@ -44,7 +44,9 @@ export const getLoggers = async () => {
 	morgan.token(
 		'failureMessage',
 		(req) =>
-			`\nFailureMessage: ${req.failureMessage.message}\nReason: ${req.failureMessage.raw}`
+			`\nFailureMessage: ${
+				req.failureMessage.message
+			}\nReason: ${JSON.stringify(req.failureMessage.raw)}`
 	);
 	const formatString =
 		':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :failureMessage';

@@ -9,9 +9,6 @@ export const errorHandler: ErrorRequestHandler = (
 	res: Response,
 	next: NextFunction
 ) => {
-	const message = err.clientMessage
-		? err.clientMessage
-		: err.HTTPErrorType.clientMessage;
 	res.status(err.HTTPErrorType.status);
-	res.send(message);
+	res.send(err.HTTPErrorType.clientMessage);
 };

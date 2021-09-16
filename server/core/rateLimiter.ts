@@ -20,8 +20,7 @@ export const rateLimiterMiddleware = (connectedDB: MongoClient) => {
 		storeClient: connectedDB,
 		points: 20,
 		duration: 1,
-		inmemoryBlockDuration: 60 * 60 * 3,
-		inmemoryBlockOnConsumed: 20,
+		blockDuration: 60 * 60 * 12,
 		insuranceLimiter,
 	};
 
@@ -50,6 +49,7 @@ const initSigninRateLimiter = (connectedDB: MongoClient) => {
 			points: 8,
 			duration: 60 * 60,
 			inmemoryBlockDuration: 60 * 60 * 24,
+			inmemoryBlockOnConsumed: 8,
 		});
 
 		signinLimiter = consecSigninLimiter;

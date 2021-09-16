@@ -8,6 +8,6 @@ export const authGate: RequestHandler = (req, res, next) => {
 			'Attempt to access protected resource by unauthenticated user',
 			HTTPErrorTypes.UNAUTHORIZED
 		);
-		res.status(401).end();
+		res.status(401).send('authGate');
 	}
 };

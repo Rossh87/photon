@@ -41,8 +41,6 @@ declare module 'express-session' {
 		};
 
 		user?: TSessionUser;
-
-		loginAttempts?: number;
 	}
 }
 
