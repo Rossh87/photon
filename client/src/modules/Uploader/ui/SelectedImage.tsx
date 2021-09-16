@@ -15,6 +15,8 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import { makeStyles } from '@material-ui/core/styles';
 import FileUpdateForm from './FileUpdateForm';
 import SelectedImageStatusIcon from './SelectedImageStatusIcon';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -25,6 +27,10 @@ const useStyles = makeStyles((theme) => ({
 		'&:hover': {
 			border: `1px solid  ${theme.palette.primary.main}`,
 		},
+	},
+
+	expandIcon: {
+		transform: 'rotate(180deg)',
 	},
 }));
 
@@ -39,6 +45,8 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 }) => {
 	// state stuff
 	const [isExpanded, setExpanded] = React.useState<boolean>(false);
+
+	const toggleExpanded = () => setExpanded(!isExpanded);
 
 	const classes = useStyles();
 
@@ -112,6 +120,14 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 							onClick={removeFileListItem}
 						>
 							<SelectedImageStatusIcon status={status} />
+						</IconButton>
+						<IconButton
+							edge="end"
+							aria-label="remove file"
+							onClick={toggleExpanded}
+							className={clsx(isExpanded && classes.expandIcon)}
+						>
+							<ExpandMore />
 						</IconButton>
 					</ListItemSecondaryAction>
 				</AccordionSummary>

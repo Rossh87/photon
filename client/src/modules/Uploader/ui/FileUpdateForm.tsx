@@ -41,9 +41,13 @@ const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
 		);
 	};
 
+	const handleBlur = () =>
+		inputState.length === 0 ? closeAccordion() : null;
+
 	return (
 		<form onSubmit={onSubmit} noValidate autoComplete="off">
 			<TextField
+				onBlur={handleBlur}
 				size="small"
 				id="outlined-basic"
 				label="Update name"

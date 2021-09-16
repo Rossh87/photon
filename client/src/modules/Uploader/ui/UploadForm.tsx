@@ -33,9 +33,7 @@ const useStyles = makeStyles({
 		fontWeight: theme.typography.fontWeightBold,
 	},
 
-	submitButton: {
-		color: theme.palette.success.main,
-	},
+	submitButton: {},
 });
 
 interface IProps {
@@ -68,6 +66,7 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 				fromNullable(user)
 			),
 			map(actions.FILES_CHANGED),
+
 			// We reset the native file input after every change, whether
 			// it passes pre-processing or not.
 			// This keeps the native file input from getting out-of-sync
@@ -84,26 +83,6 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 
 	return (
 		<form onSubmit={handleSubmit} className={classes.fileForm}>
-			{/* <InputLabel
-				htmlFor="fileSelectionInput"
-				color="primary"
-				className={classes.label}
-			>
-				Select Files
-			</InputLabel> */}
-
-			{/* 
-			<Input
-				className={classes.hiddenInput}
-				id="fileSelectionInput"
-				name="select images"
-				onChange={handleFileChange}
-				type="file"
-				inputProps={inputProps}
-				color="primary"
-				disableUnderline={true}
-			></Input> */}
-
 			<label htmlFor="file-selection-input" id="file-slection-input">
 				<input
 					className={classes.hiddenInput}
@@ -131,6 +110,7 @@ const UploadForm: React.FunctionComponent<IProps> = ({
 				variant="text"
 				disabled={submitIsDisabled}
 				type="submit"
+				color="secondary"
 			>
 				SUBMIT
 			</Button>
