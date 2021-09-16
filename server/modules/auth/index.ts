@@ -8,6 +8,7 @@ import {
 } from './controllers';
 import { IAsyncDeps } from '../../core/asyncDeps';
 import { signupLocalUserController } from './controllers/signupLocalUserController';
+import { signinLocalUserController } from './controllers/signinLocalUserController';
 
 const router = Router();
 
@@ -21,6 +22,8 @@ export const authRoutes = (deps: IAsyncDeps): Router => {
 	router.get('/user', authGate, authorizeClientController);
 
 	router.post('/signup', signupLocalUserController(deps));
+
+	router.post('/signin', signinLocalUserController(deps));
 
 	return router;
 };

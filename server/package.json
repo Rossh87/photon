@@ -18,7 +18,8 @@
         "mongodb": "^4.1.1",
         "monocle-ts": "^2.3.11",
         "morgan": "^1.10.0",
-        "newtype-ts": "^0.3.4"
+        "newtype-ts": "^0.3.4",
+        "rate-limiter-flexible": "^2.2.4"
     },
     "scripts": {
         "start:dev": "NODE_ENV=dev node -r $PWD/configs/preDevRun index.ts",

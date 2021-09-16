@@ -8,13 +8,13 @@ import { EmailAddress } from '../../User/helpers/parseUserPreferences';
 import * as t from 'io-ts';
 import * as RTE from 'fp-ts/ReaderTaskEither';
 import { IAsyncDeps } from '../../../core/asyncDeps';
-import { TLocalSignupRequest } from '../sharedAuthTypes';
+import { TLocalUserCredentials } from '../sharedAuthTypes';
 import { InvalidSignupError } from '../domain/InvalidSignupError';
 
 type Email = t.TypeOf<typeof EmailAddress>;
 
 const findDuplicateEmails =
-	(req: TLocalSignupRequest) => (c: Collection<TDBUser>) =>
+	(req: TLocalUserCredentials) => (c: Collection<TDBUser>) =>
 		pipe(
 			TE.tryCatch(
 				() =>

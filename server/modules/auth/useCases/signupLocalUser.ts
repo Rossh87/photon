@@ -1,5 +1,5 @@
 import { emailIsAvailable } from '../repo/emailIsAvailable';
-import { LocalSignupRequest } from '../sharedAuthTypes';
+import { LocalUserCredentials } from '../sharedAuthTypes';
 import { flow, pipe } from 'fp-ts/lib/function';
 import * as RTE from 'fp-ts/ReaderTaskEither';
 import { hashNewPassword } from '../helpers/hashNewPassword';
@@ -18,7 +18,7 @@ const saveUser = flow(
 export const signupLocalUser = (u: unknown) =>
 	pipe(
 		u,
-		RTE.fromEitherK(LocalSignupRequest.decode),
+		RTE.fromEitherK(LocalUserCredentials.decode),
 		RTE.bindTo('request'),
 		RTE.chainFirstW((x) => emailIsAvailable(x.request)),
 		RTE.bindW('hashedPassword', (x) =>

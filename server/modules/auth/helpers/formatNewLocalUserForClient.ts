@@ -1,6 +1,6 @@
-import { TAuthorizedUserResponse, TDBUser } from '../../../../sharedTypes/User';
+import { TAuthorizedUserResponse, TDBUser } from 'sharedTypes/User';
 
-export const formatNewLocalUserForClient = (
+export const formatLocalUserForClient = (
 	newUser: TDBUser
 ): TAuthorizedUserResponse => {
 	const userResponse = {

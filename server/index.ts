@@ -26,6 +26,7 @@ import { authRoutes } from './modules/auth';
 import { uploadRoutes } from './modules/Upload';
 import { userRoutes } from './modules/User';
 import { BaseError } from './core/error';
+import { rateLimiterMiddleware } from './core/rateLimiter';
 
 // initialize needed objects
 const app = express();
@@ -40,6 +41,8 @@ declare module 'express-session' {
 		};
 
 		user?: TSessionUser;
+
+		loginAttempts?: number;
 	}
 }
 
@@ -83,6 +86,10 @@ async function run() {
 	app.use(accessLogger());
 
 	const repoClient = await MongoClient.connect(TEST_DB_URI);
+
+	const rlmw = rateLimiterMiddleware(repoClient);
+
+	app.use(rlmw);
 
 	// this will blow up right away if needed env vars are missing
 	const asyncDeps: IAsyncDeps = {

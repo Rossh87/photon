@@ -6,3 +6,5 @@ export const isSessionUser = (u: TSessionUser | TDBUser): u is TSessionUser =>
 
 export const isErrors = (u: unknown): u is Errors =>
 	Array.isArray(u) && u.length > 0 && typeof u[0].message === 'string';
+
+export const isError = (e: unknown): e is Error => e instanceof Error;

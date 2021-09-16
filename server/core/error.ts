@@ -41,6 +41,11 @@ export const HTTPErrorTypes: Record<string, HTTPErrorType> = {
 			'Server was unable to locate the requested resource, or could not perform the requested action due to a conflict',
 	},
 
+	EXCESSIVE_REQUESTS: {
+		status: 429,
+		clientMessage: 'Too many requests',
+	},
+
 	INTERNAL_SERVER_ERROR: {
 		status: 500,
 		clientMessage:

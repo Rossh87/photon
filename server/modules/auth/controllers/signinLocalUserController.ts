@@ -13,8 +13,8 @@ import { IAsyncDeps } from '../../../core/asyncDeps';
 import { pipe } from 'fp-ts/lib/function';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import { flow } from 'fp-ts/lib/function';
-import { signupLocalUser } from '../useCases/signupLocalUser';
-import { ILocalSignupRequestPayload } from '../../../../sharedTypes/User';
+import { signInLocalUser } from '../useCases/signInLocalUser';
+import { TLocalUserCredentials } from '../sharedAuthTypes';
 import { formatLocalUserForClient } from '../helpers/formatNewLocalUserForClient';
 
 const successEffects = flow(
@@ -24,15 +24,15 @@ const successEffects = flow(
 	addAndApplyEffect(toJSONEffect)
 );
 
-export const signupLocalUserController =
-	(deps: IAsyncDeps): RequestHandler<any, any, ILocalSignupRequestPayload> =>
+export const signinLocalUserController =
+	(deps: IAsyncDeps): RequestHandler<any, any, TLocalUserCredentials> =>
 	async (req, res, next) => {
 		const runner = runEffects(req, res, next);
-		const signupRequest = req.body;
 
 		await pipe(
-			signupRequest,
-			signupLocalUser,
+			req,
+			signInLocalUser,
+			// strip sensitive data from database user data
 			RTE.map(formatLocalUserForClient),
 			RTE.map(successEffects),
 			RTE.mapLeft(standardFailureEffects),

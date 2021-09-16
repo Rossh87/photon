@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
-import { TLocalSignupRequest, TPassword } from '../sharedAuthTypes';
+import { TLocalUserCredentials, TPassword } from '../sharedAuthTypes';
 import * as TE from 'fp-ts/TaskEither';
 import { PasswordHashCreationFailedError } from '../domain/PasswordHashCreationFailedError';
 
-export const hashNewPassword = (req: TLocalSignupRequest) =>
+export const hashNewPassword = (req: TLocalUserCredentials) =>
 	TE.tryCatch(
-		() => bcrypt.hash(req.passWord, 10),
+		() => bcrypt.hash(req.password, 10),
 		(e) => PasswordHashCreationFailedError.create(e)
 	);

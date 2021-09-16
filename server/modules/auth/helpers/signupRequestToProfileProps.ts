@@ -1,4 +1,4 @@
 import { IUserProfileProperties, IUserServiceUsageProperties } from "../../../../sharedTypes/User";
-import { TLocalSignupRequest } from "../sharedAuthTypes";
+import { TLocalUserCredentials } from "../sharedAuthTypes";
 
-export const signupRequestToProfileProps = (req: TLocalSignupRequest): IUserProfileProperties => 
+export const signupRequestToProfileProps = (req: TLocalUserCredentials): IUserProfileProperties => 

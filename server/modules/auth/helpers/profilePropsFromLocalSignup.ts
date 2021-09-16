@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { IUserProfileProperties } from '../../../../sharedTypes/User';
-import { TLocalSignupRequest } from '../sharedAuthTypes';
+import { TLocalUserCredentials } from '../sharedAuthTypes';
 
 const getDefaultUserName = (email: string) => email.split('@')[0];
 
 export const profilePropsFromLocalSignup =
 	(pw: string) =>
-	(signupRequest: TLocalSignupRequest): IUserProfileProperties => ({
+	(signupRequest: TLocalUserCredentials): IUserProfileProperties => ({
 		passwordHash: pw,
 		registeredEmail: signupRequest.registeredEmailAddress,
 		identityProvider: 'local',
