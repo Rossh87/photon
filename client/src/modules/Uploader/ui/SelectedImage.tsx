@@ -1,4 +1,4 @@
-import React, { Dispatch } from 'react';
+import React, { createRef, Dispatch, useRef } from 'react';
 import { TPreprocessingResult } from '../domain/domainTypes';
 import { isIImage } from '../domain/guards';
 import { TUploaderActions } from '../state/uploadStateTypes';
@@ -46,11 +46,11 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 	// state stuff
 	const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
-	const toggleExpanded = () => setExpanded(!isExpanded);
+	const inputRef = useRef<any>();
 
 	const classes = useStyles();
 
-	const { status, displayName, isUniqueDisplayName } = imageFile;
+	const { status, displayName, isUniqueDisplayName, type } = imageFile;
 
 	const textColor =
 		isIImage(imageFile) && isUniqueDisplayName ? 'primary' : 'error';
@@ -62,10 +62,16 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 		: imageFile.error.message;
 
 	// handlers
-	const closeAccordion = () => setExpanded(false);
+	const closeAccordion = () => {
+		setExpanded(false);
+	};
 
 	const toggleAccordion = (e: React.MouseEvent) => {
 		e.stopPropagation();
+
+		if (inputRef.current && document.activeElement === inputRef.current)
+			return;
+
 		setExpanded(!isExpanded);
 	};
 
@@ -92,6 +98,8 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 		return cancel;
 	};
 
+	const getTypeSuffixFromMIMEType = (type: string) => type.split('/')[1];
+
 	React.useEffect(removeIfSuccess, [status, displayName, dispatch]);
 
 	return (
@@ -107,7 +115,9 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 					</Hidden>
 
 					<ListItemText
-						primary={displayName}
+						primary={`${displayName}.${getTypeSuffixFromMIMEType(
+							type
+						)}`}
 						secondary={secondaryMessage}
 						primaryTypographyProps={{
 							color: textColor,
@@ -124,7 +134,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 						<IconButton
 							edge="end"
 							aria-label="remove file"
-							onClick={toggleExpanded}
+							onClick={toggleAccordion}
 							className={clsx(isExpanded && classes.expandIcon)}
 						>
 							<ExpandMore />
@@ -133,6 +143,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 				</AccordionSummary>
 				<AccordionDetails>
 					<FileUpdateForm
+						ref={inputRef}
 						closeAccordion={closeAccordion}
 						imageFile={imageFile}
 						dispatch={dispatch}

@@ -6,8 +6,9 @@ import Box from '@material-ui/core/Box';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Badge from './Badge';
 import { TFormMode } from '../../Landing/sharedLandingTypes';
-
-const lightColor = 'rgba(255, 255, 255, 0.7)';
+import { alpha } from '@material-ui/core/styles/colorManipulator';
+import useTopDetection from '../../hooks/useTopDetection';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	secondaryBar: {
@@ -22,16 +23,22 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 
 	headerButton: {
-		color: theme.palette.common.white,
+		color: 'inherit',
 		fontWeight: theme.typography.fontWeightBold,
 	},
 
-	appbarCenter: {
-		flexGrow: 1,
+	transitionFade: {
+		transition: 'background-color 0.25s',
 	},
 
-	loginBar: {
-		// backgroundColor: 'transparent',
+	loginBarAnchored: {
+		backgroundColor: alpha(theme.palette.primary.light, 0.1),
+		color: theme.palette.primary.main,
+	},
+
+	loginBarScrolled: {
+		backgroundColor: theme.palette.primary.main,
+		color: theme.palette.common.white,
 	},
 }));
 
@@ -40,17 +47,25 @@ interface LoginBarProps {
 	setLandingMode: (a: TFormMode) => void;
 }
 
-const Header: React.FunctionComponent<LoginBarProps> = ({
+const LoginBar: React.FunctionComponent<LoginBarProps> = ({
 	setLandingMode,
 	landingMode,
 }) => {
+	const isAtTop = useTopDetection();
+
 	const classes = useStyles();
 
 	const toggleMode = () =>
 		setLandingMode(landingMode === 'signin' ? 'signup' : 'signin');
+
+	const barClasses = clsx(
+		isAtTop ? classes.loginBarAnchored : classes.loginBarScrolled,
+		classes.transitionFade
+	);
+
 	return (
 		<AppBar
-			className={classes.loginBar}
+			className={barClasses}
 			color="primary"
 			position="sticky"
 			elevation={0}
@@ -70,4 +85,4 @@ const Header: React.FunctionComponent<LoginBarProps> = ({
 	);
 };
 
-export default Header;
+export default LoginBar;

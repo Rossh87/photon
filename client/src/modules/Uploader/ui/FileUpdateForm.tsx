@@ -1,4 +1,4 @@
-import React, { Dispatch } from 'react';
+import React, { Dispatch, forwardRef, useRef } from 'react';
 import { TUploaderActions } from '../state/uploadStateTypes';
 import TextField from '@material-ui/core/TextField';
 import { fromPredicate, map } from 'fp-ts/lib/Option';
@@ -12,51 +12,45 @@ interface IFileUpdateFormProps {
 	imageFile: TPreprocessingResult;
 }
 
-const FileUpdateForm: React.FunctionComponent<IFileUpdateFormProps> = ({
-	closeAccordion,
-	dispatch,
-	imageFile,
-}) => {
-	const [inputState, setInputState] = React.useState<string>('');
+const FileUpdateForm = forwardRef<any, IFileUpdateFormProps>(
+	({ closeAccordion, dispatch, imageFile }, ref) => {
+		const [inputState, setInputState] = React.useState<string>('');
 
-	const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-		setInputState(e.target.value);
+		const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+			setInputState(e.target.value);
 
-	const actions = useAppActions();
+		const actions = useAppActions();
 
-	const setNewDisplayName = () =>
-		actions.INIT_NAME_UPDATE([imageFile, inputState]);
+		const setNewDisplayName = () =>
+			actions.INIT_NAME_UPDATE([imageFile, inputState]);
 
-	const resetFileNameInput = () => setInputState('');
+		const resetFileNameInput = () => setInputState('');
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+		const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+			e.preventDefault();
 
-		pipe(
-			inputState,
-			fromPredicate<string>((s) => s.length > 0),
-			map(setNewDisplayName),
-			map(resetFileNameInput),
-			map(closeAccordion)
+			pipe(
+				inputState,
+				fromPredicate<string>((s) => s.length > 0),
+				map(setNewDisplayName),
+				map(resetFileNameInput),
+				map(closeAccordion)
+			);
+		};
+
+		return (
+			<form onSubmit={onSubmit} noValidate autoComplete="off">
+				<TextField
+					size="small"
+					id="outlined-basic"
+					label="Update name"
+					variant="outlined"
+					onChange={onChange}
+					value={inputState}
+				/>
+			</form>
 		);
-	};
-
-	const handleBlur = () =>
-		inputState.length === 0 ? closeAccordion() : null;
-
-	return (
-		<form onSubmit={onSubmit} noValidate autoComplete="off">
-			<TextField
-				onBlur={handleBlur}
-				size="small"
-				id="outlined-basic"
-				label="Update name"
-				variant="outlined"
-				onChange={onChange}
-				value={inputState}
-			/>
-		</form>
-	);
-};
+	}
+);
 
 export default FileUpdateForm;

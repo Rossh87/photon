@@ -6,7 +6,11 @@ const useStyles = makeStyles((theme) => ({
 	main: {
 		fontWeight: theme.typography.fontWeightBold,
 		fontSize: '1.5rem',
-		color: theme.palette.common.white,
+		color: 'inherit',
+	},
+
+	badgeLink: {
+		color: 'inherit',
 	},
 
 	secondary: {
@@ -18,19 +22,21 @@ const Badge: FunctionComponent = (props) => {
 	const classes = useStyles();
 
 	return (
-		<Link href="http://localhost:3000" underline="none">
-			<Box>
-				<Typography component="span" className={classes.main}>
-					Lossy
-				</Typography>
-				<Typography
-					color="secondary"
-					component="span"
-					className={classes.secondary}
-				>
-					alpha
-				</Typography>
-			</Box>
+		<Link
+			href="http://localhost:3000"
+			underline="none"
+			className={classes.badgeLink}
+		>
+			<Typography component="span" className={classes.main}>
+				Lossy
+			</Typography>
+			<Typography
+				color="secondary"
+				component="span"
+				className={classes.secondary}
+			>
+				alpha
+			</Typography>
 		</Link>
 	);
 };

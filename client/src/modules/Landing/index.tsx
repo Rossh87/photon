@@ -7,7 +7,8 @@ import LoginBar from '../Header/ui/LoginBar';
 import { TFormMode } from './sharedLandingTypes';
 import Container from '@material-ui/core/Container';
 import Header from '../Header';
-
+import Cardbar from './ui/Cardbar';
+import LandingRow from './ui/LandingRow';
 const useStyles = makeStyles((theme) => ({
 	background: {
 		background: 'rgb(255,255,255)',
@@ -52,13 +53,20 @@ export default function Landing() {
 	);
 
 	return (
-		<div className={classes.background}>
+		<>
 			<Header landingMode={formMode} setLandingMode={setFormMode} />
-			<Container className={classes.container} maxWidth="lg">
-				<Box display="flex" justifyContent="space-around">
+			<LandingRow bg="dark">
+				<Box
+					display="flex"
+					justifyContent="space-around"
+					flexWrap="wrap"
+				>
 					{formMode === 'signup' ? renderSignup() : renderSignin()}
 				</Box>
-			</Container>
-		</div>
+			</LandingRow>
+			<LandingRow bg="light">
+				<Cardbar />
+			</LandingRow>
+		</>
 	);
 }

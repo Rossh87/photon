@@ -26,16 +26,6 @@ import { handleSigninOrSignupFailure } from '../helpers';
 import { TFormMode } from '../sharedLandingTypes';
 
 const useStyles = makeStyles((theme) => ({
-	background: {
-		// background: 'rgb(255,255,255)',
-		background:
-			'linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(193,180,224,1) 52%, rgba(81,45,168,1) 79%)',
-	},
-
-	avatar: {
-		margin: theme.spacing(1),
-		backgroundColor: theme.palette.secondary.main,
-	},
 	form: {
 		display: 'flex',
 		width: '100%',
@@ -190,6 +180,7 @@ const CredentialsForm: React.FunctionComponent<ICredentialsFormProps> = ({
 			>
 				<form onSubmit={handleSubmit} className={classes.form}>
 					<TextField
+						size={'small'}
 						variant="outlined"
 						placeholder="Email"
 						error={emailErr[0] !== null}
@@ -199,6 +190,7 @@ const CredentialsForm: React.FunctionComponent<ICredentialsFormProps> = ({
 						onBlur={handleBlur('emailState')}
 					></TextField>
 					<TextField
+						size={'small'}
 						fullWidth
 						variant="outlined"
 						placeholder="Password"
