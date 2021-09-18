@@ -1,4 +1,5 @@
 import { Reducer } from 'react';
+import { ILogoutUserAction, TAuthActions } from '../Auth/state/authStateTypes';
 import { TAppMetaActions, TAppMetaState } from './appMetaTypes';
 import { handleIncomingMessage } from './handleIncomingMessage';
 
@@ -7,11 +8,14 @@ export const defaultState: TAppMetaState = {
 	demoMessageViewed: false,
 };
 
-export const appMetaReducer: Reducer<TAppMetaState, TAppMetaActions> = (
-	state,
-	action
-) => {
+export const appMetaReducer: Reducer<
+	TAppMetaState,
+	TAppMetaActions | ILogoutUserAction
+> = (state, action) => {
 	switch (action.type) {
+		case 'AUTH/LOGOUT_USER':
+			return { ...defaultState };
+
 		case 'META/ADD_APP_MESSAGE':
 			return handleIncomingMessage(state, action.payload);
 
