@@ -151,7 +151,9 @@ const CredentialsForm: React.FunctionComponent<ICredentialsFormProps> = ({
 		) => dispatch({ type: 'AUTH/ADD_USER', payload: userData });
 
 		axios
-			.post<TAuthorizedUserResponse>(endpoint, submissionData)
+			.post<TAuthorizedUserResponse>(endpoint, submissionData, {
+				withCredentials: true,
+			})
 			.then((res) => res.data)
 			.then(handleSigninOrSignupSuccess)
 			.catch(handleSigninOrSignupFailure(setComponentErr));
