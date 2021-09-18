@@ -30,11 +30,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface INavigatorProps extends Omit<DrawerProps, 'classes'> {
 	setDrawerOpen: (a: boolean) => void;
+	drawerOpen: boolean;
 }
 
 const Navigator: React.FunctionComponent<INavigatorProps> = ({
 	setDrawerOpen,
-	...passThrough
+	drawerOpen,
 }) => {
 	const classes = useStyles();
 
@@ -76,10 +77,10 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 			</Hidden>
 			<Hidden mdUp>
 				<Drawer
-					{...passThrough}
 					anchor="left"
 					variant="temporary"
 					onClose={() => setDrawerOpen(false)}
+					open={drawerOpen}
 				>
 					<List className={classes.navList}>
 						{navItems.map((vals, i) => (

@@ -55,7 +55,9 @@ interface HeaderProps {
 	onDrawerToggle: () => void;
 }
 
-const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
+const LossyAppBar: React.FunctionComponent<HeaderProps> = ({
+	onDrawerToggle,
+}) => {
 	const menuRef = React.useRef<HTMLButtonElement>(null);
 
 	const classes = useStyles();
@@ -125,7 +127,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 	return (
 		<AppBar color="primary" position="sticky" elevation={0}>
 			<Toolbar>
-				<Hidden xsDown>
+				<Hidden smDown>
 					<Badge />
 				</Hidden>
 				<Hidden mdUp>
@@ -206,4 +208,4 @@ const Header: React.FunctionComponent<HeaderProps> = ({ onDrawerToggle }) => {
 	);
 };
 
-export default Header;
+export default LossyAppBar;

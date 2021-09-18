@@ -19,6 +19,7 @@ const Header: FunctionComponent<LoginBarProps> = ({
 	const [drawerOpen, setDrawerOpen] = useState(false);
 
 	const handleDrawerToggle = () => {
+		console.log('click');
 		setDrawerOpen(!drawerOpen);
 	};
 
@@ -26,7 +27,10 @@ const Header: FunctionComponent<LoginBarProps> = ({
 
 	return user ? (
 		<>
-			<Navigator setDrawerOpen={setDrawerOpen}></Navigator>
+			<Navigator
+				setDrawerOpen={setDrawerOpen}
+				drawerOpen={drawerOpen}
+			></Navigator>
 			<LossyAppBar onDrawerToggle={handleDrawerToggle}></LossyAppBar>
 		</>
 	) : (
