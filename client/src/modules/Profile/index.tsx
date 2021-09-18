@@ -7,9 +7,7 @@ import {
 	Theme,
 	Box,
 } from '@material-ui/core';
-import {
-	TAuthorizedUserResponse,
-} from '../../../../sharedTypes/User';
+import { TAuthorizedUserResponse } from '../../../../sharedTypes/User';
 import { pipe } from 'fp-ts/lib/function';
 import { fromNullable, alt, fold } from 'fp-ts/lib/Option';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -29,14 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		width: '120px',
 		height: '120px',
 		margin: theme.spacing(2, 'auto'),
-		// minWidth: '200px',
-		// minHeight: '200px',
-		// maxHeight: '300px',
-		// maxWidth: '300px',
-	},
-
-	list: {
-		width: '100%',
+		color: theme.palette.primary.main,
 	},
 
 	saveButton: {
@@ -47,15 +38,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 	cancelButton: {
 		color: theme.palette.warning.main,
 		margin: theme.spacing(1),
-	},
-
-	myGrid: {
-		// flexGrow: 1,
-	},
-
-	fixedGrid: {
-		minWidth: '100%',
-		maxWidth: '100%',
 	},
 }));
 
@@ -151,7 +133,9 @@ const Profile: React.FunctionComponent = (props) => {
 
 	return (
 		<>
-			{renderAvatar()}
+			<Box display="flex" justifyContent="center">
+				{renderAvatar()}
+			</Box>
 			<List dense>
 				{(
 					Object.keys(currentStateFromProps) as [
