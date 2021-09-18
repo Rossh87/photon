@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, useMediaQuery, Hidden } from '@material-ui/core';
 import theme from '../theme';
@@ -7,9 +7,10 @@ import ImageSearchPage from '../ImageSearch';
 import Profile from '../Profile';
 import { useTheme } from '@material-ui/core/styles';
 import AppMessage from '../AppMessage';
-import { Switch, Route } from 'react-router-dom';
-import LossyAppBar from '../Header/ui/LossyAppBar';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import Header from '../Header';
+import { useAppDispatch, useAppState } from '../appState/useAppState';
+import WelcomeText from './ui/WelcomeText';
 const drawerWidth = 180;
 
 const useStyles = makeStyles({
@@ -66,6 +67,31 @@ const Main: React.FunctionComponent = () => {
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
+	const history = useHistory();
+	const { appMeta } = useAppState();
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		if (!appMeta.demoMessageViewed) {
+			dispatch({
+				type: 'META/ADD_APP_MESSAGE',
+				payload: {
+					messageKind: 'singleNotice',
+					eventName: 'display alpha mode message',
+					displayMessage:
+						'Lossy is currently running in alpha mode.  Users are limited to 10 uploads, and data persistence/availability is NOT GUARANTEED!',
+					severity: 'warning',
+					displayTrackingProp: 'demoMessageViewed',
+					action: {
+						kind: 'simple',
+						handler: () =>
+							dispatch({ type: 'META/REMOVE_APP_MESSAGE' }),
+					},
+				},
+			});
+		}
+	});
+
 	return (
 		<>
 			<Header />
@@ -84,6 +110,9 @@ const Main: React.FunctionComponent = () => {
 					<AppMessage />
 					<Paper className={classes.paper}>
 						<Switch>
+							<Route exact path="/">
+								<WelcomeText />
+							</Route>
 							<Route exact path="/upload">
 								<Uploader />
 							</Route>
