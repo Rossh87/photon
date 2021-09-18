@@ -19,7 +19,6 @@ const Header: FunctionComponent<LoginBarProps> = ({
 	const [drawerOpen, setDrawerOpen] = useState(false);
 
 	const handleDrawerToggle = () => {
-		console.log('click');
 		setDrawerOpen(!drawerOpen);
 	};
 

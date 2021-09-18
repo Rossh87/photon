@@ -48,8 +48,6 @@ export const deleteUpload = (
 			R.asks(({ repoClient }) => {
 				const coll = getCollection<IDBUpload>('uploads')(repoClient);
 
-				console.log(p);
-
 				return TE.tryCatch(
 					() => coll.findOne({ _id: new ObjectId(p.idToDelete) }),
 					(e) =>

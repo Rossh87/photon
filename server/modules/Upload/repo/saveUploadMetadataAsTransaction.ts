@@ -21,7 +21,6 @@ export const saveUploadMetadata =
 				() =>
 					session.withTransaction(async () => {
 						const userID = new ObjectId(data.ownerID);
-						console.log('xaction user id is:', userID);
 						// get the needed collections
 						const userColl = repoClient
 							.db('photon')
@@ -54,7 +53,6 @@ export const saveUploadMetadata =
 						});
 					}),
 				(e) => {
-					console.log('errored', e);
 					return DBTransactionError.create(
 						'Transaction to add a new Upload object was forced to abort; rolling back.',
 						e

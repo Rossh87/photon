@@ -18,44 +18,7 @@ describe('user data fetching functiong', () => {
 
 		await _fetchUserData(mockAxios)(dispatch);
 
-		expect(actions.length).toBe(3);
-	});
-
-	it('submits an app message if user is in "demo" mode', async () => {
-		const actions: TAuthActions[] = [];
-		const user = {
-			name: 'tim',
-			age: 20,
-			accessLevel: 'demo',
-		};
-		const dispatch = (action: any) => actions.push(action);
-		const mockAxios = {
-			get: jest.fn(() => Promise.resolve({ data: user })),
-		} as unknown as AxiosInstance;
-
-		const expectedMessage = {
-			type: 'META/ADD_APP_MESSAGE',
-			payload: {
-				messageKind: 'singleNotice',
-				eventName: 'user profile data received',
-				displayMessage:
-					'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
-				severity: 'info',
-				action: {
-					kind: 'simple',
-					handler: () =>
-						dispatch({ type: 'META/REMOVE_APP_MESSAGE' }),
-				},
-				displayTrackingProp: 'demoMessageViewed',
-			},
-		};
-
-		// Convert to string to get around inequality of nested functions.
-		await _fetchUserData(mockAxios)(dispatch);
-
-		expect(JSON.stringify(actions[1])).toEqual(
-			JSON.stringify(expectedMessage)
-		);
+		expect(actions.length).toBe(2);
 	});
 
 	it('dispatches correct error on request failure', async () => {

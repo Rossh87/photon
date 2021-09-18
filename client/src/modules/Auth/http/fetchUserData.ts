@@ -27,24 +27,6 @@ const initRequest: IDispatcher<TAppAction> = (dispatch) =>
 
 const onSuccess =
 	(dispatch: Dispatch<TAppAction>) => (user: TAuthorizedUserResponse) => {
-		if (user.accessLevel === 'demo') {
-			dispatch({
-				type: 'META/ADD_APP_MESSAGE',
-				payload: {
-					messageKind: 'singleNotice',
-					eventName: 'user profile data received',
-					displayMessage:
-						'Photon is currently running in demo mode.  Demo users are limited to 10 uploads.',
-					severity: 'info',
-					action: {
-						kind: 'simple',
-						handler: () =>
-							dispatch({ type: 'META/REMOVE_APP_MESSAGE' }),
-					},
-					displayTrackingProp: 'demoMessageViewed',
-				},
-			});
-		}
 		dispatch({ type: 'AUTH/ADD_USER', payload: user });
 	};
 

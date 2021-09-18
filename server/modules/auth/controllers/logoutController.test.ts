@@ -1,5 +1,6 @@
-import { logoutController, LogoutFailureError } from './logoutController';
+import { logoutController } from './logoutController';
 import { Request, Response, NextFunction } from 'express';
+import { LogoutFailureError } from '../domain/LogoutFailureError';
 
 beforeEach(() => jest.resetAllMocks());
 

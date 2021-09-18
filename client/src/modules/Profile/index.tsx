@@ -127,7 +127,6 @@ const Profile: React.FunctionComponent = (props) => {
 
 	// refresh user's data whenever this component mounts
 	React.useEffect(() => {
-		fetchUserData(appDispatch);
 		return () => timerIDS.current.forEach((timer) => clearTimeout(timer));
 	}, []);
 

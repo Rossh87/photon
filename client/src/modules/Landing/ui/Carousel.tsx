@@ -48,10 +48,6 @@ const Carousel: React.FunctionComponent = () => {
 
 	const tileSize = calcSize();
 	const itemWidth = calcSize();
-
-	// console.log('tilesize:', tileSize);
-	// console.log('itemSize:', itemWidth);
-
 	const toCarouselChildProps = (
 		i: number,
 		{ url, href }: TBaseCarouselData
@@ -66,7 +62,6 @@ const Carousel: React.FunctionComponent = () => {
 		itemWidth,
 	});
 
-	// console.log(typeof shuffle);
 	const imagePropsArray = pipe(
 		imageData,
 		shuffle,

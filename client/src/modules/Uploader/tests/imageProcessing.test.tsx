@@ -3,9 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockResizingData } from './mockData';
 import { getOversizeImageFile } from '../../../testUtils/imageUtils';
-import {
-	TImageResizer,
-} from '../../../core/dependencyContext';
+import { TImageResizer } from '../../../core/dependencyContext';
 import {
 	REQUEST_UPLOAD_URI_ENDPOINT,
 	DEDUPLICATION_ENDPOINT,
@@ -45,9 +43,9 @@ describe('Uploader component when files are submitted', () => {
 		);
 
 		// ensure a file is actually in the UI to make sure test is valid
-		const invalidFile = screen.getByText('invalidSelection');
+		const invalidFiles = screen.getAllByText(/invalidselection/i);
 
-		expect(invalidFile).not.toBeNull();
+		expect(invalidFiles.length).not.toEqual(0);
 
 		/**This will throw if component is working correctly because MUI submit button
 		 * will have pointer events set to 'none'.  The user-event library will not

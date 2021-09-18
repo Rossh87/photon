@@ -4,9 +4,7 @@ import { render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { getOversizeImageFile } from '../../../testUtils/imageUtils';
-import {
-	IHTTPLib,
-} from '../../../core/dependencyContext';
+import { IHTTPLib } from '../../../core/dependencyContext';
 import {
 	TDedupeNamesPayload,
 	TDedupeNamesResponse,
@@ -41,7 +39,7 @@ describe('Uploader component', () => {
 
 		await act(async () => simulateTwoFilesInput(input));
 
-		const selectedFilesUI = screen.getAllByText('testImage', {
+		const selectedFilesUI = screen.getAllByText(/testimage/i, {
 			exact: false,
 		});
 
@@ -67,9 +65,11 @@ describe('Uploader component', () => {
 			)
 		);
 
-		const UIForValid = screen.getByText('testImage', { exact: false });
+		const UIForValid = screen.getByText(/testimage/i);
 
-		const UIForInvalid = screen.getByText('invalidSelection');
+		// NB we don't use regex to search for this--too many hits.  Instead we want this *exact*
+		// element.
+		const UIForInvalid = screen.getByText('invalidSelection.jpg');
 
 		const validColor = window
 			.getComputedStyle(UIForValid)
@@ -124,7 +124,7 @@ describe('Uploader component', () => {
 
 			await act(async () => simulateTwoFilesInput(fileInput));
 
-			const selectedFileUI = screen.getByText('testImage1');
+			const selectedFileUI = screen.getByText(/testimage1/i);
 
 			userEvent.click(selectedFileUI);
 
@@ -139,7 +139,7 @@ describe('Uploader component', () => {
 				async () => userEvent.keyboard('{Enter}') as unknown as void
 			);
 
-			const updated = screen.getAllByText('newDisplayName');
+			const updated = screen.getAllByText(/newdisplayname/i);
 
 			expect(updated.length).toEqual(1);
 		});
@@ -158,7 +158,7 @@ describe('Uploader component', () => {
 
 			await act(async () => simulateTwoFilesInput(fileInput));
 
-			const selectedFileUI = screen.getByText('testImage1');
+			const selectedFileUI = screen.getByText(/testImage1/i);
 
 			userEvent.click(selectedFileUI);
 
@@ -171,7 +171,7 @@ describe('Uploader component', () => {
 			// ...but type nothing--just hit enter to submit
 			userEvent.keyboard('{Enter}');
 
-			const result = screen.getAllByText('testImage1');
+			const result = screen.getAllByText(/testimage1/i);
 
 			expect(result.length).toEqual(1);
 		});
@@ -197,7 +197,7 @@ describe('Uploader component', () => {
 
 			userEvent.click(deleteButton);
 
-			expect(() => screen.getByText('testImage1')).toThrow();
+			expect(screen.queryByText(/testimage1/i)).not.toBeInTheDocument();
 		});
 	});
 
@@ -223,7 +223,7 @@ describe('Uploader component', () => {
 
 			await act(async () => simulateTwoFilesInput(fileInput));
 
-			const duplicateNameErrs = screen.getAllByText('already in use', {
+			const duplicateNameErrs = screen.getAllByText(/already in use/i, {
 				exact: false,
 			});
 
@@ -327,7 +327,7 @@ describe('Uploader component', () => {
 				async () => userEvent.keyboard('{Enter}') as unknown as void
 			);
 
-			const updated = screen.getAllByText('newDisplayName');
+			const updated = screen.getAllByText(/newdisplayname/i);
 
 			expect(updated.length).toEqual(1);
 			expect(() =>

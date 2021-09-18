@@ -49,10 +49,6 @@ export const deleteUploadController =
 				{ idToDelete: id, updatedImageCount },
 				authenticatedID
 			),
-			RTE.mapLeft((x) => {
-				console.log(x);
-				return x;
-			}),
 			RTE.map(() => ({
 				...req.session.user,
 				imageCount: updatedImageCount,

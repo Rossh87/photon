@@ -95,10 +95,8 @@ describe('controlller responsible for deleting uploads', () => {
 		} as unknown as Response;
 
 		const expectedNames = gcsFileNamesFromUpload(mockUpload);
-		console.log('expectednames:', expectedNames);
 
 		const mockDelete = jest.fn(() => {
-			console.log('trying delete');
 			return Promise.resolve('cool');
 		});
 

@@ -1,7 +1,6 @@
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { TMediaType } from 'sharedTypes/Upload';
 import { ResumableUploadCreationErr } from './helpers/requestResumableUpload';
-
-export type TMediaType = 'image/jpeg' | 'image/png';
 
 export interface IUploadRequestMetadata {
 	ownerID: string;
