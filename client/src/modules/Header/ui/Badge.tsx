@@ -1,6 +1,7 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 import Link from '@material-ui/core/Link';
+import RouterLink from '../../RouterLink';
 
 const useStyles = makeStyles((theme) => ({
 	main: {
@@ -22,11 +23,7 @@ const Badge: FunctionComponent = (props) => {
 	const classes = useStyles();
 
 	return (
-		<Link
-			href="http://localhost:3000"
-			underline="none"
-			className={classes.badgeLink}
-		>
+		<RouterLink to="/" className={classes.badgeLink}>
 			<Typography component="span" className={classes.main}>
 				Lossy
 			</Typography>
@@ -37,7 +34,7 @@ const Badge: FunctionComponent = (props) => {
 			>
 				alpha
 			</Typography>
-		</Link>
+		</RouterLink>
 	);
 };
 export default Badge;

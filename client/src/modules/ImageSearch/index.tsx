@@ -6,8 +6,6 @@ import { useAppActions } from '../appState/useAppState';
 export const ImageSearchPage: React.FunctionComponent = (props) => {
 	const actions = useAppActions();
 
-	console.log('mounted');
-
 	useEffect(() => actions.FETCH_IMG_DATA(), []);
 
 	return (
