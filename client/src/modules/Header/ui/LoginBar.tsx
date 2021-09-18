@@ -32,8 +32,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 
 	loginBarAnchored: {
-		backgroundColor: alpha(theme.palette.primary.light, 0.1),
+		// backgroundColor: alpha(theme.palette.primary.light, 0.1),
 		color: theme.palette.primary.main,
+		backgroundColor: theme.palette.common.white,
 	},
 
 	loginBarScrolled: {

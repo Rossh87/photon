@@ -22,7 +22,7 @@ const Cardbar: React.FunctionComponent = () => {
 			<LandingCard
 				alt="single cloud in a blue sky"
 				title="single cloud in a blue sky"
-				url="https://storage.googleapis.com/photon_user_images/lossy-assets/engin-akyurt-A9_IsUtjHm4-unsplash.jpg"
+				url="https://storage.googleapis.com/photon_user_images/lossy-assets/lossy-cloud.jpg"
 				heading="Upload"
 			>
 				Upload your orginal image. Lossy resizes your image and makes it
