@@ -11,7 +11,7 @@ import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import requiredInEnv from './configs/requiredInEnv';
 import axios from 'axios';
-import { TDBUser, TSessionUser } from '../sharedTypes/User';
+import { TSessionUser } from '../sharedTypes/User';
 import { IAsyncDeps } from './core/asyncDeps';
 import { MongoClient } from 'mongodb';
 import { TEST_DB_URI } from './CONSTANTS';
@@ -58,6 +58,13 @@ async function run() {
 			secret: sessionSecret,
 			saveUninitialized: false,
 			resave: true,
+			name: 'lossy-sessid',
+			cookie: {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production' ? true : false,
+				sameSite: process.env.NODE_ENV === 'production' ? true : false,
+				maxAge: 60 * 60,
+			},
 		})
 	);
 
