@@ -20,6 +20,7 @@ import { gcs } from './core/gcs';
 import { makeReadEnv } from './core/readEnv';
 import { errorHandler } from './modules/errorHandler';
 import { getLoggers } from './core/morgan';
+import helmet from 'helmet';
 
 // routes
 import { authRoutes } from './modules/auth';
@@ -76,6 +77,7 @@ async function run() {
 			})
 		);
 	}
+	app.use(helmet());
 	app.use(express.urlencoded({ extended: false }));
 	app.use(express.json());
 
