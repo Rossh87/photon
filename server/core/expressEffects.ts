@@ -6,7 +6,7 @@ import {
 } from '../../sharedTypes/User';
 import { reverseTwo } from './utils/reverseCurried';
 import { CLIENT_ROOT } from '../CONSTANTS';
-import { BaseError, HTTPErrorTypes } from './error';
+import { BaseError } from './error';
 import { flow } from 'fp-ts/lib/function';
 import { isSessionUser } from '../modules/auth/domain/guards';
 
@@ -51,39 +51,23 @@ export const runEffects =
 
 export const setSessionUserEffect =
 	(u: TDBUser | TSessionUser): TExpressEffect =>
-	(req: Request, res: Response, next) => {
-		let user: TDBUser | TSessionUser;
-
+	(req: Request, res: Response) => {
 		if (isSessionUser(u)) {
-			user = {
+			req.session.user = {
 				...u,
 			};
 		} else {
-			const intermediateUser = {
+			const user = {
 				...u,
 				_id: u._id.toHexString(),
 			};
 
-			if (intermediateUser.passwordHash !== undefined) {
-				delete intermediateUser.passwordHash;
+			if (user.passwordHash !== undefined) {
+				delete user.passwordHash;
 			}
 
-			user = intermediateUser;
+			req.session.user = user;
 		}
-
-		req.session.regenerate((err) => {
-			if (err) {
-				next(
-					new BaseError(
-						'session regeneration failed after successful authentication',
-						HTTPErrorTypes.INTERNAL_SERVER_ERROR,
-						err
-					)
-				);
-			} else {
-				req.session.user = user as any;
-			}
-		});
 	};
 
 export const destroySessionEffect: TExpressEffect = (req, res) =>
