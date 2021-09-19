@@ -78,7 +78,7 @@ export const destroySessionEffect: TExpressEffect = (req, res) =>
 export const clientRootRedirectEffect: TExpressEffect = (
 	req: Request,
 	res: Response
-) => res.redirect(CLIENT_ROOT);
+) => res.redirect(process.env.CLIENT_ROOT as any);
 
 export const toErrHandlerEffect =
 	<T extends Error>(e: T): TExpressEffect =>

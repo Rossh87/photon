@@ -14,7 +14,6 @@ import axios from 'axios';
 import { TSessionUser } from '../sharedTypes/User';
 import { IAsyncDeps } from './core/asyncDeps';
 import { MongoClient } from 'mongodb';
-import { TEST_DB_URI } from './CONSTANTS';
 import cors from 'cors';
 import { gcs } from './core/gcs';
 import { makeReadEnv } from './core/readEnv';
@@ -94,7 +93,7 @@ async function run() {
 	app.use(errLogger());
 	app.use(accessLogger());
 
-	const repoClient = await MongoClient.connect(TEST_DB_URI);
+	const repoClient = await MongoClient.connect(process.env.DB_URI as any);
 
 	const rlmw = rateLimiterMiddleware(repoClient);
 
