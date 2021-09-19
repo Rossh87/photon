@@ -12,3 +12,5 @@ export const GITHUB_USER_OAUTH_ENDPOINT = 'https://api.github.com/user';
 export const MAX_FAILED_LOGINS_PER_HOUR = 8;
 
 export const FAILED_LOGINS_EXCEEDED_LOCKOUT = 60 * 60 * 24;
+
+export const MAX_DEMO_UPLOAD_COUNT = 10;

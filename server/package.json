@@ -1,6 +1,6 @@
 {
     "name": "server",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "dependencies": {
         "@google-cloud/storage": "^5.8.1",
         "axios": "^0.21.1",
@@ -22,6 +22,8 @@
         "rate-limiter-flexible": "^2.2.4"
     },
     "scripts": {
+        "start": "NODE_ENV=dev node -r $PWD/configs/preRun build/server/index.js",
+        "build": "tsc",
         "start:dev": "NODE_ENV=dev node -r $PWD/configs/preDevRun index.ts",
         "start:inspect": "NODE_ENV=dev node --inspect -r $PWD/configs/preDevRun index.ts",
         "test": "jest",

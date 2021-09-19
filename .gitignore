@@ -178,3 +178,6 @@ secrets/
 
 ### server logs in development ###
 server/logs/
+
+### server build directory ###
+server/build/
