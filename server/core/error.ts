@@ -63,3 +63,6 @@ export const HTTPErrorTypes: Record<string, HTTPErrorType> = {
 		clientMessage: 'Requested upstream resource was not available',
 	},
 };
+
+export const isBaseError = (e: unknown): e is BaseError =>
+	e !== null && typeof e === 'object';
