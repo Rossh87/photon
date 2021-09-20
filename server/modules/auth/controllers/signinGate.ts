@@ -34,7 +34,7 @@ export const signinGate =
 			}
 
 			next();
-		} catch (e) {
+		} catch (e: any) {
 			const err = new BaseError(
 				`Retrieving signin rate limit status for ${rlKey} failed for reason ${
 					e.message ? e.message : e

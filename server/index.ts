@@ -6,7 +6,7 @@ console.log(env_path);
 dotenv.config({ path });
 
 import express, { NextFunction } from 'express';
-import session from 'express-session';
+import session, { MemoryStore } from 'express-session';
 import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
 import requiredInEnv from './configs/requiredInEnv';
@@ -20,6 +20,7 @@ import { makeReadEnv } from './core/readEnv';
 import { errorHandler } from './modules/errorHandler';
 import { getLoggers } from './core/morgan';
 import helmet from 'helmet';
+import MongoStore from 'connect-mongo';
 
 // routes
 import { authRoutes } from './modules/auth';
@@ -47,28 +48,14 @@ declare module 'express-session' {
 async function run() {
 	const sessionSecret = process.env.SESSION_SECRET;
 	const PORT = process.env.PORT ? process.env.PORT : 3000;
+	const inProduction = process.env.NODE_ENV === 'production';
 
 	if (sessionSecret === undefined) {
 		throw new Error('Missing session secret: unable to initialize server');
 	}
 
 	// setup middlewares
-	app.use(
-		session({
-			secret: sessionSecret,
-			saveUninitialized: false,
-			resave: true,
-			name: 'lossy-sessid',
-			cookie: {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production' ? true : false,
-				sameSite: process.env.NODE_ENV === 'production' ? true : false,
-				maxAge: 60 * 60,
-			},
-		})
-	);
-
-	if (process.env.NODE_ENV !== 'production') {
+	if (!inProduction) {
 		app.use(
 			cors({
 				origin: 'http://localhost:3000',
@@ -79,8 +66,6 @@ async function run() {
 	app.use(helmet());
 	app.use(express.urlencoded({ extended: false }));
 	app.use(express.json());
-
-	app.use(grantMiddleWare(grantConfig));
 
 	// add a property to represent failure message that we'll use in logging
 	app.use((req, res, next) => {
@@ -93,7 +78,34 @@ async function run() {
 	app.use(errLogger());
 	app.use(accessLogger());
 
-	const repoClient = await MongoClient.connect(process.env.DB_URI as any);
+	// get raw promise for session store, then await it later.
+	const dbPromise = MongoClient.connect(process.env.DB_URI as any);
+
+	const store = inProduction
+		? MongoStore.create({
+				clientPromise: dbPromise,
+		  })
+		: new MemoryStore();
+
+	app.use(
+		session({
+			store,
+			secret: sessionSecret,
+			saveUninitialized: false,
+			resave: false,
+			name: 'lossy-sessid',
+			cookie: {
+				httpOnly: inProduction ? true : false,
+				secure: inProduction ? true : false,
+				sameSite: inProduction ? true : false,
+				maxAge: 60 * 60 * 1000,
+			},
+		})
+	);
+
+	app.use(grantMiddleWare(grantConfig));
+
+	const repoClient = await dbPromise;
 
 	const rlmw = rateLimiterMiddleware(repoClient);
 
