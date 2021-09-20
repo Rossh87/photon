@@ -1,4 +1,5 @@
 import { Reducer } from 'react';
+import { ILogoutUserAction } from '../../Auth/state/authStateTypes';
 import { deleteImageMetadata } from '../helpers/deleteImageMetadata';
 import { SyncSuccessAction } from './imageConfigurationStateTypes';
 import {
@@ -13,7 +14,7 @@ export const defaultState: IImageSearchState = {
 
 export const imageSearchReducer: Reducer<
 	IImageSearchState,
-	TImageSearchActions | SyncSuccessAction
+	TImageSearchActions | SyncSuccessAction | ILogoutUserAction
 > = (s, a) => {
 	switch (a.type) {
 		// actions that hit multiple dispatchers:
@@ -31,6 +32,9 @@ export const imageSearchReducer: Reducer<
 						: img
 				),
 			};
+
+		case 'AUTH/LOGOUT_USER':
+			return { ...defaultState };
 
 		// Regular cases
 		case 'IMAGES/IMG_DATA_RECEIVED':
