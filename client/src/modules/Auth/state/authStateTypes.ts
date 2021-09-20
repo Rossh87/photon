@@ -34,13 +34,13 @@ export interface IUpdateProfileAction {
 	payload: IUserProfilePreferences;
 }
 
-export interface IIncreaseImageCountAction {
-	type: 'AUTH/INCREASE_IMAGE_COUNT';
-	payload: number;
+export interface IAddUploadDataAction {
+	type: 'AUTH/ADD_UPLOAD_DATA';
+	payload: { fileCount: number; combinedSize: number };
 }
 
 export type TAuthActions =
-	| IIncreaseImageCountAction
+	| IAddUploadDataAction
 	| IUpdateProfileAction
 	| IAddAuthErrAction
 	| ILogoutUserAction

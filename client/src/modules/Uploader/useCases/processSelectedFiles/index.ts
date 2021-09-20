@@ -12,6 +12,18 @@ import {
 	sequenceArray as RTESequence,
 } from 'fp-ts/ReaderTaskEither';
 import { TAppAction } from '../../../appState/appStateTypes';
+import { ICombinedUploadRequestMetadata } from '../../../../../../sharedTypes/Upload';
+import { IAddUploadDataAction } from '../../../Auth/state/authStateTypes';
+
+const imageMetadataUpdatePayload = (
+	md: readonly ICombinedUploadRequestMetadata[]
+): IAddUploadDataAction => ({
+	type: 'AUTH/ADD_UPLOAD_DATA',
+	payload: {
+		fileCount: md.length,
+		combinedSize: md.reduce((sum, el) => (sum += el.sizeInBytes), 0),
+	},
+});
 
 // bite off one file at a time and fully process it to avoid
 // pummelling the user's system
@@ -22,12 +34,9 @@ export const processSelectedFiles = (files: TSelectedFilesState) =>
 		OMap(NEAMap(processOneImage)),
 		OMap(RTESequence),
 		OMap(
-			RTEChain(() =>
+			RTEChain((imageMetadata) =>
 				asks((d) =>
-					d.dispatch({
-						type: 'AUTH/INCREASE_IMAGE_COUNT',
-						payload: files.length,
-					})
+					pipe(imageMetadata, imageMetadataUpdatePayload, d.dispatch)
 				)
 			)
 		),

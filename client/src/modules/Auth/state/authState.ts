@@ -16,12 +16,15 @@ export const authReducer: Reducer<
 	switch (action.type) {
 		case 'AUTH/TEST_ACTION':
 			return { ...(state as TAuthorizedUserResponse), imageCount: 10000 };
-		case 'AUTH/INCREASE_IMAGE_COUNT':
+		case 'AUTH/ADD_UPLOAD_DATA':
 			return {
 				...(state as TAuthorizedUserResponse),
 				imageCount:
 					(state as TAuthorizedUserResponse).imageCount +
-					action.payload,
+					action.payload.fileCount,
+				uploadUsage:
+					(state as TAuthorizedUserResponse).uploadUsage +
+					action.payload.combinedSize,
 			};
 
 		case 'IMAGES/DELETE_IMAGE':

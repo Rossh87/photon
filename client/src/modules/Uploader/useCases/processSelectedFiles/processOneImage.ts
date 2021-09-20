@@ -11,6 +11,7 @@ import {
 	chainFirst as RTEChainFirst,
 	orElseFirstW,
 	asks,
+	map as RTEMap,
 } from 'fp-ts/lib/ReaderTaskEither';
 import { doResize } from './doResize';
 import { foldImageDataForRecall } from './foldImageDataForRecall';
@@ -52,14 +53,14 @@ export const processOneImage = (file: TPreprocessingResult) =>
 			flow(fromBoundContext('resizeData'), requestUploadURIs)
 		),
 		RTEChainFirst((x) => uploadToGCS(x.resizeData)(x.uris)),
-		RTEChain(
+		RTEChainFirst(
 			flow(
 				fromBoundContext('resizeData'),
 				foldImageDataForRecall,
 				saveSuccessfulUpload
 			)
 		),
-		RTEChain(() =>
+		RTEChainFirst(() =>
 			asks((d) =>
 				d.dispatch({
 					type: 'UPLOADER/UPLOAD_SUCCESS',
@@ -67,6 +68,9 @@ export const processOneImage = (file: TPreprocessingResult) =>
 				})
 			)
 		),
+		// return the combined image metadata on success so that we can update UI
+		// without querying server
+		RTEMap(flow(fromBoundContext('resizeData'), foldImageDataForRecall)),
 		orElseFirstW((e) =>
 			asks((deps) =>
 				deps.dispatch({
