@@ -209,7 +209,7 @@ const CredentialsForm: React.FunctionComponent<ICredentialsFormProps> = ({
 						variant="contained"
 						color="primary"
 					>
-						Sign Up
+						Sign {formMode === 'signin' ? 'In' : 'Up'}
 					</Button>
 				</form>
 				{componentErrMessage && (
