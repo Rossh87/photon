@@ -1,5 +1,5 @@
 import { Box } from '@material-ui/core';
-import React from 'react';
+import React, { ReactElement, memo } from 'react';
 import { ICarouselChild } from './Carousel';
 import { useCarouselStyles } from './useCarouselStyles';
 import clsx from 'clsx';
@@ -7,33 +7,35 @@ import clsx from 'clsx';
 const CarouselChild: React.FunctionComponent<ICarouselChild> = ({
 	x,
 	y,
-	id,
 	tileSize,
 	itemWidth,
 	url,
+	id,
 	href,
 }) => {
 	const classes = useCarouselStyles();
 
 	const offsetX = (tileSize + 15) * x;
+
 	const offsetY = (tileSize + 15) * y;
 
 	const isVisibleX = x <= 3 && x >= 1;
 
 	const isVisibleY = y <= 3 && y >= 1;
-	const s = clsx(
+
+	const isVisible = isVisibleX && isVisibleY;
+
+	const carouselItemStyles = clsx(
 		classes.carouselItem,
-		isVisibleX && isVisibleY && classes.visible
-		// classes.visible
+		isVisible && classes.visible
 	);
+
 	return (
-		<a href={href}>
+		<a href={href} aria-hidden={isVisible}>
 			<Box
 				width={`${itemWidth}px`}
 				height={`${itemWidth}px`}
-				// width="150px"
-				// height="150px"
-				className={s}
+				className={carouselItemStyles}
 				style={{
 					transform: `translateX(${offsetX}px) translateY(${offsetY}px)`,
 

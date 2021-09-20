@@ -9,6 +9,8 @@ export const useCarouselStyles = makeStyles((theme) => ({
 		margin: 0,
 		opacity: 0,
 		transition: 'transform 1s ease, opacity 0.4s ease',
+		cursor: 'default',
+		pointerEvents: 'none',
 	},
 
 	carouselSection: {
@@ -18,5 +20,7 @@ export const useCarouselStyles = makeStyles((theme) => ({
 
 	visible: {
 		opacity: 1,
+		cursor: 'pointer',
+		pointerEvents: 'auto',
 	},
 }));
