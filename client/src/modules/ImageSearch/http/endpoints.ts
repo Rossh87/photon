@@ -1,8 +1,7 @@
-export const REQUEST_USER_IMG_DATA_ENDPOINT =
-	'http://localhost:8000/upload/retrieve';
+import apiRoot from '../../../core/apiRoot';
 
-export const SYNC_BREAKPOINT_ENDPOINT =
-	'http://localhost:8000/upload/syncbreakpoints';
+export const REQUEST_USER_IMG_DATA_ENDPOINT = `${apiRoot}/upload/retrieve`;
 
-export const DELETE_UPLOAD_ENDPOINT = (id: string) =>
-	`http://localhost:8000/upload/${id}`;
+export const SYNC_BREAKPOINT_ENDPOINT = `${apiRoot}/upload/syncbreakpoints`;
+
+export const DELETE_UPLOAD_ENDPOINT = (id: string) => `${apiRoot}/upload/${id}`;

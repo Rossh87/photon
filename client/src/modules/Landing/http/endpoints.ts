@@ -1,3 +1,5 @@
-export const SIGNUP_ENDPOINT = 'http://localhost:8000/auth/signup';
+import apiRoot from '../../../core/apiRoot';
 
-export const SIGNIN_ENDPOINT = 'http://localhost:8000/auth/signin';
+export const SIGNUP_ENDPOINT = `${apiRoot}/auth/signup`;
+
+export const SIGNIN_ENDPOINT = `${apiRoot}/auth/signin`;

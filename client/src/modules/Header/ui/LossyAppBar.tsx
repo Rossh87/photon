@@ -26,6 +26,7 @@ import { getProfileURL } from '../helpers';
 import { useAppDispatch, useAppState } from '../../appState/useAppState';
 import RouterLink from '../../RouterLink';
 import Badge from './Badge';
+import apiRoot from '../../../core/apiRoot';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -69,7 +70,7 @@ const LossyAppBar: React.FunctionComponent<HeaderProps> = ({
 
 	const handleLogout = () => {
 		axios
-			.get('http://localhost:8000/auth/logout', { withCredentials: true })
+			.get(`${apiRoot}/auth/logout`, { withCredentials: true })
 			.then(() => appDispatch({ type: 'AUTH/LOGOUT_USER' }))
 			.then(() => history.push('/'))
 			.catch((e) => console.log(e));

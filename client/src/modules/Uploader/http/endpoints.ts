@@ -1,11 +1,7 @@
-export const REQUEST_UPLOAD_URI_ENDPOINT =
-	'http://localhost:8000/upload/request';
+import apiRoot from '../../../core/apiRoot';
 
-export const BASE_PUBLIC_IMAGE_PATH =
-	'https://storage.googleapis.com/photon_user_images';
+export const REQUEST_UPLOAD_URI_ENDPOINT = `${apiRoot}/upload/request`;
 
-export const SAVE_SUCCESSFUL_UPLOAD_DATA_ENDPOINT =
-	'http://localhost:8000/upload/save';
+export const SAVE_SUCCESSFUL_UPLOAD_DATA_ENDPOINT = `${apiRoot}/upload/save`;
 
-export const DEDUPLICATION_ENDPOINT =
-	'http://localhost:8000/upload/deduplicate';
+export const DEDUPLICATION_ENDPOINT = `${apiRoot}/upload/deduplicate`;

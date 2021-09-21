@@ -22,7 +22,7 @@ const Cardbar: React.FunctionComponent = () => {
 			<LandingCard
 				alt="single cloud in a blue sky"
 				title="single cloud in a blue sky"
-				url="https://storage.googleapis.com/photon_user_images/lossy-assets/lossy-cloud.jpg"
+				url="https://cdn.lossy.dev/lossy-assets/lossy-cloud.jpg"
 				heading="Upload"
 			>
 				Upload your orginal image. Lossy resizes your image and makes it
@@ -30,7 +30,7 @@ const Cardbar: React.FunctionComponent = () => {
 			</LandingCard>
 			<LandingCard
 				alt="technical diagram with pencil and ruler"
-				url="https://storage.googleapis.com/photon_user_images/lossy-assets/lossy-blueprint.jpg"
+				url="https://cdn.lossy.dev/lossy-assets/lossy-blueprint.jpg"
 				title="technical diagram with pencil and ruler"
 				heading="Configure"
 			>
@@ -39,7 +39,7 @@ const Cardbar: React.FunctionComponent = () => {
 			</LandingCard>
 			<LandingCard
 				alt="black computer screen showing lines of HTML"
-				url="https://storage.googleapis.com/photon_user_images/lossy-assets/lossy-html.jpg"
+				url="https://cdn.lossy.dev/lossy-assets/lossy-html.jpg"
 				title="black computer screen showing lines of HTML"
 				heading="Use it"
 			>
