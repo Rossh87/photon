@@ -1,0 +1,82 @@
+{
+    "steps": [
+        {
+            "name": "gcr.io/cloud-builders/yarn",
+            "args": ["install"],
+            "dir": "server"
+        },
+        {
+            "name": "bash",
+            "args": ["-c", "printenv > .env"],
+            "env": [
+                "UPLOAD_ORIGIN=https://lossy.dev",
+                "LOG_LOCATION=$(pwd)/logs/",
+                "CLIENT_ROOT=https://www.lossy.dev"
+            ],
+            "secretEnv": [
+                "SESSION_SECRET",
+                "GOOGLE_OAUTH_CLIENT_APP_ID",
+                "GOOGLE_OAUTH_CLIENT_SECRET",
+                "GOOGLE_STORAGE_ACCESS_SECRET",
+                "GOOGLE_STORAGE_ACCESS_KEY",
+                "LOSSY_USER_IMAGES_BUCKET",
+                "GITHUB_OAUTH_CLIENT_SECRET",
+                "GITHUB_OAUTH_CLIENT_ID",
+                "MONGO_ATLAS_PASSWORD"
+            ],
+            "dir": "server"
+        },
+        {
+            "name": "gcr.io/cloud-builders/yarn",
+            "args": ["build"],
+            "dir": "server"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "bash",
+            "args": ["-c", "gcloud app deploy"],
+            "dir": "server"
+        }
+    ],
+    "availableSecrets": {
+        "secretManager": [
+            {
+                "versionName": "projects/436675044177/secrets/lossy-session-secret/versions/latest",
+                "env": "SESSION_SECRET"
+            },
+            {
+                "versionName": "projects/436675044177/secrets/google-oauth-client-id/versions/latest",
+                "env": "GOOGLE_OAUTH_CLIENT_APP_ID"
+            },
+            {
+                "versionName": "projects/436675044177/secrets/google-oauth-client-secret/versions/latest",
+                "env": "GOOGLE_OAUTH_CLIENT_SECRET"
+            },
+            {
+                "versionName": "projects/436675044177/secrets/google-storage-access-secret/versions/latest",
+                "env": "GOOGLE_STORAGE_ACCESS_SECRET"
+            },
+            {
+                "versionName": "projects/436675044177/secrets/google-storage-access-key/versions/latest",
+                "env": "GOOGLE_STORAGE_ACCESS_KEY"
+            },
+            {
+                "versionName": "projects/436675044177/secrets/lossy-user-images-bucket/versions/latest",
+                "env": "LOSSY_USER_IMAGES_BUCKET"
+            },
+            {
+                "versionName": "projects/436675044177/secrets/github-oauth-client-secret/versions/latest",
+                "env": "GITHUB_OAUTH_CLIENT_SECRET"
+            },
+
+            {
+                "versionName": "projects/436675044177/secrets/github-oauth-client-id/versions/latest",
+                "env": "GITHUB_OAUTH_CLIENT_ID"
+            },
+            {
+                "versionName": "projects/436675044177/secrets/mongo-atlas-lossy-password/versions/latest",
+                "env": "MONGO_ATLAS_PASSWORD"
+            }
+        ]
+    }
+}
