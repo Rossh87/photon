@@ -18,6 +18,25 @@ import { pipe } from 'fp-ts/lib/function';
 import { reverseTwo } from './utils/reverseCurried';
 import { fromNullable, foldW } from 'fp-ts/lib/Option';
 
+export const getConnectionString = (
+	mode: 'production' | string | undefined
+) => {
+	if (mode === undefined) {
+		throw new Error('NODE_ENV unset in environment--failing!!');
+	}
+	if (mode !== 'production') {
+		return 'mongodb://localhost:27017?name=photon';
+	}
+
+	const dbPassword = process.env.MONGO_ATLAS_PASSWORD;
+
+	if (dbPassword === undefined) {
+		throw new Error('Remote database password missing from environment!!');
+	}
+
+	return `mongodb+srv://lossy:${dbPassword}@lossy-database.6xtlp.mongodb.net/photon?retryWrites=true&w=majority`;
+};
+
 export const getCollection =
 	<T>(collection: string) =>
 	(client: MongoClient) =>

@@ -5,7 +5,7 @@ import { BaseError, HTTPErrorTypes } from './error';
 export const gcs = new Storage();
 
 // configure bucket to allow CORS from our client domain
-const bucketName = process.env.GOOGLE_STORAGE_BUCKET_NAME;
+const bucketName = process.env.LOSSY_USER_IMAGES_BUCKET;
 const uploadOrigin = process.env.UPLOAD_ORIGIN;
 
 gcs.bucket(bucketName as string).setCorsConfiguration([

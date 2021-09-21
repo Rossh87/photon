@@ -28,6 +28,7 @@ import { uploadRoutes } from './modules/Upload';
 import { userRoutes } from './modules/User';
 import { BaseError } from './core/error';
 import { rateLimiterMiddleware } from './core/rateLimiter';
+import { getConnectionString } from './core/repo';
 
 // initialize needed objects
 const app = express();
@@ -72,14 +73,19 @@ async function run() {
 		req.failureMessage = { message: '', raw: '' } as BaseError;
 		next();
 	});
-	const { devLogger, errLogger, accessLogger } = await getLoggers();
 
-	app.use(devLogger());
-	app.use(errLogger());
-	app.use(accessLogger());
+	if (process.env.NODE_ENV !== 'production') {
+		const { devLogger, errLogger, accessLogger } = await getLoggers();
+
+		app.use(devLogger());
+		app.use(errLogger());
+		app.use(accessLogger());
+	}
 
 	// get raw promise for session store, then await it later.
-	const dbPromise = MongoClient.connect(process.env.DB_URI as any);
+	const dbPromise = MongoClient.connect(
+		getConnectionString(process.env.NODE_ENV)
+	);
 
 	const store = inProduction
 		? MongoStore.create({
@@ -118,6 +124,12 @@ async function run() {
 		gcs,
 		readEnv: makeReadEnv(requiredInEnv, process.env),
 	};
+
+	app.get('/health', (req, res, next) => {
+		res.status(200).json({
+			health: 'ok',
+		});
+	});
 
 	app.use('/auth/', authRoutes(asyncDeps));
 

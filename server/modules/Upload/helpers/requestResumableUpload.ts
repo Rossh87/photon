@@ -40,7 +40,7 @@ export const requestResumableUpload =
 		CreateResumableUploadResponse
 	> =>
 	(deps) => {
-		const bucketName = deps.readEnv('GOOGLE_STORAGE_BUCKET_NAME');
+		const bucketName = deps.readEnv('LOSSY_USER_IMAGES_BUCKET');
 		const { ownerID, displayName, width } = uploadMetaData;
 
 		const fileName = `${ownerID}/${displayName}/${width.toString()}`;

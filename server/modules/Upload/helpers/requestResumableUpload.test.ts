@@ -29,14 +29,14 @@ describe('function to get resumable upload URI from GCS', () => {
 			file,
 		}));
 
-		const deps = ({
-			readEnv: makeReadEnv(['GOOGLE_STORAGE_BUCKET_NAME'], {
-				GOOGLE_STORAGE_BUCKET_NAME: 'my-bucket',
+		const deps = {
+			readEnv: makeReadEnv(['LOSSY_USER_IMAGES_BUCKET'], {
+				LOSSY_USER_IMAGES_BUCKET: 'my-bucket',
 			}),
 			gcs: {
 				bucket,
 			},
-		} as unknown) as IAsyncDeps;
+		} as unknown as IAsyncDeps;
 
 		const assertions = (e: unknown) => expect(e).toEqual(expectedErr);
 		const neverCalled = jest.fn();
@@ -67,14 +67,14 @@ describe('function to get resumable upload URI from GCS', () => {
 			file,
 		}));
 
-		const deps = ({
-			readEnv: makeReadEnv(['GOOGLE_STORAGE_BUCKET_NAME'], {
-				GOOGLE_STORAGE_BUCKET_NAME: 'my-bucket',
+		const deps = {
+			readEnv: makeReadEnv(['LOSSY_USER_IMAGES_BUCKET'], {
+				LOSSY_USER_IMAGES_BUCKET: 'my-bucket',
 			}),
 			gcs: {
 				bucket,
 			},
-		} as unknown) as IAsyncDeps;
+		} as unknown as IAsyncDeps;
 
 		const assertions = (data: any) =>
 			expect(data[0]).toEqual(mockSessionURI);

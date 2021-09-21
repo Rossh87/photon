@@ -19,7 +19,7 @@ export const authRoutes = (deps: IAsyncDeps): Router => {
 
 	router.get('/logout', logoutController);
 
-	router.get('/user', authGate, authorizeClientController);
+	router.get('/user', authorizeClientController);
 
 	router.post('/signup', signupLocalUserController(deps));
 

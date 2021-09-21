@@ -176,7 +176,7 @@ export const deleteUpload = (
 		RTE.bindTo('upload'),
 		RTE.apS('deps', RTE.ask()),
 		RTE.chainTaskEitherK(({ upload, deps }) => {
-			const bucketName = deps.readEnv('GOOGLE_STORAGE_BUCKET_NAME');
+			const bucketName = deps.readEnv('LOSSY_USER_IMAGES_BUCKET');
 
 			const bucket = deps.gcs.bucket(bucketName);
 

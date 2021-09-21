@@ -115,8 +115,8 @@ describe('controlller responsible for deleting uploads', () => {
 		}));
 
 		const deps = {
-			readEnv: makeReadEnv(['GOOGLE_STORAGE_BUCKET_NAME'], {
-				GOOGLE_STORAGE_BUCKET_NAME: 'my-bucket',
+			readEnv: makeReadEnv(['LOSSY_USER_IMAGES_BUCKET'], {
+				LOSSY_USER_IMAGES_BUCKET: 'my-bucket',
 			}),
 			gcs: {
 				bucket,
