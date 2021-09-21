@@ -1,5 +1,9 @@
 {
     "steps": [
+		{
+			"name": "bash",
+            "args": ["-c", "cp yarn.lock server/yarn.lock"]
+		},
         {
             "name": "gcr.io/cloud-builders/yarn",
             "args": ["install"],

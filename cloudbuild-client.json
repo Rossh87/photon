@@ -1,0 +1,18 @@
+{
+    "steps": [
+		{
+			"name": "bash",
+            "args": ["-c", "cp yarn.lock client/yarn.lock"]
+		},
+        {
+            "name": "gcr.io/cloud-builders/yarn",
+            "args": ["install"],
+            "dir": "client"
+        },
+        {
+            "name": "gcr.io/cloud-builders/gsutil",
+            "entrypoint": "bash",
+            "args": ["-c", "gsutil -m cp -r client/build/. gs://lossy-client/"]
+        }
+    ]
+}
