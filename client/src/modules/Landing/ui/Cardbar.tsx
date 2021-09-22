@@ -32,7 +32,7 @@ const Cardbar: React.FunctionComponent = () => {
 				alt="black computer screen showing lines of HTML"
 				url="https://cdn.lossy.dev/lossy-assets/lossy-html.jpg"
 				title="black computer screen showing lines of HTML"
-				heading="Use it"
+				heading="Use"
 			>
 				Lossy generates responsive HTML based on your needs. Just paste
 				it wherever you need it.
