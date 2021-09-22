@@ -31,7 +31,7 @@ const onSuccess =
 	};
 
 const onFailure = (dispatch: Dispatch<TAppAction>) => (e: AuthError) =>
-	dispatch({ type: 'AUTH/ADD_AUTH_ERR', payload: e });
+	dispatch({ type: 'AUTH/LOGOUT_USER' });
 
 export const _fetchUserData =
 	(fetcher: AxiosInstance) => async (dispatch: Dispatch<TAppAction>) => {
