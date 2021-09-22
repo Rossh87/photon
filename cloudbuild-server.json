@@ -1,9 +1,9 @@
 {
     "steps": [
-		{
-			"name": "bash",
+        {
+            "name": "bash",
             "args": ["-c", "cp yarn.lock server/yarn.lock"]
-		},
+        },
         {
             "name": "gcr.io/cloud-builders/yarn",
             "args": ["install"],
@@ -15,7 +15,8 @@
             "env": [
                 "UPLOAD_ORIGIN=https://lossy.dev",
                 "LOG_LOCATION=$(pwd)/logs/",
-                "CLIENT_ROOT=https://www.lossy.dev"
+                "CLIENT_ROOT=https://lossy.dev",
+                "API_ROOT=https://api.lossy.dev"
             ],
             "secretEnv": [
                 "SESSION_SECRET",

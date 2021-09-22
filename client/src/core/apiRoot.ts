@@ -4,7 +4,7 @@ import { fromNullable, getOrElseW } from 'fp-ts/lib/Option';
 // This will blow up at build time if public image path is missing
 const throwIfEnvMissingInProduction = () =>
 	pipe(
-		process.env.API_ROOT,
+		process.env.REACT_APP_API_ROOT,
 		fromNullable,
 		getOrElseW(() => {
 			throw new Error('API_ROOT missing from production environment');

@@ -1,7 +1,6 @@
 import { ICarouselChild } from './ui/Carousel';
 
-const baseURL =
-	'https://storage.googleapis.com/photon_user_images/lossy-assets/';
+const baseURL = 'https://cdn.lossy.dev/lossy-assets/';
 
 export type TBaseCarouselData = Pick<ICarouselChild, 'url' | 'href'>;
 

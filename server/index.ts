@@ -1,11 +1,4 @@
-// Setup env vars
-import path from 'path';
-const dotenv = require('dotenv');
-const env_path = path.join(__dirname, '.env.local');
-console.log(env_path);
-dotenv.config({ path });
-
-import express, { NextFunction } from 'express';
+import express from 'express';
 import session, { MemoryStore } from 'express-session';
 import grant, { GrantResponse } from 'grant';
 import grantConfig from './configs/grantConfig';
@@ -30,7 +23,6 @@ import { BaseError } from './core/error';
 import { rateLimiterMiddleware } from './core/rateLimiter';
 import { getConnectionString } from './core/repo';
 
-// initialize needed objects
 const app = express();
 const grantMiddleWare = grant.express();
 
@@ -56,14 +48,12 @@ async function run() {
 	}
 
 	// setup middlewares
-	if (!inProduction) {
-		app.use(
-			cors({
-				origin: 'http://localhost:3000',
-				credentials: true,
-			})
-		);
-	}
+	app.use(
+		cors({
+			origin: process.env.CLIENT_ROOT,
+			credentials: true,
+		})
+	);
 	app.use(helmet());
 	app.use(express.urlencoded({ extended: false }));
 	app.use(express.json());
@@ -101,9 +91,9 @@ async function run() {
 			resave: false,
 			name: 'lossy-sessid',
 			cookie: {
-				httpOnly: inProduction ? true : false,
-				secure: inProduction ? true : false,
-				sameSite: inProduction ? true : false,
+				httpOnly: true,
+				// secure: inProduction ? true : false,
+				sameSite: 'lax',
 				maxAge: 60 * 60 * 1000,
 			},
 		})
@@ -124,12 +114,6 @@ async function run() {
 		gcs,
 		readEnv: makeReadEnv(requiredInEnv, process.env),
 	};
-
-	app.get('/health', (req, res, next) => {
-		res.status(200).json({
-			health: 'ok',
-		});
-	});
 
 	app.use('/auth/', authRoutes(asyncDeps));
 

@@ -4,7 +4,6 @@
 const dotenv = require('dotenv');
 const path = require('path');
 
-// important to pass correct environment when we invoke node
 const envPath = path.join(process.cwd(), '.env')
 
 dotenv.config({ path: envPath, debug: true });

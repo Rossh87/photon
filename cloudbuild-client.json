@@ -1,13 +1,26 @@
 {
     "steps": [
-		{
-			"name": "bash",
+    {
+      "name": "bash",
             "args": ["-c", "cp yarn.lock client/yarn.lock"]
-		},
+    },
         {
             "name": "gcr.io/cloud-builders/yarn",
             "args": ["install"],
-            "dir": "client"
+            "dir": "client",
+            "env": [
+                "NODE_ENV=production"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/yarn",
+            "args": ["build"],
+            "dir": "client",
+            "env": [
+                "REACT_APP_PUBLIC_IMAGE_BASE_URL=https://cdn.lossy.dev",
+                "REACT_APP_API_ROOT=https://api.lossy.dev",
+                "NODE_ENV=production"
+            ]
         },
         {
             "name": "gcr.io/cloud-builders/gsutil",

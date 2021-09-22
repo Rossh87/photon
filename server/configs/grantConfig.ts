@@ -4,12 +4,14 @@ const g_client_secret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
 const g_client_id = process.env.GOOGLE_OAUTH_CLIENT_APP_ID;
 const github_client_id = process.env.GITHUB_OAUTH_CLIENT_ID;
 const github_client_secret = process.env.GITHUB_OAUTH_CLIENT_SECRET;
+const apiRoot = process.env.API_ROOT;
 
 const credentials = [
 	g_client_id,
 	g_client_secret,
 	github_client_id,
 	github_client_secret,
+	apiRoot,
 ];
 
 // completely implode if these are missing--app won't work at all
@@ -23,7 +25,7 @@ credentials.forEach((cred) => {
 
 const grantConfig: GrantConfig = {
 	defaults: {
-		origin: 'http://localhost:8000',
+		origin: apiRoot,
 		transport: 'session',
 		state: true,
 	},
@@ -36,7 +38,7 @@ const grantConfig: GrantConfig = {
 			'https://www.googleapis.com/auth/userinfo.email',
 		],
 		nonce: true,
-		callback: 'http://localhost:8000/auth/google/callback',
+		callback: `${apiRoot}/auth/google/callback`,
 	},
 	github: {
 		pkce: true,
@@ -44,7 +46,7 @@ const grantConfig: GrantConfig = {
 		secret: github_client_secret,
 		scope: ['read:user'],
 		nonce: true,
-		callback: 'http://localhost:8000/auth/github/callback',
+		callback: `${apiRoot}/auth/github/callback`,
 	},
 };
 

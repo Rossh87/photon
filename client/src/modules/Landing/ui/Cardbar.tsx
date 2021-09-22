@@ -2,15 +2,6 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import LandingCard from './LandingCard';
 
-// blueprint:
-// Photo by <a href="https://unsplash.com/@sxoxm?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Sven Mieke</a> on <a href="https://unsplash.com/s/photos/blueprint?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-
-// cloud:
-// Photo by <a href="https://unsplash.com/@enginakyurt?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">engin akyurt</a> on <a href="https://unsplash.com/s/photos/cloud?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-
-// html
-// Photo by <a href="https://unsplash.com/@pankajpatel?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Pankaj Patel</a> on <a href="https://unsplash.com/s/photos/html?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-
 const Cardbar: React.FunctionComponent = () => {
 	return (
 		<Box
