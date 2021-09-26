@@ -75,7 +75,7 @@ const Carousel: React.FunctionComponent = () => {
 	useEffect(() => {
 		const intervalID = setInterval(
 			() => pipe(getRandomizedMapper(), map, ap(data), setData),
-			2000
+			3500
 		);
 
 		return () => clearInterval(intervalID);

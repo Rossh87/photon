@@ -8,7 +8,7 @@ export const useCarouselStyles = makeStyles((theme) => ({
 		padding: 0,
 		margin: 0,
 		opacity: 0,
-		transition: 'transform 1s ease, opacity 0.4s ease',
+		transition: 'transform 1.75s ease, opacity 0.4s ease',
 		cursor: 'default',
 		pointerEvents: 'none',
 	},

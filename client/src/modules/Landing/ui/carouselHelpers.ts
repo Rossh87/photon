@@ -76,7 +76,7 @@ const getRandomized = (a: TGridTickParameter) => {
 		: 'regress';
 };
 
-const getRandomIdentifier = () => Math.ceil(Math.random() * 4);
+const getRandomIdentifier = () => Math.ceil(Math.random() * 3);
 
 export const getRandomizedConfig = (): IGridTick => ({
 	kind: getRandomized('kind') as TGridTickKind,
