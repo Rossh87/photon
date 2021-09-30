@@ -190,6 +190,8 @@ const CredentialsForm: React.FunctionComponent<ICredentialsFormProps> = ({
 						onChange={handleChange('emailState')}
 						fullWidth
 						onBlur={handleBlur('emailState')}
+						id="signin-email-input"
+						label="Email Address"
 					></TextField>
 					<TextField
 						size={'small'}
@@ -201,6 +203,8 @@ const CredentialsForm: React.FunctionComponent<ICredentialsFormProps> = ({
 						onChange={handleChange('passwordState')}
 						onBlur={handleBlur('passwordState')}
 						type="password"
+						label="Password"
+						id="signin-password-input"
 					></TextField>
 					<Button
 						className={classes.signinButton}
