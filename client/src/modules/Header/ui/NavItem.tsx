@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { ListItem, IconButton, Tooltip } from '@material-ui/core';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import { INavItemData } from '../navItems';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const NavItem: React.FunctionComponent<
-	INavItemData & { handleClick: () => void }
+	INavItemData & { handleClick: MouseEventHandler }
 > = ({ pageName, icon, matchesRouterPath, handleClick }) => {
 	const classes = useStyles();
 
@@ -36,21 +36,20 @@ const NavItem: React.FunctionComponent<
 	const isActive = location.pathname === matchesRouterPath;
 
 	return (
-		<Link to={matchesRouterPath} className={classes.navItemLink}>
-			<ListItem onClick={handleClick}>
-				<Tooltip placement="right-end" title={pageName}>
-					<IconButton
-						className={clsx(
-							classes.item,
-							isActive && classes.itemActiveItem
-						)}
-						onClick={handleClick}
-					>
-						{icon}
-					</IconButton>
-				</Tooltip>
-			</ListItem>
-		</Link>
+		<ListItem onClick={handleClick}>
+			<Tooltip placement="right-end" title={pageName}>
+				<IconButton
+					className={clsx(
+						classes.item,
+						isActive && classes.itemActiveItem
+					)}
+					onClick={handleClick}
+					role="link"
+				>
+					{icon}
+				</IconButton>
+			</Tooltip>
+		</ListItem>
 	);
 };
 

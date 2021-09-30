@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Hidden from '@material-ui/core/Hidden';
-import navItems from '../navItems';
+import navItems, { INavItemData } from '../navItems';
 import NavItem from './NavItem';
+import { useHistory } from 'react-router';
 
 export const navLinkActiveColor = '#4fc3f7';
 
 const useStyles = makeStyles((theme: Theme) => ({
+	visuallyHidden: {
+		clip: 'rect(0 0 0 0)',
+		clipPath: 'inset(50%)',
+		height: '1px',
+		overflow: 'hidden',
+		position: 'absolute',
+		whiteSpace: 'nowrap',
+		width: '1px',
+	},
+
 	itemCategory: {
 		backgroundColor: theme.palette.primary.main,
 		boxShadow: `0 -1px 0 ${theme.palette.primary.main} inset`,
@@ -38,9 +49,20 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 	drawerOpen,
 }) => {
 	const classes = useStyles();
+	const history = useHistory();
+
+	const handleNavItemClick =
+		(itemData: INavItemData): MouseEventHandler =>
+		(e) => {
+			setDrawerOpen(false);
+			history.push(itemData.matchesRouterPath);
+		};
 
 	return (
-		<nav>
+		<nav aria-labelledby="navHeading">
+			<h2 className={classes.visuallyHidden} id="navHeading">
+				main navigation menu
+			</h2>
 			<Hidden smDown>
 				<Drawer
 					PaperProps={{
@@ -67,7 +89,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 					<List className={classes.navList}>
 						{navItems.map((vals, i) => (
 							<NavItem
-								handleClick={() => setDrawerOpen(false)}
+								handleClick={handleNavItemClick(vals)}
 								{...vals}
 								key={vals.pageName}
 							></NavItem>
@@ -85,7 +107,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 					<List className={classes.navList}>
 						{navItems.map((vals, i) => (
 							<NavItem
-								handleClick={() => setDrawerOpen(false)}
+								handleClick={handleNavItemClick(vals)}
 								{...vals}
 								key={vals.pageName}
 							></NavItem>

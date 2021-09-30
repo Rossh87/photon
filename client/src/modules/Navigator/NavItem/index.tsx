@@ -36,8 +36,8 @@ const NavItem: React.FunctionComponent<
 	const isActive = location.pathname === matchesRouterPath;
 
 	return (
-		<Link to={matchesRouterPath} className={classes.navItemLink}>
-			<ListItem onClick={handleClick}>
+		<ListItem onClick={handleClick}>
+			<Link to={matchesRouterPath} className={classes.navItemLink}>
 				<Tooltip placement="right-end" title={pageName}>
 					<IconButton
 						className={clsx(
@@ -49,8 +49,8 @@ const NavItem: React.FunctionComponent<
 						{icon}
 					</IconButton>
 				</Tooltip>
-			</ListItem>
-		</Link>
+			</Link>
+		</ListItem>
 	);
 };
 
