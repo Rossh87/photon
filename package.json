@@ -1,18 +1,22 @@
 {
-  "name": "photon",
-  "version": "1.0.0",
-  "description": "A dynamic image-hosting service",
-  "main": "index.js",
-  "repository": "https://github.com/Rossh87/photon",
-  "author": "Ross Hunter",
-  "license": "MIT",
-  "private": true,
-  "workspaces": [
-    "client",
-    "server",
-    "sharedTypes"
-  ],
-  "dependencies": {
-    "create-react-app": "^4.0.3"
-  }
+	"name": "photon",
+	"version": "1.0.0",
+	"description": "A dynamic image-hosting service",
+	"main": "index.js",
+	"repository": "https://github.com/Rossh87/photon",
+	"author": "Ross Hunter",
+	"license": "MIT",
+	"private": true,
+	"workspaces": [
+		"client",
+		"server",
+		"sharedTypes"
+	],
+	"dependencies": {
+		"create-react-app": "^4.0.3"
+	},
+	"scripts": {
+		"deploy-server": "gcloud builds submit --config=cloudbuild-server.json",
+		"deploy-client": "gcloud builds submit --config=cloudbuild-client.json"
+	}
 }
