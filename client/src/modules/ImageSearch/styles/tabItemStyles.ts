@@ -1,7 +1,8 @@
 // adapted from https://mui-treasury.com/styles/tabs/#Contained
 // Many thanks!
 
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 export const useTabStyles = makeStyles(() => ({
 	root: {

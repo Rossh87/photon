@@ -1,7 +1,8 @@
 import React from 'react';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
-import { List, Hidden } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import Drawer, { DrawerProps } from '@mui/material/Drawer';
+import { List, Hidden } from '@mui/material';
 import navItems from '../Header/navItems';
 import NavItem from './NavItem';
 
@@ -39,7 +40,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 
 	return (
 		<>
-			<Hidden smDown>
+			<Hidden mdDown>
 				<Drawer {...passThrough} anchor="left" variant="permanent">
 					<List className={classes.navList}>
 						{navItems.map((vals, i) => (

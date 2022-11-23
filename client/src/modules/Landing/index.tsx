@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import Box from '@material-ui/core/Box';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import LandingContent from './ui/LandingContent';
 import CredentialsForm from './ui/CredentialsForm';
 import LoginBar from '../Header/ui/LoginBar';
 import { TFormMode } from './sharedLandingTypes';
-import Container from '@material-ui/core/Container';
+import Container from '@mui/material/Container';
 import Header from '../Header';
 import Cardbar from './ui/Cardbar';
 import LandingRow from './ui/LandingRow';
 import NewCarousel from './ui/Carousel';
-import { useMediaQuery } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
 import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
@@ -75,8 +76,8 @@ export default function Landing() {
 
 	// const bpMatched = useMediaQuery(theme.breakpoints.down('sm'));
 
-	const smallMatched = useMediaQuery(theme.breakpoints.down('sm'));
-	const tinyMatched = useMediaQuery(theme.breakpoints.down('xs'));
+	const smallMatched = useMediaQuery(theme.breakpoints.down('md'));
+	const tinyMatched = useMediaQuery(theme.breakpoints.down('sm'));
 
 	const [formMode, setFormMode] = useState<TFormMode>('signup');
 

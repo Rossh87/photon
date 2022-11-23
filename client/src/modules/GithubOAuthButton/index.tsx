@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, makeStyles } from '@material-ui/core';
+import { Button } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { GITHUB_OAUTH_ENDPOINT } from '../../CONSTANTS';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const useStyles = makeStyles((theme) => ({
 	button: {
@@ -44,8 +45,10 @@ const GithubOAuthButton: React.FunctionComponent<GithubButtonProps> = ({
 			startIcon={<GitHubIcon className={classes.icon} />}
 			className={classes.button}
 			href={GITHUB_OAUTH_ENDPOINT}
-			classes={{
-				label: classes.label,
+			sx={{
+				fontSize: 2,
+				justifyContent: 'space-between',
+				textTransform: 'none',
 			}}
 		>
 			{`${label} with Github`}

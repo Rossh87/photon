@@ -5,12 +5,12 @@
 // 	IconButton,
 // 	useTheme,
 // 	makeStyles,
-// } from '@material-ui/core';
-// import { Alert } from '@material-ui/lab';
+// } from '@mui/material';
+// import { Alert } from '@mui/lab';
 // import { getOrElse, Option, chain, map } from 'fp-ts/lib/Option';
 // import { BaseError } from '../../../core/error';
 // import { pipe, flow } from 'fp-ts/lib/function';
-// import { CloseOutlined } from '@material-ui/icons';
+// import { CloseOutlined } from '@mui/icons-material';
 // import { TSnackbarStatus } from '../state/imageConfigurationStateTypes';
 
 // const useStyles = makeStyles((theme) => ({

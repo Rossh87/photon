@@ -1,16 +1,17 @@
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import SearchIcon from '@material-ui/icons/Search';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import { Hidden, useMediaQuery, useTheme } from '@material-ui/core';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import SearchIcon from '@mui/icons-material/Search';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import { Hidden, useMediaQuery, useTheme } from '@mui/material';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import { pipe } from 'fp-ts/lib/function';
 import { map, fromPredicate } from 'fp-ts/lib/Option';
 import {
@@ -53,7 +54,7 @@ const ImageSearchBar: React.FunctionComponent = () => {
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const theme = useTheme();
-	const matches = useMediaQuery(theme.breakpoints.down('xs'));
+	const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
 	const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
 		setSearchTerm(e.target.value);
@@ -82,7 +83,7 @@ const ImageSearchBar: React.FunctionComponent = () => {
 		>
 			<Toolbar className={clsx(matches && classes.searchBarSm)}>
 				<Grid container spacing={2} alignItems="center">
-					<Hidden xsDown>
+					<Hidden smDown>
 						<Grid item>
 							<SearchIcon
 								className={classes.block}
@@ -125,6 +126,7 @@ const ImageSearchBar: React.FunctionComponent = () => {
 									})
 								}
 								aria-label="reset-image-search"
+								size="large"
 							>
 								<RefreshIcon
 									className={classes.block}

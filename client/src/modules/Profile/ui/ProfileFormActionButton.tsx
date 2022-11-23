@@ -1,15 +1,15 @@
-import React, { FormEvent, FunctionComponent } from 'react';
-import EditIcon from '@material-ui/icons/Edit';
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
+import { FormEvent, FunctionComponent } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 import {
 	Box,
 	IconButton,
 	ListItemSecondaryAction,
-	makeStyles,
 	Theme,
 	Tooltip,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { Option } from 'fp-ts/lib/Option';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -47,7 +47,12 @@ const ProfileFormActionButton: FunctionComponent<ProfileActionButtonProps> = ({
 		editing ? (
 			error ? (
 				<Tooltip title="clear">
-					<IconButton onClick={reset} edge="end" aria-label="clear">
+					<IconButton
+						onClick={reset}
+						edge="end"
+						aria-label="clear"
+						size="large"
+					>
 						<ClearIcon className={classes.clearButton} />
 					</IconButton>
 				</Tooltip>
@@ -58,6 +63,7 @@ const ProfileFormActionButton: FunctionComponent<ProfileActionButtonProps> = ({
 							onClick={reset}
 							edge="end"
 							aria-label="clear"
+							size="large"
 						>
 							<ClearIcon className={classes.clearButton} />
 						</IconButton>
@@ -67,6 +73,7 @@ const ProfileFormActionButton: FunctionComponent<ProfileActionButtonProps> = ({
 							onClick={handleSubmit}
 							edge="end"
 							aria-label="keep"
+							size="large"
 						>
 							<CheckIcon className={classes.successButton} />
 						</IconButton>
@@ -79,6 +86,7 @@ const ProfileFormActionButton: FunctionComponent<ProfileActionButtonProps> = ({
 					onClick={() => setEditing(true)}
 					edge="end"
 					aria-label="edit"
+					size="large"
 				>
 					<EditIcon className={classes.editButton} />
 				</IconButton>

@@ -1,8 +1,8 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import React, { PropsWithChildren } from 'react';
+import { makeStyles } from '@mui/styles';
+import Container from '@mui/material/Container';
 import clsx from 'clsx';
-import { alpha } from '@material-ui/core/styles/colorManipulator';
+import { alpha } from '@mui/material/styles';
 
 const useStyles = makeStyles((theme) => ({
 	backgroundSection: {
@@ -25,10 +25,9 @@ interface ILandingRowProps {
 	bg: TLandingRowVariant;
 }
 
-const LandingRow: React.FunctionComponent<ILandingRowProps> = ({
-	bg,
-	children,
-}) => {
+const LandingRow: React.FunctionComponent<
+	PropsWithChildren<ILandingRowProps>
+> = ({ bg, children }) => {
 	const classes = useStyles();
 
 	const sectionStyles = clsx(
@@ -38,10 +37,7 @@ const LandingRow: React.FunctionComponent<ILandingRowProps> = ({
 
 	return (
 		<section className={sectionStyles}>
-			<Container maxWidth="lg">
-				{/* @ts-ignore */}
-				{children}
-			</Container>
+			<Container maxWidth="lg">{children}</Container>
 		</section>
 	);
 };

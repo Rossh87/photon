@@ -1,9 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { TTabPanelType } from '../state/imageSearchStateTypes';
 
 interface TabPanelProps {
 	identifier: TTabPanelType;
 	activeValue: TTabPanelType;
+	children: ReactNode;
 }
 
 const Tabpanel: FunctionComponent<TabPanelProps> = ({

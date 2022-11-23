@@ -1,22 +1,23 @@
 import * as React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import Toolbar from '@material-ui/core/Toolbar';
-import Tooltip from '@material-ui/core/Tooltip';
-import Hidden from '@material-ui/core/Hidden';
-import Button from '@material-ui/core/Button';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import Box from '@material-ui/core/Box';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import Hidden from '@mui/material/Hidden';
+import Button from '@mui/material/Button';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Grow from '@mui/material/Grow';
+import MenuItem from '@mui/material/MenuItem';
+import MenuList from '@mui/material/MenuList';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+import Box from '@mui/material/Box';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import axios from 'axios';
 import { useHistory } from 'react-router';
 import { pipe } from 'fp-ts/lib/function';
@@ -98,7 +99,7 @@ const LossyAppBar: React.FunctionComponent<HeaderProps> = ({
 		setOpen((prevOpen) => !prevOpen);
 	};
 
-	const handleClose = (e: React.MouseEvent<EventTarget>) => {
+	const handleClose: React.MouseEventHandler = (e) => {
 		if (
 			menuRef.current &&
 			menuRef.current!.contains(e.target as HTMLElement)
@@ -128,7 +129,7 @@ const LossyAppBar: React.FunctionComponent<HeaderProps> = ({
 	return (
 		<AppBar color="primary" position="sticky" elevation={0}>
 			<Toolbar>
-				<Hidden smDown>
+				<Hidden mdDown>
 					<Badge />
 				</Hidden>
 				<Hidden mdUp>
@@ -137,6 +138,7 @@ const LossyAppBar: React.FunctionComponent<HeaderProps> = ({
 						aria-label="open drawer"
 						onClick={onDrawerToggle}
 						edge="start"
+						size="large"
 					>
 						<MenuIcon />
 					</IconButton>
@@ -149,9 +151,9 @@ const LossyAppBar: React.FunctionComponent<HeaderProps> = ({
 				>
 					Logout
 				</Button>
-				<Hidden xsDown>
+				<Hidden smDown>
 					<Tooltip title="Alerts • No alerts">
-						<IconButton color="inherit">
+						<IconButton color="inherit" size="large">
 							<NotificationsIcon />
 						</IconButton>
 					</Tooltip>
@@ -160,6 +162,7 @@ const LossyAppBar: React.FunctionComponent<HeaderProps> = ({
 						className={classes.iconButtonAvatar}
 						ref={menuRef}
 						onClick={handleToggle}
+						size="large"
 					>
 						{renderProfileImage()}
 					</IconButton>
@@ -182,6 +185,8 @@ const LossyAppBar: React.FunctionComponent<HeaderProps> = ({
 							>
 								<Paper>
 									<ClickAwayListener
+										//   @todo: fix this handler type
+										// @ts-ignore
 										onClickAway={handleClose}
 									>
 										<MenuList

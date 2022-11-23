@@ -8,7 +8,7 @@ import DependencyContext, {
 import { IAppState } from '../modules/appState/appStateTypes';
 import AppProvider from '../modules/appState/useAppState';
 import mockAppState from './mockState';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 
 const mockResizer = jest.fn() as TImageResizer;
 const mockAxios = jest.fn() as unknown as IHTTPLib;
@@ -17,6 +17,7 @@ interface MockWrapperProps {
 	mockState?: IAppState;
 	mockFetcher?: IHTTPLib;
 	mockImgLib?: TImageResizer;
+	children?: ReactNode;
 }
 
 export const WithMockAppState: FunctionComponent<MockWrapperProps> = ({

@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
-import PeopleIcon from '@material-ui/icons/People';
-import ImageSearchIcon from '@material-ui/icons/ImageSearch';
-import BackupIcon from '@material-ui/icons/Backup';
-import HomeIcon from '@material-ui/icons/Home';
+import PeopleIcon from '@mui/icons-material/People';
+import ImageSearchIcon from '@mui/icons-material/ImageSearch';
+import BackupIcon from '@mui/icons-material/Backup';
+import HomeIcon from '@mui/icons-material/Home';
 
 type NavigablePages = 'Profile' | 'Image Search' | 'Upload' | 'Home';
 

@@ -1,10 +1,8 @@
-import React, { FunctionComponent } from 'react';
-import Typography from '@material-ui/core/Typography';
-import BuildIcon from '@material-ui/icons/Build';
-import Container from '@material-ui/core/Container';
-import Divider from '@material-ui/core/Divider';
-import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core';
+import { FunctionComponent } from 'react';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
 	bareLink: {

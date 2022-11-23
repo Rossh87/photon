@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Paper, useMediaQuery, Hidden } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { Grid, Paper, useMediaQuery, Hidden } from '@mui/material';
 import theme from '../theme';
 import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
 import Profile from '../Profile';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@mui/material/styles';
 import AppMessage from '../AppMessage';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import Header from '../Header';
@@ -65,7 +65,7 @@ const Main: React.FunctionComponent = () => {
 	const classes = useStyles();
 
 	const theme = useTheme();
-	const matches = useMediaQuery(theme.breakpoints.down('sm'));
+	const matches = useMediaQuery(theme.breakpoints.down('md'));
 
 	const history = useHistory();
 	const { appMeta } = useAppState();
@@ -96,7 +96,7 @@ const Main: React.FunctionComponent = () => {
 		<>
 			<Header />
 			<Grid container className={classes.mainGrid}>
-				<Hidden xsDown>
+				<Hidden smDown>
 					<Grid
 						item
 						className={
@@ -125,7 +125,7 @@ const Main: React.FunctionComponent = () => {
 						</Switch>
 					</Paper>
 				</Grid>
-				<Hidden xsDown>
+				<Hidden smDown>
 					<Grid
 						item
 						className={

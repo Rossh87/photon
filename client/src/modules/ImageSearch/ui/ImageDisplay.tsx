@@ -1,14 +1,14 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import ImageList from '@material-ui/core/ImageList';
-import ImageListItemBar from '@material-ui/core/ImageListItemBar';
-import ImageListItem from '@material-ui/core/ImageListItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import Typography from '@mui/material/Typography';
+import ImageList from '@mui/material/ImageList';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
+import ImageListItem from '@mui/material/ImageListItem';
+import { makeStyles } from '@mui/styles';
 import { pipe } from 'fp-ts/function';
 import { fromArray, map as NEAMap } from 'fp-ts/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/Option';
 import { IClientUpload } from 'sharedTypes/Upload';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery, useTheme } from '@mui/material';
 import { useAppDispatch, useAppState } from '../../appState/useAppState';
 import { clientUploadToConfigurable } from '../helpers/clientUploadToConfigurable';
 import ImageConfigurationDialog from './ImageConfigurationDialog';
@@ -44,7 +44,7 @@ const ImageDisplay: React.FunctionComponent = () => {
 	const { images } = useAppState();
 
 	const theme = useTheme();
-	const matches = useMediaQuery(theme.breakpoints.down('sm'));
+	const matches = useMediaQuery(theme.breakpoints.down('md'));
 
 	const dispatch = useAppDispatch();
 

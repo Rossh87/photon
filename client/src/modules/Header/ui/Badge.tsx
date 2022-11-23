@@ -1,6 +1,7 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import React, { FunctionComponent } from 'react';
-import Link from '@material-ui/core/Link';
+import Link from '@mui/material/Link';
 import RouterLink from '../../RouterLink';
 
 const useStyles = makeStyles((theme) => ({

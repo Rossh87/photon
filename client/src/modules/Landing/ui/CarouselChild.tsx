@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React, { ReactElement, memo } from 'react';
 import { ICarouselChild } from './Carousel';
 import { useCarouselStyles } from './useCarouselStyles';

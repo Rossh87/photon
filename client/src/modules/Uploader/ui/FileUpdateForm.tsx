@@ -1,6 +1,6 @@
 import React, { Dispatch, forwardRef, useRef } from 'react';
 import { TUploaderActions } from '../state/uploadStateTypes';
-import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 import { fromPredicate, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/function';
 import { TPreprocessingResult } from '../domain/domainTypes';

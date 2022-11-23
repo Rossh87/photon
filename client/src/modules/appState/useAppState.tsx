@@ -1,4 +1,5 @@
-import React, { Dispatch, Reducer, useContext } from 'react';
+import theme from '../theme';
+import React, { Dispatch, ReactNode, Reducer, useContext } from 'react';
 import {
 	authReducer,
 	defaultState as defaultAuthState,
@@ -30,6 +31,13 @@ import DependencyContext from '../../core/dependencyContext';
 import { useFPReducer } from 'react-use-fp';
 import { ActionCreators } from 'react-use-fp/dist/types';
 import profileUseCases from '../Profile/useCases';
+import { Theme, StyledEngineProvider } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+
+declare module '@mui/styles/defaultTheme' {
+	// eslint-disable-next-line @typescript-eslint/no-empty-interface
+	interface DefaultTheme extends Theme {}
+}
 
 export const AppStateContext: React.Context<IAppState> = React.createContext(
 	{} as IAppState
@@ -48,10 +56,10 @@ const useCases = {
 export const AppActionsContext: React.Context<ActionCreators<typeof useCases>> =
 	React.createContext((() => {}) as any);
 
-const AppProvider: React.FunctionComponent<{ mockState?: IAppState }> = ({
-	children,
-	mockState,
-}) => {
+const AppProvider: React.FunctionComponent<{
+	mockState?: IAppState;
+	children: ReactNode;
+}> = ({ children, mockState }) => {
 	const makeDeps = useContext(DependencyContext);
 	const [reducer, initState] = combineReducers({
 		user: [authReducer, defaultAuthState],
@@ -68,13 +76,17 @@ const AppProvider: React.FunctionComponent<{ mockState?: IAppState }> = ({
 		reducer
 	);
 	return (
-		<AppDispatchContext.Provider value={dispatch}>
-			<AppStateContext.Provider value={state}>
-				<AppActionsContext.Provider value={actions}>
-					{children}
-				</AppActionsContext.Provider>
-			</AppStateContext.Provider>
-		</AppDispatchContext.Provider>
+		<StyledEngineProvider injectFirst>
+			<ThemeProvider theme={theme}>
+				<AppDispatchContext.Provider value={dispatch}>
+					<AppStateContext.Provider value={state}>
+						<AppActionsContext.Provider value={actions}>
+							{children}
+						</AppActionsContext.Provider>
+					</AppStateContext.Provider>
+				</AppDispatchContext.Provider>
+			</ThemeProvider>
+		</StyledEngineProvider>
 	);
 };
 

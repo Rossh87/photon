@@ -2,20 +2,20 @@ import React, { createRef, Dispatch, useRef } from 'react';
 import { TPreprocessingResult } from '../domain/domainTypes';
 import { isIImage } from '../domain/guards';
 import { TUploaderActions } from '../state/uploadStateTypes';
-import ListItem from '@material-ui/core/ListItem';
-import { ListItemText, Hidden } from '@material-ui/core';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
-import PhotoOutlinedIcon from '@material-ui/icons/PhotoOutlined';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import { makeStyles } from '@material-ui/core/styles';
+import ListItem from '@mui/material/ListItem';
+import { ListItemText, Hidden } from '@mui/material';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import PhotoOutlinedIcon from '@mui/icons-material/PhotoOutlined';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import { makeStyles } from '@mui/styles';
 import FileUpdateForm from './FileUpdateForm';
 import SelectedImageStatusIcon from './SelectedImageStatusIcon';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
@@ -81,7 +81,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 	};
 
 	const removeIfSuccess = () => {
-		let cancel = () => clearTimeout();
+		let cancel = () => clearTimeout(undefined);
 
 		if (status === 'success') {
 			const timerID = setTimeout(
@@ -106,7 +106,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 		<ListItem dense>
 			<Accordion expanded={isExpanded} className={classes.root}>
 				<AccordionSummary aria-label="Expand" onClick={toggleAccordion}>
-					<Hidden smDown>
+					<Hidden mdDown>
 						<ListItemAvatar>
 							<Avatar>
 								<PhotoOutlinedIcon />
@@ -128,6 +128,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 							edge="end"
 							aria-label="remove file"
 							onClick={removeFileListItem}
+							size="large"
 						>
 							<SelectedImageStatusIcon status={status} />
 						</IconButton>
@@ -136,6 +137,7 @@ const SelectedImage: React.FunctionComponent<ISelectedImageProps> = ({
 							aria-label="remove file"
 							onClick={toggleAccordion}
 							className={clsx(isExpanded && classes.expandIcon)}
+							size="large"
 						>
 							<ExpandMore />
 						</IconButton>

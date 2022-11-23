@@ -1,12 +1,13 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { Box, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { TSavedBreakpoints } from '../../../../../sharedTypes/Breakpoint';
 import { TAvailableImageWidths } from '../../../../../sharedTypes/Upload';
 import { createSrcset } from '../useCases/createSrcset';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
+import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
 
 const useStyles = makeStyles((theme) => ({
 	codeBox: {
@@ -74,7 +75,7 @@ const PasteableCodeTab: FunctionComponent<CodeDisplayProps> = ({
 						text={componentText}
 						onCopy={handleTooltip}
 					>
-						<IconButton>
+						<IconButton size="large">
 							<FileCopyOutlinedIcon />
 						</IconButton>
 					</CopyToClipboard>

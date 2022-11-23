@@ -4,11 +4,11 @@ import {
 	TSelectedFilesState,
 } from '../state/uploadStateTypes';
 import clsx from 'clsx';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { pipe } from 'fp-ts/lib/function';
 import { map, fromNullable, Applicative, fold } from 'fp-ts/lib/Option';
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@mui/styles';
 import theme from '../../theme';
 import { TUserState } from '../../Auth/state/authStateTypes';
 import { useAppActions } from '../../appState/useAppState';

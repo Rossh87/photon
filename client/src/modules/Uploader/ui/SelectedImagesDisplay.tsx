@@ -1,9 +1,9 @@
 import React, { Dispatch } from 'react';
 import { TPreprocessingResults } from '../domain/domainTypes';
 import { IImageUploadState, TUploaderActions } from '../state/uploadStateTypes';
-import List from '@material-ui/core/List';
+import List from '@mui/material/List';
 import SelectedImage from './SelectedImage';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
 	selectedFileContainer: {

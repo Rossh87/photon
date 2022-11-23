@@ -3,14 +3,13 @@
  * https://material-ui.com/store/items/paperbase/
  *  */
 
-import React from 'react';
 import AuthManager from '../Auth';
 import AppProvider from '../appState/useAppState';
 import DependencyContext, {
 	liveDependencies,
 } from '../../core/dependencyContext';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline } from '@mui/material';
 import Content from '../Content';
 
 const App: React.FunctionComponent = (props) => {

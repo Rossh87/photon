@@ -1,12 +1,12 @@
 import * as React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import Badge from './Badge';
 import { TFormMode } from '../../Landing/sharedLandingTypes';
-import { alpha } from '@material-ui/core/styles/colorManipulator';
 import useTopDetection from '../../hooks/useTopDetection';
 import clsx from 'clsx';
 

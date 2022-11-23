@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Accordion from '@material-ui/core/Accordion';
+import ListItem from '@mui/material/ListItem';
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
+import ListItemText from '@mui/material/ListItemText';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import TextField from '@mui/material/TextField';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import Accordion from '@mui/material/Accordion';
 import { sizeFromBreakpoint } from '../useCases/createSrcset';
 import { ChangeEventHandler } from 'react';
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { TBreakpointUI } from '../state/imageConfigurationStateTypes';
 import { useAppDispatch } from '../../appState/useAppState';
 import {
@@ -19,12 +20,12 @@ import {
 	breakpointUIToBreakpoint,
 } from '../helpers/breakpointMappers';
 import { ISavedBreakpoint } from '../../../../../sharedTypes/Breakpoint';
-import EditIcon from '@material-ui/icons/Edit';
-import CheckIcon from '@material-ui/icons/Check';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { Close } from '@material-ui/icons';
-import RestoreIcon from '@material-ui/icons/Restore';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Close } from '@mui/icons-material';
+import RestoreIcon from '@mui/icons-material/Restore';
 
 const useStyles = makeStyles((theme: Theme) => {
 	return {
@@ -122,6 +123,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 						onClick={handleDelete}
 						data-testid="bp-delete"
 						aria-label={`delete-breakpoint-${position}`}
+						size="large"
 					>
 						<DeleteIcon />
 					</IconButton>
@@ -130,6 +132,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 						data-testid="bp-edit"
 						className={classes.editButton}
 						aria-label={`edit-breakpoint-${position}`}
+						size="large"
 					>
 						<EditIcon />
 					</IconButton>
@@ -144,6 +147,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 					data-testid="bp-close"
 					className={classes.closeButton}
 					aria-label={`close-breakpoint-${position}`}
+					size="large"
 				>
 					<Close />
 				</IconButton>
@@ -156,6 +160,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 						data-testid="bp-discard"
 						// className={classes.clearButton}
 						aria-label={`discard-breakpoint-edits-${position}`}
+						size="large"
 					>
 						<RestoreIcon />
 					</IconButton>
@@ -164,6 +169,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 						className={classes.keepButton}
 						data-testid="bp-keep"
 						aria-label={`keep-breakpoint-edits-${position}`}
+						size="large"
 					>
 						<CheckIcon />
 					</IconButton>

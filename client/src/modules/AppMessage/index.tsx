@@ -1,12 +1,8 @@
 import React, { FunctionComponent } from 'react';
-import {
-	Button,
-	IconButton,
-	makeStyles,
-	Snackbar,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import { CloseOutlined } from '@material-ui/icons';
+import { Button, IconButton, Snackbar } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { Alert } from '@mui/lab';
+import { CloseOutlined } from '@mui/icons-material';
 import { useAppState, useAppDispatch } from '../appState/useAppState';
 import {
 	IAdvancedMessageAction,
@@ -33,7 +29,7 @@ const AppMessage: FunctionComponent = () => {
 	const classes = useStyles();
 
 	const renderSimpleAction = (a: ISimpleMessageAction) => (
-		<IconButton aria-label="close-message" onClick={a.handler}>
+		<IconButton aria-label="close-message" onClick={a.handler} size="large">
 			<CloseOutlined />
 		</IconButton>
 	);

@@ -1,21 +1,22 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Slide from '@material-ui/core/Slide';
-import { TransitionProps } from '@material-ui/core/transitions';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import CloseOutlined from '@material-ui/icons/CloseOutlined';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import ListItemText from '@mui/material/ListItemText';
+import Grid from '@mui/material/Grid';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import { createSrcset } from '../useCases/createSrcset';
 import { tabA11yProps } from '../helpers/tabA11yProps';
 import BreakpointsTab from './BreakpointsTab';
@@ -182,7 +183,6 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 			{open && (
 				<>
 					<DialogTitle
-						disableTypography
 						id={`img-dialog-${displayName}`}
 						style={{ width: '100%' }}
 						className={styles.dialogTitle}
@@ -193,6 +193,7 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 						<IconButton
 							aria-label="close-dialog"
 							onClick={handleCloseAttempt}
+							size="large"
 						>
 							<CloseOutlined />
 						</IconButton>
@@ -306,7 +307,7 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 export default ImageConfigurationDialog;
 
 const Transition = React.forwardRef(function Transition(
-	props: TransitionProps & { children?: React.ReactElement<any, any> },
+	props: TransitionProps & { children: React.ReactElement<any, any> },
 	ref: React.Ref<unknown>
 ) {
 	return <Slide direction="up" ref={ref} {...props} />;

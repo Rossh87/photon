@@ -3,7 +3,7 @@
  * https://dev.to/n8tb1t/tracking-scroll-position-with-react-hooks-3bbj
  */
 
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 const isBrowser = typeof window !== 'undefined';
 

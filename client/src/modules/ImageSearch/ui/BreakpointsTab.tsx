@@ -1,5 +1,6 @@
-import { List, makeStyles } from '@material-ui/core';
-import React, { FunctionComponent } from 'react';
+import { List } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { FunctionComponent } from 'react';
 import { TAvailableImageWidths } from '../../../../../sharedTypes/Upload';
 import { useAppDispatch } from '../../appState/useAppState';
 import { IImageConfigurationState } from '../state/imageConfigurationStateTypes';

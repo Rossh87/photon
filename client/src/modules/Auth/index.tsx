@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { ReactElement, ReactNode, useEffect } from 'react';
 import { fetchUserData } from './http/fetchUserData';
 import { useAppDispatch } from '../appState/useAppState';
 
-const AuthManager: React.FunctionComponent = ({ children }) => {
+const AuthManager: React.FunctionComponent<{ children: ReactElement }> = ({
+	children,
+}) => {
 	const appDispatch = useAppDispatch();
 
 	useEffect(() => {

@@ -8,7 +8,7 @@ import { ap } from 'fp-ts/lib/Identity';
 import imageData, { TBaseCarouselData } from '../imageData';
 // @ts-ignore
 import shuffle from 'knuth-shuffle-seeded';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 /*
  * Adapted from:
@@ -30,8 +30,8 @@ const Carousel: React.FunctionComponent = () => {
 	const classes = useCarouselStyles();
 	const theme = useTheme();
 
-	const smallMatched = useMediaQuery(theme.breakpoints.down('sm'));
-	const tinyMatched = useMediaQuery(theme.breakpoints.down('xs'));
+	const smallMatched = useMediaQuery(theme.breakpoints.down('md'));
+	const tinyMatched = useMediaQuery(theme.breakpoints.down('sm'));
 
 	enum sizes {
 		tinyMatched = 75,

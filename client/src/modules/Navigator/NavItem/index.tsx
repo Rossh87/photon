@@ -1,7 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import { ListItem, IconButton, Tooltip } from '@material-ui/core';
+import { Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import { ListItem, IconButton, Tooltip } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { INavItemData } from '../../Header/navItems';
 
@@ -45,6 +46,7 @@ const NavItem: React.FunctionComponent<
 							isActive && classes.itemActiveItem
 						)}
 						onClick={handleClick}
+						size="large"
 					>
 						{icon}
 					</IconButton>

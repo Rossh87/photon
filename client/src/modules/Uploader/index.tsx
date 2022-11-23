@@ -1,7 +1,7 @@
 import React from 'react';
 import UploadForm from './ui/UploadForm';
 import SelectedImagesDisplay from './ui/SelectedImagesDisplay';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@mui/styles';
 import { canProcess } from './state/reducerUtils/canProcess';
 import { useAppDispatch, useAppState } from '../appState/useAppState';
 

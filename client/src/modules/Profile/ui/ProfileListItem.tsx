@@ -5,9 +5,9 @@ import {
 	ListItemText,
 	Typography,
 	Box,
-	makeStyles,
 	Theme,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { isConfigurableField, MapPropsToHumanLabels } from '../helpers';
 import { pipe } from 'fp-ts/lib/function';
 import {

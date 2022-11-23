@@ -1,12 +1,12 @@
 import React from 'react';
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 import LandingCard from './LandingCard';
 
 const Cardbar: React.FunctionComponent = () => {
 	return (
-		<Box
+        <Box
 			display="flex"
-			gridGap="16px"
+			gap="16px"
 			justifyContent="space-around"
 			flexWrap="wrap"
 		>
@@ -38,7 +38,7 @@ const Cardbar: React.FunctionComponent = () => {
 				it wherever you need it.
 			</LandingCard>
 		</Box>
-	);
+    );
 };
 
 export default Cardbar;

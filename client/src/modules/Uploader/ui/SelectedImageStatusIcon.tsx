@@ -1,8 +1,8 @@
 import React from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core/styles';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import SyncIcon from '@material-ui/icons/Sync';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { makeStyles } from '@mui/styles';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import SyncIcon from '@mui/icons-material/Sync';
 
 interface StatusIconProps {
 	status: 'populated' | 'preprocessed' | 'processing' | 'success' | 'error';
@@ -10,31 +10,35 @@ interface StatusIconProps {
 
 const useSelectedIconStyles = makeStyles({
 	successIcon: {
-		fill: '#02b033'
+		fill: '#02b033',
 	},
 
 	processingIcon: {
-		animation: 'rotation 1s infinite linear'
-	}
+		animation: 'rotation 1s infinite linear',
+	},
 });
 
-const SelectedImageStatusIcon: React.FunctionComponent<StatusIconProps> = ({status}) => {
+const SelectedImageStatusIcon: React.FunctionComponent<StatusIconProps> = ({
+	status,
+}) => {
 	const classes = useSelectedIconStyles();
 
 	const renderIcon = () => {
-		switch(status){
+		switch (status) {
 			case 'processing':
-				return (<SyncIcon className={classes.processingIcon}/>);
+				return <SyncIcon className={classes.processingIcon} />;
 
 			case 'success':
-				return (<CheckCircleOutlineIcon className={classes.successIcon}/>);
+				return (
+					<CheckCircleOutlineIcon className={classes.successIcon} />
+				);
 
 			default:
-				return (<DeleteIcon />);
+				return <DeleteIcon />;
 		}
-	}
-	
+	};
+
 	return renderIcon();
-}
+};
 
 export default SelectedImageStatusIcon;

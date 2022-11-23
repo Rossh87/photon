@@ -1,5 +1,5 @@
-import { makeStyles } from '@material-ui/core';
-import React, { FunctionComponent } from 'react';
+import { makeStyles } from '@mui/styles';
+import { FunctionComponent } from 'react';
 import { Link, LinkProps } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({

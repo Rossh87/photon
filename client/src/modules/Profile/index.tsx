@@ -1,17 +1,10 @@
 import React, { ChangeEventHandler, useRef } from 'react';
-import {
-	Button,
-	Avatar,
-	List,
-	makeStyles,
-	Theme,
-	Box,
-} from '@material-ui/core';
+import { Button, Avatar, List, Theme, Box } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { TAuthorizedUserResponse } from '../../../../sharedTypes/User';
 import { pipe } from 'fp-ts/lib/function';
 import { fromNullable, alt, fold } from 'fp-ts/lib/Option';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { fetchUserData } from '../Auth/http/fetchUserData';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ProfileListItem from './ui/ProfileListItem';
 import { extractViewableProps } from './helpers';
 import { chainFirst } from 'fp-ts/Identity';
