@@ -45,11 +45,7 @@ const GithubOAuthButton: React.FunctionComponent<GithubButtonProps> = ({
 			startIcon={<GitHubIcon className={classes.icon} />}
 			className={classes.button}
 			href={GITHUB_OAUTH_ENDPOINT}
-			sx={{
-				fontSize: 2,
-				justifyContent: 'space-between',
-				textTransform: 'none',
-			}}
+			classes={{ root: classes.label }}
 		>
 			{`${label} with Github`}
 		</Button>
