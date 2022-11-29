@@ -1,6 +1,6 @@
 import { ImageReducerError } from '../../domain/ImageReducerError';
-import { UPLOAD_WIDTH_VALUES, UPLOAD_WIDTHS } from '../../../../CONSTANTS';
-import { left, right, Either } from 'fp-ts/lib/Either';
+import { UPLOAD_WIDTHS, UPLOAD_WIDTH_VALUES } from '../../../../CONSTANTS';
+import { Either, left, right } from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 export const deriveNeededWidths = (

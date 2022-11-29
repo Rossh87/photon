@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 import { TTabPanelType } from '../state/imageSearchStateTypes';
 
 interface TabPanelProps {

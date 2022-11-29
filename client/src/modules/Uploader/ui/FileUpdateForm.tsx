@@ -1,4 +1,4 @@
-import React, { Dispatch, forwardRef, useRef } from 'react';
+import React, { Dispatch, forwardRef } from 'react';
 import { TUploaderActions } from '../state/uploadStateTypes';
 import TextField from '@mui/material/TextField';
 import { fromPredicate, map } from 'fp-ts/lib/Option';
@@ -13,7 +13,7 @@ interface IFileUpdateFormProps {
 }
 
 const FileUpdateForm = forwardRef<any, IFileUpdateFormProps>(
-	({ closeAccordion, dispatch, imageFile }, ref) => {
+	({ closeAccordion, imageFile }, ref) => {
 		const [inputState, setInputState] = React.useState<string>('');
 
 		const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -47,6 +47,7 @@ const FileUpdateForm = forwardRef<any, IFileUpdateFormProps>(
 					variant="outlined"
 					onChange={onChange}
 					value={inputState}
+					ref={ref}
 				/>
 			</form>
 		);

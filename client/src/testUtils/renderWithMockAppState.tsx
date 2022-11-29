@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import DependencyContext, {
-	createDependenciesObject,
 	IHTTPLib,
 	TImageResizer,
+	createDependenciesObject,
 } from '../core/dependencyContext';
 import { IAppState } from '../modules/appState/appStateTypes';
 import AppProvider from '../modules/appState/useAppState';

@@ -1,19 +1,15 @@
 import React, { ChangeEventHandler, useRef } from 'react';
-import { Button, Avatar, List, Theme, Box } from '@mui/material';
+import { Avatar, Box, Button, List, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { TAuthorizedUserResponse } from '../../../../sharedTypes/User';
 import { pipe } from 'fp-ts/lib/function';
-import { fromNullable, alt, fold } from 'fp-ts/lib/Option';
+import { alt, fold, fromNullable } from 'fp-ts/lib/Option';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ProfileListItem from './ui/ProfileListItem';
 import { extractViewableProps } from './helpers';
 import { chainFirst } from 'fp-ts/Identity';
 import { IUserFacingProfileProps } from './sharedProfileTypes';
-import {
-	useAppActions,
-	useAppDispatch,
-	useAppState,
-} from '../appState/useAppState';
+import { useAppActions, useAppState } from '../appState/useAppState';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	avatar: {
@@ -36,15 +32,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export type DisplayValueSource = 'appState' | 'formState';
 
-const Profile: React.FunctionComponent = (props) => {
+const Profile: React.FunctionComponent = () => {
 	// hack for dealing with UI flicker
 	const timerIDS = useRef<ReturnType<typeof setTimeout>[]>([]);
 
 	const classes = useStyles();
 
-	const appDispatch = useAppDispatch();
-
-	// state setup
 	const user = useAppState().user as TAuthorizedUserResponse;
 
 	const actions = useAppActions();

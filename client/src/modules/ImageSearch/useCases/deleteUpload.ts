@@ -4,7 +4,7 @@ import { TImageConfigurationActions } from '../state/imageConfigurationStateType
 import { IUploadDeletionPayload } from 'sharedTypes/Upload';
 import { deleteUpload } from '../http/deleteUpload';
 import { IDependencies } from '../../../core/dependencyContext';
-import { chain as RTChain, asks as RTAsks } from 'fp-ts/ReaderTask';
+import { asks as RTAsks, chain as RTChain } from 'fp-ts/ReaderTask';
 import * as E from 'fp-ts/Either';
 import { TAppAction } from '../../appState/appStateTypes';
 

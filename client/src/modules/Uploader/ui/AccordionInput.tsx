@@ -5,7 +5,7 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const AccordionInput: React.FunctionComponent = (props) => {
+const AccordionInput: React.FunctionComponent = () => {
 	return (
 		<Accordion>
 			<AccordionSummary

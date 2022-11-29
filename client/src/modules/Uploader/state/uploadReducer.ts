@@ -8,7 +8,7 @@ import { attachErrorMessage } from './reducerUtils/attachErrorMessage';
 import { setSuccessful } from './reducerUtils/setSuccessful';
 import { TUploaderActions } from './uploadStateTypes';
 import { setInitiated } from './reducerUtils/setInitiated';
-import { some, none } from 'fp-ts/Option';
+import { none, some } from 'fp-ts/Option';
 import { ILogoutUserAction } from '../../Auth/state/authStateTypes';
 
 export const defaultState: IImageUploadState = {

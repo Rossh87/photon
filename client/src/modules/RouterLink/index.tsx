@@ -2,7 +2,7 @@ import { makeStyles } from '@mui/styles';
 import { FunctionComponent } from 'react';
 import { Link, LinkProps } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	routerLink: {
 		textDecoration: 'none',
 		color: 'inherit',

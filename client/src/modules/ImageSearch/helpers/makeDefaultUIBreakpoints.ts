@@ -1,4 +1,4 @@
-import { pipe, flow } from 'fp-ts/lib/function';
+import { flow, pipe } from 'fp-ts/lib/function';
 import { nanoid } from 'nanoid';
 import { map as ArrMap, sort } from 'fp-ts/Array';
 import { Ord as NumOrd } from 'fp-ts/number';

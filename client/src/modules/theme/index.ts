@@ -1,4 +1,4 @@
-import { createTheme, adaptV4Theme } from '@mui/material/styles';
+import { adaptV4Theme, createTheme } from '@mui/material/styles';
 import deepPurple from '@mui/material/colors/deepPurple';
 
 let theme = createTheme(

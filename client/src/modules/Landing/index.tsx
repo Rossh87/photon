@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import LandingContent from './ui/LandingContent';
 import CredentialsForm from './ui/CredentialsForm';
-import LoginBar from '../Header/ui/LoginBar';
 import { TFormMode } from './sharedLandingTypes';
-import Container from '@mui/material/Container';
 import Header from '../Header';
 import Cardbar from './ui/Cardbar';
 import LandingRow from './ui/LandingRow';

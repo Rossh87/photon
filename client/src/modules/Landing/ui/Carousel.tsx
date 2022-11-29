@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useCarouselStyles } from './useCarouselStyles';
+// import { useCarouselStyles } from './useCarouselStyles';
 import CarouselChild from './CarouselChild';
 import { calcX, calcY, getRandomizedMapper } from './carouselHelpers';
 import { pipe } from 'fp-ts/lib/function';
@@ -27,7 +27,6 @@ export interface ICarouselChild {
 }
 
 const Carousel: React.FunctionComponent = () => {
-	const classes = useCarouselStyles();
 	const theme = useTheme();
 
 	const smallMatched = useMediaQuery(theme.breakpoints.down('md'));

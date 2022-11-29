@@ -1,5 +1,5 @@
 import { Reducer } from 'react';
-import { ILogoutUserAction, TAuthActions } from '../Auth/state/authStateTypes';
+import { ILogoutUserAction } from '../Auth/state/authStateTypes';
 import { TAppMetaActions, TAppMetaState } from './appMetaTypes';
 import { handleIncomingMessage } from './handleIncomingMessage';
 

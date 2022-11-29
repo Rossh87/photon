@@ -1,5 +1,5 @@
 import { IImage, IImageWithErrors } from '../../domain/domainTypes';
-import { Either, right, left } from 'fp-ts/lib/Either';
+import { Either, left, right } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/function';
 import { MAX_RAW_FILE_SIZE_IN_BYTES } from '../../../../CONSTANTS';
 import { ImagePreprocessError } from '../../domain/ImagePreprocessError';

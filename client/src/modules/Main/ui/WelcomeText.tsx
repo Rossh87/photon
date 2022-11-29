@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const WelcomeText: FunctionComponent = (props) => {
+const WelcomeText: FunctionComponent = () => {
 	const classes = useStyles();
 
 	return (

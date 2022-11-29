@@ -1,11 +1,11 @@
 import {
 	IDependencies,
-	extractResponseData,
 	IHttpCall,
+	extractResponseData,
 } from '../../../core/dependencyContext';
 import { REQUEST_USER_IMG_DATA_ENDPOINT } from './endpoints';
 import { TImageSearchActions } from '../state/imageSearchStateTypes';
-import { tryCatch, TaskEither } from 'fp-ts/lib/TaskEither';
+import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither';
 import { BaseError } from '../../../core/error';
 import { IClientUpload } from 'sharedTypes/Upload';
 import { pipe } from 'fp-ts/lib/function';

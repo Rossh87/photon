@@ -5,7 +5,7 @@ import ImageListItemBar from '@mui/material/ImageListItemBar';
 import ImageListItem from '@mui/material/ImageListItem';
 import { makeStyles } from '@mui/styles';
 import { pipe } from 'fp-ts/function';
-import { fromArray, map as NEAMap } from 'fp-ts/NonEmptyArray';
+import { map as NEAMap, fromArray } from 'fp-ts/NonEmptyArray';
 import { map as OMap, getOrElseW } from 'fp-ts/Option';
 import { IClientUpload } from 'sharedTypes/Upload';
 import { useMediaQuery, useTheme } from '@mui/material';

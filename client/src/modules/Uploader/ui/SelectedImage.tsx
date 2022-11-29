@@ -1,9 +1,9 @@
-import React, { createRef, Dispatch, useRef } from 'react';
+import React, { Dispatch, useRef } from 'react';
 import { TPreprocessingResult } from '../domain/domainTypes';
 import { isIImage } from '../domain/guards';
 import { TUploaderActions } from '../state/uploadStateTypes';
 import ListItem from '@mui/material/ListItem';
-import { ListItemText, Hidden } from '@mui/material';
+import { Hidden, ListItemText } from '@mui/material';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 import IconButton from '@mui/material/IconButton';

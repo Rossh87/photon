@@ -40,16 +40,14 @@ describe('BreakpointListItem component', () => {
 		userEvent.click(editButton);
 
 		// No edits, so close button is displayed
-		const closeButton = screen.getByLabelText('close-breakpoint-1');
+		screen.getByLabelText('close-breakpoint-1');
 
 		// Now make an edit
 		const queryWidthInput = screen.getByLabelText('media width');
 		userEvent.type(queryWidthInput, '222');
 
-		const discardButton = screen.getByLabelText(
-			'discard-breakpoint-edits-1'
-		);
-		const keepButton = screen.getByLabelText('keep-breakpoint-edits-1');
+		screen.getByLabelText('discard-breakpoint-edits-1');
+		screen.getByLabelText('keep-breakpoint-edits-1');
 	});
 
 	it('submits accurate data when "Keep" is clicked', async () => {

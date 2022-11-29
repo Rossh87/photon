@@ -2,7 +2,7 @@ import { Reducer } from 'react';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';
 import { IDeleteImageAction } from '../../ImageSearch/state/imageSearchStateTypes';
 import { IUploadSuccessAction } from '../../Uploader/state/uploadStateTypes';
-import { TUserState, TAuthActions } from './authStateTypes';
+import { TAuthActions, TUserState } from './authStateTypes';
 
 export const defaultState: TUserState = null;
 

@@ -25,7 +25,7 @@
 		"axios": "^0.21.1",
 		"browser-image-compression": "^1.0.14",
 		"bson-objectid": "^2.0.1",
-		"eslint-plugin-unused-imports": "^1.1.4",
+		"eslint-plugin-unused-imports": "^2.0.0",
 		"fp-ts": "2.11.1",
 		"knuth-shuffle-seeded": "^1.0.6",
 		"nanoid": "^3.1.25",
@@ -62,8 +62,8 @@
 		],
 		"rules": {
 			"@typescript-eslint/no-unused-vars": "off",
-			"unused-imports/no-unused-imports": "warn",
-			"unused-imports/no-unused-vars": "warn"
+			"unused-imports/no-unused-imports": "error",
+			"unused-imports/no-unused-vars": "error"
 		}
 	},
 	"browserslist": {

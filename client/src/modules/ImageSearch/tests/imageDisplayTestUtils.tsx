@@ -65,8 +65,8 @@ const irresponsibleGetSnackbar = async () => {
 	};
 };
 
-const irresponsibleQuerySnackbar = () =>
-	screen.queryByTestId('app-message-snackbar');
+// const irresponsibleQuerySnackbar = () =>
+// 	screen.queryByTestId('app-message-snackbar');
 
 // INTERACTORS: helpers that describe/simulate a user interaction
 const openBreakpointsTab = () =>
@@ -158,8 +158,8 @@ export const renderDialogWithBreakpoints = () => {
 };
 
 export const renderDialogWithFullDeps = (
-	mockState: IImageConfigurationState,
-	httpMock: any
+	mockState: IImageConfigurationState
+	// httpMock: any
 ) => {
 	const rendered = render(
 		<WithMockAppState

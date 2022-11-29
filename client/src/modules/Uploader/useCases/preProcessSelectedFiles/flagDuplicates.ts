@@ -3,15 +3,15 @@ import {
 	IImageWithErrors,
 	TAllUploadedImages,
 } from '../../domain/domainTypes';
-import { Either, fold as EFold, bimap } from 'fp-ts/lib/Either';
+import { fold as EFold, Either, bimap } from 'fp-ts/lib/Either';
 import { flow, pipe } from 'fp-ts/lib/function';
 import { getDupeDisplayNames } from '../../http/getDupeDisplayNames';
-import { fromArray, map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
+import { map as NEAMap, fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { filter } from 'fp-ts/Array';
 import {
+	chain as RTEChain,
 	map as RTEMap,
 	of as RTEOf,
-	chain as RTEChain,
 } from 'fp-ts/ReaderTaskEither';
 import { fold as OFold } from 'fp-ts/Option';
 import { TDedupeNamesResponse } from 'server/modules/Upload/sharedUploadTypes';

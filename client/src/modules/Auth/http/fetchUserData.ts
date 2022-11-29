@@ -30,7 +30,7 @@ const onSuccess =
 		dispatch({ type: 'AUTH/ADD_USER', payload: user });
 	};
 
-const onFailure = (dispatch: Dispatch<TAppAction>) => (e: AuthError) =>
+const onFailure = (dispatch: Dispatch<TAppAction>) => () =>
 	dispatch({ type: 'AUTH/LOGOUT_USER' });
 
 export const _fetchUserData =

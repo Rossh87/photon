@@ -1,18 +1,18 @@
 import Uploader from '../index';
-import { render, screen, act } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockResizingData } from './mockData';
 import { getOversizeImageFile } from '../../../testUtils/imageUtils';
 import { TImageResizer } from '../../../core/dependencyContext';
 import {
-	REQUEST_UPLOAD_URI_ENDPOINT,
 	DEDUPLICATION_ENDPOINT,
+	REQUEST_UPLOAD_URI_ENDPOINT,
 } from '../http/endpoints';
 import { IHTTPLib } from '../../../core/sharedClientTypes';
 import { IDedupeMetadata } from '../../../../../server/modules/Upload/sharedUploadTypes';
 import {
-	simulateTwoFilesInput,
 	simulateInvalidFileInput,
+	simulateTwoFilesInput,
 } from '../../../testUtils';
 import { resetInternals } from 'react-use-fp';
 import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';

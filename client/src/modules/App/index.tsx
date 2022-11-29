@@ -12,7 +12,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import Content from '../Content';
 
-const App: React.FunctionComponent = (props) => {
+const App: React.FunctionComponent = () => {
 	return (
 		<CssBaseline>
 			<DependencyContext.Provider value={liveDependencies}>

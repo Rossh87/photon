@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import PeopleIcon from '@mui/icons-material/People';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import BackupIcon from '@mui/icons-material/Backup';

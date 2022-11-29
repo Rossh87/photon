@@ -1,9 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { Button, IconButton, Snackbar } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Alert } from '@mui/lab';
 import { CloseOutlined } from '@mui/icons-material';
-import { useAppState, useAppDispatch } from '../appState/useAppState';
+import { useAppDispatch, useAppState } from '../appState/useAppState';
 import {
 	IAdvancedMessageAction,
 	ISimpleMessageAction,

@@ -1,5 +1,5 @@
 import { tryCatch } from 'fp-ts/lib/TaskEither';
-import { left, right, chain as EChain } from 'fp-ts/lib/Either';
+import { chain as EChain, left, right } from 'fp-ts/lib/Either';
 import { map as TMap } from 'fp-ts/lib/Task';
 import { flow } from 'fp-ts/lib/function';
 import { IImage } from '../../domain/domainTypes';

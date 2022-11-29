@@ -5,20 +5,20 @@ import {
 	defaultState as defaultAuthState,
 } from '../Auth/state/authState';
 import {
-	uploadReducer,
 	defaultState as defaultUploadState,
+	uploadReducer,
 } from '../Uploader/state/uploadReducer';
 import {
 	appMetaReducer,
 	defaultState as defaultAppMetaState,
 } from '../appMeta/appMetaState';
 import {
-	imageSearchReducer,
 	defaultState as defaultImagesState,
+	imageSearchReducer,
 } from '../ImageSearch/state/imageSearchState';
 import {
-	imageConfigurationReducer,
 	defaultState as defaultImageConfigurationState,
+	imageConfigurationReducer,
 } from '../ImageSearch/state/imageConfigurationState';
 import combineReducers from 'react-combine-reducers';
 import { IAppState, TAppAction } from './appStateTypes';
@@ -31,7 +31,7 @@ import DependencyContext from '../../core/dependencyContext';
 import { useFPReducer } from 'react-use-fp';
 import { ActionCreators } from 'react-use-fp/dist/types';
 import profileUseCases from '../Profile/useCases';
-import { Theme, StyledEngineProvider } from '@mui/material';
+import { StyledEngineProvider, Theme } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 
 declare module '@mui/styles/defaultTheme' {

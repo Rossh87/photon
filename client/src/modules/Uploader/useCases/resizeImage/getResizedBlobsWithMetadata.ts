@@ -4,8 +4,8 @@ import { calculateBlobMD5Hash } from './calculateBlobMD5Hash';
 import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/lib/TaskEither';
 import {
-	NonEmptyArray,
 	map as NEAMap,
+	NonEmptyArray,
 	sequence,
 } from 'fp-ts/lib/NonEmptyArray';
 import { IMAGE_UPLOAD_QUALITY } from '../../../../CONSTANTS';

@@ -1,9 +1,7 @@
-import React, { Dispatch } from 'react';
 import ImageSearch from '../index';
-import { render, screen, act } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockImageData } from './mockData';
-import DependencyContext from '../../../core/dependencyContext';
 import { REQUEST_USER_IMG_DATA_ENDPOINT } from '../http/endpoints';
 import { resetInternals } from 'react-use-fp';
 import { WithMockAppState } from '../../../testUtils/renderWithMockAppState';
@@ -11,19 +9,19 @@ import { IHTTPLib } from '../../../core/sharedClientTypes';
 
 beforeEach(() => resetInternals());
 
-const renderComponentWithMockFetch = (http: any) =>
-	render(
-		<DependencyContext.Provider
-			value={(dispatch: Dispatch<any>) => ({
-				http: (fn: any) => fn(http),
-				dispatch,
-				// unused by this component
-				imageReducer: jest.fn(),
-			})}
-		>
-			<ImageSearch />
-		</DependencyContext.Provider>
-	);
+// const renderComponentWithMockFetch = (http: any) =>
+// 	render(
+// 		<DependencyContext.Provider
+// 			value={(dispatch: Dispatch<any>) => ({
+// 				http: (fn: any) => fn(http),
+// 				dispatch,
+// 				// unused by this component
+// 				imageReducer: jest.fn(),
+// 			})}
+// 		>
+// 			<ImageSearch />
+// 		</DependencyContext.Provider>
+// 	);
 
 describe('The ImageSearch component', () => {
 	describe('intial image loading', () => {
@@ -126,7 +124,7 @@ describe('The ImageSearch component', () => {
 
 			// verify the no results message is onscreen.  If 'getByText'
 			// doesn't find anything, test will fail.
-			const notFoundMessage = screen.getByText('No results found!');
+			screen.getByText('No results found!');
 		});
 
 		it('can be reset to displaying all images', async () => {

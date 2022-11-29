@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import React, { ReactElement, memo } from 'react';
+import React from 'react';
 import { ICarouselChild } from './Carousel';
 import { useCarouselStyles } from './useCarouselStyles';
 import clsx from 'clsx';
@@ -10,7 +10,6 @@ const CarouselChild: React.FunctionComponent<ICarouselChild> = ({
 	tileSize,
 	itemWidth,
 	url,
-	id,
 	href,
 }) => {
 	const classes = useCarouselStyles();

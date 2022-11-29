@@ -1,5 +1,4 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
@@ -8,7 +7,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	cardHeading: {
 		textAlign: 'center',
 	},

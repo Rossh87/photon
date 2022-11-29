@@ -1,12 +1,12 @@
-import { pipe, flow, Predicate } from 'fp-ts/lib/function';
+import { Predicate, flow, pipe } from 'fp-ts/lib/function';
 import {
-	TImageSearchActions,
 	ISearchData,
+	TImageSearchActions,
 } from '../state/imageSearchStateTypes';
 import { PayloadFPReader } from 'react-use-fp';
 import { filter } from 'fp-ts/lib/Array';
 import { IO } from 'fp-ts/lib/IO';
-import { of as ROf, map as RMap, chain as RChain } from 'fp-ts/lib/Reader';
+import { chain as RChain, map as RMap, of as ROf } from 'fp-ts/lib/Reader';
 import { IClientUpload } from 'sharedTypes/Upload';
 import { DispatchDependency } from 'react-use-fp/dist/types';
 

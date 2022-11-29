@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { ListItem, IconButton, Tooltip } from '@mui/material';
+import { IconButton, ListItem, Tooltip } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { INavItemData } from '../navItems';
 

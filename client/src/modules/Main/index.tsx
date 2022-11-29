@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid, Paper, useMediaQuery, Hidden } from '@mui/material';
+import { Grid, Hidden, Paper, useMediaQuery } from '@mui/material';
 import theme from '../theme';
 import Uploader from '../Uploader';
 import ImageSearchPage from '../ImageSearch';
 import Profile from '../Profile';
 import { useTheme } from '@mui/material/styles';
 import AppMessage from '../AppMessage';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Header from '../Header';
 import { useAppDispatch, useAppState } from '../appState/useAppState';
 import WelcomeText from './ui/WelcomeText';
@@ -67,7 +67,6 @@ const Main: React.FunctionComponent = () => {
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.down('md'));
 
-	const history = useHistory();
 	const { appMeta } = useAppState();
 	const dispatch = useAppDispatch();
 

@@ -1,16 +1,16 @@
 import {
-	TPreprocessArgs,
-	TNonEmptyPreprocessArgs,
-	IImageWithErrors,
 	IImage,
+	IImageWithErrors,
+	TNonEmptyPreprocessArgs,
+	TPreprocessArgs,
 } from '../../domain/domainTypes';
-import { pipe, flow } from 'fp-ts/lib/function';
+import { flow, pipe } from 'fp-ts/lib/function';
 import { map as NEAMap } from 'fp-ts/lib/NonEmptyArray';
 import { appendMetadataToFile } from './appendMetadata';
 import { validateFileSize } from './validateFileSize';
 import { flagDuplicates } from './flagDuplicates';
-import { map as RTEMap, chain as RTEChain } from 'fp-ts/ReaderTaskEither';
-import { chain as RTChain, asks as RTAsks, of as RTOf } from 'fp-ts/ReaderTask';
+import { chain as RTEChain, map as RTEMap } from 'fp-ts/ReaderTaskEither';
+import { asks as RTAsks, chain as RTChain, of as RTOf } from 'fp-ts/ReaderTask';
 import { fold as EFold, map as EMap, mapLeft as EMapLeft } from 'fp-ts/Either';
 import { checkAvailableUploads } from './checkAvailableUploads';
 import { PayloadFPReader } from 'react-use-fp';

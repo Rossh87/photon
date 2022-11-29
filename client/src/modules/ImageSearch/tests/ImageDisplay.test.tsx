@@ -1,15 +1,12 @@
-import { screen, act } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ImageDisplay from '../ui/ImageDisplay';
-import { IImageSearchState } from '../state/imageSearchStateTypes';
 import { resetInternals } from 'react-use-fp';
 import { renderDisplayWithFullDeps } from './imageDisplayTestUtils';
 import { delay } from 'fp-ts/Task';
 import { renderWithDefaultState } from '../../../testUtils/renderWithMockAppState';
 import { getMockCurrentlyActiveImages } from '../../../testUtils/mockState';
 import { IHTTPLib } from '../../../core/sharedClientTypes';
-
-let mockState: IImageSearchState;
 
 beforeEach(() => {
 	resetInternals();
@@ -47,7 +44,7 @@ describe('The ImageDisplay component', () => {
 		it('shows most recent updates when re-opened', async () => {
 			// no need to apply any particular updates on first open, just verify that
 			// whatever is in the JSON response is applied on re-open
-			const promise = new Promise<any>((res, rej) => {
+			const promise = new Promise<any>((res) => {
 				setTimeout(() => {
 					res(mockResponseData);
 				}, 300);

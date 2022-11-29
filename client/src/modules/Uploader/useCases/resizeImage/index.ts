@@ -9,10 +9,10 @@ import { getResizedBlobsWithMetadata } from './getResizedBlobsWithMetadata';
 import { deriveNeededWidths } from './deriveNeededWidths';
 import { fileToCanvas } from './fileToCanvas';
 import { pipe } from 'fp-ts/lib/function';
-import { of, map, bind, bindTo, TaskEither } from 'fp-ts/lib/TaskEither';
+import { TaskEither, bind, bindTo, map, of } from 'fp-ts/lib/TaskEither';
 import { of as TOf } from 'fp-ts/lib/Task';
 import { ImageReducerError } from '../../domain/ImageReducerError';
-import { IResizingData, IImage } from '../../domain/domainTypes';
+import { IImage, IResizingData } from '../../domain/domainTypes';
 import { TMediaType } from 'sharedTypes/Upload';
 
 export const resizeImage = (

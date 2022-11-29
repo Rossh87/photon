@@ -12,7 +12,7 @@ interface BreakpointDisplayProps {
 	availableWidths: TAvailableImageWidths;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	list: {
 		padding: 0,
 		margin: 0,
@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
 
 const BreakpointsTab: FunctionComponent<BreakpointDisplayProps> = ({
 	dialogState,
-	availableWidths,
 }) => {
 	const dispatch = useAppDispatch();
 

@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/lib/function';
-import { fromNullable, none, fold } from 'fp-ts/lib/Option';
+import { fold, fromNullable, none } from 'fp-ts/lib/Option';
 import { makeNewUIBreakpoint } from '../helpers/makeNewUIBreakpoint';
 import {
 	IImageConfigurationState,

@@ -5,7 +5,4 @@ import { TImageConfigurationActions } from '../state/imageConfigurationStateType
 export const mapBreakpointsToUI: PayloadFPReader<
 	TImageConfigurationActions,
 	TSavedBreakpoints
-> =
-	(p) =>
-	({ dispatch }) =>
-	() => {};
+> = () => () => () => {};

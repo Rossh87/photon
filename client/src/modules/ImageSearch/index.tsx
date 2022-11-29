@@ -3,7 +3,7 @@ import ImageDisplay from './ui/ImageDisplay';
 import ImageSearchBar from './ui/ImageSearchBar';
 import { useAppActions } from '../appState/useAppState';
 
-export const ImageSearchPage: React.FunctionComponent = (props) => {
+export const ImageSearchPage: React.FunctionComponent = () => {
 	const actions = useAppActions();
 
 	useEffect(() => actions.FETCH_IMG_DATA(), []);

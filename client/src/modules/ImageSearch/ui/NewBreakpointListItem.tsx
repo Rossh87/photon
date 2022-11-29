@@ -1,9 +1,9 @@
 import React, { Dispatch } from 'react';
 import {
+	AccordionDetails,
+	AccordionSummary,
 	ListItem,
 	ListItemText,
-	AccordionSummary,
-	AccordionDetails,
 } from '@mui/material';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';

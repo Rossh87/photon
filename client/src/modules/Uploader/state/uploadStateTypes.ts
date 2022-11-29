@@ -1,10 +1,10 @@
 import { BaseError } from '../../../core/error';
 import {
+	IResizingData,
+	TPreprocessArgs,
 	TPreprocessErrors,
 	TPreprocessingResult,
 	TPreprocessingResults,
-	IResizingData,
-	TPreprocessArgs,
 	TUpdateDisplayNameArgs,
 } from '../domain/domainTypes';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';

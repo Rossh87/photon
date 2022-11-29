@@ -3,7 +3,7 @@ import { PayloadFPReader } from 'react-use-fp';
 import { TImageConfigurationActions } from '../state/imageConfigurationStateTypes';
 import { IBreakpointTransferObject } from 'sharedTypes/Upload';
 import { syncBreakpoints } from '../http/syncBreakpoints';
-import { map, ask, asks, chain } from 'fp-ts/ReaderTaskEither';
+import { ask, asks, chain, map } from 'fp-ts/ReaderTaskEither';
 import { chain as RTChain } from 'fp-ts/ReaderTask';
 import { IDependencies } from '../../../core/dependencyContext';
 import { map as EMap, mapLeft as EMapLeft } from 'fp-ts/Either';

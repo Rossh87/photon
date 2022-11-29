@@ -1,7 +1,6 @@
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import React, { FunctionComponent } from 'react';
-import Link from '@mui/material/Link';
+import { FunctionComponent } from 'react';
 import RouterLink from '../../RouterLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const Badge: FunctionComponent = (props) => {
+const Badge: FunctionComponent = () => {
 	const classes = useStyles();
 
 	return (

@@ -1,14 +1,13 @@
 import React, { ChangeEventHandler } from 'react';
 import {
-	TextField,
+	Box,
 	ListItem,
 	ListItemText,
+	TextField,
 	Typography,
-	Box,
-	Theme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { isConfigurableField, MapPropsToHumanLabels } from '../helpers';
+import { MapPropsToHumanLabels, isConfigurableField } from '../helpers';
 import { pipe } from 'fp-ts/lib/function';
 import {
 	IUserFacingProfileProps,
@@ -20,7 +19,7 @@ import ProfileFormActionButton from './ProfileFormActionButton';
 import { DisplayValueSource } from '..';
 import { validationTools } from '../../../core/validationTools';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
 	profileText: {
 		textOverflow: 'ellipsis',
 		overflow: 'hidden',

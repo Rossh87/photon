@@ -1,7 +1,7 @@
 import {
 	IDependencies,
-	extractResponseData,
 	IHttpCall,
+	extractResponseData,
 } from '../../../core/dependencyContext';
 import { SYNC_BREAKPOINT_ENDPOINT } from './endpoints';
 import { tryCatch } from 'fp-ts/lib/TaskEither';

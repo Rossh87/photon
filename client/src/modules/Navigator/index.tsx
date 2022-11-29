@@ -2,7 +2,7 @@ import React from 'react';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
-import { List, Hidden } from '@mui/material';
+import { Hidden, List } from '@mui/material';
 import navItems from '../Header/navItems';
 import NavItem from './NavItem';
 
@@ -43,7 +43,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 			<Hidden mdDown>
 				<Drawer {...passThrough} anchor="left" variant="permanent">
 					<List className={classes.navList}>
-						{navItems.map((vals, i) => (
+						{navItems.map((vals) => (
 							<NavItem
 								handleClick={() => setDrawerOpen(false)}
 								{...vals}
@@ -61,7 +61,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 					onClose={() => setDrawerOpen(false)}
 				>
 					<List className={classes.navList}>
-						{navItems.map((vals, i) => (
+						{navItems.map((vals) => (
 							<NavItem
 								handleClick={() => setDrawerOpen(false)}
 								{...vals}

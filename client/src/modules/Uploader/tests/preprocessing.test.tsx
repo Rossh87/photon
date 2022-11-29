@@ -1,6 +1,5 @@
-import React from 'react';
 import Uploader from '../index';
-import { render, screen, act } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { getOversizeImageFile } from '../../../testUtils/imageUtils';
@@ -10,8 +9,8 @@ import {
 	TDedupeNamesResponse,
 } from 'server/modules/Upload/sharedUploadTypes';
 import {
-	simulateTwoFilesInput,
 	simulateInvalidFileInput,
+	simulateTwoFilesInput,
 } from '../../../testUtils';
 import { resetInternals } from 'react-use-fp';
 import { TAuthorizedUserResponse } from 'sharedTypes/User';

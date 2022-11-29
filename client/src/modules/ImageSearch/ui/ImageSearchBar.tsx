@@ -13,7 +13,7 @@ import { Hidden, useMediaQuery, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { pipe } from 'fp-ts/lib/function';
-import { map, fromPredicate } from 'fp-ts/lib/Option';
+import { fromPredicate, map } from 'fp-ts/lib/Option';
 import {
 	useAppActions,
 	useAppDispatch,

@@ -7,9 +7,9 @@ import { map as OMap, getOrElseW } from 'fp-ts/lib/Option';
 import { fromIO } from 'fp-ts/lib/Task';
 import { BaseError } from '../../../../core/error';
 import {
-	asks,
 	chain as RTEChain,
 	sequenceArray as RTESequence,
+	asks,
 } from 'fp-ts/ReaderTaskEither';
 import { TAppAction } from '../../../appState/appStateTypes';
 import { ICombinedUploadRequestMetadata } from '../../../../../../sharedTypes/Upload';

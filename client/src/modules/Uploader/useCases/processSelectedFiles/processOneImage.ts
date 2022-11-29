@@ -1,4 +1,4 @@
-import { pipe, flow } from 'fp-ts/lib/function';
+import { flow, pipe } from 'fp-ts/lib/function';
 import { IImage, TPreprocessingResult } from '../../domain/domainTypes';
 import { isIImage } from '../../domain/guards';
 import { requestUploadURIs } from '../../http/requestUploadURIs';
@@ -7,11 +7,10 @@ import { uploadToGCS } from './uploadToGCS';
 import {
 	bind as RTEBind,
 	bindTo as RTEBindTo,
-	chain as RTEChain,
 	chainFirst as RTEChainFirst,
-	orElseFirstW,
-	asks,
 	map as RTEMap,
+	asks,
+	orElseFirstW,
 } from 'fp-ts/lib/ReaderTaskEither';
 import { doResize } from './doResize';
 import { foldImageDataForRecall } from './foldImageDataForRecall';

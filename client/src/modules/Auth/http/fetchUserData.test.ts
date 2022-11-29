@@ -1,7 +1,7 @@
+import { TAuthActions } from '../state/authStateTypes';
 import { _fetchUserData } from './fetchUserData';
 import { AxiosInstance } from 'axios';
 import { AuthError } from '../domain/AuthError';
-import { TAuthActions } from '../state/authStateTypes';
 
 describe('user data fetching functiong', () => {
 	it('dispatches correct actions for success', async () => {

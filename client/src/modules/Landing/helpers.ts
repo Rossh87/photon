@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { pipe } from 'fp-ts/lib/function';
-import { fromNullable, map, getOrElse } from 'fp-ts/Option';
+import { fromNullable, getOrElse, map } from 'fp-ts/Option';
 
 const mapStatusToMessage = (statusCode: number) => {
 	switch (statusCode) {

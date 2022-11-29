@@ -1,17 +1,17 @@
 import {
-	IUploadsResponsePayload,
 	IUploadURIMetadata,
+	IUploadsResponsePayload,
 } from '../../http/httpTypes';
 import { IResizingData } from '../../domain/domainTypes';
-import { pipe, flow } from 'fp-ts/lib/function';
+import { flow, pipe } from 'fp-ts/lib/function';
 import { left, right } from 'fp-ts/lib/Either';
 import { chain as TEChain, sequenceArray } from 'fp-ts/lib/TaskEither';
 import { of as TOf } from 'fp-ts/lib/Task';
 import { IDependencies } from '../../../../core/dependencyContext';
 import { BaseError } from '../../../../core/error';
 import {
-	NonEmptyArray,
 	mapWithIndex as NEAMapWithIdx,
+	NonEmptyArray,
 } from 'fp-ts/lib/NonEmptyArray';
 import { uploadOneImageToGCS } from '../../http/uploadOneImageToGCS';
 import { TAppAction } from '../../../appState/appStateTypes';

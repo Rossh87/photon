@@ -3,8 +3,8 @@ import { ILogoutUserAction } from '../../Auth/state/authStateTypes';
 import { deleteImageMetadata } from '../helpers/deleteImageMetadata';
 import { SyncSuccessAction } from './imageConfigurationStateTypes';
 import {
-	TImageSearchActions,
 	IImageSearchState,
+	TImageSearchActions,
 } from './imageSearchStateTypes';
 
 export const defaultState: IImageSearchState = {

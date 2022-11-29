@@ -35,7 +35,7 @@ const Header: FunctionComponent<LoginBarProps> = ({
 	) : (
 		<LoginBar
 			landingMode={landingMode ? landingMode : 'signin'}
-			setLandingMode={setLandingMode ? setLandingMode : (a) => {}}
+			setLandingMode={setLandingMode ? setLandingMode : () => {}}
 		/>
 	);
 };

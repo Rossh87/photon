@@ -29,8 +29,6 @@ import RouterLink from '../../RouterLink';
 import Badge from './Badge';
 import apiRoot from '../../../core/apiRoot';
 
-const lightColor = 'rgba(255, 255, 255, 0.7)';
-
 const useStyles = makeStyles((theme: Theme) => ({
 	secondaryBar: {
 		zIndex: 0,

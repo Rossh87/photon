@@ -1,5 +1,5 @@
 import { updateUserProfilePreferences } from '../http/updateUserProfilePreferences';
-import { map, of, chainFirst } from 'fp-ts/ReaderTaskEither';
+import { chainFirst, map, of } from 'fp-ts/ReaderTaskEither';
 import { asks as RTAsks, chain as RTChain } from 'fp-ts/ReaderTask';
 import { map as EMap, mapLeft as EMapLeft } from 'fp-ts/Either';
 import { IDependencies } from '../../../core/dependencyContext';

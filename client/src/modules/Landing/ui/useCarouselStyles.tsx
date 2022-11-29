@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-export const useCarouselStyles = makeStyles((theme) => ({
+export const useCarouselStyles = makeStyles(() => ({
 	carouselItem: {
 		position: 'absolute',
 		background: 'none',

@@ -4,11 +4,9 @@ import React, {
 	FormEventHandler,
 	useState,
 } from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import { GOOGLE_OAUTH_ENDPOINT } from '../../../CONSTANTS';
@@ -118,7 +116,7 @@ const CredentialsForm: React.FunctionComponent<ICredentialsFormProps> = ({
 		(
 			stateKey: 'passwordState' | 'emailState'
 		): FocusEventHandler<HTMLInputElement> =>
-		(e) => {
+		() => {
 			const { pattern, setErr, failureMessage, state } =
 				getControls(stateKey);
 

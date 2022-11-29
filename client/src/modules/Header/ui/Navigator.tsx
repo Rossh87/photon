@@ -66,7 +66,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 					variant="permanent"
 				>
 					<List className={classes.navList}>
-						{navItems.map((vals, i) => (
+						{navItems.map((vals) => (
 							<NavItem
 								handleClick={() => setDrawerOpen(false)}
 								{...vals}
@@ -84,7 +84,7 @@ const Navigator: React.FunctionComponent<INavigatorProps> = ({
 					open={drawerOpen}
 				>
 					<List className={classes.navList}>
-						{navItems.map((vals, i) => (
+						{navItems.map((vals) => (
 							<NavItem
 								handleClick={() => setDrawerOpen(false)}
 								{...vals}

@@ -1,12 +1,12 @@
 import React, { Dispatch } from 'react';
 import {
-	TUploaderActions,
 	TSelectedFilesState,
+	TUploaderActions,
 } from '../state/uploadStateTypes';
 import clsx from 'clsx';
 import Button from '@mui/material/Button';
 import { pipe } from 'fp-ts/lib/function';
-import { map, fromNullable, Applicative, fold } from 'fp-ts/lib/Option';
+import { Applicative, fold, fromNullable, map } from 'fp-ts/lib/Option';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { makeStyles } from '@mui/styles';
 import theme from '../../theme';

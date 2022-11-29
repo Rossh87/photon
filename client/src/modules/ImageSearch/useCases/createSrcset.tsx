@@ -2,7 +2,7 @@ import { pipe } from 'fp-ts/lib/function';
 import { ISavedBreakpoint, TSavedBreakpoints } from 'sharedTypes/Breakpoint';
 import { concatW } from 'fp-ts/Array';
 import { TAvailableImageWidths } from 'sharedTypes/Upload';
-import { fromPredicate, map as OMap, getOrElseW } from 'fp-ts/Option';
+import { map as OMap, fromPredicate, getOrElseW } from 'fp-ts/Option';
 
 
 import { makeDefaultBreakpoints } from '../helpers/makeDefaultUIBreakpoints';

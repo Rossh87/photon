@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { fetchUserData } from './http/fetchUserData';
 import { useAppDispatch } from '../appState/useAppState';
 

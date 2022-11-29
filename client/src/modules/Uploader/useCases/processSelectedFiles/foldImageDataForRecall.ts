@@ -1,14 +1,14 @@
 import { IResizingData, IUploadableBlob } from '../../domain/domainTypes';
 import { ICombinedUploadRequestMetadata, TMediaType } from 'sharedTypes/Upload';
 import {
-	foldMap,
-	getSemigroup as NEASemigroup,
 	of as NEAOf,
+	getSemigroup as NEASemigroup,
+	foldMap,
 } from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/function';
 import {
-	getStructSemigroup,
 	getFirstSemigroup,
+	getStructSemigroup,
 	semigroupSum,
 } from 'fp-ts/lib/Semigroup';
 import { constructPublicBasePath } from '../../../../core/constructPublicBasePath';

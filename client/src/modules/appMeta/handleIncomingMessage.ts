@@ -6,7 +6,7 @@ import {
 	TSingleNoticeMessage,
 } from './appMetaTypes';
 import { isSingleNoticeMessage } from './guards';
-import { fromPredicate, fold as OFold } from 'fp-ts/lib/Option';
+import { fold as OFold, fromPredicate } from 'fp-ts/lib/Option';
 
 const handleSingleNotice =
 	(currState: TAppMetaState) =>

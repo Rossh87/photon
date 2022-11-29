@@ -3,7 +3,7 @@ import {
 	IImageWithErrors,
 	TAllUploadedImages,
 } from '../domain/domainTypes';
-import { pipe, flow } from 'fp-ts/lib/function';
+import { flow, pipe } from 'fp-ts/lib/function';
 import { map as NEAmap } from 'fp-ts/lib/NonEmptyArray';
 
 import { tryCatch } from 'fp-ts/TaskEither';
@@ -18,7 +18,7 @@ import {
 } from 'server/modules/Upload/sharedUploadTypes';
 import { DEDUPLICATION_ENDPOINT } from './endpoints';
 import { BaseError } from '../../../core/error';
-import { isLeft, Either } from 'fp-ts/lib/Either';
+import { Either, isLeft } from 'fp-ts/lib/Either';
 import { TAppAction } from '../../appState/appStateTypes';
 
 const displayNameFromEither = (e: Either<IImageWithErrors, IImage>) =>

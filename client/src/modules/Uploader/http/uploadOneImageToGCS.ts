@@ -1,9 +1,9 @@
 import { pipe } from 'fp-ts/lib/function';
 import { tryCatch } from 'fp-ts/lib/TaskEither';
 import {
+	IDependencies,
 	IHTTPLib,
 	THTTPRunner,
-	IDependencies,
 } from '../../../core/dependencyContext';
 import { BaseError } from '../../../core/error';
 import { IUploadableBlob } from '../domain/domainTypes';

@@ -1,9 +1,9 @@
 import { getSearchResults } from '../useCases/getSearchResults';
-import { mockImageData, mockImage1, mockImage3, mockImage4 } from './mockData';
+import { mockImage1, mockImage3, mockImage4, mockImageData } from './mockData';
 import {
-	TImageSearchActions,
-	ISearchedImagesEmittedAction,
 	ISearchData,
+	ISearchedImagesEmittedAction,
+	TImageSearchActions,
 } from '../state/imageSearchStateTypes';
 import { Dispatch } from 'react';
 

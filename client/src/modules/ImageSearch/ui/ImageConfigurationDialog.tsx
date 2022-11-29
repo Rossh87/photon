@@ -160,7 +160,8 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 		});
 
 	const handleTabChange = (
-		e: React.ChangeEvent<{}>,
+		// @ts-ignore
+		e: React.ChangeEvent<{}>, // eslint-disable-line unused-imports/no-unused-vars
 		newVal: TTabPanelType
 	) => {
 		setTabValue(newVal);
