@@ -28,7 +28,7 @@
         "start:dev": "NODE_ENV=dev node -r $PWD/configs/preDevRun index.ts",
         "start:inspect": "NODE_ENV=dev node --inspect -r $PWD/configs/preDevRun index.ts",
         "test": "jest",
-        "testDB:re-init": "docker run --name photon-test-db -p 27017:27017 -d -v $PWD/configs/testDB/config:/etc/mongo -v $PWD/configs/testDB/data:/data/db mongo:latest",
+        "testDB:re-init": "docker run --name photon-test-db -p 27017:27017 -d -v $PWD/configs/testDB/config:/etc/mongo -v $PWD/configs/testDB/data:/data/db mongo:6",
         "testDB:stop": "docker stop photon-test-db",
         "testDB:start": "docker start photon-test-db",
         "testDB:clear": "sudo rm -rf $PWD/configs/testDB/data/ && mkdir $PWD/configs/testDB/data/"
