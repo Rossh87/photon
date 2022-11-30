@@ -4,7 +4,6 @@ import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { TSavedBreakpoints } from '../../../../../sharedTypes/Breakpoint';
 import { TAvailableImageWidths } from '../../../../../sharedTypes/Upload';
 import { createSrcset } from '../useCases/createSrcset';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
@@ -31,28 +30,32 @@ const PasteableCodeTab: FunctionComponent<CodeDisplayProps> = ({
 
 	const [copied, setCopied] = useState(false);
 
-	const timerIDs = useRef<ReturnType<typeof setTimeout>[]>([]);
+	const timerID = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const doCopy = () => {
+	const handleCopyTimer = () => {
 		setCopied(true);
-		timerIDs.current.push(
-			setTimeout(() => {
-				setCopied(false);
-			}, 3000)
-		);
-	};
 
-	const handleTooltip = () => {
-		return copied ? null : doCopy();
+		if (timerID.current !== null) {
+			clearTimeout(timerID.current);
+		}
+		timerID.current = setTimeout(() => {
+			setCopied(false);
+		}, 3000);
 	};
 
 	const componentText = createSrcset('string')(breakpoints)(availableWidths)(
 		publicPathPrefix
 	) as string;
 
+	const handleCopy = () => {
+		navigator.clipboard.writeText(componentText).then(handleCopyTimer);
+	};
+
 	useEffect(
 		() => () => {
-			timerIDs.current.forEach((timer) => clearTimeout(timer));
+			if (timerID.current !== null) {
+				clearTimeout(timerID.current);
+			}
 		},
 		[]
 	);
@@ -71,14 +74,9 @@ const PasteableCodeTab: FunctionComponent<CodeDisplayProps> = ({
 					placement="left-start"
 					title={copied ? 'Copied!' : 'Copy'}
 				>
-					<CopyToClipboard
-						text={componentText}
-						onCopy={handleTooltip}
-					>
-						<IconButton size="large">
-							<FileCopyOutlinedIcon />
-						</IconButton>
-					</CopyToClipboard>
+					<IconButton size="large" onClick={handleCopy}>
+						<FileCopyOutlinedIcon />
+					</IconButton>
 				</Tooltip>
 			</Box>
 			<Box className={classes.codeBox} mt={2} p={1}>

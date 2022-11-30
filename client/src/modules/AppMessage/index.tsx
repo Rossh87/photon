@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react';
 import { Button, IconButton, Snackbar } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { Alert } from '@mui/lab';
+import Alert from '@mui/material/Alert';
 import { CloseOutlined } from '@mui/icons-material';
 import { useAppDispatch, useAppState } from '../appState/useAppState';
 import {

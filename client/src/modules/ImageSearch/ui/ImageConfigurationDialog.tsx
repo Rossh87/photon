@@ -6,7 +6,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import Tabs from '@mui/material/Tabs';
@@ -65,7 +64,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export const ImageConfigurationDialog: React.FunctionComponent = () => {
-	// Needed state
 	const styles = useStyles();
 	const tabStyles = useTabStyles();
 	const tabItemStyles = useTabItemStyles();
@@ -167,9 +165,6 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 		setTabValue(newVal);
 	};
 
-	// this prevents console notices from trying to render UI with invalid
-	// dummy data that populates application state while dialog is closed
-
 	return (
 		<Dialog
 			open={open}
@@ -181,6 +176,9 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 			maxWidth="md"
 			classes={{ paper: styles.dialogPaper }}
 		>
+			{/* this prevents console notices from trying to render UI with
+			invalid  dummy data that populates application state while dialog
+			is closed */}
 			{open && (
 				<>
 					<DialogTitle
@@ -188,9 +186,7 @@ export const ImageConfigurationDialog: React.FunctionComponent = () => {
 						style={{ width: '100%' }}
 						className={styles.dialogTitle}
 					>
-						<Typography variant="h6">
-							{`Embed code for ${displayName}`}
-						</Typography>
+						{`Embed code for ${displayName}`}
 						<IconButton
 							aria-label="close-dialog"
 							onClick={handleCloseAttempt}
