@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 		zIndex: 0,
 	},
 	iconButtonAvatar: {
-		width: theme.spacing(6),
-		height: theme.spacing(6),
+		width: theme.spacing(4),
+		height: theme.spacing(4),
 	},
 	appbarGrid: {
 		padding: theme.spacing(2),
