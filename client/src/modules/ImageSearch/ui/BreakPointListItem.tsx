@@ -26,6 +26,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Close } from '@mui/icons-material';
 import RestoreIcon from '@mui/icons-material/Restore';
+import MenuItem from '@mui/material/MenuItem';
 
 const useStyles = makeStyles((theme: Theme) => {
 	return {
@@ -159,7 +160,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 						onClick={discardEdits}
 						data-testid="bp-discard"
 						// className={classes.clearButton}
-						aria-label={`discard-breakpoint-edits-${position}`}
+						aria-label={`discard breakpoint edits`}
 						size="large"
 					>
 						<RestoreIcon />
@@ -168,7 +169,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 						onClick={submitEdits}
 						className={classes.keepButton}
 						data-testid="bp-keep"
-						aria-label={`keep-breakpoint-edits-${position}`}
+						aria-label={`keep edits`}
 						size="large"
 					>
 						<CheckIcon />
@@ -185,7 +186,10 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 			dense
 			disableGutters={true}
 		>
-			<Accordion expanded={isExpanded || formState.editing}>
+			<Accordion
+				expanded={isExpanded || formState.editing}
+				sx={{ width: '100%' }}
+			>
 				<AccordionSummary>
 					<ListItemAvatar>
 						<Avatar>
@@ -216,8 +220,8 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 							label="query type"
 							id={`queryType-input-${formState._id}`}
 						>
-							<option value="min">min-width</option>
-							<option value="max">max-width</option>
+							<MenuItem value={'min'}>min-width</MenuItem>
+							<MenuItem value={'max'}>max-width</MenuItem>
 						</TextField>
 						<TextField
 							value={formState.mediaWidth}
@@ -231,10 +235,7 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 							name="mediaWidth"
 							id={`mediaWidth-input-${formState._id}`}
 							data-testid={`mediaWidth-input-${formState._id}`}
-						>
-							<option value="min">max-width</option>
-							<option value="max">min-width</option>
-						</TextField>
+						/>
 						<TextField
 							value={formState.slotWidth}
 							onChange={handleChange('slotWidth')}
@@ -255,9 +256,9 @@ const BreakPointListItem: React.FunctionComponent<ISavedBreakpoint & Props> = ({
 							name="slotUnit"
 							id={`slotUnit-input-${formState._id}`}
 						>
-							<option value="vw">vw</option>
-							<option value="px">px</option>
-							<option value="em">em</option>
+							<MenuItem value={'vw'}>vw</MenuItem>
+							<MenuItem value={'px'}>px</MenuItem>
+							<MenuItem value={'em'}>em</MenuItem>
 						</TextField>
 					</form>
 				</AccordionDetails>
