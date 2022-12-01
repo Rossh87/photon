@@ -24,7 +24,7 @@ export const useTabItemStyles = makeStyles((theme: Theme) => ({
 		borderRadius: '30px',
 		textAlign: 'center',
 		transition: 'all .5s',
-		padding: '10px 15px',
+		padding: '15px 15px',
 		color: '#555555',
 		height: 'auto',
 		opacity: '1',
